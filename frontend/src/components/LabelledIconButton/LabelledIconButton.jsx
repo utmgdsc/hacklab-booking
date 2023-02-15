@@ -3,10 +3,9 @@ import { ButtonBase, Typography } from '@mui/material';
 /**
  * A rounded icon button with a tooltip and a ripple effect
  */
-export const LabelledIconButton = ({ icon, label, color, onClick, ...props }) => {
+export const LabelledIconButton = ({ icon, label, color, ...props }) => {
     return (
         <ButtonBase
-            onClick={onClick}
             aria-label={label}
             sx={{
                 color: color,

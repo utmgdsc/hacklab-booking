@@ -1,24 +1,38 @@
 import React from "react";
 import {
     Box,
-    Typography
+    Typography,
+    Container,
 } from "@mui/material";
+import { Link } from "../../components";
 
 export const Settings = () => {
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                flexWrap: "wrap",
-                marginTop: "2em",
-                marginBottom: "2em"
-            }}
-        >
-            <Typography variant="h5">Settings</Typography>
-            <Typography variant="h3"><strong>Coming Soon</strong></Typography>
-        </Box>
+        <Container sx={{ py: 8 }} maxWidth="md" component="main">
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    marginBottom: "4em"
+                }}
+            >
+                <Typography variant="h4" sx={{ marginTop: "2em" }}>
+                    Settings
+                </Typography>
+                <Typography variant="h4" sx={{ marginTop: "2em" }}>
+                    <Link isInternalLink to="/">Back</Link>
+                </Typography>
+            </Box>
+
+            <Typography variant="h5" sx={{ marginTop: "2em" }}>Webhooks</Typography>
+
+            <Typography variant="h5" sx={{ marginTop: "2em" }}>Profile</Typography>
+
+            <Typography variant="h5" sx={{ marginTop: "2em" }}>Appearance</Typography>
+
+
+        </Container>
     );
 };

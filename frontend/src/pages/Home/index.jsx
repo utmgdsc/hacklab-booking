@@ -12,11 +12,11 @@ import {
     Container,
     IconButton,
     Menu,
-    MenuItem,
-    Tooltip
+    MenuItem
 } from "@mui/material";
 import { Avatar } from "@mui/material";
 import React from "react";
+import { Link } from "../../components";
 
 export const Home = () => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -87,7 +87,9 @@ export const Home = () => {
             >
                 <LabelledIconButton icon={<InventoryIcon />} color="black" label="Track" />
                 <LabelledIconButton icon={<CalendarTodayIcon />} color="black" label="Book" />
-                <LabelledIconButton icon={<SettingsIcon />} color="black" label="Settings" />
+                <Link to="/settings" isInternalLink>
+                    <LabelledIconButton icon={<SettingsIcon />} color="black" label="Settings"/>
+                </Link>
             </Box>
 
             <Typography variant="h5" gutterBottom>Your Active Requests</Typography>
