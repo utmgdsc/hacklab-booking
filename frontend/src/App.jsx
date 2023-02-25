@@ -5,8 +5,10 @@ import '@fontsource/roboto/700.css';
 
 import './App.css';
 
-import { Home } from './pages/Home';
+import { Dashboard } from './pages/Dashboard';
 import { Settings } from './pages/Settings';
+import { Track } from './pages/Track';
+import { CreateBooking } from './pages/CreateBooking';
 
 import {
   BrowserRouter as Router,
@@ -14,15 +16,28 @@ import {
   Routes,
 } from 'react-router-dom';
 
+import {
+  CssBaseline,
+  ThemeProvider
+} from '@mui/material';
+
+import { GoogleTheme } from './theme/theme';
 
 function App() {
   return (
-    <Router>
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/settings" element={<Settings />} />
-          </Routes>
-    </Router>
+    <ThemeProvider theme={GoogleTheme}>
+      <CssBaseline enableColorScheme />
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<Dashboard />} />
+          <Route exact path="/settings" element={<Settings />} />
+          <Route exact path="/track/:id" element={<Track />} />
+          <Route exact path="/track/" element={<Track />} />
+          <Route exact path="/book/" element={<CreateBooking />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
+
   );
 }
 

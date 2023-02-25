@@ -1,38 +1,45 @@
 import React from "react";
 import {
-    Box,
     Typography,
-    Container,
+    Button,
+    Card,
+    CardContent,
+    CardActions
 } from "@mui/material";
-import { Link } from "../../components";
+import { SubPage } from "../../layouts/SubPage";
 
 export const Settings = () => {
     return (
-        <Container sx={{ py: 8 }} maxWidth="md" component="main">
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    marginBottom: "4em"
-                }}
-            >
-                <Typography variant="h4" sx={{ marginTop: "2em" }}>
-                    Settings
-                </Typography>
-                <Typography variant="h4" sx={{ marginTop: "2em" }}>
-                    <Link isInternalLink to="/">Back</Link>
-                </Typography>
-            </Box>
+        <SubPage name="Settings">
+            <Card>
+                <CardContent>
+                    <Typography variant="h2" gutterBottom>Profile</Typography>
+                    <Typography variant="gray">Some information will be visible to other users</Typography>
+                </CardContent>
+                <CardActions>
+                    <Button>Manage</Button>
+                </CardActions>
+            </Card>
 
-            <Typography variant="h5" sx={{ marginTop: "2em" }}>Webhooks</Typography>
+            <Card>
+                <CardContent>
+                    <Typography variant="h2" gutterBottom>Webhooks</Typography>
+                    <Typography variant="gray">Manage automated notifications for your requests via webhooks</Typography>
+                </CardContent>
+                <CardActions>
+                    <Button>Manage</Button>
+                </CardActions>
+            </Card>
 
-            <Typography variant="h5" sx={{ marginTop: "2em" }}>Profile</Typography>
-
-            <Typography variant="h5" sx={{ marginTop: "2em" }}>Appearance</Typography>
-
-
-        </Container>
+            <Card>
+                <CardContent>
+                    <Typography variant="h2" gutterBottom>Appearance</Typography>
+                    <Typography variant="gray">Manage how the app looks and feels</Typography>
+                </CardContent>
+                <CardActions>
+                    <Button>Manage</Button>
+                </CardActions>
+            </Card>
+        </SubPage>
     );
 };
