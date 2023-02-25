@@ -5,7 +5,7 @@ import {
     Button,
     Typography
 } from '@mui/material';
-import { ConvertDate } from "../../components"
+import { ConvertDate } from ".."
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -21,13 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
  */
 export const PendingRequestCard = ({ name, utorid, title, date, description, location }) => {
     return (
-        <Card
-            sx={{
-                width: "100%",
-                margin: "1em 0",
-                backgroundColor: "#f5f5f5"
-            }}
-        >
+        <Card>
             <CardContent
                 sx={{
                     padding: "1.25em 1.25em 0"
@@ -36,7 +30,7 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     Request from {name} ({utorid})
                 </Typography>
-                <Typography variant="h5" component="div" fontWeight={600}>
+                <Typography variant="h5" component="div" fontWeight={600} gutterBottom>
                     {title}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -45,13 +39,9 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
 
                 <Typography variant="p">{description}</Typography>
             </CardContent>
-            <CardActions
-                sx={{
-                    padding: "1.25em"
-                }}
-            >
-                <Button variant="contained" color="success" startIcon={<DoneIcon />}>Approve</Button>
-                <Button variant="outlined" color="error" startIcon={<CloseIcon />}>Deny</Button>
+            <CardActions>
+                <Button sx={{ borderRadius: "100vw" }} variant="contained" color="success" startIcon={<DoneIcon />}>Approve</Button>
+                <Button sx={{ px: "1em" }} color="error" startIcon={<CloseIcon />}>Deny</Button>
             </CardActions>
         </Card>
     );

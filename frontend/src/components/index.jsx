@@ -4,5 +4,7 @@
 export { Link } from "./Link/Link";
 export { LabelledIconButton } from "./LabelledIconButton/LabelledIconButton";
 export { NoRequestsPlaceholder } from "./NoRequestsPlaceholder/NoRequestsPlaceholder";
+export { ActiveRequestCard } from "./ActiveRequestCard/ActiveRequestCard";
 export { PendingRequestCard } from "./PendingRequestCard/PendingRequestCard";
 export { ConvertDate } from "./ConvertDate/ConvertDate";
+export { InitialsAvatar }  from "./InitialsAvatar/InitialsAvatar";

@@ -21,7 +21,7 @@ export const NoRequestsPlaceholder = ({ text, image = SparkleMascot, alt = "Spar
             }}
         >
             <img width="200" src={image} alt={alt} />
-            <Typography color="grey" sx={{ marginTop: "2em" }}>
+            <Typography variant="gray" sx={{ marginTop: "2em" }}>
                 { text }
             </Typography>
         </Box>
