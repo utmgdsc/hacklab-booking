@@ -41,8 +41,14 @@ export const Dashboard = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    flexWrap: "wrap",
-                    marginTop: "2em",
+                    flexWrap: "nowrap",
+                    marginTop: {
+                        xs: "-2em",
+                        sm: "-1em",
+                        md: "0em",
+                        lg: "1em",
+                        xl: "2em",
+                    },
                     marginBottom: "2em"
                 }}
             >
@@ -84,9 +90,10 @@ export const Dashboard = () => {
                     flexDirection: "row",
                     justifyContent: "left",
                     alignItems: "center",
-                    flexWrap: "wrap",
                     marginTop: "2em",
-                    marginBottom: "2em"
+                    marginBottom: "2em",
+                    flexWrap: "no-wrap",
+                    overflowX: "auto",
                 }}
             >
                 <Tooltip title="Track an existing request" arrow placement="top">
@@ -102,7 +109,9 @@ export const Dashboard = () => {
                 </Tooltip>
 
                 <Tooltip title="Add an event to the CSSC calendar" arrow placement="top">
-                    <LabelledIconButton icon={<CalendarViewDayIcon />} color="#05a6f0" label="Create Event" />
+                    <Link to="/" isInternalLink>
+                        <LabelledIconButton icon={<CalendarViewDayIcon />} color="#05a6f0" label="Create Event" />
+                    </Link>
                 </Tooltip>
 
                 <Tooltip title="Access your settings" arrow placement="top">

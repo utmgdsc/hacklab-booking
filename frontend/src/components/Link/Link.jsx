@@ -30,9 +30,6 @@ const NonForwardLink = ({ children, href, external, forwardedRef, isInternalLink
             rel={external ? "noopener noreferrer" : ""}
             target={external ? "_blank" : ""}
             to={isInternalLink ? href : undefined}
-
-            style={{ color: "red !important" }}
-
             {...props}>
             {children}
             {external && !noIcon &&
