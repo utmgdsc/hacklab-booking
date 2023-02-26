@@ -7,6 +7,7 @@ import {
 import { SubPage } from "../../layouts/SubPage";
 import SearchIcon from '@mui/icons-material/Search';
 import { useParams, useNavigate } from 'react-router-dom'
+import { ActiveRequestCard } from "../../components/";
 
 export const Track = () => {
     let { id } = useParams();
@@ -23,7 +24,19 @@ export const Track = () => {
                 component: "form"
             }}
             >
-                <TextField fullWidth label="Tracking ID" id="fullWidth" defaultValue={id} />
+                <TextField
+                    fullWidth
+                    label="Tracking ID"
+                    id="fullWidth"
+                    defaultValue={id}
+                    onKeyPress={(ev) => {
+                        if (ev.key === 'Enter') {
+                            // press enter to navigate to track page
+                            navigate("/track/" + document.getElementById("fullWidth").value);
+                            ev.preventDefault();
+                        }
+                    }}
+                />
                 <Button
                     variant="contained"
                     color="primary"
@@ -41,7 +54,17 @@ export const Track = () => {
                 </Button>
             </Box>
             <Box>
-                <h1>Tracking ID: {id}</h1>
+                {/* <h1>Tracking ID: {id}</h1> */}
+
+                {
+                    (!isNaN(parseFloat(id))) &&
+                    <ActiveRequestCard
+                        title="Machine Learning Workshop"
+                        date="2021-10-10"
+                        location="DH 2014 (Hacklab)"
+                        status={id}
+                    />
+                }
             </Box>
         </SubPage>
     );
