@@ -34,20 +34,22 @@ app.use(async (req, res, next) => {
   } else {
     let account = await Account.findOne({utorid: req.headers['utorid']})
     if (account === null) {
-      account = new Account({utorid: req.headers['utorid'], email: req.headers['http_mail'], name: req.headers['http_cn']});
+      let acc = new Account({utorid: req.headers['utorid'], email: req.headers['http_mail'], name: req.headers['http_cn']});
+      await acc.save();
+      next();
+    } else {
+      console.log(account);
+      let acc = new Account(account);
+      acc.email = req.headers['http_mail'];
+
+      // ideally we should use this, but production shibboleth headers are not working
+      // account.name = req.headers['http_cn'];
+
+      // so we'll use the utorid instead for now
+      acc.name = req.headers['utorid'];
+      await acc.save();
       next();
     }
-    console.log(account);
-    let acc = new Account(account);
-    acc.email = req.headers['http_mail'];
-
-    // ideally we should use this, but production shibboleth headers are not working
-    // account.name = req.headers['http_cn'];
-
-    // so we'll use the utorid instead for now
-    acc.name = req.headers['utorid'];
-    acc.save();
-    next();
   }
 })
 
