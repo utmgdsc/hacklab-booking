@@ -9,6 +9,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Settings } from './pages/Settings';
 import { Track } from './pages/Track';
 import { CreateBooking } from './pages/CreateBooking';
+import { Group } from './pages/Group';
 
 import {
   BrowserRouter as Router,
@@ -34,6 +35,7 @@ function App() {
           <Route exact path="/track/:id" element={<Track />} />
           <Route exact path="/track/" element={<Track />} />
           <Route exact path="/book/" element={<CreateBooking />} />
+          <Route exact path="/group/" element={<Group />} />
         </Routes>
       </Router>
     </ThemeProvider>
