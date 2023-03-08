@@ -59,6 +59,11 @@ const people = [
 const group = {
     people: people,
     name: "Google Developers Student Club",
+    faculty_representative: {
+        name: "Yowane Haku",
+        email: "y.haku@cs.toronto.edu",
+        utorid: "yowanh"
+    }
 }
 
 export const Group = () => {
