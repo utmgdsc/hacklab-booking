@@ -2,6 +2,8 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CalendarViewDayIcon from '@mui/icons-material/CalendarViewDay';
+import PeopleIcon from '@mui/icons-material/People';
+
 import {
     LabelledIconButton,
     NoRequestsPlaceholder,
@@ -59,28 +61,7 @@ export const Dashboard = () => {
                 </Box>
 
                 <Box sx={{ flexGrow: 0 }}>
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <InitialsAvatar name="Hatsune Miku" />
-                    </IconButton>
-                    <Menu
-                        sx={{ mt: '45px' }}
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                    >
-                        <MenuItem onClick={handleCloseUserMenu}>
-                            <Typography textAlign="center">Logout</Typography>
-                        </MenuItem>
-                    </Menu>
+                    <InitialsAvatar name="Hatsune Miku" />
                 </Box>
             </Box>
 
@@ -108,11 +89,17 @@ export const Dashboard = () => {
                     </Link>
                 </Tooltip>
 
-                <Tooltip title="Add an event to the CSSC calendar" arrow placement="top">
+                <Tooltip title="View the student group you're associated with" arrow placement="top">
+                    <Link to="/group" isInternalLink>
+                        <LabelledIconButton icon={<PeopleIcon />} color="#05a6f0" label="Your Group" />
+                    </Link>
+                </Tooltip>
+
+                {/* <Tooltip title="Add an event to the CSSC calendar" arrow placement="top">
                     <Link to="/" isInternalLink>
                         <LabelledIconButton icon={<CalendarViewDayIcon />} color="#05a6f0" label="Create Event" />
                     </Link>
-                </Tooltip>
+                </Tooltip> */}
 
                 <Tooltip title="Access your settings" arrow placement="top">
                     <Link to="/settings" isInternalLink>

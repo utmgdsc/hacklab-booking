@@ -9,6 +9,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Settings } from './pages/Settings';
 import { Track } from './pages/Track';
 import { CreateBooking } from './pages/CreateBooking';
+import { Group } from './pages/Group';
 
 import {
   BrowserRouter as Router,
@@ -25,19 +26,19 @@ import { GoogleTheme } from './theme/theme';
 
 function App() {
   return (
-    <ThemeProvider theme={GoogleTheme}>
-      <CssBaseline enableColorScheme />
-      <Router>
-        <Routes>
-          <Route exact path="/" element={<Dashboard />} />
-          <Route exact path="/settings" element={<Settings />} />
-          <Route exact path="/track/:id" element={<Track />} />
-          <Route exact path="/track/" element={<Track />} />
-          <Route exact path="/book/" element={<CreateBooking />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
-
+      <ThemeProvider theme={GoogleTheme}>
+        <CssBaseline enableColorScheme />
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<Dashboard />} />
+            <Route exact path="/settings" element={<Settings />} />
+            <Route exact path="/track/:id" element={<Track />} />
+            <Route exact path="/track/" element={<Track />} />
+            <Route exact path="/book/" element={<CreateBooking />} />
+            <Route exact path="/group/" element={<Group />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
   );
 }
 

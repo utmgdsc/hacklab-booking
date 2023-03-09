@@ -1,19 +1,47 @@
 import { createTheme } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+import React from 'react';
 
 /**
- * @return {boolean} true if the user has set their OS to dark mode
+ * enum for theme types
+ * @readonly
+ * @enum {string}
  */
-export const prefersDarkMode = () => {
-    // if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    //     return true;
-    // }
-    return false;
+export const THEME = {
+    /** Light theme
+     * @type {string}
+     */
+    LIGHT: "light",
+    /** Dark theme
+     * @type {string}
+     */
+    DARK: "dark",
+    /** System default theme
+     * @type {string}
+     */
+    DEFAULT: "default",
 }
+
+export const setTheme = (theme) => {
+    localStorage.setItem("theme", theme);
+}
+
+export const getTheme = () => {
+    return "light";
+
+    // let theme = localStorage.getItem("theme");
+    // if (theme == null || theme === THEME.DEFAULT) {
+    //     let dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    //     return dark ? THEME.DARK : THEME.LIGHT;
+    // }
+    // return theme;
+}
+
+export const ThemeContext = React.createContext(THEME.DEFAULT);
 
 export const GoogleTheme = createTheme({
     palette: {
-        mode: prefersDarkMode() ? "dark" : "light",
+        mode: getTheme(),
         primary: {
             main: "#4285f4",
         },
