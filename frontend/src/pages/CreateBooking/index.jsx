@@ -6,25 +6,31 @@ import {
     Stepper,
     StepLabel,
     Step,
-    RadioGroup,
-    FormControl,
-    FormLabel,
-    FormControlLabel,
-    Radio,
-    Container
+    Container,
+    Typography,
 } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 // import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 // import { MultiInputTimeRangeField } from '@mui/x-date-pickers-pro/MultiInputTimeRangeField';
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ScheduleSelector from 'react-schedule-selector'
-
-
+import GroupsIcon from '@mui/icons-material/Groups';
+import SchoolIcon from '@mui/icons-material/School';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export const CreateBooking = () => {
     const steps = ['Reason', 'Details', 'Date & Time'];
+    /*let members = ['User']
+    const [memberMap, setMemberMap] = useState(members.map((member) => (
+        <Typography component="p" variant="h5" key={member} sx={{
+            marginBottom: "1em"
+        }}>
+            {member}
+        </Typography>
+    )));
+    const [newMember, setNewMember] = useState(''); */
     const [activeStep, setActiveStep] = useState(0);
     const [reason, setReason] = useState('club');
     const [details, setDetails] = useState('');
@@ -33,9 +39,19 @@ export const CreateBooking = () => {
 
     const handleNext = () => {
         if (activeStep === 0) setActiveStep(activeStep + 1);
-        if (activeStep === 1) {
+        if (activeStep === 1 || activeStep === 2) {
             if (details === '') setDetailError(true);
             else setActiveStep(activeStep + 1);
+        }
+        // submit to API
+        if (activeStep === 3) {
+            // compile into json object
+            const booking = {
+                reason: reason,
+                details: details,
+                date: date,
+            }
+            console.log('submit to API');
         }
     }
 
@@ -47,10 +63,17 @@ export const CreateBooking = () => {
         setDetails(e.target.value);
     }
 
-    const handleDate = (e) => {
-        setDate(e.target.value);
-        console.log(date);
-    }
+    /*const handleAddMember = () => {
+        // check for valid UtorID
+        members.push(newMember);
+        setMemberMap(members.map((member) => (
+            <Typography component="p" variant="h5" key={member} sx={{
+                marginBottom: "1em"
+            }}>
+                {member}
+            </Typography>
+        )));
+    }*/
 
     return (
         <SubPage name="Create a booking">
@@ -82,16 +105,48 @@ export const CreateBooking = () => {
             }}
             >
                 {activeStep === 0 &&
-                    <FormControl>
-                        <FormLabel>What is the purpose of this booking?</FormLabel>
-                        <RadioGroup
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-around",
+                        alignItems: "center"
+                    }}>
+                        <Typography component="p" variant="h5" sx={
+                            {marginBottom: "1em"}
+                        }>What is the purpose of this booking?</Typography>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-around",
+                                alignItems: "center",
+                                flexWrap: "nowrap",
+                                marginBottom: "2em",
+                                gap: "1em"
+                            }}
                         >
-                            <FormControlLabel value={'club'} control={<Radio />} label="Club Related" />
-                            <FormControlLabel value={'academic'} control={<Radio />} label="Academic Related" />
-                        </RadioGroup>
-                    </FormControl>
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    setReason('club')
+                                    handleNext();
+                                }}
+                            >
+                                <GroupsIcon />
+                                Club Related
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    setReason('academic');
+                                    handleNext();
+                                }}
+                            >
+                                <SchoolIcon />
+                                Academic Related
+                            </Button>
+                        </Box>
+                    </Box>
                 }
 
                 {activeStep === 1 &&
@@ -101,22 +156,90 @@ export const CreateBooking = () => {
                         onChange={handleDetails}
                         value={details}
                         error={detailError}
+                        fullWidth
+                        multiline
+                        minRows={4}
+                        helperText={detailError ? "An explanation is required" : ""}
+                        id="explanation-field"
                     />
                 }
                 {activeStep === 2 &&
-                    <Container>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}></LocalizationProvider>
-                            <DateRangePicker localeText={{ start: 'Check-in', end: 'Check-out' }} />
-                        <LocalizationProvider/>
-
-                        <ScheduleSelector
-                            // selection={this.state.schedule}
-                            numDays={5}
-                            minTime={8}
-                            maxTime={22}
-                            hourlyChunks={2}
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center"
+                    }}>
+                        <Container sx={{
+                            marginBottom: "2em"
+                        }}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker label="Select a day" value={date} onChange={(newDate) => setDate(newDate)} />
+                            </LocalizationProvider>
+                        </Container>
+                            <ScheduleSelector
+                                // selection={this.state.schedule}
+                                numDays={1}
+                                minTime={8}
+                                maxTime={22}
+                                hourlyChunks={2}
+                                startDate={date}
                             // onChange={this.handleChange}
-                        />
+                            />
+                    </Box>
+                }
+                {/* {activeStep === 3 &&
+                    <Box>
+                        <Typography component="p" variant="h4" sx={
+                            {marginBottom: "1em"}
+                        }>Add others to this booking request</Typography>
+
+                        {memberMap}
+
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center"
+                        }}>
+                            <TextField
+                            label="UtorID"
+                            onChange={(e) => setNewMember(e.target.value)}
+                            value={newMember}
+                            fullWidth
+                            id="add-member-field"
+                            />
+                            <Button
+                                color="secondary"
+                                onClick={handleAddMember}
+                                sx={{
+                                    marginLeft: "1em"
+                                }}
+                            >
+                                Add
+                            </Button>
+                        </Box>
+                    </Box>
+                } */}
+
+                {activeStep === 3 &&
+                    <Container sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        flexWrap: "nowrap",
+                        marginBottom: "2em",
+                        gap: "1em"
+                    }}>
+
+                        <CheckCircleIcon sx={{
+                            fontSize: "10em",
+                            color: "green"
+                        }} />
+
+                        <Typography component="p" variant="h3">Booking Confirmed</Typography>
+                        <Typography component="p" variant="h5">Booking for: {reason}</Typography>
+                        <Typography component="p" variant="h5">Details: {details}</Typography>
+                        <Typography component="p" variant="h5">Date: {date}</Typography>
                     </Container>
                 }
             </Box>
@@ -126,19 +249,23 @@ export const CreateBooking = () => {
                 flexDirection: "row",
                 justifyContent: "space-between"
             }}>
-                <Button
-                    onClick={handleBack}
-                    variant="contained"
-                    disabled={activeStep === 0}
-                >
-                    Back
-                </Button>
-                <Button
-                    onClick={handleNext}
-                    variant="contained"
-                >
-                    Next
-                </Button>
+                {activeStep !== 0 && activeStep !== 3 &&
+                    <>
+                        <Button
+                            onClick={handleBack}
+                            variant="contained"
+                            disabled={activeStep === 0}
+                        >
+                            Back
+                        </Button>
+                        <Button
+                            onClick={handleNext}
+                            variant="contained"
+                        >
+                            { activeStep === steps.length - 1 ? 'Finish' : 'Next' }
+                        </Button>
+                    </>
+                }
             </Box>
         </SubPage>
     );

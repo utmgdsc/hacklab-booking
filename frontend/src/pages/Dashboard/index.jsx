@@ -61,28 +61,7 @@ export const Dashboard = () => {
                 </Box>
 
                 <Box sx={{ flexGrow: 0 }}>
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <InitialsAvatar name="Hatsune Miku" />
-                    </IconButton>
-                    <Menu
-                        sx={{ mt: '45px' }}
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                    >
-                        <MenuItem onClick={handleCloseUserMenu}>
-                            <Typography textAlign="center">Logout</Typography>
-                        </MenuItem>
-                    </Menu>
+                    <InitialsAvatar name="Hatsune Miku" />
                 </Box>
             </Box>
 

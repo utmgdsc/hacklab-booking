@@ -30,7 +30,7 @@ import { SubPage } from "../../layouts/SubPage";
 import { InitialsAvatar } from "../../components";
 
 
-const people = [
+let people = [
     {
         name: "Hatsune Miku",
         email: "h.miku@utoronto.ca",
@@ -48,12 +48,6 @@ const people = [
         email: "k.len@mail.utoronto.ca",
         utorid: "kagaminl",
         admin: false,
-    },
-    {
-        name: "Megurine Luka",
-        email: "m.luka@mail.utoronto.ca",
-        utorid: "megurinel",
-        admin: false,
     }
 ]
 const group = {
@@ -70,6 +64,20 @@ export const Group = () => {
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+    // hack demo code
+    const addMegurineLuka = () => {
+        people.push({
+            name: "Megurine Luka",
+            email: "m.luka@mail.utoronto.ca",
+            utorid: "megurinel",
+            admin: false,
+        });
+    }
+
+    const handleDelete = (person) => {
+        console.log('deleting', person);
+    }
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -89,7 +97,7 @@ export const Group = () => {
                     gap: "1em",
                     justifyContent: "flex-end",
                 }}>
-                <Button variant="contained" color="success" onClick={handleClickOpen}>
+                <Button variant="contained" onClick={handleClickOpen}>
                     Add Student
                 </Button>
                 <Button color="error">
@@ -123,7 +131,7 @@ export const Group = () => {
                         }}
                     >
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button onClick={handleClose} variant="contained">Add</Button>
+                        <Button onClick={() => {handleClose(); addMegurineLuka(); }} variant="contained">Add</Button>
                     </DialogActions>
                 </Dialog>
             </Box>
@@ -131,7 +139,7 @@ export const Group = () => {
             {/* list of people in the group */}
             {
                 people.map((person) => (
-                    <Card>
+                    <Card key={person.utorid}>
                         <CardContent
                             sx={{
                                 display: "flex",
@@ -152,7 +160,6 @@ export const Group = () => {
                             {
                                 person.admin ? null : (
                                     <Button
-                                        color="success"
                                         onClick={() => {
                                             console.log("make admin");
                                         }}
@@ -165,7 +172,7 @@ export const Group = () => {
                             <Button
                                 color="error"
                                 onClick={() => {
-                                    console.log("remove student");
+                                    handleDelete(person);
                                 }}
                             >
                                 Remove Student
