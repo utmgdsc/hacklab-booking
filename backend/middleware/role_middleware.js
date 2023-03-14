@@ -9,7 +9,7 @@ function roleVerify (role_names) {
     if (role_names.includes(account.role)){
       next();
     } else {
-      res.status(401).send('Unauthorized');
+      next('route')
     }
   };
 }
