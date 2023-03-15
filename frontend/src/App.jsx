@@ -11,11 +11,14 @@ import { Track } from './pages/Track';
 import { CreateBooking } from './pages/CreateBooking';
 import { Group } from './pages/Group';
 
+
 import {
   BrowserRouter as Router,
   Route,
   Routes,
 } from 'react-router-dom';
+
+import { useEffect, useState } from 'react';
 
 import {
   CssBaseline,
@@ -25,6 +28,15 @@ import {
 import { GoogleTheme } from './theme/theme';
 
 function App() {
+
+  let [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + '/api/accounts/user')
+      .then(res => res.json())
+      .then(data => setUserInfo(data));
+  }, []);
+
   return (
       <ThemeProvider theme={GoogleTheme}>
         <CssBaseline enableColorScheme />
