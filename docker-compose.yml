@@ -4,7 +4,7 @@ services:
   nginx:
     restart: always
     depends_on:
-      - frontend
+#      - frontend
       - backend
     build:
       context: ./nginx
@@ -20,11 +20,11 @@ services:
     environment:
       - DB_URI=mongodb://root:password@mongo:27017
 
-  frontend:
-    restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+#  frontend:
+#    restart: always
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
 
   mongo:
     restart: always
