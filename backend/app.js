@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const accounts = require('./routes/accounts');
 const {Account} = require("./models/accounts");
+const cors = require('cors');
 
 mongoose.connect(process.env.DB_URI);
 const database = mongoose.connection;
@@ -17,6 +18,7 @@ database.once('connected', () => {
 const app = express();
 const port = 3000;
 
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.raw());
