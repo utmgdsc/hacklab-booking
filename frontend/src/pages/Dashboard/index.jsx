@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { Avatar } from "@mui/material";
 import React from "react";
+import { useEffect, useState } from 'react';
 import { Link } from "../../components";
 
 export const Dashboard = () => {
@@ -34,6 +35,18 @@ export const Dashboard = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    let [userInfo, setUserInfo] = useState({});
+
+    useEffect(() => {
+        fetch(process.env.REACT_APP_API_URL + '/accounts/info')
+        .then(res => {
+            return res.json();
+        })
+        .then(data => {
+            setUserInfo(data);
+        })
+    }, []);
 
     return (
         <Container sx={{ py: 8 }} maxWidth="md" component="main">
@@ -55,13 +68,23 @@ export const Dashboard = () => {
                 }}
             >
                 <Box>
+                    {userInfo['role'] === 'student' && 
+                    <>
+                    <Typography component="p" variant="h5">Welcome,</Typography>
+                    <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
+                    </>
+                    }
+                    {(userInfo['role'] === 'prof' || userInfo['role'] === 'admin') && 
+                    <>
                     <Typography component="p" variant="h5">Welcome, Professor</Typography>
-                    <Typography variant="h2"><strong>Hatsune Miku</strong></Typography>
+                    <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
                     <Typography component="p" variant="h5">1 request needs your attention</Typography>
+                    </>
+                    }
                 </Box>
 
                 <Box sx={{ flexGrow: 0 }}>
-                    <InitialsAvatar name="Hatsune Miku" />
+                    <InitialsAvatar name={userInfo['name']} />
                 </Box>
             </Box>
 

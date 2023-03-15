@@ -17,7 +17,7 @@ router.get('/all', roleVerify(['admin']), async (req, res) => {
 router.get('/:id', roleVerify(['admin']), async (req, res) => {
   let account = await Account.findOne({ utorid: req.params.id });
   res.send(account);
-});S
+});
 
 // router.post('/:id', roleVerify(['admin']), async (req, res) => {
 //   let account = new Account(await Account.findOne({ utorid: req.params.id }));
