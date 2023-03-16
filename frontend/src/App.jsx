@@ -18,6 +18,8 @@ import {
   Routes,
 } from 'react-router-dom';
 
+import { useEffect, useState, createContext } from 'react';
+
 import {
   CssBaseline,
   ThemeProvider
@@ -26,6 +28,13 @@ import {
 import { GoogleTheme } from './theme/theme';
 
 function App() {
+  let [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + '/api/accounts/user')
+      .then(res => res.json())
+      .then(data => setUserInfo(data));
+  }, []);
 
   return (
       <ThemeProvider theme={GoogleTheme}>
