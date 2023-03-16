@@ -31,17 +31,16 @@ const getMonday = (d) => {
     return new Date(d.setDate(diff));
 }
 
+const monthNames = ["January", "February", "March", "April", "May", "June", "July",
+     "August", "September", "October", "November", "December"];
+
+const getDateString = (d) => {
+    d = new Date(d);
+    return `${monthNames[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
 export const CreateBooking = () => {
     const steps = ['Reason', 'Details', 'Date & Time'];
-    /*let members = ['User']
-    const [memberMap, setMemberMap] = useState(members.map((member) => (
-        <Typography component="p" variant="h5" key={member} sx={{
-            marginBottom: "1em"
-        }}>
-            {member}
-        </Typography>
-    )));
-    const [newMember, setNewMember] = useState(''); */
     const [activeStep, setActiveStep] = useState(0);
     const [reason, setReason] = useState('club');
     const [details, setDetails] = useState('');
@@ -73,18 +72,6 @@ export const CreateBooking = () => {
     const handleDetails = (e) => {
         setDetails(e.target.value);
     }
-
-    /*const handleAddMember = () => {
-        // check for valid UtorID
-        members.push(newMember);
-        setMemberMap(members.map((member) => (
-            <Typography component="p" variant="h5" key={member} sx={{
-                marginBottom: "1em"
-            }}>
-                {member}
-            </Typography>
-        )));
-    }*/
 
     return (
         <SubPage name="Create a booking">
@@ -132,8 +119,9 @@ export const CreateBooking = () => {
                                 justifyContent: "space-around",
                                 alignItems: "center",
                                 flexWrap: "nowrap",
+                                marginTop: "1em",
                                 marginBottom: "2em",
-                                gap: "10vw"
+                                gap: "5vw"
                             }}
                         >
                             <Button
@@ -216,38 +204,6 @@ export const CreateBooking = () => {
                         />
                     </Box>
                 }
-                {/* {activeStep === 3 &&
-                    <Box>
-                        <Typography component="p" variant="h4" sx={
-                            {marginBottom: "1em"}
-                        }>Add others to this booking request</Typography>
-
-                        {memberMap}
-
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center"
-                        }}>
-                            <TextField
-                            label="UtorID"
-                            onChange={(e) => setNewMember(e.target.value)}
-                            value={newMember}
-                            fullWidth
-                            id="add-member-field"
-                            />
-                            <Button
-                                color="secondary"
-                                onClick={handleAddMember}
-                                sx={{
-                                    marginLeft: "1em"
-                                }}
-                            >
-                                Add
-                            </Button>
-                        </Box>
-                    </Box>
-                } */}
 
                 {activeStep === 3 &&
                     <Container sx={{
@@ -268,7 +224,7 @@ export const CreateBooking = () => {
                         <Typography component="p" variant="h3">Booking Submitted</Typography>
                         <Typography component="p" variant="h5">Booking for: {reason}</Typography>
                         <Typography component="p" variant="h5">Details: {details}</Typography>
-                        <Typography component="p" variant="h5">Date: {date}</Typography>
+                        <Typography component="p" variant="h5">Date: { getDateString(date) }</Typography>
                     </Container>
                 }
             </Box>
