@@ -13,6 +13,18 @@ const AccountSchema = new Schema({
     default: 'student'
   },
   accessGranted: {type: Boolean, required: true, default: false},
+  theme: {
+    type: String,
+    required: true,
+    enum : ['light', 'dark', 'system'],
+    default: 'system'
+  },
+  language: {
+    type: String,
+    required: true,
+    enum : ['en'],
+    default: 'en'
+  },
 });
 
 module.exports = {

@@ -18,7 +18,7 @@ import {
   Routes,
 } from 'react-router-dom';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
 
 import {
   CssBaseline,
@@ -28,7 +28,6 @@ import {
 import { GoogleTheme } from './theme/theme';
 
 function App() {
-
   let [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
