@@ -20,6 +20,17 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import SchoolIcon from '@mui/icons-material/School';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
+/**
+ * given any date, return the date of the Monday of that week
+ * @param {Date} d the date to get the Monday of
+ */
+const getMonday = (d) => {
+    d = new Date(d);
+    var day = d.getDay(),
+        diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    return new Date(d.setDate(diff));
+}
+
 export const CreateBooking = () => {
     const steps = ['Reason', 'Details', 'Date & Time'];
     /*let members = ['User']
@@ -112,7 +123,7 @@ export const CreateBooking = () => {
                         alignItems: "center"
                     }}>
                         <Typography component="p" variant="h5" sx={
-                            {marginBottom: "1em"}
+                            { marginBottom: "1em" }
                         }>What is the purpose of this booking?</Typography>
                         <Box
                             sx={{
@@ -122,27 +133,45 @@ export const CreateBooking = () => {
                                 alignItems: "center",
                                 flexWrap: "nowrap",
                                 marginBottom: "2em",
-                                gap: "1em"
+                                gap: "10vw"
                             }}
                         >
                             <Button
+                                size="large"
                                 variant="contained"
                                 onClick={() => {
                                     setReason('club')
                                     handleNext();
                                 }}
+                                sx={{
+                                    flexDirection: "column",
+                                    textTransform: "none"
+                                }}
                             >
-                                <GroupsIcon />
-                                Club Related
+                                <GroupsIcon
+                                    sx={{
+                                        fontSize: "5em",
+                                    }}
+                                />
+                                For a club event
                             </Button>
                             <Button
+                                size="large"
                                 variant="contained"
                                 onClick={() => {
                                     setReason('academic');
                                     handleNext();
                                 }}
+                                sx={{
+                                    flexDirection: "column",
+                                    textTransform: "none"
+                                }}
                             >
-                                <SchoolIcon />
+                                <SchoolIcon
+                                    sx={{
+                                        fontSize: "5em",
+                                    }}
+                                />
                                 Academic Related
                             </Button>
                         </Box>
@@ -176,15 +205,15 @@ export const CreateBooking = () => {
                                 <DatePicker label="Select a day" value={date} onChange={(newDate) => setDate(newDate)} />
                             </LocalizationProvider>
                         </Container>
-                            <ScheduleSelector
-                                // selection={this.state.schedule}
-                                numDays={1}
-                                minTime={8}
-                                maxTime={22}
-                                hourlyChunks={2}
-                                startDate={date}
-                            // onChange={this.handleChange}
-                            />
+                        <ScheduleSelector
+                            // selection={this.state.schedule}
+                            numDays={5}
+                            minTime={8}
+                            maxTime={22}
+                            hourlyChunks={2}
+                            startDate={ getMonday(date) }
+                        // onChange={this.handleChange}
+                        />
                     </Box>
                 }
                 {/* {activeStep === 3 &&
@@ -236,7 +265,7 @@ export const CreateBooking = () => {
                             color: "green"
                         }} />
 
-                        <Typography component="p" variant="h3">Booking Confirmed</Typography>
+                        <Typography component="p" variant="h3">Booking Submitted</Typography>
                         <Typography component="p" variant="h5">Booking for: {reason}</Typography>
                         <Typography component="p" variant="h5">Details: {details}</Typography>
                         <Typography component="p" variant="h5">Date: {date}</Typography>
@@ -253,7 +282,6 @@ export const CreateBooking = () => {
                     <>
                         <Button
                             onClick={handleBack}
-                            variant="contained"
                             disabled={activeStep === 0}
                         >
                             Back
@@ -262,7 +290,7 @@ export const CreateBooking = () => {
                             onClick={handleNext}
                             variant="contained"
                         >
-                            { activeStep === steps.length - 1 ? 'Finish' : 'Next' }
+                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
                     </>
                 }

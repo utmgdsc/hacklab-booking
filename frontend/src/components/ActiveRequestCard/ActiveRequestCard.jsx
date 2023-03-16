@@ -12,14 +12,13 @@ import {
 import { ConvertDate } from ".."
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { requests } from "../../strings/en_ca";
 
 const data = {
-    id: "123e4567-e89b-12d3-a456-426614174000",
     title: "Machine Learning Workshop",
     date: new Date(),
     location: "DH 2014 (Hacklab)",
     status: 0,
+    hasTCardAccess: true,
     approver: "hatsunem",
     t_card_gatekeeper: "kagaminr"
 }
@@ -50,7 +49,7 @@ export const ActiveRequestCard = ({ title, date, location, status }) => {
                         <StepLabel>Request Sent</StepLabel>
                         <StepContent>
                             <Typography>
-                                { requests.request_sent }
+                                Your request has been sent to { data.approver } for approval.
                             </Typography>
                         </StepContent>
                     </Step>
@@ -58,23 +57,27 @@ export const ActiveRequestCard = ({ title, date, location, status }) => {
                         <StepLabel>Request Approved</StepLabel>
                         <StepContent>
                             <Typography>
-                                { requests.professor_approval }
+                                { data.approver } has approved your request.
                             </Typography>
                         </StepContent>
                     </Step>
-                    <Step>
-                        <StepLabel>Request Submitted for T-Card approval</StepLabel>
-                        <StepContent>
-                            <Typography>
-                                { requests.t_card_pending }
-                            </Typography>
-                        </StepContent>
-                    </Step>
+                    {
+                        data.hasTCardAccess ? null : (
+                            <Step>
+                                <StepLabel>Request Submitted for T-Card approval</StepLabel>
+                                <StepContent>
+                                    <Typography>
+                                        Your request has been submitted to { data.t_card_gatekeeper } for approval.
+                                    </Typography>
+                                </StepContent>
+                            </Step>
+                        )
+                    }
                     <Step>
                         <StepLabel>Request Completed</StepLabel>
                         <StepContent>
                             <Typography>
-                                { requests.request_completed }
+                                Your request has been completed.
                             </Typography>
                         </StepContent>
                     </Step>
