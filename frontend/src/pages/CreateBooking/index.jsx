@@ -34,9 +34,15 @@ const getMonday = (d) => {
 const monthNames = ["January", "February", "March", "April", "May", "June", "July",
      "August", "September", "October", "November", "December"];
 
-const getDateString = (d) => {
-    d = new Date(d);
+const getDateString = (scheduleDate) => {
+    var d = new Date(scheduleDate);
     return `${monthNames[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
+const getTimeString = (scheduleDates) => {
+    var dStart = new Date(scheduleDates[0]);
+    var dEnd = new Date(scheduleDates[scheduleDates.length - 1]);
+    return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`
 }
 
 export const CreateBooking = () => {
@@ -45,13 +51,20 @@ export const CreateBooking = () => {
     const [reason, setReason] = useState('club');
     const [details, setDetails] = useState('');
     const [detailError, setDetailError] = useState(false);
-    const [date, setDate] = useState(null);
+    const [dateError, setDateError] = useState(false);
+    const [calendarDate, setDate] = useState(null);
+    const [scheduleDates, setScheduleDates] = useState([]);
+    const [validDate, setValidDate] = useState(false);
+    const [showSchedule, setShowSchedule] = useState(false);
 
     const handleNext = () => {
         if (activeStep === 0) setActiveStep(activeStep + 1);
         if (activeStep === 1 || activeStep === 2) {
             if (details === '') setDetailError(true);
             else setActiveStep(activeStep + 1);
+
+            // disable the finish button
+            if (activeStep === 1) setValidDate(true);
         }
         // submit to API
         if (activeStep === 3) {
@@ -59,7 +72,9 @@ export const CreateBooking = () => {
             const booking = {
                 reason: reason,
                 details: details,
-                date: date,
+                date: calendarDate,
+                startTime: scheduleDates[0],
+                endTime: scheduleDates[-1]
             }
             console.log('submit to API');
         }
@@ -72,6 +87,25 @@ export const CreateBooking = () => {
     const handleDetails = (e) => {
         setDetails(e.target.value);
     }
+
+    const handleScheduleDate = (dates) => {
+        var currDate = 0;
+        setDateError(false);
+        for (var i = 0; i < dates.length; i++){
+            var d = new Date(dates[i]);
+            if (d.getDate() !== currDate && i > 0){
+                setDateError(true);
+                return;
+            }
+            // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
+            currDate = d.getDate();
+        }
+        if (dates.length > 0) setValidDate(false);
+        else setValidDate(true);
+
+        const newDates = dates.map((date) => {return date})
+        setScheduleDates(newDates);
+    };
 
     return (
         <SubPage name="Create a booking">
@@ -190,18 +224,34 @@ export const CreateBooking = () => {
                             marginBottom: "2em"
                         }}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker label="Select a day" value={date} onChange={(newDate) => setDate(newDate)} />
+                                <DatePicker label="Select a day" value={calendarDate} onChange={(newDate) => {
+                                    setDate(newDate);
+                                    setShowSchedule(true);
+                                    }} />
                             </LocalizationProvider>
                         </Container>
-                        <ScheduleSelector
-                            // selection={this.state.schedule}
+                        {showSchedule &&
+                            <> 
+                            <ScheduleSelector
+                            selection={scheduleDates}
                             numDays={5}
                             minTime={8}
                             maxTime={22}
-                            hourlyChunks={2}
-                            startDate={ getMonday(date) }
-                        // onChange={this.handleChange}
-                        />
+                            hourlyChunks={1}
+                            startDate={ getMonday(calendarDate) }
+                            onChange={ handleScheduleDate }
+                            />
+                            {dateError && 
+                                <Typography 
+                                component="p" 
+                                color="error" 
+                                sx={{ marginTop: "1em" }}
+                                >
+                                    * please only select one day
+                                </Typography>
+                            }
+                            </>
+                        }
                     </Box>
                 }
 
@@ -224,7 +274,8 @@ export const CreateBooking = () => {
                         <Typography component="p" variant="h3">Booking Submitted</Typography>
                         <Typography component="p" variant="h5">Booking for: {reason}</Typography>
                         <Typography component="p" variant="h5">Details: {details}</Typography>
-                        <Typography component="p" variant="h5">Date: { getDateString(date) }</Typography>
+                        <Typography component="p" variant="h5">Date: { getDateString(scheduleDates[0]) }</Typography>
+                        <Typography component="p" variant="h5">Time: { getTimeString(scheduleDates) }</Typography>
                     </Container>
                 }
             </Box>
@@ -245,6 +296,7 @@ export const CreateBooking = () => {
                         <Button
                             onClick={handleNext}
                             variant="contained"
+                            disabled={validDate}
                         >
                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
