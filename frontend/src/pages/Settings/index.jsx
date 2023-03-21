@@ -26,15 +26,13 @@ import {
 } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { InitialsAvatar } from "../../components";
-import { setTheme, getTheme, THEME } from "../../theme/theme";
-
-const profile = {
-    name: "Hatsune Miku",
-    email: "h.miku@utoronto.ca",
-    utorid: "hatsunem",
-}
+import { THEME } from "../../theme/theme";
+import { UserContext } from "../../contexts/UserContext";
+import { useContext } from "react";
 
 export const Settings = () => {
+    const userInfo = useContext(UserContext);
+
     return (
         <SubPage name="Settings">
             <Card>
@@ -55,11 +53,11 @@ export const Settings = () => {
                         gap: "1em",
                         alignItems: "center",
                     }}>
-                        <InitialsAvatar name={profile.name} />
+                        <InitialsAvatar name={userInfo["name"]} />
                         <Box>
-                            <Typography><strong>{profile.name}</strong></Typography>
-                            <Typography variant="gray">{profile.email}</Typography><br></br>
-                            <Typography variant="gray">{profile.utorid}</Typography>
+                            <Typography title="Your Name"><strong>{userInfo["name"]}</strong></Typography>
+                            <Typography variant="gray" title="Your Email">{userInfo["email"]}</Typography><br></br>
+                            <Typography variant="gray" title="Your UTORid">{userInfo["utorid"]}</Typography>
                         </Box>
                     </Box>
                 </CardContent>
@@ -85,12 +83,13 @@ export const Settings = () => {
                         row
                         aria-labelledby="appearance-radio-label"
                         name="appearance-radio"
-                        onChange={(e) => setTheme(e.target.value)}
-                        value={getTheme()}
+                        // onChange={(e) => setTheme(e.target.value)}
+                        value={THEME.LIGHT}
+                        disabled
                     >
-                        <FormControlLabel value={THEME.DEFAULT} control={<Radio />} label="System Default" />
-                        <FormControlLabel value={THEME.DARK} control={<Radio />} label="Light" />
-                        <FormControlLabel value={THEME.LIGHT} control={<Radio />} label="Dark" />
+                        <FormControlLabel value={THEME.DEFAULT} control={<Radio />} label="System Default" disabled />
+                        <FormControlLabel value={THEME.LIGHT} control={<Radio />} label="Light" disabled />
+                        <FormControlLabel value={THEME.DARK} control={<Radio />} label="Dark" disabled />
                     </RadioGroup>
                 </CardActions>
             </Card>

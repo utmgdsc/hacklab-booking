@@ -22,31 +22,12 @@ import {
 } from "@mui/material";
 import { Avatar } from "@mui/material";
 import React from "react";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link } from "../../components";
+import { UserContext } from "../../contexts/UserContext";
 
 export const Dashboard = () => {
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
-
-    let [userInfo, setUserInfo] = useState({});
-
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + '/accounts/info')
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setUserInfo(data);
-            })
-    }, []);
+    const userInfo = useContext(UserContext);
 
     return (
         <Container sx={{ py: 8 }} maxWidth="md" component="main">

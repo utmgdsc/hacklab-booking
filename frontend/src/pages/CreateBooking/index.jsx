@@ -231,7 +231,7 @@ export const CreateBooking = () => {
                             </LocalizationProvider>
                         </Container>
                         {showSchedule &&
-                            <> 
+                            <>
                             <ScheduleSelector
                             selection={scheduleDates}
                             numDays={5}
@@ -241,10 +241,10 @@ export const CreateBooking = () => {
                             startDate={ getMonday(calendarDate) }
                             onChange={ handleScheduleDate }
                             />
-                            {dateError && 
-                                <Typography 
-                                component="p" 
-                                color="error" 
+                            {dateError &&
+                                <Typography
+                                component="p"
+                                color="error"
                                 sx={{ marginTop: "1em" }}
                                 >
                                     * please only select one day
