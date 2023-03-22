@@ -59,15 +59,14 @@ export const CreateBooking = () => {
 
     const handleNext = () => {
         if (activeStep === 0) setActiveStep(activeStep + 1);
-        if (activeStep === 1 || activeStep === 2) {
+        if (activeStep === 1) {
             if (details === '') setDetailError(true);
             else setActiveStep(activeStep + 1);
-
-            // disable the finish button
-            if (activeStep === 1) setValidDate(true);
         }
-        // submit to API
-        if (activeStep === 3) {
+        if (activeStep === 2 && validDate){
+            setActiveStep(activeStep + 1);
+
+            // submit to API
             // compile into json object
             const booking = {
                 reason: reason,
@@ -100,8 +99,8 @@ export const CreateBooking = () => {
             // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
             currDate = d.getDate();
         }
-        if (dates.length > 0) setValidDate(false);
-        else setValidDate(true);
+        if (dates.length > 0) setValidDate(true);
+        else setValidDate(false);
 
         const newDates = dates.map((date) => {return date})
         setScheduleDates(newDates);
@@ -296,7 +295,6 @@ export const CreateBooking = () => {
                         <Button
                             onClick={handleNext}
                             variant="contained"
-                            disabled={validDate}
                         >
                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                         </Button>
