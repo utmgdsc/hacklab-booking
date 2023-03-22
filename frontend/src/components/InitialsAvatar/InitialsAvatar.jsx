@@ -25,9 +25,9 @@ const colorHash = ({ name = "", lightness = 50 }) => {
  * Given a name get the initials of the name up to 2 characters into an avatar
  * @param {string} name the name to get the initials of
  */
-export const InitialsAvatar = ({ name = "" }) => {
+export const InitialsAvatar = ({ name = "", ...props }) => {
     return (
-        <Avatar alt={name} style={{ backgroundColor: colorHash({ name }) }}>
+        <Avatar alt={name} style={{ backgroundColor: colorHash({ name }), color: "white" }} {...props}>
             { name.match(/(^\S\S?|\s\S)?/g).map(v => v.trim()).join("").match(/(^\S|\S$)?/g).join("").toLocaleUpperCase()}
         </Avatar>
     );
