@@ -22,31 +22,12 @@ import {
 } from "@mui/material";
 import { Avatar } from "@mui/material";
 import React from "react";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link } from "../../components";
+import { UserContext } from "../../contexts/UserContext";
 
 export const Dashboard = () => {
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
-
-    let [userInfo, setUserInfo] = useState({});
-
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + '/accounts/info')
-        .then(res => {
-            return res.json();
-        })
-        .then(data => {
-            setUserInfo(data);
-        })
-    }, []);
+    const userInfo = useContext(UserContext);
 
     return (
         <Container sx={{ py: 8 }} maxWidth="md" component="main">
@@ -68,18 +49,18 @@ export const Dashboard = () => {
                 }}
             >
                 <Box>
-                    {userInfo['role'] === 'student' && 
-                    <>
-                    <Typography component="p" variant="h5">Welcome,</Typography>
-                    <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
-                    </>
+                    {userInfo['role'] === 'student' &&
+                        <>
+                            <Typography component="p" variant="h5">Welcome,</Typography>
+                            <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
+                        </>
                     }
-                    {(userInfo['role'] === 'prof' || userInfo['role'] === 'admin') && 
-                    <>
-                    <Typography component="p" variant="h5">Welcome, Professor</Typography>
-                    <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
-                    <Typography component="p" variant="h5">1 request needs your attention</Typography>
-                    </>
+                    {(userInfo['role'] === 'prof' || userInfo['role'] === 'admin') &&
+                        <>
+                            <Typography component="p" variant="h5">Welcome, Professor</Typography>
+                            <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
+                            <Typography component="p" variant="h5">1 request needs your attention</Typography>
+                        </>
                     }
                 </Box>
 
@@ -101,7 +82,7 @@ export const Dashboard = () => {
                 }}
             >
                 <Tooltip title="Track an existing request" arrow placement="top">
-                    <Link to ="/track" isInternalLink>
+                    <Link to="/track" isInternalLink>
                         <LabelledIconButton icon={<InventoryIcon />} color="#f35325" label="Track" />
                     </Link>
                 </Tooltip>
@@ -126,7 +107,7 @@ export const Dashboard = () => {
 
                 <Tooltip title="Access your settings" arrow placement="top">
                     <Link to="/settings" isInternalLink>
-                        <LabelledIconButton icon={<SettingsIcon />} color="#ffb900" label="Settings"/>
+                        <LabelledIconButton icon={<SettingsIcon />} color="#ffb900" label="Settings" />
                     </Link>
                 </Tooltip>
             </Box>
@@ -151,6 +132,7 @@ export const Dashboard = () => {
                 name="Arnold Schwarzenegger"
                 utorid="scharno"
                 location="DH 2014 (Hacklab)"
+                teamName="Cyberdyne Systems"
             />
         </Container>
     );

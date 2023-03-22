@@ -18,6 +18,9 @@ import {
   Routes,
 } from 'react-router-dom';
 
+import { useEffect, useState } from 'react';
+import { UserContext } from './contexts/UserContext';
+
 import {
   CssBaseline,
   ThemeProvider
@@ -26,8 +29,22 @@ import {
 import { GoogleTheme } from './theme/theme';
 
 function App() {
+  let [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + '/accounts/info')
+        .then(res => {
+            return res.json();
+        })
+        .then(data => {
+            setUserInfo(data);
+        });
+}, []);
+
+  console.log(userInfo);
 
   return (
+    <UserContext.Provider value={userInfo}>
       <ThemeProvider theme={GoogleTheme}>
         <CssBaseline enableColorScheme />
         <Router>
@@ -41,6 +58,7 @@ function App() {
           </Routes>
         </Router>
       </ThemeProvider>
+    </UserContext.Provider>
   );
 }
 

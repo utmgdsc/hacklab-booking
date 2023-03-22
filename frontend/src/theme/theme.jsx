@@ -22,26 +22,13 @@ export const THEME = {
     DEFAULT: "default",
 }
 
-export const setTheme = (theme) => {
-    localStorage.setItem("theme", theme);
-}
+const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 
-export const getTheme = () => {
-    return "light";
-
-    // let theme = localStorage.getItem("theme");
-    // if (theme == null || theme === THEME.DEFAULT) {
-    //     let dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    //     return dark ? THEME.DARK : THEME.LIGHT;
-    // }
-    // return theme;
-}
-
-export const ThemeContext = React.createContext(THEME.DEFAULT);
+// const getTheme = localStorage.getItem("theme") === "system" ? systemTheme() : localStorage.getItem("theme") === "dark" ? "dark" : "light";
 
 export const GoogleTheme = createTheme({
     palette: {
-        mode: getTheme(),
+        mode: THEME.LIGHT,
         primary: {
             main: "#4285f4",
         },
