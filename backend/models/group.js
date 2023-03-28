@@ -9,7 +9,13 @@ const GroupSchema = new Schema({
   ],
   requests: [
     {type: Schema.Types.ObjectId, ref: 'Request'}
-  ]
+  ],
+  managers: [
+    {type: Schema.Types.ObjectId, ref: 'Account'}
+  ],
+  // faculty: [
+  //   {type: Schema.Types.ObjectId, ref: 'Account'}
+  // ]
 });
 
 module.exports = {
