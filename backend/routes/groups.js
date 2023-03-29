@@ -49,3 +49,5 @@ router.get('/search/byID/:id', roleVerify(['student', 'prof', 'admin']), async (
     res.status(403).send('You are not a member of this group');
   }
 });
+
+module.exports = router;

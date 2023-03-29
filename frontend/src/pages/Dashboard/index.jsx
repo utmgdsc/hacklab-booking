@@ -58,7 +58,7 @@ export const Dashboard = () => {
                     {(userInfo['role'] === 'prof' || userInfo['role'] === 'admin') &&
                         <>
                             <Typography component="p" variant="h5">Welcome, Professor</Typography>
-                            <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
+                            <Typography variant="h2"><strong>{userInfo['name']}</strong> { userInfo['role'] === 'admin' && <>(Admin)</>}</Typography>
                             <Typography component="p" variant="h5">1 request needs your attention</Typography>
                         </>
                     }
