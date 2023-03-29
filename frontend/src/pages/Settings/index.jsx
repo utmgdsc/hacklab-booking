@@ -69,7 +69,7 @@ export const Settings = () => {
                     <Typography variant="gray">Manage automated notifications for your requests via webhooks</Typography>
                 </CardContent>
                 <CardActions>
-                    <Button>Manage</Button>
+                    <Button disabled>Manage</Button>
                 </CardActions>
             </Card>
 

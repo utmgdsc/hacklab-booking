@@ -110,7 +110,7 @@ export const Dashboard = () => {
 
                 {userInfo['role'] === 'admin' &&
                     <Tooltip title="Manage people who have Hacklab Access" arrow placement="top">
-                        <Link to="/settings" isInternalLink>
+                        <Link to="/admin" isInternalLink>
                             <LabelledIconButton icon={<AdminPanelSettingsIcon />} color="#7b00ff" label="Admin" />
                         </Link>
                     </Tooltip>
@@ -142,7 +142,6 @@ export const Dashboard = () => {
                     }
                 </>
             }
-
 
             {(userInfo["pending_requests"] || userInfo["role"] === 'prof' || userInfo["role"] === 'admin') &&
                 <>
