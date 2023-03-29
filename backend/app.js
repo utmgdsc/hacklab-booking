@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const accounts = require('./routes/accounts');
+const requests = require('./routes/requests');
 const groups = require('./routes/groups');
 const {Account} = require("./models/accounts");
 const cors = require('cors');
@@ -58,6 +59,7 @@ app.use(async (req, res, next) => {
 
 app.use('/accounts', accounts);
 app.use('/groups', groups);
+app.use('/requests', requests)
 
 // app.get('/', (req, res) => {
 //   res.send(req.headers);

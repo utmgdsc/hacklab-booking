@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useContext, useEffect } from "react";
 import { Button, TextField, Box, Container, Typography } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
@@ -10,6 +10,7 @@ import ScheduleSelector from "react-schedule-selector";
 import GroupsIcon from "@mui/icons-material/Groups";
 import SchoolIcon from "@mui/icons-material/School";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { UserContext } from "../../contexts/UserContext";
 
 /**
  * given any date, return the date of the Monday of that week
@@ -49,6 +50,8 @@ const getTimeString = (scheduleDates) => {
 };
 
 export const CreateBooking = () => {
+  const userInfo = useContext(UserContext);
+
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
   const [details, setDetails] = useState("");
@@ -94,15 +97,26 @@ export const CreateBooking = () => {
       return;
     }
 
-    // submit to API
     // compile into json object
     const booking = {
+      owner: userInfo,
       reason: reason,
       details: details,
-      date: calendarDate,
+      //date: calendarDate,
+      title: details,
       startTime: scheduleDates[0],
       endTime: scheduleDates[-1],
     };
+
+    // submit to API
+    fetch(process.env.REACT_APP_API_URL + "/requests/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(booking),
+    });
+    //.then((response) => response.json())
+    //.then((data) => console.log(data));
+
     setSubmitted(true);
   };
 
