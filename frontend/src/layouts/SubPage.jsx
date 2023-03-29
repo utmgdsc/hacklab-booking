@@ -8,9 +8,9 @@ import {
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link } from "../components";
 
-export const SubPage = ({ name, children }) => {
+export const SubPage = ({ name, children, maxWidth="md", ...props }) => {
     return (
-        <Container sx={{ py: 8 }} maxWidth="md" component="main">
+        <Container sx={{ py: 8 }} maxWidth={maxWidth} component="main" {...props}>
             <Typography variant="h4" sx={{
                 marginTop: {
                     xs: "-2em",

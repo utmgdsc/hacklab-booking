@@ -20,6 +20,12 @@ import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 
+// enum for approved, pending, denied
+const GRANT_STATUS = {
+    APPROVED: "Approved",
+    PENDING: "Pending",
+    DENIED: "Denied"
+}
 
 const rows = [];
 for (let i = 0; i < 10000; i++) {
@@ -28,7 +34,7 @@ for (let i = 0; i < 10000; i++) {
         std_number: (i * 2147483647).toString().padStart(12, '0'),
         room: "DH1" + (i % 1000).toString().padStart(3, '0'),
         prof: "prof" + i,
-        grant: false
+        grant: GRANT_STATUS.PENDING
     });
 }
 
@@ -71,25 +77,19 @@ function fixedHeaderContent() {
     );
 }
 
-// function rowContent(_index, row) {
-//     return (
-
-//     );
-// }
-
 export const Admin = () => {
     const userInfo = useContext(UserContext);
-    const [filterGranted, setFilterGranted] = useState(false);
+    const [filterPending, setFilterPending] = useState(false);
     const [rowsToDisplay, setRowsToDisplay] = useState(rows);
     const [update, setUpdate] = useState(0);
 
     useEffect(() => {
-        if (filterGranted) {
-            setRowsToDisplay(rows.filter(row => !row['grant']));
+        if (filterPending) {
+            setRowsToDisplay(rows.filter(row => row['grant'] === GRANT_STATUS.PENDING));
         } else {
             setRowsToDisplay(rows);
         }
-    }, [filterGranted, update]);
+    }, [filterPending, update]);
 
     if (userInfo["role"] !== "admin") {
         return (
@@ -102,7 +102,7 @@ export const Admin = () => {
     }
 
     return (
-        <SubPage name="Admin">
+        <SubPage name="Admin" maxWidth="xl">
             <Box
                 sx={{
                     display: 'flex',
@@ -115,14 +115,14 @@ export const Admin = () => {
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    id="filter-ungranted"
-                                    checked={filterGranted}
+                                    id="filter-pending"
+                                    checked={filterPending}
                                     onChange={() => {
-                                        setFilterGranted(!filterGranted);
+                                        setFilterPending(!filterPending);
                                     }}
-                                    name="filter-ungranted"
+                                    name="filter-pending"
                                 />}
-                            label="Show only ungranted"
+                            label="Show only pending requests"
                         />
                     </FormControl>
                 </Box>
@@ -131,7 +131,7 @@ export const Admin = () => {
                         // todo daksh: send request to backend to grant access to all
                         console.log("Granting access to all");
                         for (let i = 0; i < rows.length; i++) {
-                            rows[i]['grant'] = true;
+                            rows[i]['grant'] = GRANT_STATUS.APPROVED;
                         }
                         // update state of parent component
                         setUpdate(Math.random());
@@ -148,17 +148,26 @@ export const Admin = () => {
                     itemContent={
                         (index, row) => <>
                             {columns.map((column, index) => (
-                                (column.dataKey === 'grant' && !row[column.dataKey]) ? (
+                                (column.dataKey === 'grant' && row[column.dataKey] === GRANT_STATUS.PENDING) ? (
                                     <TableCell key={index}>
                                         <Button
                                             onClick={() => {
                                                 // todo daksh: send request to backend to grant access
                                                 console.log("Granting access to " + row['utorid']);
                                                 // update row['grant'] to true
-                                                row['grant'] = true;
+                                                row['grant'] = GRANT_STATUS.APPROVED;
                                                 setUpdate(Math.random());
                                             }}
                                         >Approve</Button>
+                                        <Button
+                                            onClick={() => {
+                                                // todo daksh: send request to backend to grant access
+                                                console.log("Granting access to " + row['utorid']);
+                                                // update row['grant'] to true
+                                                row['grant'] = GRANT_STATUS.DENIED;
+                                                setUpdate(Math.random());
+                                            }}
+                                        >Deny</Button>
                                     </TableCell>
                                 ) : (
                                     <TableCell key={index}> {row[column.dataKey]} </TableCell>
