@@ -1,8 +1,10 @@
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CalendarViewDayIcon from '@mui/icons-material/CalendarViewDay';
-import PeopleIcon from '@mui/icons-material/People';
+import {
+    CalendarToday as CalendarTodayIcon,
+    Inventory as InventoryIcon,
+    Settings as SettingsIcon,
+    People as PeopleIcon,
+    AdminPanelSettings as AdminPanelSettingsIcon
+} from "@mui/icons-material"
 
 import {
     LabelledIconButton,
@@ -49,19 +51,20 @@ export const Dashboard = () => {
                 }}
             >
                 <Box>
-                    {userInfo['role'] === 'student' &&
-                        <>
-                            <Typography component="p" variant="h5">Welcome,</Typography>
-                            <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
-                        </>
-                    }
-                    {(userInfo['role'] === 'prof' || userInfo['role'] === 'admin') &&
-                        <>
-                            <Typography component="p" variant="h5">Welcome, Professor</Typography>
-                            <Typography variant="h2"><strong>{userInfo['name']}</strong> { userInfo['role'] === 'admin' && <>(Admin)</>}</Typography>
-                            <Typography component="p" variant="h5">1 request needs your attention</Typography>
-                        </>
-                    }
+                    <>
+                        <Typography component="p" variant="h5">Welcome, {
+                            userInfo['role'] === 'admin' ? 'Administrator' : userInfo['role'] === 'prof' ? 'Professor' : null
+                        }</Typography>
+                        <Typography variant="h2"><strong>{userInfo['name']}</strong></Typography>
+                        {
+                            userInfo["active_requests"] && userInfo["active_requests"].length > 0 &&
+                            <Typography component="p" variant="h5">You have {userInfo["active_requests"].length} active requests</Typography>
+                        }
+                        {
+                            userInfo["pending_requests"] && userInfo["pending_requests"].length > 0 &&
+                            <Typography component="p" variant="h5">You have {userInfo["pending_requests"].length} pending requests</Typography>
+                        }
+                    </>
                 </Box>
 
                 <Box sx={{ flexGrow: 0 }}>
@@ -99,41 +102,74 @@ export const Dashboard = () => {
                     </Link>
                 </Tooltip>
 
-                {/* <Tooltip title="Add an event to the CSSC calendar" arrow placement="top">
-                    <Link to="/" isInternalLink>
-                        <LabelledIconButton icon={<CalendarViewDayIcon />} color="#05a6f0" label="Create Event" />
-                    </Link>
-                </Tooltip> */}
-
                 <Tooltip title="Access your settings" arrow placement="top">
                     <Link to="/settings" isInternalLink>
                         <LabelledIconButton icon={<SettingsIcon />} color="#ffb900" label="Settings" />
                     </Link>
                 </Tooltip>
+
+                {userInfo['role'] === 'admin' &&
+                    <Tooltip title="Manage people who have Hacklab Access" arrow placement="top">
+                        <Link to="/settings" isInternalLink>
+                            <LabelledIconButton icon={<AdminPanelSettingsIcon />} color="#7b00ff" label="Admin" />
+                        </Link>
+                    </Tooltip>
+                }
             </Box>
 
-            <Typography variant="h2" gutterBottom>Your Active Requests</Typography>
-            {/* <NoRequestsPlaceholder text={"No active requests need your attention. Hooray!"} /> */}
-            <ActiveRequestCard
-                title="Machine Learning Workshop"
-                description="This workshop will teach you the basics of machine learning. We will be using Python and the TensorFlow library. If you have any questions, please contact the workshop leader, Arnold Schwarzenegger."
-                date="2021-10-10"
-                name="Arnold Schwarzenegger"
-                utorid="scharno"
-                location="DH 2014 (Hacklab)"
-            />
+            {(userInfo["active_requests"] || userInfo["role"] === 'student') &&
+                <>
+                    <Typography variant="h2" gutterBottom>Your <acronym title="Booking requests that you have submitted">Active Requests</acronym></Typography>
+                    <Typography variant="gray" component="em" gutterBottom>Your group(s) may also have active requests. Those may also be <Link isInternalLink href="/track">tracked</Link>.</Typography>
+                    {
+                        (!userInfo["active_requests"] || userInfo["active_requests"].length === 0) &&
+                        <NoRequestsPlaceholder text={"You have no active requests. Create one using the 'Book' button above."} />
+                    }
+                    {
+                        userInfo["active_requests"]?.length > 0 &&
+                        userInfo["active_requests"].map((request) => {
+                            return (
+                                <ActiveRequestCard
+                                    key={request['title']}
+                                    title={request['title']}
+                                    description={request['description']}
+                                    date={request['date']}
+                                    location={request['location']}
+                                    teamName={request['teamName']}
+                                />
+                            )
+                        })
+                    }
+                </>
+            }
 
-            <Typography variant="h2" gutterBottom>Your Pending Requests</Typography>
-            {/* <NoRequestsPlaceholder text={"You don't have any pending requests. Click the \"Book\" button to get started!"}/> */}
-            <PendingRequestCard
-                title="Machine Learning Workshop"
-                description="This workshop will teach you the basics of machine learning. We will be using Python and the TensorFlow library. If you have any questions, please contact the workshop leader, Arnold Schwarzenegger."
-                date="2021-10-10"
-                name="Arnold Schwarzenegger"
-                utorid="scharno"
-                location="DH 2014 (Hacklab)"
-                teamName="Cyberdyne Systems"
-            />
+
+            {(userInfo["pending_requests"] || userInfo["role"] === 'prof' || userInfo["role"] === 'admin') &&
+                <>
+                    <Typography variant="h2" gutterBottom>Your <acronym title="Booking requests that demand your attention">Pending Requests</acronym></Typography>
+                    {
+                        userInfo["pending_requests"] && userInfo["pending_requests"].length === 0 &&
+                        <NoRequestsPlaceholder text={"No requests demand your attention. Horray!"} />
+                    }
+                    {
+                        userInfo["pending_requests"] && userInfo["pending_requests"].length > 0 &&
+                        userInfo["pending_requests"].map((request) => {
+                            return (
+                                <PendingRequestCard
+                                    key={request['title']}
+                                    title={request['title']}
+                                    description={request['description']}
+                                    date={request['date']}
+                                    name={request['name']}
+                                    utorid={request['utorid']}
+                                    location={request['location']}
+                                    teamName={request['teamName']}
+                                />
+                            )
+                        })
+                    }
+                </>
+            }
         </Container>
     );
 };
