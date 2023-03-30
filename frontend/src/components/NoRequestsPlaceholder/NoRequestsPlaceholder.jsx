@@ -17,7 +17,8 @@ export const NoRequestsPlaceholder = ({ text, image = SparkleMascot, alt = "Spar
                 justifyContent: "center",
                 alignItems: "center",
                 flexWrap: "wrap",
-                marginBottom: "4em"
+                marginBottom: "4em",
+                marginTop: "4em"
             }}
         >
             <img width="200" src={image} alt={alt} />

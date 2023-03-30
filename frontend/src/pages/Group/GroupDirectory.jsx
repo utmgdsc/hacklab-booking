@@ -15,16 +15,8 @@ import {
     useMediaQuery,
     useTheme,
     TextField,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    Select,
-    Input,
     Chip,
-    Avatar,
-    Grid,
     Stack,
-    Divider,
 } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { InitialsAvatar } from "../../components";
@@ -197,7 +189,7 @@ export const GroupDirectory = () => {
                                 </Stack>
                             </CardContent>
                             <CardActions>
-                                <Button variant="contained" href={"/group/" + key}>View</Button>
+                                <Button href={"/group/" + myGroups[key]["name"].replaceAll(" ", "-").toLowerCase()}>View</Button>
                             </CardActions>
                         </Card>
                     )
