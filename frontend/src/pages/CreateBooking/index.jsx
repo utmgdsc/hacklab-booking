@@ -65,9 +65,9 @@ export const CreateBooking = () => {
   }, []);
 
   // use for testing purposes
-  /*useEffect(() => {
+  useEffect(() => {
     setUserGroups([{name: "GDSC"}, {name: "MDSC"}]);
-  }, []);*/
+  }, []);
 
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
@@ -194,6 +194,9 @@ export const CreateBooking = () => {
               Booking for: {reason}
             </Typography>
             <Typography component="p" variant="h5">
+              Group: {group.name}
+            </Typography>
+            <Typography component="p" variant="h5">
               Details: {details}
             </Typography>
             <Typography component="p" variant="h5">
@@ -289,6 +292,9 @@ export const CreateBooking = () => {
                 <Button
                   id="group-button"
                   variant="contained"
+                  sx={{
+                    marginBottom: "1em",
+                  }}
                   aria-controls={open ? "group-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}
@@ -323,6 +329,11 @@ export const CreateBooking = () => {
                     );
                   })}
                 </Menu>
+                {group && (
+                <Typography component="p">
+                  Selected group: {group.name}
+                </Typography>
+                )}
               </Box>
             )}
             <TextField
