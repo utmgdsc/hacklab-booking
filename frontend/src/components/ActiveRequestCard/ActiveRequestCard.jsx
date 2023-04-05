@@ -19,8 +19,8 @@ const data = {
     location: "DH 2014 (Hacklab)",
     status: 0,
     hasTCardAccess: true,
-    approver: "hatsunem",
-    t_card_gatekeeper: "kagaminr"
+    approver: "Michael Liut",
+    t_card_gatekeeper: "Andrew Wang"
 }
 
 /**

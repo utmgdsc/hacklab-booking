@@ -79,7 +79,7 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
                     }}
                 >
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Request from {name} ({utorid}) {teamName != null ? <>as a part of {teamName}</> : null}
+                        Request from {utorid} {teamName != null ? <>as a part of {teamName}</> : null}
                     </Typography>
                     <Typography variant="h5" component="div" fontWeight={600} gutterBottom>
                         {title}
