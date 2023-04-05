@@ -120,7 +120,7 @@ export const CreateBooking = () => {
 
     // compile into json object
     const booking = {
-      owner: userInfo,
+      owner: userInfo['utorid'],
       group: group,
       reason: reason,
       details: details,
