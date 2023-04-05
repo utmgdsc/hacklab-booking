@@ -20,31 +20,13 @@ import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 
-// enum for approved, pending, denied
-const GRANT_STATUS = {
-    APPROVED: "Approved",
-    PENDING: "Pending",
-    DENIED: "Denied"
-}
-
-const rows = [];
-for (let i = 0; i < 10000; i++) {
-    rows.push({
-        utorid: "utorid" + i,
-        std_number: (i * 2147483647).toString().padStart(12, '0'),
-        room: "DH1" + (i % 1000).toString().padStart(3, '0'),
-        prof: "prof" + i,
-        grant: GRANT_STATUS.PENDING
-    });
-}
-
 
 const columns = [
     { label: 'UTORid', dataKey: 'utorid' },
-    { label: 'Student Number', dataKey: 'std_number' },
-    { label: 'Room Requested', dataKey: 'room' },
-    { label: 'Professor Approved', dataKey: 'prof' },
-    { label: 'Grant Access', dataKey: 'grant' },
+    { label: 'Email', dataKey: 'email' },
+    // { label: 'Room Requested', dataKey: 'room' },
+    // { label: 'Professor Approved', dataKey: 'prof' },
+    { label: 'Grant Access', dataKey: 'accessGranted' },
 ];
 
 const VirtuosoTableComponents = {
@@ -80,20 +62,41 @@ function fixedHeaderContent() {
 export const Admin = () => {
     const userInfo = useContext(UserContext);
     const [filterPending, setFilterPending] = useState(false);
-    const [rowsToDisplay, setRowsToDisplay] = useState(rows);
+    const [rowsToDisplay, setRowsToDisplay] = useState(null);
+    const [rows, setRows] = useState(null);
     const [update, setUpdate] = useState(0);
 
+    // useEffect hook for fetching the rows
     useEffect(() => {
         document.title = 'Hacklab Booking - Admin';
-      }, []);
 
+        fetch(process.env.REACT_APP_API_URL + '/accounts/all', {
+            method: 'GET',
+        })
+        .then(res => {
+            return res.json();
+        })
+        .then(data => {
+            console.log(data);
+            setRows(data);
+            setRowsToDisplay(data);
+            setUpdate(Math.random());
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }, []);
+
+    // useEffect hook for changing the rows to display based on the filter
     useEffect(() => {
-        if (filterPending) {
-            setRowsToDisplay(rows.filter(row => row['grant'] === GRANT_STATUS.PENDING));
-        } else {
-            setRowsToDisplay(rows);
+        if (rows) {
+            if (filterPending) {
+                setRowsToDisplay(rows.filter(row => row['accessGranted'] === false));
+            } else {
+                setRowsToDisplay(rows);
+            }
         }
-    }, [filterPending, update]);
+    }, [filterPending, rows]);
 
     if (userInfo["role"] !== "admin") {
         return (
@@ -130,19 +133,19 @@ export const Admin = () => {
                         />
                     </FormControl>
                 </Box>
-                <Button
+                {/* <Button
                     onClick={() => {
                         // todo daksh: send request to backend to grant access to all
                         console.log("Granting access to all");
-                        for (let i = 0; i < rows.length; i++) {
-                            rows[i]['grant'] = GRANT_STATUS.APPROVED;
+                        for (let i = 0; i < rowsToDisplay.length; i++) {
+                            rowsToDisplay[i]['grant'] = true;
                         }
                         // update state of parent component
                         setUpdate(Math.random());
                     }}
                 >
                     Mark all as granted
-                </Button>
+                </Button> */}
             </Box>
             <Paper style={{ height: "90vh", width: '100%' }}>
                 <TableVirtuoso
@@ -152,26 +155,36 @@ export const Admin = () => {
                     itemContent={
                         (index, row) => <>
                             {columns.map((column, index) => (
-                                (column.dataKey === 'grant' && row[column.dataKey] === GRANT_STATUS.PENDING) ? (
+                                (column.dataKey === 'accessGranted' && row[column.dataKey] === false) ? (
                                     <TableCell key={index}>
                                         <Button
                                             onClick={() => {
-                                                // todo daksh: send request to backend to grant access
+                                                // send post request to api to grant access
+                                                fetch(process.env.REACT_APP_API_URL + '/accounts/modifyAccess/' + row['utorid'], {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        "accessGranted": true
+                                                    })
+                                                })
+                                                .then(res => {
+                                                    return res.json();
+                                                })
+                                                .then(data => {
+                                                    console.log(data);
+                                                })
+                                                .catch(err => {
+                                                    console.log(err);
+                                                });
+
                                                 console.log("Granting access to " + row['utorid']);
                                                 // update row['grant'] to true
-                                                row['grant'] = GRANT_STATUS.APPROVED;
+                                                row['accessGranted'] = true;
                                                 setUpdate(Math.random());
                                             }}
                                         >Approve</Button>
-                                        <Button
-                                            onClick={() => {
-                                                // todo daksh: send request to backend to grant access
-                                                console.log("Granting access to " + row['utorid']);
-                                                // update row['grant'] to true
-                                                row['grant'] = GRANT_STATUS.DENIED;
-                                                setUpdate(Math.random());
-                                            }}
-                                        >Deny</Button>
                                     </TableCell>
                                 ) : (
                                     <TableCell key={index}> {row[column.dataKey]} </TableCell>
