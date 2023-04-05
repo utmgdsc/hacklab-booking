@@ -201,9 +201,9 @@ export const CreateBooking = () => {
             <Typography component="p" variant="h3">
               Booking Submitted
             </Typography>
-            <Typography component="p" variant="h5">
+            {/* <Typography component="p" variant="h5">
               Booking for: {reason}
-            </Typography>
+            </Typography> */}
             <Typography component="p" variant="h5">
               Group: {group.name}
             </Typography>
