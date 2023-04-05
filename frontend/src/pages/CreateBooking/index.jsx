@@ -12,7 +12,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import SchoolIcon from "@mui/icons-material/School";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { UserContext } from "../../contexts/UserContext";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 /**
  * given any date, return the date of the Monday of that week
@@ -331,9 +331,9 @@ export const CreateBooking = () => {
                   })}
                 </Menu>
                 {group && (
-                <Typography component="p">
-                  Selected group: {group.name}
-                </Typography>
+                  <Typography component="p">
+                    Selected group: {group.name}
+                  </Typography>
                 )}
               </Box>
             )}
@@ -357,7 +357,7 @@ export const CreateBooking = () => {
               id="explanation-field"
             />
 
-            {showSchedule &&
+            {showSchedule && (
               <>
                 <Box
                   sx={{
@@ -396,20 +396,20 @@ export const CreateBooking = () => {
                   selectionScheme="linear"
                   renderDateLabel={(date) => {
                     return (
-                      <Box sx={{
-                        textAlign: "center",
-                        marginBottom: "0.5em",
-                      }}>
+                      <Box
+                        sx={{
+                          textAlign: "center",
+                          marginBottom: "0.5em",
+                        }}
+                      >
                         {date.toLocaleDateString("en-US", {
                           weekday: "short",
                         })}
                         <Typography component="p" variant="h5">
-                          {
-                            date.toLocaleDateString("en-US", {
-                              day: "numeric",
-                              month: "long",
-                            })
-                          }
+                          {date.toLocaleDateString("en-US", {
+                            day: "numeric",
+                            month: "long",
+                          })}
                         </Typography>
                       </Box>
                     );
@@ -434,7 +434,7 @@ export const CreateBooking = () => {
                   </Typography>
                 )}
               </>
-            }
+            )}
 
             <Button
               variant="contained"
@@ -455,13 +455,24 @@ export const CreateBooking = () => {
   } else {
     return (
       <SubPage name="Cannot create booking">
-        <Typography variant="h4" component="p" sx={{ alignItems: "center" }}>
-          Please {" "}
-          <Link isInternalLink href="/group">
-            create a group
-          </Link>
-          {" "}before making a booking request.
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            flexWrap: "nowrap",
+            gap: "1em",
+          }}
+        >
+          <Typography variant="h4" component="p">
+            Please{" "}
+            <Link isInternalLink href="/group">
+              create a group
+            </Link>{" "}
+            before making a booking request.
+          </Typography>
+        </Box>
       </SubPage>
     );
   }
