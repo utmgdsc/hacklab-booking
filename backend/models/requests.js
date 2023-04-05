@@ -3,7 +3,7 @@ const {Schema} = require("mongoose");
 
 
 const RequestSchema = new Schema({
-  status: {required: true, type: String, enum: ["pending", "denied", "approval", "completed"], default: "pending"},
+  status: {required: true, type: String, enum: ["pending", "denied", "approval", "tcard", "completed"], default: "pending"},
   group: {required: true, type: Schema.Types.ObjectId, ref: 'Group'},
   owner: {required: true, type: Schema.Types.ObjectId, ref: 'Account'},
   approver: {type: Schema.Types.ObjectId, ref: 'Account'},
