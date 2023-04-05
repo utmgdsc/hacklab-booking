@@ -219,15 +219,15 @@ export const Dashboard = () => {
               Pending Requests
             </acronym>
           </Typography>
-          {userInfo["pending_requests"] &&
-            userInfo["pending_requests"].length === 0 && (
+          {userInfo["pendingRequests"] &&
+            userInfo["pendingRequests"].length === 0 && (
               <NoRequestsPlaceholder
                 text={"No requests demand your attention. Horray!"}
               />
             )}
-          {userInfo["pending_requests"] &&
-            userInfo["pending_requests"].length > 0 &&
-            userInfo["pending_requests"].map((request) => {
+          {userInfo["pendingRequests"] &&
+            userInfo["pendingRequests"].length > 0 &&
+            userInfo["pendingRequests"].map((request) => {
               return (
                 <PendingRequestCard
                   key={request["_id"]}
@@ -235,9 +235,9 @@ export const Dashboard = () => {
                   description={request["description"]}
                   date={request["start_date"]}
                   name={request["title"]}
-                  utorid={request["owner"]["utorid"]}
-                  location={request["room"]["name"]}
-                  teamName={request["group"]["name"]}
+                  utorid={request["owner"]}
+                  location={request["room"]}
+                  teamName={request["group"]}
                 />
               );
             })}
