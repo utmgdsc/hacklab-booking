@@ -45,9 +45,7 @@ app.use(async (req, res, next) => {
       let acc = new Account({
         utorid: req.headers["utorid"],
         email: req.headers["http_mail"],
-        name: req.headers["http_cn"],
-        activeRequests: [],
-        pendingRequests: [],
+        name: req.headers["utorid"],
       });
       await acc.save();
       next();
