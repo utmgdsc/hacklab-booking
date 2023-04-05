@@ -63,7 +63,7 @@ export const Group = () => {
 
   React.useEffect(() => {
     document.title = 'Hacklab Booking - ' + group.name;
-  }, []);
+  }, [group]);
 
   const getGroups = () => {
     fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
