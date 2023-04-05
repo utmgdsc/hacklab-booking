@@ -50,6 +50,9 @@ export const GoogleTheme = createTheme({
                 disabled: "#5f6368",
             }
         },
+        gray: {
+            main: "#5f6368",
+        },
         // Used by `getContrastText()` to maximize the contrast between
         // the background and the text.
         contrastThreshold: 3,

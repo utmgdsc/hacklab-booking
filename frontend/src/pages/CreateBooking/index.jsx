@@ -1,6 +1,10 @@
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import GroupsIcon from "@mui/icons-material/Groups";
-import SchoolIcon from "@mui/icons-material/School";
+import {
+  CheckCircle as CheckCircleIcon,
+  Groups as GroupsIcon,
+  School as SchoolIcon,
+  ArrowBackIos as ArrowBackIcon,
+  ArrowForwardIos as ArrowForwardIcon,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,9 +14,11 @@ import {
   Typography,
   FormControl,
   InputLabel,
+  Tooltip,
   Select,
+  IconButton,
+  Divider
 } from "@mui/material";
-import Menu from "@mui/material/Menu";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -68,7 +74,7 @@ export const CreateBooking = () => {
 
   // use for testing purposes
   useEffect(() => {
-    setUserGroups([{name: "GDSC"}, {name: "MDSC"}]);
+    setUserGroups([{ name: "GDSC" }, { name: "MDSC" }]);
   }, []);
 
   const [reason, setReason] = useState("");
@@ -167,7 +173,7 @@ export const CreateBooking = () => {
     setScheduleDates(newDates);
   };
 
-  if (userGroups.length > 0) {
+  if (true || userGroups.length > 0) {
     return (
       <SubPage name="Create a booking">
         {submitted ? (
@@ -280,7 +286,7 @@ export const CreateBooking = () => {
               </Button>
             </Box>
 
-            {userGroups.length > 0 && (
+            {reason && userGroups.length > 0 && (
               <Box
                 sx={{
                   display: "flex",
@@ -291,7 +297,9 @@ export const CreateBooking = () => {
                   marginBottom: "2em",
                 }}
               >
-                <FormControl fullWidth>
+                <Divider>Select the group to book under</Divider>
+
+                <FormControl fullWidth sx={{ marginTop: "1em" }}>
                   <InputLabel id="group-label">Group</InputLabel>
                   <Select
                     labelId="group-label"
@@ -315,54 +323,121 @@ export const CreateBooking = () => {
                 </FormControl>
               </Box>
             )}
-            <TextField
-              label="Please provide an explanation"
-              required
-              onChange={(e) => {
-                handleDetails(e);
-                setDetailError(false);
-                setShowSchedule(true);
-              }}
-              value={details}
-              error={detailError}
-              fullWidth
-              multiline
-              sx={{
-                marginBottom: "3em",
-              }}
-              minRows={4}
-              helperText={detailError ? "An explanation is required" : ""}
-              id="explanation-field"
-            />
 
+            {group && (
+              <>
+                <Divider>Provide an explanation</Divider>
+
+                <TextField
+                  label="Please provide an explanation"
+                  required
+                  onChange={(e) => {
+                    handleDetails(e);
+                    setDetailError(false);
+                    setShowSchedule(true);
+                  }}
+                  value={details}
+                  error={detailError}
+                  fullWidth
+                  multiline
+                  sx={{
+                    marginBottom: "3em",
+                    marginTop: "1em",
+                  }}
+                  minRows={4}
+                  helperText={detailError ? "An explanation is required" : ""}
+                  id="explanation-field"
+                />
+              </>
+            )}
             {showSchedule && (
               <>
+                <Divider>Select a date</Divider>
+
                 <Box
                   sx={{
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-around",
+                    justifyContent: "space-between",
                     alignItems: "center",
                     flexWrap: "nowrap",
-                    marginBottom: "3em",
+                    marginBottom: "1em",
                     gap: "1em",
+                    width: "100%",
                   }}
                 >
-                  <Typography component="p" variant="h5" color="error">
-                    {calendarDateError ? "*" : ""}
-                  </Typography>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                      label="Select a day"
-                      value={calendarDate}
-                      onChange={(newDate) => {
-                        setDate(newDate);
-                        setCalendarDateError(false);
-                      }}
-                    />
-                  </LocalizationProvider>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "start",
+                      alignItems: "center",
+                      gap: "1em",
+                    }}
+                  >
+                    <Box>
+                      <Button
+                        variant="outlined"
+                        color="gray"
+                        onClick={() => {
+                          setDate(dayjs());
+                          setScheduleDates([]);
+                        }}
+                        sx={{
+                          textTransform: "none",
+                        }}
+                      >
+                        Today
+                      </Button>
+                    </Box>
+                    <Box>
+                      <Tooltip title="Previous week">
+                        <IconButton
+                          onClick={() => {
+                            setDate(calendarDate.subtract(7, "day"));
+                            setScheduleDates([]);
+                          }}
+                        >
+                          <ArrowBackIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Next week">
+                        <IconButton
+                          onClick={() => {
+                            setDate(calendarDate.add(7, "day"));
+                            setScheduleDates([]);
+                          }}
+                        >
+                          <ArrowForwardIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <Typography
+                      component="p"
+                      variant="h5"
+                    >
+                      {getMonday(calendarDate).toLocaleDateString("en-US", {
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography component="p" variant="h5" color="error">
+                      {calendarDateError ? "*" : ""}
+                    </Typography>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        label="Select a day"
+                        value={calendarDate}
+                        onChange={(newDate) => {
+                          setDate(newDate);
+                          setCalendarDateError(false);
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </Box>
                 </Box>
-
                 <ScheduleSelector
                   selection={scheduleDates}
                   numDays={5}
@@ -414,18 +489,20 @@ export const CreateBooking = () => {
               </>
             )}
 
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => {
-                handleFinish();
-              }}
-              sx={{
-                marginTop: "2em",
-              }}
-            >
-              Finish
-            </Button>
+            {calendarDate && reason && group && (
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => {
+                  handleFinish();
+                }}
+                sx={{
+                  marginTop: "2em",
+                }}
+              >
+                Finish
+              </Button>
+            )}
           </Box>
         )}
       </SubPage>
