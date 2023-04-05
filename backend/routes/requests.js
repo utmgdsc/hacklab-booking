@@ -13,10 +13,11 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
     let approver = await Account.findOne({ utorid: "mliut" });
 
     let requester = await Account.findOne({ utorid: req.body["owner"] });
+    let group = await Group.findOne({ _id: req.body["group"] });
 
     let request = new Request({
       status: "pending",
-      group: req.body.group,
+      group: group,
       owner: requester,
       approver: approver,
       tcardapprover: tcardapprover,
@@ -28,13 +29,13 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
     });
     await request.save();
 
-    req.body.group.update({ $push: { requests: request } });
-    requester.update({ $push: { activeRequests: request } });
-    hacklab.update({ $push: { requests: request } });
+    await group.update({ $push: { requests: request } });
+    await requester.update({ $push: { activeRequests: request } });
+    await hacklab.update({ $push: { requests: request } });
 
     // add request to approver and tcardapprover's pendingRequests
-    tcardapprover.update({ $push: { pendingRequests: request } });
-    approver.update({ $push: { pendingRequests: request } });
+    await tcardapprover.update({ $push: { pendingRequests: request } });
+    await approver.update({ $push: { pendingRequests: request } });
 
     res.send(request);
   }
