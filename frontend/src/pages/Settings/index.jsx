@@ -33,6 +33,10 @@ import { useContext } from "react";
 export const Settings = () => {
     const userInfo = useContext(UserContext);
 
+    React.useEffect(() => {
+        document.title = 'Hacklab Booking - Settings';
+    }, []);
+
     return (
         <SubPage name="Settings">
             <Card>

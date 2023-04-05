@@ -24,6 +24,10 @@ import { UserContext } from "../../contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 
 export const GroupDirectory = () => {
+    useEffect(() => {
+        document.title = 'Hacklab Booking - My Groups';
+    }, []);
+
     const userInfo = useContext(UserContext);
 
     const [open, setOpen] = React.useState(false);

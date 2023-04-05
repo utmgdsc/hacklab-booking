@@ -45,6 +45,10 @@ export const Dashboard = () => {
       });
   }, []);*/
 
+  useEffect(() => {
+    document.title = 'Hacklab Booking - Dashboard';
+  }, []);
+
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <Box
@@ -71,8 +75,8 @@ export const Dashboard = () => {
               {userInfo["role"] === "admin"
                 ? "Administrator"
                 : userInfo["role"] === "prof"
-                ? "Professor"
-                : null}
+                  ? "Professor"
+                  : null}
             </Typography>
             <Typography variant="h2">
               <strong>{userInfo["name"]}</strong>
@@ -192,12 +196,12 @@ export const Dashboard = () => {
           </Typography>
           {(!userInfo["activeRequests"] ||
             userInfo["activeRequests"].length === 0) && (
-            <NoRequestsPlaceholder
-              text={
-                "You have no active requests. Create one using the 'Book' button above."
-              }
-            />
-          )}
+              <NoRequestsPlaceholder
+                text={
+                  "You have no active requests. Create one using the 'Book' button above."
+                }
+              />
+            )}
           {userInfo['activeRequests'] &&
             userInfo['activeRequests'].map((request) => {
               return (

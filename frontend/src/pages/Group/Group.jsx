@@ -61,6 +61,10 @@ export const Group = () => {
   const [inviteUtorid, setInviteUtorid] = React.useState('');
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    document.title = 'Hacklab Booking - ' + group.name;
+  }, []);
+
   const getGroups = () => {
     fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
       method: 'GET',
