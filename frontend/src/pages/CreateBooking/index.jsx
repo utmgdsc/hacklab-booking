@@ -1,4 +1,4 @@
-import { React, useState, useContext, useEffect } from "react";
+import { React, useState, useContext } from "react";
 import { Button, TextField, Box, Container, Typography } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
@@ -11,6 +11,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import SchoolIcon from "@mui/icons-material/School";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { UserContext } from "../../contexts/UserContext";
+import dayjs from 'dayjs';
 
 /**
  * given any date, return the date of the Monday of that week
@@ -19,7 +20,7 @@ import { UserContext } from "../../contexts/UserContext";
 const getMonday = (d) => {
   d = new Date(d);
   var day = d.getDay(),
-    diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
   return new Date(d.setDate(diff));
 };
 
@@ -57,7 +58,7 @@ export const CreateBooking = () => {
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
-  const [calendarDate, setDate] = useState(null);
+  const [calendarDate, setDate] = useState(dayjs(new Date()));
   const [calendarDateError, setCalendarDateError] = useState(false);
   const [scheduleDates, setScheduleDates] = useState([]);
   const [scheduleError, setScheduleError] = useState(false);
@@ -232,7 +233,7 @@ export const CreateBooking = () => {
                   fontSize: "5em",
                 }}
               />
-              For a club event
+              For a club
             </Button>
             <Button
               size="large"
@@ -252,7 +253,7 @@ export const CreateBooking = () => {
                   fontSize: "5em",
                 }}
               />
-              Academic Related
+              For a class
             </Button>
           </Box>
 
@@ -262,6 +263,7 @@ export const CreateBooking = () => {
             onChange={(e) => {
               handleDetails(e);
               setDetailError(false);
+              setShowSchedule(true);
             }}
             value={details}
             error={detailError}
@@ -275,39 +277,34 @@ export const CreateBooking = () => {
             id="explanation-field"
           />
 
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              flexWrap: "nowrap",
-              marginBottom: "3em",
-              gap: "1em",
-            }}
-          >
-            <Typography component="p" variant="h5" color="error">
-              {calendarDateError ? "*" : ""}
-            </Typography>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select a day"
-                value={calendarDate}
-                onChange={(newDate) => {
-                  setDate(newDate);
-                  setCalendarDateError(false);
-                  setShowSchedule(true);
+          {showSchedule &&
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  flexWrap: "nowrap",
+                  marginBottom: "3em",
+                  gap: "1em",
                 }}
-              />
-            </LocalizationProvider>
-          </Box>
+              >
+                <Typography component="p" variant="h5" color="error">
+                  {calendarDateError ? "*" : ""}
+                </Typography>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Select a day"
+                    value={calendarDate}
+                    onChange={(newDate) => {
+                      setDate(newDate);
+                      setCalendarDateError(false);
+                    }}
+                  />
+                </LocalizationProvider>
+              </Box>
 
-          {showSchedule && (
-            <Container
-              sx={{
-                marginBottom: "3em",
-              }}
-            >
               <ScheduleSelector
                 selection={scheduleDates}
                 numDays={5}
@@ -316,6 +313,27 @@ export const CreateBooking = () => {
                 hourlyChunks={1}
                 startDate={getMonday(calendarDate)}
                 onChange={handleScheduleDate}
+                selectionScheme="linear"
+                renderDateLabel={(date) => {
+                  return (
+                    <Box sx={{
+                      textAlign: "center",
+                      marginBottom: "0.5em",
+                    }}>
+                      {date.toLocaleDateString("en-US", {
+                        weekday: "short",
+                      })}
+                      <Typography component="p" variant="h5">
+                        {
+                          date.toLocaleDateString("en-US", {
+                            day: "numeric",
+                            month: "long",
+                          })
+                        }
+                      </Typography>
+                    </Box>
+                  );
+                }}
               />
               {dateError && (
                 <Typography
@@ -335,14 +353,17 @@ export const CreateBooking = () => {
                   * please select a time
                 </Typography>
               )}
-            </Container>
-          )}
+            </>
+          }
 
           <Button
             variant="contained"
             size="large"
             onClick={() => {
               handleFinish();
+            }}
+            sx={{
+              marginTop: "2em",
             }}
           >
             Finish
