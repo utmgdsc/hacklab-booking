@@ -80,16 +80,16 @@ export const Dashboard = () => {
             <Typography variant="h2">
               <strong>{userInfo["name"]}</strong>
             </Typography>
-            {userInfo["active_requests"] &&
-              userInfo["active_requests"].length > 0 && (
+            {active_requests && userInfo["role"] === "student" &&
+              active_requests.length > 0 && (
                 <Typography component="p" variant="h5">
-                  You have {userInfo["active_requests"].length} active requests
+                  You have {active_requests.length} active requests
                 </Typography>
               )}
-            {userInfo["pending_requests"] &&
-              userInfo["pending_requests"].length > 0 && (
+            {pending_requests && (userInfo["role"] === "admin" || userInfo["role"] === "prof") &&
+              pending_requests.length > 0 && (
                 <Typography component="p" variant="h5">
-                  You have {userInfo["pending_requests"].length} pending
+                  You have {pending_requests.length} pending
                   requests
                 </Typography>
               )}
@@ -178,7 +178,7 @@ export const Dashboard = () => {
         )}
       </Box>
 
-      {((active_requests && active_requests.length > 0) || userInfo["role"] === "student") && (
+      {((active_requests && active_requests.length > 0) && userInfo["role"] === "student") && (
         <>
           <Typography variant="h2" gutterBottom>
             Your Active Requests
@@ -207,8 +207,8 @@ export const Dashboard = () => {
         </>
       )}
 
-      {((pending_requests && pending_requests.length > 0) ||
-        userInfo["role"] === "prof" ||
+      {(pending_requests && pending_requests.length > 0) &&
+        (userInfo["role"] === "prof" ||
         userInfo["role"] === "admin") && (
           <>
             <Typography variant="h2" gutterBottom>
