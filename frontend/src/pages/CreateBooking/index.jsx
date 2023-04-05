@@ -1,18 +1,27 @@
-import { React, useState, useContext, useEffect } from "react";
-import { Link } from "../../components";
-import { Button, TextField, Box, Container, Typography } from "@mui/material";
-import { SubPage } from "../../layouts/SubPage";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import ScheduleSelector from "react-schedule-selector";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import GroupsIcon from "@mui/icons-material/Groups";
 import SchoolIcon from "@mui/icons-material/School";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { UserContext } from "../../contexts/UserContext";
+import {
+  Box,
+  Button,
+  Container,
+  MenuItem,
+  TextField,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@mui/material";
+import Menu from "@mui/material/Menu";
+import { LocalizationProvider } from "@mui/x-date-pickers-pro";
+import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { React, useContext, useEffect, useState } from "react";
+import ScheduleSelector from "react-schedule-selector";
+import { Link } from "../../components";
+import { UserContext } from "../../contexts/UserContext";
+import { SubPage } from "../../layouts/SubPage";
 
 /**
  * given any date, return the date of the Monday of that week
@@ -25,24 +34,14 @@ const getMonday = (d) => {
   return new Date(d.setDate(diff));
 };
 
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const getDateString = (scheduleDate) => {
   var d = new Date(scheduleDate);
-  return `${monthNames[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  return d.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 };
 
 const getTimeString = (scheduleDates) => {
@@ -68,9 +67,9 @@ export const CreateBooking = () => {
   }, []);
 
   // use for testing purposes
-  /*useEffect(() => {
+  useEffect(() => {
     setUserGroups([{name: "GDSC"}, {name: "MDSC"}]);
-  }, []);*/
+  }, []);
 
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
@@ -292,51 +291,28 @@ export const CreateBooking = () => {
                   marginBottom: "2em",
                 }}
               >
-                <Button
-                  id="group-button"
-                  variant="contained"
-                  sx={{
-                    marginBottom: "1em",
-                  }}
-                  aria-controls={open ? "group-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                  onClick={(e) => setAnchorEl(e.currentTarget)}
-                >
-                  Select a group
-                </Button>
-                <Menu
-                  id="group-menu"
-                  aria-labelledby="group-button"
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={(e) => setAnchorEl(null)}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                >
-                  {userGroups.map((group) => {
-                    return (
-                      <MenuItem
-                        onClick={(e) => {
-                          setGroup(group);
-                        }}
-                      >
-                        {group.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Menu>
-                {group && (
-                  <Typography component="p">
-                    Selected group: {group.name}
-                  </Typography>
-                )}
+                <FormControl fullWidth>
+                  <InputLabel id="group-label">Group</InputLabel>
+                  <Select
+                    labelId="group-label"
+                    id="group-select"
+                    value={group}
+                    label="Group"
+                    sx={{
+                      marginBottom: "1em",
+                      minWidth: "20em",
+                    }}
+                    onChange={(e) => {
+                      setGroup(e.target.value);
+                    }}
+                  >
+                    {userGroups.map((group) => {
+                      return (
+                        <MenuItem value={group}>{group.name}</MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
               </Box>
             )}
             <TextField
