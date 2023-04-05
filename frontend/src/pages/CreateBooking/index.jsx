@@ -90,7 +90,7 @@ export const CreateBooking = () => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [group, setGroup] = useState(null);
+  const [group, setGroup] = useState("");
   const open = Boolean(anchorEl);
 
   const handleFinish = () => {
@@ -133,7 +133,7 @@ export const CreateBooking = () => {
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1],
+      endTime: scheduleDates[scheduleDates.length - 1]
     };
 
     console.log(booking);
@@ -319,7 +319,7 @@ export const CreateBooking = () => {
                   >
                     {userGroups.map((group) => {
                       return (
-                        <MenuItem value={group}>{group.name}</MenuItem>
+                        <MenuItem value={group} key={group}>{group.name}</MenuItem>
                       );
                     })}
                   </Select>
@@ -436,6 +436,7 @@ export const CreateBooking = () => {
                         onChange={(newDate) => {
                           setDate(newDate);
                           setCalendarDateError(false);
+                          setScheduleDates([]);
                         }}
                       />
                     </LocalizationProvider>

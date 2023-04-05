@@ -33,7 +33,10 @@ const data = {
  * @param {string} description the description of the request
  * @param {string} location the location of the request
  */
-export const ActiveRequestCard = ({ title, date, location, teamName, status }) => {
+// TODO  HARDCODES TO HACKLAB!!!!
+// HACK  HARDCODES TO HACKLAB!!!!
+// FIXME  HARDCODES TO HACKLAB!!!!
+export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)", teamName, status }) => {
     const convertStatus = () => {
         switch (status) {
             case "pending":

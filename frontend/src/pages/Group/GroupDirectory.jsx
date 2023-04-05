@@ -71,6 +71,7 @@ export const GroupDirectory = () => {
             })
             .then(data => {
                 setMyGroups(data);
+                console.log(data);
             });
     }, []);
 
@@ -116,6 +117,7 @@ export const GroupDirectory = () => {
                         }}
                     >
                         <Button onClick={handleClose}>Cancel</Button>
+                        {/* todo pressing enter should press this */}
                         <Button onClick={() => { handleClose(); sendAddGroup(); }} variant="contained">Add</Button>
                     </DialogActions>
                 </Dialog>

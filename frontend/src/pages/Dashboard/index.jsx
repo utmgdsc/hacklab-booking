@@ -179,20 +179,10 @@ export const Dashboard = () => {
         )}
       </Box>
 
-      {(userInfo["activeRequests"] || userInfo["role"] === "student") && (
+      {((userInfo["activeRequests"] && userInfo["activeRequests"].length > 0) || userInfo["role"] === "student") && (
         <>
           <Typography variant="h2" gutterBottom>
-            Your{" "}
-            <acronym title="Booking requests that you have submitted">
-              Active Requests
-            </acronym>
-          </Typography>
-          <Typography variant="gray" component="em" gutterBottom>
-            Your group(s) may also have active requests. Those may also be{" "}
-            <Link isInternalLink href="/track">
-              tracked
-            </Link>
-            .
+            Your Active Requests
           </Typography>
           {(!userInfo["activeRequests"] ||
             userInfo["activeRequests"].length === 0) && (
@@ -219,7 +209,7 @@ export const Dashboard = () => {
         </>
       )}
 
-      {(userInfo['pendingRequests'] ||
+      {((userInfo['pendingRequests'] && userInfo['pendingRequests'].length > 0) ||
         userInfo["role"] === "prof" ||
         userInfo["role"] === "admin") && (
         <>

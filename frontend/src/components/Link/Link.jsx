@@ -24,12 +24,13 @@ const NonForwardLink = ({ children, href, external, forwardedRef, isInternalLink
     return (
         // !!
         <MaterialLink
-            component={isInternalLink ? RouterLink : undefined}
-            href={isInternalLink ? undefined : href}
+            // component={isInternalLink ? RouterLink : undefined}
+            // href={isInternalLink ? undefined : href}
+            href={href}
             ref={forwardedRef}
             rel={external ? "noopener noreferrer" : ""}
             target={external ? "_blank" : ""}
-            to={isInternalLink ? href : undefined}
+            // to={isInternalLink ? href : undefined}
             {...props}>
             {children}
             {external && !noIcon &&
