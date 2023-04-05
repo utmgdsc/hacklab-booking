@@ -31,6 +31,10 @@ import { UserContext } from "../../contexts/UserContext";
 export const Dashboard = () => {
   const userInfo = useContext(UserContext);
 
+  useEffect(() => {
+    document.title = 'Hacklab Booking - Dashboard';
+  }, []);
+
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <Box
@@ -57,8 +61,8 @@ export const Dashboard = () => {
               {userInfo["role"] === "admin"
                 ? "Administrator"
                 : userInfo["role"] === "prof"
-                ? "Professor"
-                : null}
+                  ? "Professor"
+                  : null}
             </Typography>
             <Typography variant="h2">
               <strong>{userInfo["name"]}</strong>
@@ -178,12 +182,12 @@ export const Dashboard = () => {
           </Typography>
           {(!userInfo["active_requests"] ||
             userInfo["active_requests"].length === 0) && (
-            <NoRequestsPlaceholder
-              text={
-                "You have no active requests. Create one using the 'Book' button above."
-              }
-            />
-          )}
+              <NoRequestsPlaceholder
+                text={
+                  "You have no active requests. Create one using the 'Book' button above."
+                }
+              />
+            )}
           {userInfo["active_requests"]?.length > 0 &&
             userInfo["active_requests"].map((request) => {
               return (
@@ -203,37 +207,37 @@ export const Dashboard = () => {
       {(userInfo["pending_requests"] ||
         userInfo["role"] === "prof" ||
         userInfo["role"] === "admin") && (
-        <>
-          <Typography variant="h2" gutterBottom>
-            Your{" "}
-            <acronym title="Booking requests that demand your attention">
-              Pending Requests
-            </acronym>
-          </Typography>
-          {userInfo["pending_requests"] &&
-            userInfo["pending_requests"].length === 0 && (
-              <NoRequestsPlaceholder
-                text={"No requests demand your attention. Horray!"}
-              />
-            )}
-          {userInfo["pending_requests"] &&
-            userInfo["pending_requests"].length > 0 &&
-            userInfo["pending_requests"].map((request) => {
-              return (
-                <PendingRequestCard
-                  key={request["title"]}
-                  title={request["title"]}
-                  description={request["description"]}
-                  date={request["date"]}
-                  name={request["name"]}
-                  utorid={request["utorid"]}
-                  location={request["location"]}
-                  teamName={request["teamName"]}
+          <>
+            <Typography variant="h2" gutterBottom>
+              Your{" "}
+              <acronym title="Booking requests that demand your attention">
+                Pending Requests
+              </acronym>
+            </Typography>
+            {userInfo["pending_requests"] &&
+              userInfo["pending_requests"].length === 0 && (
+                <NoRequestsPlaceholder
+                  text={"No requests demand your attention. Horray!"}
                 />
-              );
-            })}
-        </>
-      )}
+              )}
+            {userInfo["pending_requests"] &&
+              userInfo["pending_requests"].length > 0 &&
+              userInfo["pending_requests"].map((request) => {
+                return (
+                  <PendingRequestCard
+                    key={request["title"]}
+                    title={request["title"]}
+                    description={request["description"]}
+                    date={request["date"]}
+                    name={request["name"]}
+                    utorid={request["utorid"]}
+                    location={request["location"]}
+                    teamName={request["teamName"]}
+                  />
+                );
+              })}
+          </>
+        )}
     </Container>
   );
 };

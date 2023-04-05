@@ -55,6 +55,10 @@ export const Group = () => {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+    React.useEffect(() => {
+        document.title = 'Hacklab Booking - ' + group.name;
+    }, []);
+
     // hack demo code
     const addMegurineLuka = () => {
         people.push({
