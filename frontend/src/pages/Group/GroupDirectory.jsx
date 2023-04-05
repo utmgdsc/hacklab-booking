@@ -124,10 +124,11 @@ export const GroupDirectory = () => {
             </Box>
             {
                 Object.keys(myGroups).map((key) => {
+                    console.log(myGroups[key]);
                     return (
                         <GroupCard
                             key={myGroups[key]}
-                            id={myGroups[key]["_id"]}
+                            id={myGroups[key]}
                         ></GroupCard>
                     )
                 })

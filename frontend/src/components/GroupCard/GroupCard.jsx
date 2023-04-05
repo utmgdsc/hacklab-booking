@@ -16,14 +16,13 @@ import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
 
 /**
- * @param {string} id - The id of the group
+ * @param {string} groupObj - group object
  */
-export const GroupCard = (id, ...props) => {
-    const userInfo = useContext(UserContext);
+export const GroupCard = (groupObj, ...props) => {
     const [group, setGroup] = useState({});
 
     useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + id, {
+        fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupObj["id"]["_id"], {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -38,14 +37,15 @@ export const GroupCard = (id, ...props) => {
             .catch(err => {
                 console.log(err);
             });
-        }, [id]);
+    }, [groupObj]);
+
     return (
-        <Card sx={{ mt: 2, mb: 2 }}>
+        <Card sx={{ mt: 2, mb: 2 }} {...props}>
             <CardContent>
                 <Typography variant="h3" gutterBottom>{group["name"]}</Typography>
                 <Typography variant="gray">Members:</Typography>
                 <Stack direction="row" spacing={1}>
-                    {/* {
+                    {
                         group["people"].map((member) => {
                             return (
                                 <Tooltip
@@ -66,7 +66,7 @@ export const GroupCard = (id, ...props) => {
                             )
                         })
                     }
-                </Stack> */}
+                </Stack>
             </CardContent>
             <CardActions>
                 <Button href={"/group/" + group["_id"]}>View</Button>
