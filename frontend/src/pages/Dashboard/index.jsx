@@ -198,9 +198,12 @@ export const Dashboard = () => {
                   title={request["title"]}
                   description={request["description"]}
                   date={request["start_date"]}
-                  location={request["room"]["name"]}
+                  location={request["room"]["friendlyName"]}
                   teamName={request["group"]["name"]}
                   status={request["status"]}
+                  owner={request["owner"]["name"]}
+                  ownerHasTCard={request["owner"]["accessGranted"]}
+                  approver={request["approver"]["name"]}
                 />
               );
             })}

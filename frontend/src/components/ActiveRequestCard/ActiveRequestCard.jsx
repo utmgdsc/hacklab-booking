@@ -13,16 +13,6 @@ import { ConvertDate } from ".."
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 
-const data = {
-    title: "Machine Learning Workshop",
-    date: new Date(),
-    location: "DH 2014 (Hacklab)",
-    status: 0,
-    hasTCardAccess: true,
-    approver: "hatsunem",
-    t_card_gatekeeper: "kagaminr"
-}
-
 /**
  * A card that displays a active request
  * TODO: fetch data from backend via GUID instead of passing in props
@@ -36,7 +26,7 @@ const data = {
 // TODO  HARDCODES TO HACKLAB!!!!
 // HACK  HARDCODES TO HACKLAB!!!!
 // FIXME  HARDCODES TO HACKLAB!!!!
-export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)", teamName, status }) => {
+export const ActiveRequestCard = ({ title, date, location, teamName, status, approver, ownerHasTCard, owner }) => {
     const convertStatus = (status) => {
         switch (status) {
             case "pending":
@@ -59,7 +49,7 @@ export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)",
                     { title }
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    <ConvertDate date={ date }/> • { location } • { teamName }
+                    <ConvertDate date={ date }/> • { location } • { teamName } • { owner }
                 </Typography>
 
                 <Stepper activeStep={ convertStatus(status) } orientation="vertical">
@@ -67,7 +57,7 @@ export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)",
                         <StepLabel>Request Sent</StepLabel>
                         <StepContent>
                             <Typography>
-                                Your request has been sent to { data.approver } for approval.
+                                Your request has been sent to { approver } for approval.
                             </Typography>
                         </StepContent>
                     </Step>
@@ -75,17 +65,17 @@ export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)",
                         <StepLabel>Request Approved</StepLabel>
                         <StepContent>
                             <Typography>
-                                { data.approver } has approved your request.
+                                { approver } has approved your request.
                             </Typography>
                         </StepContent>
                     </Step>
                     {
-                        data.hasTCardAccess ? null : (
+                        ownerHasTCard ? null : (
                             <Step>
                                 <StepLabel>Request Submitted for T-Card approval</StepLabel>
                                 <StepContent>
                                     <Typography>
-                                        Your request has been submitted to { data.t_card_gatekeeper } for approval.
+                                        Your request has been submitted for T-Card access.
                                     </Typography>
                                 </StepContent>
                             </Step>
