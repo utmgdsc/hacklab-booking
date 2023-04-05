@@ -87,6 +87,10 @@ export const Admin = () => {
 
     // useEffect hook for changing the rows to display based on the filter
     useEffect(() => {
+        document.title = 'Hacklab Booking - Admin';
+      }, []);
+
+    useEffect(() => {
         if (rows) {
             if (filterPending) {
                 setRowsToDisplay(rows.filter(row => row['accessGranted'] === false));

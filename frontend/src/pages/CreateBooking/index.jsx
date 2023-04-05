@@ -56,6 +56,8 @@ export const CreateBooking = () => {
   const [userGroups, setUserGroups] = useState([]);
 
   useEffect(() => {
+    document.title = 'Hacklab Booking - Create Booking';
+
     fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
       .then((res) => {
         return res.json();
@@ -120,7 +122,7 @@ export const CreateBooking = () => {
 
     // compile into json object
     const booking = {
-      owner: userInfo,
+      owner: userInfo['utorid'],
       group: group,
       reason: reason,
       details: details,
