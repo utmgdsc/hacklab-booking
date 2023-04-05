@@ -62,6 +62,7 @@ export const Settings = () => {
                             <Typography title="Your Name"><strong>{userInfo["name"]}</strong></Typography>
                             <Typography variant="gray" title="Your Email">{userInfo["email"]}</Typography><br></br>
                             <Typography variant="gray" title="Your UTORid">{userInfo["utorid"]}</Typography>
+                            <Typography variant="gray" title="Your Email">{userInfo["accessGranted"] && <><br></br>Hacklab Keycard Haver</>}</Typography>
                         </Box>
                     </Box>
                 </CardContent>
