@@ -125,6 +125,23 @@ router.get('/myGroups', roleVerify(['student', 'prof', 'admin']), async (req, re
 
 router.get('/search/byID/:id', roleVerify(['admin']), async (req, res) => {
   let group = await Group.findOne({ _id: req.params.id });
+  let acc = await Account.findOne({ utorid: req.headers['utorid'] });
+  console.log(group.members)
+  console.log(acc)
+  let peoples = []
+  for (let i = 0; i < group.members.length; i++) {
+    let p = await Account.findOne({ _id: group.members[i] });
+    if (group.managers.includes(p["_id"])) {
+      peoples.push({name: p.name, utorid: p.utorid, email: p.email, admin: true});
+    } else {
+      peoples.push({name: p.name, utorid: p.utorid, email: p.email, admin: false});
+    }
+  }
+  console.log(peoples);
+
+  group = group.toJSON();
+  group["people"] = peoples;
+  console.log(group)
   res.send(group);
 });
 
