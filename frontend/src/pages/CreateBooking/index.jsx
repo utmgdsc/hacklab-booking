@@ -121,13 +121,15 @@ export const CreateBooking = () => {
     // compile into json object
     const booking = {
       owner: userInfo['utorid'],
-      group: group,
+      group: group["_id"],
       reason: reason,
       details: details,
       title: details,
       startTime: scheduleDates[0],
       endTime: scheduleDates[scheduleDates.length - 1],
     };
+
+    console.log(group);
 
     // submit to API
     fetch(process.env.REACT_APP_API_URL + "/requests/submit", {
