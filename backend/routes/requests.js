@@ -27,7 +27,7 @@ router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, 
 });
 
 router.get("/allRequests", roleVerify(["admin"]), async (req, res) => {
-  let requests = await Request.find({});
+  let requests = await Request.find({status: "pending"});
   res.send(requests);
 });
 

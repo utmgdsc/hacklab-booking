@@ -34,7 +34,7 @@ export const Dashboard = () => {
   const [active_requests, setActiveRequests] = useState([]);
 
   useEffect(() => {
-    document.title = 'Hacklab Booking - Dashboard';
+    document.title = "Hacklab Booking - Dashboard";
 
     fetch(process.env.REACT_APP_API_URL + "/requests/myRequests")
       .then((res) => {
@@ -44,8 +44,22 @@ export const Dashboard = () => {
         console.log("data");
         console.log(data);
         setActiveRequests(data);
-        setPendingRequests(data.filter((request) => request.status === "pending"));
+        //setPendingRequests(
+          //data.filter((request) => request.status === "pending"));
       });
+  }, []);
+
+  useEffect(() => {
+    //if (userInfo["role"] === "admin") { // TODO: change this so only admins load all requests
+      fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data, 'all requests');
+          setPendingRequests(data);
+        });
+    //}
   }, []);
 
   return (
@@ -74,23 +88,24 @@ export const Dashboard = () => {
               {userInfo["role"] === "admin"
                 ? "Administrator"
                 : userInfo["role"] === "prof"
-                  ? "Professor"
-                  : null}
+                ? "Professor"
+                : null}
             </Typography>
             <Typography variant="h2">
               <strong>{userInfo["name"]}</strong>
             </Typography>
-            {active_requests && userInfo["role"] === "student" &&
+            {active_requests &&
+              userInfo["role"] === "student" &&
               active_requests.length > 0 && (
                 <Typography component="p" variant="h5">
                   You have {active_requests.length} active requests
                 </Typography>
               )}
-            {pending_requests && (userInfo["role"] === "admin" || userInfo["role"] === "prof") &&
+            {pending_requests &&
+              (userInfo["role"] === "admin" || userInfo["role"] === "prof") &&
               pending_requests.length > 0 && (
                 <Typography component="p" variant="h5">
-                  You have {pending_requests.length} pending
-                  requests
+                  You have {pending_requests.length} pending requests
                 </Typography>
               )}
           </>
@@ -178,44 +193,42 @@ export const Dashboard = () => {
         )}
       </Box>
 
-      {(
-        //(active_requests && active_requests.length > 0) && 
-        userInfo["role"] === "student") && (
+      {//(active_requests && active_requests.length > 0) &&
+      userInfo["role"] === "student" && (
         <>
           <Typography variant="h2" gutterBottom>
             Your Active Requests
           </Typography>
-          {(active_requests.length === 0) && (
-              <NoRequestsPlaceholder
-                text={
-                  "You have no active requests. Create one using the 'Book' button above."
-                }
-              />
-            )}
+          {active_requests.length === 0 && (
+            <NoRequestsPlaceholder
+              text={
+                "You have no active requests. Create one using the 'Book' button above."
+              }
+            />
+          )}
           {active_requests.map((request) => {
-              console.log(request);
-              return (
-                <ActiveRequestCard
-                  key={request["_id"]}
-                  title={request["title"]}
-                  description={request["description"]}
-                  date={request["start_date"]}
-                  location={request["room"]["friendlyName"]}
-                  teamName={request["group"]["name"]}
-                  status={request["status"]}
-                  owner={request["owner"]["name"]}
-                  ownerHasTCard={request["owner"]["accessGranted"]}
-                  approver={request["approver"]["name"]}
-                />
-              );
-            })}
+            console.log(request);
+            return (
+              <ActiveRequestCard
+                key={request["_id"]}
+                title={request["title"]}
+                description={request["description"]}
+                date={request["start_date"]}
+                location={request["room"]["friendlyName"]}
+                teamName={request["group"]["name"]}
+                status={request["status"]}
+                owner={request["owner"]["name"]}
+                ownerHasTCard={request["owner"]["accessGranted"]}
+                approver={request["approver"]["name"]}
+              />
+            );
+          })}
         </>
       )}
 
       {
-      //(pending_requests && pending_requests.length > 0) &&
-        (userInfo["role"] === "prof" ||
-        userInfo["role"] === "admin") && (
+        //(pending_requests && pending_requests.length > 0) &&
+        (userInfo["role"] === "prof" || userInfo["role"] === "admin") && (
           <>
             <Typography variant="h2" gutterBottom>
               Your{" "}
@@ -223,12 +236,11 @@ export const Dashboard = () => {
                 Pending Requests
               </acronym>
             </Typography>
-            {pending_requests &&
-              pending_requests.length === 0 && (
-                <NoRequestsPlaceholder
-                  text={"No requests demand your attention. Horray!"}
-                />
-              )}
+            {pending_requests && pending_requests.length === 0 && (
+              <NoRequestsPlaceholder
+                text={"No requests demand your attention. Horray!"}
+              />
+            )}
             {pending_requests &&
               pending_requests.length > 0 &&
               pending_requests.map((request) => {
@@ -248,7 +260,8 @@ export const Dashboard = () => {
                 );
               })}
           </>
-        )}
+        )
+      }
     </Container>
   );
 };
