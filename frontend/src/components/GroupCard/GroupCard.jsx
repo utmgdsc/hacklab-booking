@@ -39,6 +39,8 @@ export const GroupCard = (groupObj, ...props) => {
             });
     }, [groupObj]);
 
+    console.log(group);
+
     return (
         <Card sx={{ mt: 2, mb: 2 }} {...props}>
             <CardContent>
@@ -46,7 +48,7 @@ export const GroupCard = (groupObj, ...props) => {
                 <Typography variant="gray">Members:</Typography>
                 <Stack direction="row" spacing={1}>
                     {
-                        group["people"].map((member) => {
+                        group["people"] && group["people"].map((member) => {
                             return (
                                 <Tooltip
                                     key={member.utorid}
