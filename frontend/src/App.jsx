@@ -17,7 +17,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import { UserContext } from "./contexts/UserContext";
-
+import { ErrorBoundary } from "./components";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
 import { GoogleTheme } from "./theme/theme";
@@ -66,18 +66,20 @@ function App() {
   return (
     <UserContext.Provider value={userInfo}>
       <ThemeProvider theme={GoogleTheme}>
-        <CssBaseline enableColorScheme />
-        <Router>
-          <Routes>
-            <Route exact path="/" element={<Dashboard />} />
-            <Route exact path="/settings" element={<Settings />} />
-            <Route exact path="/calendar/" element={<Calendar />} />
-            <Route exact path="/book/" element={<CreateBooking />} />
-            <Route exact path="/group/" element={<GroupDirectory />} />
-            <Route exact path="/group/:id" element={<Group />} />
-            <Route exact path="/admin" element={<Admin />} />
-          </Routes>
-        </Router>
+        <ErrorBoundary>
+          <CssBaseline enableColorScheme />
+          <Router>
+            <Routes>
+              <Route exact path="/" element={<Dashboard />} />
+              <Route exact path="/settings" element={<Settings />} />
+              <Route exact path="/calendar/" element={<Calendar />} />
+              <Route exact path="/book/" element={<CreateBooking />} />
+              <Route exact path="/group/" element={<GroupDirectory />} />
+              <Route exact path="/group/:id" element={<Group />} />
+              <Route exact path="/admin" element={<Admin />} />
+            </Routes>
+          </Router>
+        </ErrorBoundary>
       </ThemeProvider>
     </UserContext.Provider>
   );

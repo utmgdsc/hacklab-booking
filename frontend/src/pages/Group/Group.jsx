@@ -225,7 +225,7 @@ export const Group = () => {
                 <InitialsAvatar name={person.name} />
               </Box>
               <Box>
-                <Typography variant="h5">{person.name}</Typography>
+                <Typography variant="h5">{person.name} <Typography sx={{color: "grey", display: "inline"}}>({person.utorid})</Typography></Typography>
                 {person.admin ? <Typography color="success">Group manager</Typography> : null}
                 <Typography variant="body1">{person.email}</Typography>
               </Box>
