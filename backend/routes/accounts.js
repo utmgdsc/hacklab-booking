@@ -37,6 +37,18 @@ router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
     account.accessGranted = req.body.accessGranted;
     account.save();
     res.send(account);
+
+    // for all requests in which this account is an owner, if the current status is "approval," then change it to "complete"
+    let requests = await Request.find({owner: account._id});
+
+    if (account.accessGranted) {
+      for (let i = 0; i < requests.length; i++) {
+          if (requests[i].status === "approval") {
+              requests[i].status = "completed";
+              await requests[i].save();
+          }
+      }
+    }
 });
 
 module.exports = router;
