@@ -12,6 +12,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import SchoolIcon from "@mui/icons-material/School";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { UserContext } from "../../contexts/UserContext";
+import dayjs from 'dayjs';
 
 /**
  * given any date, return the date of the Monday of that week
@@ -74,7 +75,7 @@ export const CreateBooking = () => {
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
-  const [calendarDate, setDate] = useState(null);
+  const [calendarDate, setDate] = useState(dayjs(new Date()));
   const [calendarDateError, setCalendarDateError] = useState(false);
   const [scheduleDates, setScheduleDates] = useState([]);
   const [scheduleError, setScheduleError] = useState(false);
@@ -238,7 +239,7 @@ export const CreateBooking = () => {
             >
               <Button
                 size="large"
-                variant="contained"
+                variant={reason === "club" ? "contained" : "outlined"}
                 color={reason === "club" ? "success" : "primary"}
                 onClick={() => {
                   setReason("club");
@@ -254,12 +255,12 @@ export const CreateBooking = () => {
                     fontSize: "5em",
                   }}
                 />
-                For a club event
+                For a club or organization
               </Button>
               <Button
                 size="large"
                 color={reason === "academic" ? "success" : "primary"}
-                variant="contained"
+                variant={reason === "academic" ? "contained" : "outlined"}
                 onClick={() => {
                   setReason("academic");
                   setReasonError(false);
@@ -274,7 +275,7 @@ export const CreateBooking = () => {
                     fontSize: "5em",
                   }}
                 />
-                Academic Related
+                For a class or academic purpose
               </Button>
             </Box>
 
@@ -342,6 +343,7 @@ export const CreateBooking = () => {
               onChange={(e) => {
                 handleDetails(e);
                 setDetailError(false);
+                setShowSchedule(true);
               }}
               value={details}
               error={detailError}
@@ -355,39 +357,34 @@ export const CreateBooking = () => {
               id="explanation-field"
             />
 
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-around",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                marginBottom: "3em",
-                gap: "1em",
-              }}
-            >
-              <Typography component="p" variant="h5" color="error">
-                {calendarDateError ? "*" : ""}
-              </Typography>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Select a day"
-                  value={calendarDate}
-                  onChange={(newDate) => {
-                    setDate(newDate);
-                    setCalendarDateError(false);
-                    setShowSchedule(true);
+            {showSchedule &&
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                    marginBottom: "3em",
+                    gap: "1em",
                   }}
-                />
-              </LocalizationProvider>
-            </Box>
+                >
+                  <Typography component="p" variant="h5" color="error">
+                    {calendarDateError ? "*" : ""}
+                  </Typography>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Select a day"
+                      value={calendarDate}
+                      onChange={(newDate) => {
+                        setDate(newDate);
+                        setCalendarDateError(false);
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Box>
 
-            {showSchedule && (
-              <Container
-                sx={{
-                  marginBottom: "3em",
-                }}
-              >
                 <ScheduleSelector
                   selection={scheduleDates}
                   numDays={5}
@@ -396,6 +393,27 @@ export const CreateBooking = () => {
                   hourlyChunks={1}
                   startDate={getMonday(calendarDate)}
                   onChange={handleScheduleDate}
+                  selectionScheme="linear"
+                  renderDateLabel={(date) => {
+                    return (
+                      <Box sx={{
+                        textAlign: "center",
+                        marginBottom: "0.5em",
+                      }}>
+                        {date.toLocaleDateString("en-US", {
+                          weekday: "short",
+                        })}
+                        <Typography component="p" variant="h5">
+                          {
+                            date.toLocaleDateString("en-US", {
+                              day: "numeric",
+                              month: "long",
+                            })
+                          }
+                        </Typography>
+                      </Box>
+                    );
+                  }}
                 />
                 {dateError && (
                   <Typography
@@ -415,14 +433,17 @@ export const CreateBooking = () => {
                     * please select a time
                   </Typography>
                 )}
-              </Container>
-            )}
+              </>
+            }
 
             <Button
               variant="contained"
               size="large"
               onClick={() => {
                 handleFinish();
+              }}
+              sx={{
+                marginTop: "2em",
               }}
             >
               Finish
@@ -433,13 +454,15 @@ export const CreateBooking = () => {
     );
   } else {
     return (
-      <Typography variant="h4" component="p" sx={{alignItems: "center"}}>
-        Please create a group{" "}
-        <Link isInternalLink href="/group">
-          here
-        </Link>
-        {" "}before making a booking request.
-      </Typography>
+      <SubPage name="Cannot create booking">
+        <Typography variant="h4" component="p" sx={{ alignItems: "center" }}>
+          Please {" "}
+          <Link isInternalLink href="/group">
+            create a group
+          </Link>
+          {" "}before making a booking request.
+        </Typography>
+      </SubPage>
     );
   }
 };
