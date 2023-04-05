@@ -114,12 +114,12 @@ export const Dashboard = () => {
           overflowX: "auto",
         }}
       >
-        <Tooltip title="Track an existing request" arrow placement="top">
-          <Link href="/track" isInternalLink>
+        <Tooltip title="View the Hacklab Calendar" arrow placement="top">
+          <Link href="/calendar" isInternalLink>
             <LabelledIconButton
               icon={<InventoryIcon />}
               color="#f35325"
-              label="Track"
+              label="View Events"
             />
           </Link>
         </Tooltip>

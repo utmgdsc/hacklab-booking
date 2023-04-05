@@ -7,7 +7,7 @@ import "./App.css";
 
 import { Dashboard } from "./pages/Dashboard";
 import { Settings } from "./pages/Settings";
-import { Track } from "./pages/Track";
+import { Calendar } from "./pages/Calendar";
 import { CreateBooking } from "./pages/CreateBooking";
 import { Group } from "./pages/Group/Group";
 import { GroupDirectory } from "./pages/Group/GroupDirectory";
@@ -71,8 +71,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Dashboard />} />
             <Route exact path="/settings" element={<Settings />} />
-            <Route exact path="/track/:id" element={<Track />} />
-            <Route exact path="/track/" element={<Track />} />
+            <Route exact path="/calendar/" element={<Calendar />} />
             <Route exact path="/book/" element={<CreateBooking />} />
             <Route exact path="/group/" element={<GroupDirectory />} />
             <Route exact path="/group/:id" element={<Group />} />
