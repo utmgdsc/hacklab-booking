@@ -189,7 +189,7 @@ export const GroupDirectory = () => {
                                 </Stack>
                             </CardContent>
                             <CardActions>
-                                <Button href={"/group/" + myGroups[key]["name"].replaceAll(" ", "-").toLowerCase()}>View</Button>
+                                <Button href={"/group/" + myGroups[key]["_id"]}>View</Button>
                             </CardActions>
                         </Card>
                     )
