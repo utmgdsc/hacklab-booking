@@ -31,4 +31,12 @@ router.get('/:id', roleVerify(['admin']), async (req, res) => {
 //   res.send(account);
 // });
 
+// change the access prop of an account
+router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
+    let account = await Account.findOne({ utorid: req.params.id });
+    account.accessGranted = req.body.accessGranted;
+    account.save();
+    res.send(account);
+});
+
 module.exports = router;
