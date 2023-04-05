@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Account } = require("../models/accounts");
+const { Request } = require("../models/requests");
 const { roleVerify } = require("../middleware/role_middleware");
 
 router.get("/info", async (req, res) => {
@@ -35,8 +36,7 @@ router.get('/:id', roleVerify(['admin']), async (req, res) => {
 router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
     let account = await Account.findOne({ utorid: req.params.id });
     account.accessGranted = req.body.accessGranted;
-    account.save();
-    res.send(account);
+    await account.save();
 
     // for all requests in which this account is an owner, if the current status is "approval," then change it to "complete"
     let requests = await Request.find({owner: account._id});
@@ -49,6 +49,7 @@ router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
           }
       }
     }
+    res.send(account);
 });
 
 module.exports = router;
