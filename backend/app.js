@@ -90,9 +90,9 @@ app.use(async (req, res, next) => {
   let approver = await Account.findOne({ utorid: "mliut" }); // change to michael liut's actual utorid
   if (approver === null) {
     let approver = new Account({
-      utorid: "mliut",
+      utorid: "liutmich",
       email: "michael.liut@utoronto.ca",
-      name: "Michael Liut",
+      name: "liutmich",
       role: "admin",
       accessGranted: true,
       theme: "light",
