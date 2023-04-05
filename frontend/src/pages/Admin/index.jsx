@@ -68,6 +68,8 @@ export const Admin = () => {
 
     // useEffect hook for fetching the rows
     useEffect(() => {
+        document.title = 'Hacklab Booking - Admin';
+
         fetch(process.env.REACT_APP_API_URL + '/accounts/all', {
             method: 'GET',
         })
@@ -86,10 +88,6 @@ export const Admin = () => {
     }, []);
 
     // useEffect hook for changing the rows to display based on the filter
-    useEffect(() => {
-        document.title = 'Hacklab Booking - Admin';
-      }, []);
-
     useEffect(() => {
         if (rows) {
             if (filterPending) {
