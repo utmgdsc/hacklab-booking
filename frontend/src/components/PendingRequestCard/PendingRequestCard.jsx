@@ -39,7 +39,7 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
 
     const [approved, setApproved] = useState(false);
 
-    const handleApprove = (reason) => {
+    const handleChangeStatus = (reason, status) => {
         // todo: send request to backend to approve request
         fetch(process.env.REACT_APP_API_URL + "/requests/changeStatus/" + reqID, {
             method: "POST",
@@ -47,7 +47,7 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                status: "approval",
+                status: status,
                 reason: reason
             }),
         })
@@ -61,13 +61,7 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
                 console.log(err);
             });
 
-
-        console.log("Approve request with reason " + reason);
-    }
-
-    const handleDeny = (reason) => {
-        // todo: send request to backend to deny request
-        console.log("Deny request with reason " + reason);
+        console.log(status + " request with reason " + reason);
     }
 
     return (
@@ -151,10 +145,10 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
                         onClick={() => {
                             handleClose();
                             if (approved) {
-                                handleApprove(document.getElementById("reason").value);
+                                handleChangeStatus(document.getElementById("reason").value, "approval");
                             }
                             else {
-                                handleDeny(document.getElementById("reason").value);
+                                handleChangeStatus(document.getElementById("reason").value, "denied");
                             }
                         }}
                         variant="contained"
