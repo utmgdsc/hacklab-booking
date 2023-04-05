@@ -72,10 +72,10 @@ export const CreateBooking = () => {
       });
   }, []);
 
-  // use for testing purposes
-  useEffect(() => {
-    setUserGroups([{ name: "GDSC" }, { name: "MDSC" }]);
-  }, []);
+  // // TODO for testing purposes: remove after done testing
+  // useEffect(() => {
+  //   setUserGroups([{ name: "GDSC" }, { name: "MDSC" }]);
+  // }, []);
 
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
@@ -136,6 +136,8 @@ export const CreateBooking = () => {
       endTime: scheduleDates[scheduleDates.length - 1],
     };
 
+    console.log(booking);
+
     // submit to API
     fetch(process.env.REACT_APP_API_URL + "/requests/submit", {
       method: "POST",
@@ -173,7 +175,7 @@ export const CreateBooking = () => {
     setScheduleDates(newDates);
   };
 
-  if (true || userGroups.length > 0) {
+  if (userGroups.length > 0) {
     return (
       <SubPage name="Create a booking">
         {submitted ? (
