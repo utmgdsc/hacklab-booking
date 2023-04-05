@@ -9,3 +9,4 @@ export { PendingRequestCard } from "./PendingRequestCard/PendingRequestCard";
 export { ConvertDate } from "./ConvertDate/ConvertDate";
 export { InitialsAvatar }  from "./InitialsAvatar/InitialsAvatar";
 export { ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
+export { GroupCard } from "./GroupCard/GroupCard";
