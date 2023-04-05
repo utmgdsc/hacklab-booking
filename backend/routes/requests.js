@@ -17,6 +17,11 @@ router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, 
   res.send(requests);
 });
 
+router.get("/allRequests", roleVerify(["admin"]), async (req, res) => {
+  let requests = await Request.find({});
+  res.send(requests);
+});
+
 router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res) => {
     let hacklab = await Room.findOne({ name: "Hacklab" });
 

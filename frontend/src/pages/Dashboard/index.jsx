@@ -207,9 +207,9 @@ export const Dashboard = () => {
         </>
       )}
 
-      {((pending_requests && pending_requests.length > 0) ||
-        userInfo["role"] === "prof" ||
-        userInfo["role"] === "admin") && (
+      {((pending_requests && pending_requests.length > 0) &&
+        (userInfo["role"] === "prof" ||
+        userInfo["role"] === "admin")) && (
           <>
             <Typography variant="h2" gutterBottom>
               Your{" "}
