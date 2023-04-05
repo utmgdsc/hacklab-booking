@@ -44,7 +44,7 @@ export const Dashboard = () => {
         console.log("data");
         console.log(data);
         setActiveRequests(data);
-        setPendingRequests(data);
+        setPendingRequests(data.filter((request) => request.status === "pending"));
       });
   }, []);
 
