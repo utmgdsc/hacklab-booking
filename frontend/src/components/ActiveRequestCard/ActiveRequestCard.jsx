@@ -13,6 +13,16 @@ import { ConvertDate } from ".."
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 
+const data = {
+    title: "Machine Learning Workshop",
+    date: new Date(),
+    location: "DH 2014 (Hacklab)",
+    status: 0,
+    hasTCardAccess: true,
+    approver: "Michael Liut",
+    t_card_gatekeeper: "Andrew Wang"
+}
+
 /**
  * A card that displays a active request
  * TODO: fetch data from backend via GUID instead of passing in props

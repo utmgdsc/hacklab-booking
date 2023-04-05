@@ -5,6 +5,7 @@ const { Account } = require("../models/accounts");
 const { Room } = require("../models/room");
 const { Group } = require("../models/group");
 const { roleVerify } = require("../middleware/role_middleware");
+const { addEvent } = require("../google/test.js");
 
 router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, res) => {
   let account = await Account.findOne({ utorid: req.headers["utorid"] });
@@ -93,6 +94,20 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
       if (owner.accessGranted) {
         request.status = "completed";
         // await request.save();
+        const event = {
+          'summary': `HB ${request["_id"]} ${request.title}`,
+          'location': 'DH2014',
+          'description': `${request.description} ${request.reason}`,
+          'start': {
+            'dateTime': `${request.start_date.toISOString()}`,
+            'timeZone': 'America/Toronto',
+          },
+          'end': {
+            'dateTime': `${request.end_date.toISOString()}`,
+            'timeZone': 'America/Toronto',
+          }
+        };
+        await addEvent(event);
       }
     }
     await request.save();
