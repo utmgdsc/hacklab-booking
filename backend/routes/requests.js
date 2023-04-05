@@ -74,6 +74,8 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
 
     // set the status as completed if the owner has hacklab
     if (request.status === "approval") {
+      request.approver = account;
+
       if (owner.accessGranted) {
         request.status = "completed";
         // await request.save();
