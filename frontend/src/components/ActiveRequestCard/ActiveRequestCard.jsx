@@ -33,18 +33,33 @@ const data = {
  * @param {string} description the description of the request
  * @param {string} location the location of the request
  */
-export const ActiveRequestCard = ({ title, date, location, status }) => {
+export const ActiveRequestCard = ({ title, date, location, teamName, status }) => {
+    const convertStatus = () => {
+        switch (status) {
+            case "pending":
+                return 0;
+            case "approved":
+                return 1;
+            case "t_card_access":
+                return 2;
+            case "completed":
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
     return (
         <Card>
             <CardContent>
                 <Typography variant="h5" component="div" fontWeight={600}>
-                    { data.title }
+                    { title }
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    <ConvertDate date={ data.date }/> • { data.location }
+                    <ConvertDate date={ date }/> • { location } • { teamName }
                 </Typography>
 
-                <Stepper activeStep={ data.status } orientation="vertical">
+                <Stepper activeStep={ convertStatus } orientation="vertical">
                     <Step>
                         <StepLabel>Request Sent</StepLabel>
                         <StepContent>

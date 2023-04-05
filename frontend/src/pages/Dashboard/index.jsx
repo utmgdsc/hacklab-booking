@@ -30,6 +30,20 @@ import { UserContext } from "../../contexts/UserContext";
 
 export const Dashboard = () => {
   const userInfo = useContext(UserContext);
+  /*const [pending_requests, setPendingRequests] = useState([]);
+  const [active_requests, setActiveRequests] = useState([]);
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + "/accounts/info")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setActiveRequests(data.activeRequests);
+        setPendingRequests(data.pendingRequests);
+      });
+  }, []);*/
 
   useEffect(() => {
     document.title = 'Hacklab Booking - Dashboard';
@@ -165,7 +179,7 @@ export const Dashboard = () => {
         )}
       </Box>
 
-      {(userInfo["active_requests"] || userInfo["role"] === "student") && (
+      {(userInfo["activeRequests"] || userInfo["role"] === "student") && (
         <>
           <Typography variant="h2" gutterBottom>
             Your{" "}
@@ -180,64 +194,65 @@ export const Dashboard = () => {
             </Link>
             .
           </Typography>
-          {(!userInfo["active_requests"] ||
-            userInfo["active_requests"].length === 0) && (
+          {(!userInfo["activeRequests"] ||
+            userInfo["activeRequests"].length === 0) && (
               <NoRequestsPlaceholder
                 text={
                   "You have no active requests. Create one using the 'Book' button above."
                 }
               />
             )}
-          {userInfo["active_requests"]?.length > 0 &&
-            userInfo["active_requests"].map((request) => {
+          {userInfo['activeRequests'] &&
+            userInfo['activeRequests'].map((request) => {
               return (
                 <ActiveRequestCard
-                  key={request["title"]}
+                  key={request["_id"]}
                   title={request["title"]}
                   description={request["description"]}
-                  date={request["date"]}
-                  location={request["location"]}
-                  teamName={request["teamName"]}
+                  date={request["start_date"]}
+                  location={request["room"]["name"]}
+                  teamName={request["group"]["name"]}
+                  status={request["status"]}
                 />
               );
             })}
         </>
       )}
 
-      {(userInfo["pending_requests"] ||
+      {(userInfo['pendingRequests'] ||
         userInfo["role"] === "prof" ||
         userInfo["role"] === "admin") && (
-          <>
-            <Typography variant="h2" gutterBottom>
-              Your{" "}
-              <acronym title="Booking requests that demand your attention">
-                Pending Requests
-              </acronym>
-            </Typography>
-            {userInfo["pending_requests"] &&
-              userInfo["pending_requests"].length === 0 && (
-                <NoRequestsPlaceholder
-                  text={"No requests demand your attention. Horray!"}
+        <>
+          <Typography variant="h2" gutterBottom>
+            Your{" "}
+            <acronym title="Booking requests that demand your attention">
+              Pending Requests
+            </acronym>
+          </Typography>
+          {userInfo["pending_requests"] &&
+            userInfo["pending_requests"].length === 0 && (
+              <NoRequestsPlaceholder
+                text={"No requests demand your attention. Horray!"}
+              />
+            )}
+          {userInfo["pending_requests"] &&
+            userInfo["pending_requests"].length > 0 &&
+            userInfo["pending_requests"].map((request) => {
+              return (
+                <PendingRequestCard
+                  key={request["_id"]}
+                  title={request["title"]}
+                  description={request["description"]}
+                  date={request["start_date"]}
+                  name={request["title"]}
+                  utorid={request["owner"]["utorid"]}
+                  location={request["room"]["name"]}
+                  teamName={request["group"]["name"]}
                 />
-              )}
-            {userInfo["pending_requests"] &&
-              userInfo["pending_requests"].length > 0 &&
-              userInfo["pending_requests"].map((request) => {
-                return (
-                  <PendingRequestCard
-                    key={request["title"]}
-                    title={request["title"]}
-                    description={request["description"]}
-                    date={request["date"]}
-                    name={request["name"]}
-                    utorid={request["utorid"]}
-                    location={request["location"]}
-                    teamName={request["teamName"]}
-                  />
-                );
-              })}
-          </>
-        )}
+              );
+            })}
+        </>
+      )}
     </Container>
   );
 };

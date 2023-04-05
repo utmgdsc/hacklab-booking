@@ -45,15 +45,23 @@ app.use(async (req, res, next) => {
       next();
     } else {
       console.log(account);
-      let acc = new Account(account);
-      acc.email = req.headers['http_mail'];
-
-      // ideally we should use this, but production shibboleth headers are not working
-      // account.name = req.headers['http_cn'];
-
-      // so we'll use the utorid instead for now
-      acc.name = req.headers['utorid'];
-      await acc.save();
+      // this code should update the users information if it has changed
+      // let acc = new Account(account);
+      // await Account.findOneAndUpdate({utorid: req.headers['utorid']}, {email: req.headers['http_mail'], name: req.headers['http_cn']}, {new: true}, (err, doc) => {
+      //   if (err) {
+      //     console.log("Something wrong when updating data!");
+      //   }
+      //   console.log(doc);
+      //   next();
+      // });
+      // acc.email = req.headers['http_mail'];
+      //
+      // // ideally we should use this, but production shibboleth headers are not working
+      // // account.name = req.headers['http_cn'];
+      //
+      // // so we'll use the utorid instead for now
+      // acc.name = req.headers['utorid'];
+      // await acc.save();
       next();
     }
   }
