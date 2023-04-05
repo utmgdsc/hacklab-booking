@@ -101,7 +101,7 @@ export const Dashboard = () => {
         }}
       >
         <Tooltip title="Track an existing request" arrow placement="top">
-          <Link to="/track" isInternalLink>
+          <Link href="/track" isInternalLink>
             <LabelledIconButton
               icon={<InventoryIcon />}
               color="#f35325"
@@ -115,7 +115,7 @@ export const Dashboard = () => {
           arrow
           placement="top"
         >
-          <Link to="/book" isInternalLink>
+          <Link href="/book" isInternalLink>
             <LabelledIconButton
               icon={<CalendarTodayIcon />}
               color="#81bc06"
@@ -129,7 +129,7 @@ export const Dashboard = () => {
           arrow
           placement="top"
         >
-          <Link to="/group" isInternalLink>
+          <Link href="/group" isInternalLink>
             <LabelledIconButton
               icon={<PeopleIcon />}
               color="#05a6f0"
@@ -139,7 +139,7 @@ export const Dashboard = () => {
         </Tooltip>
 
         <Tooltip title="Access your settings" arrow placement="top">
-          <Link to="/settings" isInternalLink>
+          <Link href="/settings" isInternalLink>
             <LabelledIconButton
               icon={<SettingsIcon />}
               color="#ffb900"
@@ -154,7 +154,7 @@ export const Dashboard = () => {
             arrow
             placement="top"
           >
-            <Link to="/admin" isInternalLink>
+            <Link href="/admin" isInternalLink>
               <LabelledIconButton
                 icon={<AdminPanelSettingsIcon />}
                 color="#7b00ff"

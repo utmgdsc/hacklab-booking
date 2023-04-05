@@ -24,7 +24,7 @@ const NonForwardLink = ({ children, href, external, forwardedRef, isInternalLink
     return (
         // !!
         <MaterialLink
-            // component={isInternalLink ? RouterLink : undefined}
+            component={isInternalLink ? RouterLink : undefined}
             href={isInternalLink ? undefined : href}
             ref={forwardedRef}
             rel={external ? "noopener noreferrer" : ""}

@@ -99,7 +99,7 @@ export const Admin = () => {
         return (
             <SubPage name="Admin">
                 <Typography variant="h4" component="h1" gutterBottom>
-                    You are not an admin. <Link isInternalLink to="/">Go back</Link>
+                    You are not an admin. <Link isInternalLink href="/">Go back</Link>
                 </Typography>
             </SubPage>
         );

@@ -20,7 +20,7 @@ export const SubPage = ({ name, children, maxWidth="md", ...props }) => {
                     xl: "2em",
                 },
             }}>
-                <Link isInternalLink to="/">
+                <Link isInternalLink href="/">
                     <Button>
                         <ArrowBackIosIcon /> Back
                     </Button>
