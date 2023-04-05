@@ -7,20 +7,17 @@ const { Group } = require("../models/group");
 const { roleVerify } = require("../middleware/role_middleware");
 
 router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res) => {
-    let hacklab = new Room({
-      roomName: "DH 2014",
-      friendlyName: "Hacklab",
-      capacity: "15",
-      requests: [], // this room would probably already be made, can delete this
-    });
-    
-    let tcardapprover = await Account.findOne({utorid: "wangandr"});
-    let approver = await Account.findOne({utorid: "mliut"});
+    let hacklab = await Room.findOne({ name: "Hacklab" });
+
+    let tcardapprover = await Account.findOne({ utorid: "wangandr" });
+    let approver = await Account.findOne({ utorid: "mliut" });
+
+    let requester = await Account.findOne({ utorid: req.body["owner"] });
 
     let request = new Request({
       status: "pending",
       group: req.body.group,
-      owner: req.body["owner"],
+      owner: requester,
       approver: approver,
       tcardapprover: tcardapprover,
       start_date: req.body["startTime"],
@@ -31,7 +28,13 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
     });
     await request.save();
 
-    req.body.group.update({$push: {'requests': request}});
+    req.body.group.update({ $push: { requests: request } });
+    requester.update({ $push: { activeRequests: request } });
+    hacklab.update({ $push: { requests: request } });
+
+    // add request to approver and tcardapprover's pendingRequests
+    tcardapprover.update({ $push: { pendingRequests: request } });
+    approver.update({ $push: { pendingRequests: request } });
 
     res.send(request);
   }

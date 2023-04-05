@@ -4,6 +4,7 @@ const accounts = require('./routes/accounts');
 const requests = require('./routes/requests');
 const groups = require('./routes/groups');
 const {Account} = require("./models/accounts");
+const {Room} = require("./models/room");
 const {Group} = require("./models/group");
 const cors = require('cors');
 
@@ -84,6 +85,18 @@ app.use(async (req, res, next) => {
       language: "en",
     });
     await approver.save();
+  }
+
+  // Creating room if not already made
+  let hacklab = await Room.findOne({roomName: "DH 2014"});
+  if (hacklab === null) {
+    let hacklab = new Room({
+      roomName: "DH 2014",
+      friendlyName: "Hacklab",
+      capacity: 20,
+      requests: [],
+    })
+    await hacklab.save();
   }
 
   // Creating test group
