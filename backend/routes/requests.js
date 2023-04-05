@@ -71,6 +71,17 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
     request.reason = req.body["reason"];
     await request.save();
 
+    // find the owner of the request
+    let owner = await Account.findOne({ _id: request.owner });
+
+    // set the status as completed if the owner has hacklab
+    if (request.status == "approved") {
+      if (owner.accessGranted) {
+        request.status = "completed";
+        await request.save();
+      }
+    }
+
     console.log("Request found" +
       request + "name: " + request.title +
       " status: " + req.body["status"]

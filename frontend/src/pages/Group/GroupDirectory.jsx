@@ -19,7 +19,7 @@ import {
     Stack,
 } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
-import { InitialsAvatar } from "../../components";
+import { InitialsAvatar, GroupCard } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 
@@ -125,38 +125,10 @@ export const GroupDirectory = () => {
             {
                 Object.keys(myGroups).map((key) => {
                     return (
-                        <Card sx={{ mt: 2, mb: 2 }}>
-                            <CardContent>
-                                <Typography variant="h3" gutterBottom>{myGroups[key]["name"]}</Typography>
-                                <Typography variant="gray">Members:</Typography>
-                                <Stack direction="row" spacing={1}>
-                                    {
-                                        myGroups[key]["members"].map((member) => {
-                                            return (
-                                                <Tooltip
-                                                    key={member.utorid}
-                                                    title={member.email}
-                                                >
-                                                    <Chip
-                                                        avatar={<InitialsAvatar name={member.name} />}
-                                                        label={member.name}
-                                                        variant="outlined"
-                                                        onClick={() => {
-                                                            // copy email to clipboard
-                                                            navigator.clipboard.writeText(member.email);
-                                                            console.log("Copied " + member.email + " to clipboard");
-                                                        }}
-                                                    />
-                                                </Tooltip>
-                                            )
-                                        })
-                                    }
-                                </Stack>
-                            </CardContent>
-                            <CardActions>
-                                <Button href={"/group/" + myGroups[key]["_id"]}>View</Button>
-                            </CardActions>
-                        </Card>
+                        <GroupCard
+                            key={myGroups[key]}
+                            id={myGroups[key]["_id"]}
+                        ></GroupCard>
                     )
                 })
             }
