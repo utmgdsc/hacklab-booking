@@ -46,8 +46,8 @@ export const GroupDirectory = () => {
             },
             body: JSON.stringify({
                 name: document.getElementById("group-name").value,
-                members: [userInfo.utorid],
-                requests: [],
+                // members: [userInfo.utorid],
+                // requests: [],
             }),
         })
             .then(res => {
@@ -58,56 +58,56 @@ export const GroupDirectory = () => {
             });
     }
 
-    // let [myGroups, setMyGroups] = useState({});
+    let [myGroups, setMyGroups] = useState({});
 
-    // useEffect(() => {
-    //     fetch(process.env.REACT_APP_API_URL + '/groups/myGroups')
-    //         .then(res => {
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             setMyGroups(data);
-    //         });
-    // }, []);
+    useEffect(() => {
+        fetch(process.env.REACT_APP_API_URL + '/groups/myGroups')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                setMyGroups(data);
+            });
+    }, []);
 
-    const myGroups = [
-        {
-            name: "Google Developers Student Club",
-            members: [
-                {
-                    "name": "Hatsune Miku",
-                    "email": "h.miku@utoronto.ca",
-                    "utorid": "hatsunem",
-                    "admin": true,
-                },
-                {
-                    "name": "Kagamine Rin",
-                    "email": "k.rin@mail.utoronto.ca",
-                    "utorid": "kagaminr",
-                    "admin": false,
-                }
-            ],
-            requests: []
-        },
-        {
-            name: "Computer Science Student Community",
-            members: [
-                {
-                    "name": "Hatsune Miku",
-                    "email": "h.miku@utoronto.ca",
-                    "utorid": "hatsunem",
-                    "admin": true,
-                },
-                {
-                    "name": "Kagamine Rin",
-                    "email": "k.rin@mail.utoronto.ca",
-                    "utorid": "kagaminr",
-                    "admin": false,
-                }
-            ],
-            requests: []
-        },
-    ]
+    // const myGroups = [
+    //     {
+    //         name: "Google Developers Student Club",
+    //         members: [
+    //             {
+    //                 "name": "Hatsune Miku",
+    //                 "email": "h.miku@utoronto.ca",
+    //                 "utorid": "hatsunem",
+    //                 "admin": true,
+    //             },
+    //             {
+    //                 "name": "Kagamine Rin",
+    //                 "email": "k.rin@mail.utoronto.ca",
+    //                 "utorid": "kagaminr",
+    //                 "admin": false,
+    //             }
+    //         ],
+    //         requests: []
+    //     },
+    //     {
+    //         name: "Computer Science Student Community",
+    //         members: [
+    //             {
+    //                 "name": "Hatsune Miku",
+    //                 "email": "h.miku@utoronto.ca",
+    //                 "utorid": "hatsunem",
+    //                 "admin": true,
+    //             },
+    //             {
+    //                 "name": "Kagamine Rin",
+    //                 "email": "k.rin@mail.utoronto.ca",
+    //                 "utorid": "kagaminr",
+    //                 "admin": false,
+    //             }
+    //         ],
+    //         requests: []
+    //     },
+    // ]
 
     // console.log(userInfo);
 

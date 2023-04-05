@@ -10,7 +10,8 @@ router.get('/all', roleVerify(['admin']), async (req, res) => {
 });
 
 router.post('/create', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
-  let group = new Group(req.body);
+  let acc = await Account.findOne({ utorid: req.headers['utorid'] });
+  let group = new Group({name: req.body.name, members: [acc], requests: [], managers: [acc]});
   await group.save();
   res.send(group);
 });
@@ -34,7 +35,7 @@ router.get('/search/byMember/:utorid', roleVerify(['admin']), async (req, res) =
 
 router.get('/myGroups', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
   let acc = await Account.findOne({ utorid: req.headers['utorid'] });
-  let group = await Group.find({ members: acc});
+  let group = await Group.find({ members: acc });
   res.send(group);
 });
 
