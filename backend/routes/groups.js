@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Group } = require("../models/group");
 const { roleVerify } = require("../middleware/role_middleware");
+const { Account } = require("../models/accounts");
 
 router.get('/all', roleVerify(['admin']), async (req, res) => {
   let group = await Group.find({});
@@ -32,7 +33,8 @@ router.get('/search/byMember/:utorid', roleVerify(['admin']), async (req, res) =
 });
 
 router.get('/myGroups', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
-  let group = await Group.find({ members: req.headers['utorid'] });
+  let acc = await Account.findOne({ utorid: req.headers['utorid'] });
+  let group = await Group.find({ members: acc});
   res.send(group);
 });
 

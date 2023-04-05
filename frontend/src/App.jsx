@@ -1,46 +1,39 @@
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
-import './App.css';
+import "./App.css";
 
-import { Dashboard } from './pages/Dashboard';
-import { Settings } from './pages/Settings';
-import { Track } from './pages/Track';
-import { CreateBooking } from './pages/CreateBooking';
-import { Group } from './pages/Group/Group';
-import { GroupDirectory } from './pages/Group/GroupDirectory';
-import { Admin } from './pages/Admin';
+import { Dashboard } from "./pages/Dashboard";
+import { Settings } from "./pages/Settings";
+import { Track } from "./pages/Track";
+import { CreateBooking } from "./pages/CreateBooking";
+import { Group } from "./pages/Group/Group";
+import { GroupDirectory } from "./pages/Group/GroupDirectory";
+import { Admin } from "./pages/Admin";
 
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { useEffect, useState } from 'react';
-import { UserContext } from './contexts/UserContext';
+import { useEffect, useState } from "react";
+import { UserContext } from "./contexts/UserContext";
 
-import {
-  CssBaseline,
-  ThemeProvider
-} from '@mui/material';
+import { CssBaseline, ThemeProvider } from "@mui/material";
 
-import { GoogleTheme } from './theme/theme';
+import { GoogleTheme } from "./theme/theme";
 
 function App() {
   let [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + '/accounts/info')
-      .then(res => {
+    fetch(process.env.REACT_APP_API_URL + "/accounts/info")
+      .then((res) => {
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         setUserInfo(data);
         // TODO REMOVE HARDCODE DATA WHEN BACKEND READY
-        data["role"] = "admin";
+        /* data["role"] = "admin";
         data["name"] = "Andrew Wang";
         data["email"] = "a.wang@utoronto.ca";
         data["utorid"] = "wangandr";
@@ -64,7 +57,7 @@ function App() {
             utorid: "scharno",
             location: "DH 2014 (Hacklab)"
           }
-        ]
+        ] */
       });
   }, []);
 

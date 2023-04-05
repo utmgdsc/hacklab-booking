@@ -4,6 +4,7 @@ const accounts = require('./routes/accounts');
 const requests = require('./routes/requests');
 const groups = require('./routes/groups');
 const {Account} = require("./models/accounts");
+const {Group} = require("./models/group");
 const cors = require('cors');
 
 mongoose.connect(process.env.DB_URI);
@@ -55,6 +56,45 @@ app.use(async (req, res, next) => {
       next();
     }
   }
+
+  // Creating tcard approver and approver accounts
+  // TODO: should also be a better way to do this instead of on every request
+  let tcardapprover = await Account.findOne({utorid: "wangandr"}); // change to andrew wang's actual utorid
+  if (tcardapprover === null) {
+    let tcardapprover = new Account({
+      utorid: "wangandr",
+      email: "a.wang@utoronto.ca",
+      name: "Andrew Wang",
+      role: "admin",
+      accessGranted: true,
+      theme: "light",
+      language: "en",
+    });
+    await tcardapprover.save();
+  }
+  let approver = await Account.findOne({utorid: "mliut"}); // change to michael liut's actual utorid
+  if (approver === null) {
+    let approver = new Account({
+      utorid: "mliut",
+      email: "michael.liut@utoronto.ca",
+      name: "Michael Liut",
+      role: "admin",
+      accessGranted: true,
+      theme: "light",
+      language: "en",
+    });
+    await approver.save();
+  }
+
+  // Creating test group
+  /*let account = await Account.findOne({utorid: req.headers['utorid']})
+  let testGroup = new Group({
+    name: "MDSC",
+    members: [account],
+    requests: [],
+    managers: [account],
+  });
+  await testGroup.save();*/
 })
 
 app.use('/accounts', accounts);

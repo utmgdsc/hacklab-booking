@@ -1,10 +1,11 @@
 import { React, useState, useContext, useEffect } from "react";
+import { Link } from "../../components";
 import { Button, TextField, Box, Container, Typography } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-// import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-// import { MultiInputTimeRangeField } from '@mui/x-date-pickers-pro/MultiInputTimeRangeField';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ScheduleSelector from "react-schedule-selector";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -19,7 +20,7 @@ import { UserContext } from "../../contexts/UserContext";
 const getMonday = (d) => {
   d = new Date(d);
   var day = d.getDay(),
-    diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
   return new Date(d.setDate(diff));
 };
 
@@ -51,6 +52,22 @@ const getTimeString = (scheduleDates) => {
 
 export const CreateBooking = () => {
   const userInfo = useContext(UserContext);
+  const [userGroups, setUserGroups] = useState([]);
+
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setUserGroups(data);
+      });
+  }, []);
+
+  // use for testing purposes
+  /*useEffect(() => {
+    setUserGroups([{name: "GDSC"}, {name: "MDSC"}]);
+  }, []);*/
 
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
@@ -64,6 +81,9 @@ export const CreateBooking = () => {
   const [validDate, setValidDate] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [group, setGroup] = useState(null);
+  const open = Boolean(anchorEl);
 
   const handleFinish = () => {
     let finish = true;
@@ -100,12 +120,12 @@ export const CreateBooking = () => {
     // compile into json object
     const booking = {
       owner: userInfo,
+      group: group,
       reason: reason,
       details: details,
-      //date: calendarDate,
       title: details,
       startTime: scheduleDates[0],
-      endTime: scheduleDates[-1],
+      endTime: scheduleDates[scheduleDates.length - 1],
     };
 
     // submit to API
@@ -114,8 +134,6 @@ export const CreateBooking = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(booking),
     });
-    //.then((response) => response.json())
-    //.then((data) => console.log(data));
 
     setSubmitted(true);
   };
@@ -147,208 +165,270 @@ export const CreateBooking = () => {
     setScheduleDates(newDates);
   };
 
-  return (
-    <SubPage name="Create a booking">
-      {submitted ? (
-        <Container
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center",
-            flexWrap: "nowrap",
-            marginBottom: "2em",
-            gap: "1em",
-          }}
-        >
-          <CheckCircleIcon
-            sx={{
-              fontSize: "10em",
-              color: "green",
-            }}
-          />
-
-          <Typography component="p" variant="h3">
-            Booking Submitted
-          </Typography>
-          <Typography component="p" variant="h5">
-            Booking for: {reason}
-          </Typography>
-          <Typography component="p" variant="h5">
-            Details: {details}
-          </Typography>
-          <Typography component="p" variant="h5">
-            Date: {getDateString(scheduleDates[0])}
-          </Typography>
-          <Typography component="p" variant="h5">
-            Time: {getTimeString(scheduleDates)}
-          </Typography>
-        </Container>
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center",
-            flexWrap: "nowrap",
-          }}
-        >
-          <Typography
-            component="p"
-            variant="h5"
-            color={reasonError ? "error" : ""}
-            sx={{ marginBottom: "1em" }}
-          >
-            {reasonError ? "*" : ""} What is the purpose of this booking?
-          </Typography>
-          <Box
+  if (userGroups.length > 0) {
+    return (
+      <SubPage name="Create a booking">
+        {submitted ? (
+          <Container
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "space-around",
               alignItems: "center",
               flexWrap: "nowrap",
-              marginTop: "1em",
-              marginBottom: "3em",
-              gap: "5vw",
-            }}
-          >
-            <Button
-              size="large"
-              variant="contained"
-              color={reason === "club" ? "success" : "primary"}
-              onClick={() => {
-                setReason("club");
-                setReasonError(false);
-              }}
-              sx={{
-                flexDirection: "column",
-                textTransform: "none",
-              }}
-            >
-              <GroupsIcon
-                sx={{
-                  fontSize: "5em",
-                }}
-              />
-              For a club event
-            </Button>
-            <Button
-              size="large"
-              color={reason === "academic" ? "success" : "primary"}
-              variant="contained"
-              onClick={() => {
-                setReason("academic");
-                setReasonError(false);
-              }}
-              sx={{
-                flexDirection: "column",
-                textTransform: "none",
-              }}
-            >
-              <SchoolIcon
-                sx={{
-                  fontSize: "5em",
-                }}
-              />
-              Academic Related
-            </Button>
-          </Box>
-
-          <TextField
-            label="Please provide an explanation"
-            required
-            onChange={(e) => {
-              handleDetails(e);
-              setDetailError(false);
-            }}
-            value={details}
-            error={detailError}
-            fullWidth
-            multiline
-            sx={{
-              marginBottom: "3em",
-            }}
-            minRows={4}
-            helperText={detailError ? "An explanation is required" : ""}
-            id="explanation-field"
-          />
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "center",
-              flexWrap: "nowrap",
-              marginBottom: "3em",
+              marginBottom: "2em",
               gap: "1em",
             }}
           >
-            <Typography component="p" variant="h5" color="error">
-              {calendarDateError ? "*" : ""}
-            </Typography>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select a day"
-                value={calendarDate}
-                onChange={(newDate) => {
-                  setDate(newDate);
-                  setCalendarDateError(false);
-                  setShowSchedule(true);
-                }}
-              />
-            </LocalizationProvider>
-          </Box>
+            <CheckCircleIcon
+              sx={{
+                fontSize: "10em",
+                color: "green",
+              }}
+            />
 
-          {showSchedule && (
-            <Container
+            <Typography component="p" variant="h3">
+              Booking Submitted
+            </Typography>
+            <Typography component="p" variant="h5">
+              Booking for: {reason}
+            </Typography>
+            <Typography component="p" variant="h5">
+              Details: {details}
+            </Typography>
+            <Typography component="p" variant="h5">
+              Date: {getDateString(scheduleDates[0])}
+            </Typography>
+            <Typography component="p" variant="h5">
+              Time: {getTimeString(scheduleDates)}
+            </Typography>
+          </Container>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-around",
+              alignItems: "center",
+              flexWrap: "nowrap",
+            }}
+          >
+            <Typography
+              component="p"
+              variant="h5"
+              color={reasonError ? "error" : ""}
+              sx={{ marginBottom: "1em" }}
+            >
+              {reasonError ? "*" : ""} What is the purpose of this booking?
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                flexWrap: "nowrap",
+                marginTop: "1em",
+                marginBottom: "3em",
+                gap: "5vw",
+              }}
+            >
+              <Button
+                size="large"
+                variant="contained"
+                color={reason === "club" ? "success" : "primary"}
+                onClick={() => {
+                  setReason("club");
+                  setReasonError(false);
+                }}
+                sx={{
+                  flexDirection: "column",
+                  textTransform: "none",
+                }}
+              >
+                <GroupsIcon
+                  sx={{
+                    fontSize: "5em",
+                  }}
+                />
+                For a club event
+              </Button>
+              <Button
+                size="large"
+                color={reason === "academic" ? "success" : "primary"}
+                variant="contained"
+                onClick={() => {
+                  setReason("academic");
+                  setReasonError(false);
+                }}
+                sx={{
+                  flexDirection: "column",
+                  textTransform: "none",
+                }}
+              >
+                <SchoolIcon
+                  sx={{
+                    fontSize: "5em",
+                  }}
+                />
+                Academic Related
+              </Button>
+            </Box>
+
+            {userGroups.length > 0 && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  flexWrap: "nowrap",
+                  marginBottom: "2em",
+                }}
+              >
+                <Button
+                  id="group-button"
+                  variant="contained"
+                  aria-controls={open ? "group-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                >
+                  Select a group
+                </Button>
+                <Menu
+                  id="group-menu"
+                  aria-labelledby="group-button"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={(e) => setAnchorEl(null)}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                >
+                  {userGroups.map((group) => {
+                    return (
+                      <MenuItem
+                        onClick={(e) => {
+                          setGroup(group);
+                        }}
+                      >
+                        {group.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Menu>
+              </Box>
+            )}
+            <TextField
+              label="Please provide an explanation"
+              required
+              onChange={(e) => {
+                handleDetails(e);
+                setDetailError(false);
+              }}
+              value={details}
+              error={detailError}
+              fullWidth
+              multiline
               sx={{
                 marginBottom: "3em",
               }}
-            >
-              <ScheduleSelector
-                selection={scheduleDates}
-                numDays={5}
-                minTime={8}
-                maxTime={22}
-                hourlyChunks={1}
-                startDate={getMonday(calendarDate)}
-                onChange={handleScheduleDate}
-              />
-              {dateError && (
-                <Typography
-                  component="p"
-                  color="error"
-                  sx={{ marginTop: "1em" }}
-                >
-                  * please only select one day
-                </Typography>
-              )}
-              {scheduleError && (
-                <Typography
-                  component="p"
-                  color="error"
-                  sx={{ marginTop: "1em" }}
-                >
-                  * please select a time
-                </Typography>
-              )}
-            </Container>
-          )}
+              minRows={4}
+              helperText={detailError ? "An explanation is required" : ""}
+              id="explanation-field"
+            />
 
-          <Button
-            variant="contained"
-            size="large"
-            onClick={() => {
-              handleFinish();
-            }}
-          >
-            Finish
-          </Button>
-        </Box>
-      )}
-    </SubPage>
-  );
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+                flexWrap: "nowrap",
+                marginBottom: "3em",
+                gap: "1em",
+              }}
+            >
+              <Typography component="p" variant="h5" color="error">
+                {calendarDateError ? "*" : ""}
+              </Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Select a day"
+                  value={calendarDate}
+                  onChange={(newDate) => {
+                    setDate(newDate);
+                    setCalendarDateError(false);
+                    setShowSchedule(true);
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
+
+            {showSchedule && (
+              <Container
+                sx={{
+                  marginBottom: "3em",
+                }}
+              >
+                <ScheduleSelector
+                  selection={scheduleDates}
+                  numDays={5}
+                  minTime={8}
+                  maxTime={22}
+                  hourlyChunks={1}
+                  startDate={getMonday(calendarDate)}
+                  onChange={handleScheduleDate}
+                />
+                {dateError && (
+                  <Typography
+                    component="p"
+                    color="error"
+                    sx={{ marginTop: "1em" }}
+                  >
+                    * please only select one day
+                  </Typography>
+                )}
+                {scheduleError && (
+                  <Typography
+                    component="p"
+                    color="error"
+                    sx={{ marginTop: "1em" }}
+                  >
+                    * please select a time
+                  </Typography>
+                )}
+              </Container>
+            )}
+
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => {
+                handleFinish();
+              }}
+            >
+              Finish
+            </Button>
+          </Box>
+        )}
+      </SubPage>
+    );
+  } else {
+    return (
+      <Typography variant="h4" component="p" sx={{alignItems: "center"}}>
+        Please create a group{" "}
+        <Link isInternalLink href="/group">
+          here
+        </Link>
+        {" "}before making a booking request.
+      </Typography>
+    );
+  }
 };

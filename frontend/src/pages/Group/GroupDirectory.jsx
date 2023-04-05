@@ -39,7 +39,7 @@ export const GroupDirectory = () => {
     };
 
     const sendAddGroup = () => {
-        fetch(process.env.REACT_APP_API_URL + '/group/create', {
+        fetch(process.env.REACT_APP_API_URL + '/groups/create', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
