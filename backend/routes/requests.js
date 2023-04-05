@@ -54,7 +54,6 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
 
 router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res) => {
   // iterate through all requests in pendingRequests and find the one with the same id
-  // TODO DAKSH PLEASE FIX THIS FOR ME <3
   let account = await Account.findOne({ utorid: req.headers["utorid"] });
 
   console.log("Finding request" + req.params.id);
@@ -69,18 +68,18 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
   } else {
     request.status = req.body["status"];
     request.reason = req.body["reason"];
-    await request.save();
 
     // find the owner of the request
     let owner = await Account.findOne({ _id: request.owner });
 
     // set the status as completed if the owner has hacklab
-    if (request.status == "approved") {
+    if (request.status === "approval") {
       if (owner.accessGranted) {
         request.status = "completed";
-        await request.save();
+        // await request.save();
       }
     }
+    await request.save();
 
     console.log("Request found" +
       request + "name: " + request.title +
