@@ -13,16 +13,6 @@ const AccountSchema = new Schema({
     default: "student",
   },
   accessGranted: { type: Boolean, required: true, default: false },
-  activeRequests: {
-    type: Array,
-    ref: "Request",
-    default: [],
-  },
-  pendingRequests: {
-    type: Array,
-    ref: "Request",
-    default: [],
-  },
   theme: {
     type: String,
     required: true,
