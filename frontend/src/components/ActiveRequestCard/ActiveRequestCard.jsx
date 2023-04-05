@@ -37,7 +37,7 @@ const data = {
 // HACK  HARDCODES TO HACKLAB!!!!
 // FIXME  HARDCODES TO HACKLAB!!!!
 export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)", teamName, status }) => {
-    const convertStatus = () => {
+    const convertStatus = (status) => {
         switch (status) {
             case "pending":
                 return 0;
@@ -62,7 +62,7 @@ export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)",
                     <ConvertDate date={ date }/> • { location } • { teamName }
                 </Typography>
 
-                <Stepper activeStep={ convertStatus } orientation="vertical">
+                <Stepper activeStep={ convertStatus(status) } orientation="vertical">
                     <Step>
                         <StepLabel>Request Sent</StepLabel>
                         <StepContent>
