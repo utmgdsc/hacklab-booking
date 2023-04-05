@@ -12,7 +12,8 @@ const RequestSchema = new Schema({
   end_date: {required: true, type: Date},
   description: {type: String},
   title: {required: true, type: String},
-  room: {type: Schema.Types.ObjectId, ref: 'Room'}
+  room: {type: Schema.Types.ObjectId, ref: 'Room'},
+  reason: {type: String, required: false}
 });
 
 module.exports = {

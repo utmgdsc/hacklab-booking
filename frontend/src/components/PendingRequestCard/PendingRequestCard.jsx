@@ -29,7 +29,7 @@ import { useState } from 'react';
  * @param {string} location the location of the request
  * @param {string} teamName the name of the team that the request is for
  */
-export const PendingRequestCard = ({ name, utorid, title, date, description, location, teamName }) => {
+export const PendingRequestCard = ({ name, utorid, title, date, description, location, teamName, reqID }) => {
     const [open, setOpen] = useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -41,6 +41,27 @@ export const PendingRequestCard = ({ name, utorid, title, date, description, loc
 
     const handleApprove = (reason) => {
         // todo: send request to backend to approve request
+        fetch(process.env.REACT_APP_API_URL + "/requests/changeStatus/" + reqID, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                status: "approval",
+                reason: reason
+            }),
+        })
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+
         console.log("Approve request with reason " + reason);
     }
 

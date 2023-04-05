@@ -6,6 +6,17 @@ const { Room } = require("../models/room");
 const { Group } = require("../models/group");
 const { roleVerify } = require("../middleware/role_middleware");
 
+router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let account = await Account.findOne({ utorid: req.headers["utorid"] });
+  // iterate through every group that the user is in
+  let group = await Group.find({ members: account });
+
+  // concatenate all the requests from each group
+  let requests = await Request.find({ group: { $in: group } });
+
+  res.send(requests);
+});
+
 router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res) => {
     let hacklab = await Room.findOne({ name: "Hacklab" });
 
@@ -40,5 +51,35 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
     res.send(request);
   }
 );
+
+router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res) => {
+  // iterate through all requests in pendingRequests and find the one with the same id
+  // TODO DAKSH PLEASE FIX THIS FOR ME <3
+  let account = await Account.findOne({ utorid: req.headers["utorid"] });
+
+  console.log("Finding request" + req.params.id);
+
+  let request = await Request.findOne({ _id: req.params.id });
+
+  // console.log("Request found" + request + "name: " + request.title + " status: " + req.body["status"] + " reason: " + req.body["reason"]);
+
+  if (request == null) {
+    res.status(404).send("Request not found");
+    return;
+  } else {
+    request.status = req.body["status"];
+    request.reason = req.body["reason"];
+    await request.save();
+
+    console.log("Request found" +
+      request + "name: " + request.title +
+      " status: " + req.body["status"]
+    );
+    return;
+    // res.send(request);
+  }
+
+  // req.status(200).send("Request found");
+});
 
 module.exports = router;

@@ -41,9 +41,9 @@ export const ActiveRequestCard = ({ title, date, location = "DH 2014 (Hacklab)",
         switch (status) {
             case "pending":
                 return 0;
-            case "approved":
+            case "approval":
                 return 1;
-            case "t_card_access":
+            case "tcard":
                 return 2;
             case "completed":
                 return 3;

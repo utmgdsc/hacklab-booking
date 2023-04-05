@@ -30,23 +30,22 @@ import { UserContext } from "../../contexts/UserContext";
 
 export const Dashboard = () => {
   const userInfo = useContext(UserContext);
-  /*const [pending_requests, setPendingRequests] = useState([]);
+  const [pending_requests, setPendingRequests] = useState([]);
   const [active_requests, setActiveRequests] = useState([]);
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/accounts/info")
+    document.title = 'Hacklab Booking - Dashboard';
+
+    fetch(process.env.REACT_APP_API_URL + "/requests/myRequests")
       .then((res) => {
         return res.json();
       })
       .then((data) => {
+        console.log("data");
         console.log(data);
-        setActiveRequests(data.activeRequests);
-        setPendingRequests(data.pendingRequests);
+        setActiveRequests(data);
+        setPendingRequests(data);
       });
-  }, []);*/
-
-  useEffect(() => {
-    document.title = 'Hacklab Booking - Dashboard';
   }, []);
 
   return (
@@ -179,21 +178,20 @@ export const Dashboard = () => {
         )}
       </Box>
 
-      {((userInfo["activeRequests"] && userInfo["activeRequests"].length > 0) || userInfo["role"] === "student") && (
+      {((active_requests && active_requests.length > 0) || userInfo["role"] === "student") && (
         <>
           <Typography variant="h2" gutterBottom>
             Your Active Requests
           </Typography>
-          {(!userInfo["activeRequests"] ||
-            userInfo["activeRequests"].length === 0) && (
+          {(active_requests.length === 0) && (
               <NoRequestsPlaceholder
                 text={
                   "You have no active requests. Create one using the 'Book' button above."
                 }
               />
             )}
-          {userInfo['activeRequests'] &&
-            userInfo['activeRequests'].map((request) => {
+          {active_requests.map((request) => {
+              console.log(request);
               return (
                 <ActiveRequestCard
                   key={request["_id"]}
@@ -209,40 +207,41 @@ export const Dashboard = () => {
         </>
       )}
 
-      {((userInfo['pendingRequests'] && userInfo['pendingRequests'].length > 0) ||
+      {((pending_requests && pending_requests.length > 0) ||
         userInfo["role"] === "prof" ||
         userInfo["role"] === "admin") && (
-        <>
-          <Typography variant="h2" gutterBottom>
-            Your{" "}
-            <acronym title="Booking requests that demand your attention">
-              Pending Requests
-            </acronym>
-          </Typography>
-          {userInfo["pendingRequests"] &&
-            userInfo["pendingRequests"].length === 0 && (
-              <NoRequestsPlaceholder
-                text={"No requests demand your attention. Horray!"}
-              />
-            )}
-          {userInfo["pendingRequests"] &&
-            userInfo["pendingRequests"].length > 0 &&
-            userInfo["pendingRequests"].map((request) => {
-              return (
-                <PendingRequestCard
-                  key={request["_id"]}
-                  title={request["title"]}
-                  description={request["description"]}
-                  date={request["start_date"]}
-                  name={request["title"]}
-                  utorid={request["owner"]}
-                  location={request["room"]}
-                  teamName={request["group"]}
+          <>
+            <Typography variant="h2" gutterBottom>
+              Your{" "}
+              <acronym title="Booking requests that demand your attention">
+                Pending Requests
+              </acronym>
+            </Typography>
+            {pending_requests &&
+              pending_requests.length === 0 && (
+                <NoRequestsPlaceholder
+                  text={"No requests demand your attention. Horray!"}
                 />
-              );
-            })}
-        </>
-      )}
+              )}
+            {pending_requests &&
+              pending_requests.length > 0 &&
+              pending_requests.map((request) => {
+                return (
+                  <PendingRequestCard
+                    key={request["_id"]}
+                    title={request["title"]}
+                    description={request["description"]}
+                    date={request["start_date"]}
+                    name={request["title"]}
+                    utorid={request["owner"]}
+                    location={request["room"]["friendlyName"]}
+                    teamName={request["group"]["name"]}
+                    reqID={request["_id"]}
+                  />
+                );
+              })}
+          </>
+        )}
     </Container>
   );
 };
