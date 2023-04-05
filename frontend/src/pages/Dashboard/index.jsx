@@ -178,7 +178,9 @@ export const Dashboard = () => {
         )}
       </Box>
 
-      {((active_requests && active_requests.length > 0) && userInfo["role"] === "student") && (
+      {(
+        //(active_requests && active_requests.length > 0) && 
+        userInfo["role"] === "student") && (
         <>
           <Typography variant="h2" gutterBottom>
             Your Active Requests
@@ -210,7 +212,8 @@ export const Dashboard = () => {
         </>
       )}
 
-      {(pending_requests && pending_requests.length > 0) &&
+      {
+      //(pending_requests && pending_requests.length > 0) &&
         (userInfo["role"] === "prof" ||
         userInfo["role"] === "admin") && (
           <>
