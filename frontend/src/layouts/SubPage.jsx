@@ -6,7 +6,7 @@ import {
     Button
 } from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Link } from "../components";
+import { Link, ErrorBoundary } from "../components";
 
 export const SubPage = ({ name, children, maxWidth="md", ...props }) => {
     return (
@@ -40,7 +40,9 @@ export const SubPage = ({ name, children, maxWidth="md", ...props }) => {
                 </Typography>
 
             </Box>
-            {children}
+            <ErrorBoundary>
+                {children}
+            </ErrorBoundary>
         </Container>
     );
 };
