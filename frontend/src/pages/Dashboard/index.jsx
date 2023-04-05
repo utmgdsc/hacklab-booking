@@ -48,18 +48,18 @@ export const Dashboard = () => {
       });
   }, []);
 
-  useEffect(() => {
-    if (userInfo["role"] === "admin") { // TODO: change this so only admins load all requests
-      fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data, 'all requests');
-          setPendingRequests(data);
-        });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userInfo["role"] === "admin") { // TODO: change this so only admins load all requests
+  //     fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
+  //       .then((res) => {
+  //         return res.json();
+  //       })
+  //       .then((data) => {
+  //         console.log(data, 'all requests');
+  //         setPendingRequests(data);
+  //       });
+  //   }
+  // }, []);
 
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
