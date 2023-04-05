@@ -95,12 +95,12 @@ export const CreateBooking = () => {
 
   const handleFinish = () => {
     let finish = true;
-    if (reason === "") {
-      setReasonError(true);
-      finish = false;
-    } else {
-      setReasonError(false);
-    }
+    // if (reason === "") {
+    //   setReasonError(true);
+    //   finish = false;
+    // } else {
+    //   setReasonError(false);
+    // }
 
     if (details === "") {
       setDetailError(true);
@@ -129,7 +129,7 @@ export const CreateBooking = () => {
     const booking = {
       owner: userInfo['utorid'],
       group: group,
-      reason: reason,
+      // reason: reason,
       details: details,
       title: details,
       startTime: scheduleDates[0],
@@ -224,69 +224,69 @@ export const CreateBooking = () => {
               flexWrap: "nowrap",
             }}
           >
-            <Typography
-              component="p"
-              variant="h5"
-              color={reasonError ? "error" : ""}
-              sx={{ marginBottom: "1em" }}
-            >
-              {reasonError ? "*" : ""} What is the purpose of this booking?
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-around",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                marginTop: "1em",
-                marginBottom: "3em",
-                gap: "5vw",
-              }}
-            >
-              <Button
-                size="large"
-                variant={reason === "club" ? "contained" : "outlined"}
-                color={reason === "club" ? "success" : "primary"}
-                onClick={() => {
-                  setReason("club");
-                  setReasonError(false);
-                }}
-                sx={{
-                  flexDirection: "column",
-                  textTransform: "none",
-                }}
-              >
-                <GroupsIcon
-                  sx={{
-                    fontSize: "5em",
-                  }}
-                />
-                For a club or organization
-              </Button>
-              <Button
-                size="large"
-                color={reason === "academic" ? "success" : "primary"}
-                variant={reason === "academic" ? "contained" : "outlined"}
-                onClick={() => {
-                  setReason("academic");
-                  setReasonError(false);
-                }}
-                sx={{
-                  flexDirection: "column",
-                  textTransform: "none",
-                }}
-              >
-                <SchoolIcon
-                  sx={{
-                    fontSize: "5em",
-                  }}
-                />
-                For a class or academic purpose
-              </Button>
-            </Box>
+          {/*    <Typography
+               component="p"
+               variant="h5"
+               color={reasonError ? "error" : ""}
+               sx={{ marginBottom: "1em" }}
+             >
+               {reasonError ? "*" : ""} What is the purpose of this booking?
+             </Typography>
+             <Box
+               sx={{
+                 display: "flex",
+                 flexDirection: "row",
+                 justifyContent: "space-around",
+                 alignItems: "center",
+                 flexWrap: "nowrap",
+                 marginTop: "1em",
+                 marginBottom: "3em",
+                 gap: "5vw",
+               }}
+             >
+               <Button
+                 size="large"
+                 variant={reason === "club" ? "contained" : "outlined"}
+                 color={reason === "club" ? "success" : "primary"}
+                 onClick={() => {
+                   setReason("club");
+                   setReasonError(false);
+                 }}
+                 sx={{
+                   flexDirection: "column",
+                   textTransform: "none",
+                 }}
+               >
+                 <GroupsIcon
+                   sx={{
+                     fontSize: "5em",
+                   }}
+                 />
+                 For a club or organization
+               </Button>
+               <Button
+                 size="large"
+                 color={reason === "academic" ? "success" : "primary"}
+                 variant={reason === "academic" ? "contained" : "outlined"}
+                 onClick={() => {
+                   setReason("academic");
+                   setReasonError(false);
+                 }}
+                 sx={{
+                   flexDirection: "column",
+                   textTransform: "none",
+                 }}
+               >
+                 <SchoolIcon
+                   sx={{
+                     fontSize: "5em",
+                   }}
+                 />
+                 For a class or academic purpose
+               </Button>
+             </Box> */}
 
-            {reason && userGroups.length > 0 && (
+            {userGroups.length > 0 && (
               <Box
                 sx={{
                   display: "flex",
@@ -489,7 +489,7 @@ export const CreateBooking = () => {
               </>
             )}
 
-            {calendarDate && reason && group && (
+            {calendarDate && showSchedule && group && (
               <Button
                 variant="contained"
                 size="large"
