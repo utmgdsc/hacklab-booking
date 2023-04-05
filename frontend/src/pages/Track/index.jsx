@@ -10,6 +10,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ActiveRequestCard } from "../../components/";
 
 export const Track = () => {
+    React.useEffect(() => {
+        document.title = 'Hacklab Booking - Track';
+    }, []);
+
     let { id } = useParams();
     const navigate = useNavigate();
 

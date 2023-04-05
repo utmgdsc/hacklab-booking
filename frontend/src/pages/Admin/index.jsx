@@ -84,6 +84,10 @@ export const Admin = () => {
     const [update, setUpdate] = useState(0);
 
     useEffect(() => {
+        document.title = 'Hacklab Booking - Admin';
+      }, []);
+
+    useEffect(() => {
         if (filterPending) {
             setRowsToDisplay(rows.filter(row => row['grant'] === GRANT_STATUS.PENDING));
         } else {
