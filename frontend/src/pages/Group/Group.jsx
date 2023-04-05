@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { InitialsAvatar } from "../../components";
-import { Routes, Route, useParams } from 'react-router-dom';
+import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
 
 // let people = [
 //     {
@@ -59,6 +59,7 @@ export const Group = () => {
   const [people, setPeople] = React.useState([]);
   const [group, setGroup] = React.useState({});
   const [inviteUtorid, setInviteUtorid] = React.useState('');
+  const navigate = useNavigate();
 
   const getGroups = () => {
     fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
@@ -95,8 +96,55 @@ export const Group = () => {
     })
   }
 
-  const removePerson = (person) => {
-    console.log('deleting', person);
+  const removePerson = (utorid) => {
+    console.log('deleting', utorid);
+    fetch(process.env.REACT_APP_API_URL + '/groups/remove/', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: groupID,
+        utorid: utorid
+      })
+    }).then(res => {
+      return res.json();
+    }).then(data => {
+      console.log(data);
+      getGroups();
+    })
+  }
+
+  const delGroup = () => {
+    console.log('deleting', groupID);
+    fetch(process.env.REACT_APP_API_URL + '/groups/del/', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: groupID,
+      })
+    }).then(res => {
+      return res.json();
+    }).then(data => {
+      console.log(data);
+      navigate('/group', { replace: true });
+    })
+  }
+
+
+  const makeAdmin = (utorid) => {
+    console.log('promoting', utorid);
+    fetch(process.env.REACT_APP_API_URL + '/groups/makeAdmin/', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: groupID,
+        utorid: utorid
+      })
+    }).then(res => {
+      return res.json();
+    }).then(data => {
+      console.log(data);
+      getGroups();
+    })
   }
 
   const handleClickOpen = () => {
@@ -106,10 +154,6 @@ export const Group = () => {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const makeAdmin = (person) => {
-
-  }
 
   return (
     <SubPage name={group.name}>
@@ -124,7 +168,7 @@ export const Group = () => {
         <Button variant="contained" onClick={handleClickOpen}>
           Add Student
         </Button>
-        <Button color="error">
+        <Button color="error" onClick={delGroup}>
           Delete Group
         </Button>
         <Dialog
@@ -187,7 +231,7 @@ export const Group = () => {
                 person.admin ? null : (
                   <Button
                     onClick={() => {
-                      console.log("make admin");
+                      makeAdmin(person.utorid);
                     }}
                   >
                     Make Admin
@@ -198,7 +242,7 @@ export const Group = () => {
               <Button
                 color="error"
                 onClick={() => {
-                  console.log("remove student");
+                  removePerson(person.utorid);
                 }}
               >
                 Remove Student

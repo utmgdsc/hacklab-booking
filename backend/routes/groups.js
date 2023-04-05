@@ -37,6 +37,76 @@ router.post('/invite', roleVerify(['student', 'prof', 'admin']), async (req, res
   }
 });
 
+router.post('/remove', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+  console.log(req)
+  console.log(req.body)
+  let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
+  console.log(group)
+  if (group == null) {
+    res.status(404).send('Group not found');
+    return;
+  }
+  let acc = await Account.findOne({ utorid: req.headers['utorid'] });
+  if (group.managers.includes(acc["_id"])) {
+    let invacc = await Account.findOne({ utorid: req.body.utorid });
+    group.members.remove(invacc["_id"]);
+    await group.save();
+    res.send(group);
+  } else {
+    res.status(403).send('You are not a manager of this group');
+  }
+});
+
+
+router.post('/del', roleVerify(['admin']), async (req, res) => {
+  let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
+  console.log(group)
+  if (group == null) {
+    res.status(404).send('Group not found');
+    return;
+  }
+  await group.remove();
+  res.send(group);
+});
+
+router.post('/del', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+  console.log(req)
+  console.log(req.body)
+  let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
+  console.log(group)
+  if (group == null) {
+    res.status(404).send('Group not found');
+    return;
+  }
+  let acc = await Account.findOne({ utorid: req.headers['utorid'] });
+  if (group.managers.includes(acc["_id"])) {
+    await group.remove();
+    res.send(group);
+  } else {
+    res.status(403).send('You are not a manager of this group');
+  }
+});
+
+router.post('/makeAdmin', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+  console.log(req)
+  console.log(req.body)
+  let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
+  console.log(group)
+  if (group == null) {
+    res.status(404).send('Group not found');
+    return;
+  }
+  let acc = await Account.findOne({ utorid: req.headers['utorid'] });
+  if (group.managers.includes(acc["_id"])) {
+    let invacc = await Account.findOne({ utorid: req.body.utorid });
+    group.managers.push(invacc["_id"]);
+    await group.save();
+    res.send(group);
+  } else {
+    res.status(403).send('You are not a manager of this group');
+  }
+});
+
 router.get('/search/byName/:name', roleVerify(['admin']), async (req, res) => {
   let group = await Group.findOne({ name: req.params.name });
   res.send(group);

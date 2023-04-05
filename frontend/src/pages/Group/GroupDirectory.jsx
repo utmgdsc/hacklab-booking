@@ -70,47 +70,6 @@ export const GroupDirectory = () => {
             });
     }, []);
 
-    // const myGroups = [
-    //     {
-    //         name: "Google Developers Student Club",
-    //         members: [
-    //             {
-    //                 "name": "Hatsune Miku",
-    //                 "email": "h.miku@utoronto.ca",
-    //                 "utorid": "hatsunem",
-    //                 "admin": true,
-    //             },
-    //             {
-    //                 "name": "Kagamine Rin",
-    //                 "email": "k.rin@mail.utoronto.ca",
-    //                 "utorid": "kagaminr",
-    //                 "admin": false,
-    //             }
-    //         ],
-    //         requests: []
-    //     },
-    //     {
-    //         name: "Computer Science Student Community",
-    //         members: [
-    //             {
-    //                 "name": "Hatsune Miku",
-    //                 "email": "h.miku@utoronto.ca",
-    //                 "utorid": "hatsunem",
-    //                 "admin": true,
-    //             },
-    //             {
-    //                 "name": "Kagamine Rin",
-    //                 "email": "k.rin@mail.utoronto.ca",
-    //                 "utorid": "kagaminr",
-    //                 "admin": false,
-    //             }
-    //         ],
-    //         requests: []
-    //     },
-    // ]
-
-    // console.log(userInfo);
-
     return (
         <SubPage name="Your Groups">
             {/* menu bar */}
