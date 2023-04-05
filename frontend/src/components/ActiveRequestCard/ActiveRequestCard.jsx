@@ -23,9 +23,6 @@ import CloseIcon from '@mui/icons-material/Close';
  * @param {string} description the description of the request
  * @param {string} location the location of the request
  */
-// TODO  HARDCODES TO HACKLAB!!!!
-// HACK  HARDCODES TO HACKLAB!!!!
-// FIXME  HARDCODES TO HACKLAB!!!!
 export const ActiveRequestCard = ({ title, date, location, teamName, status, approver, ownerHasTCard, owner }) => {
     const convertStatus = (status) => {
         switch (status) {

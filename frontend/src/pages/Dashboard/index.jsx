@@ -229,6 +229,7 @@ export const Dashboard = () => {
             {pending_requests &&
               pending_requests.length > 0 &&
               pending_requests.map((request) => {
+                console.log(request);
                 return (
                   <PendingRequestCard
                     key={request["_id"]}
@@ -236,7 +237,7 @@ export const Dashboard = () => {
                     description={request["description"]}
                     date={request["start_date"]}
                     name={request["title"]}
-                    utorid={request["owner"]}
+                    utorid={request["owner"]["utorid"]}
                     location={request["room"]["friendlyName"]}
                     teamName={request["group"]["name"]}
                     reqID={request["_id"]}
