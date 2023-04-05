@@ -44,13 +44,12 @@ export const Dashboard = () => {
         console.log("data");
         console.log(data);
         setActiveRequests(data);
-        //setPendingRequests(
-          //data.filter((request) => request.status === "pending"));
+        setPendingRequests(data.filter((request) => request.status === "pending"));
       });
   }, []);
 
   useEffect(() => {
-    //if (userInfo["role"] === "admin") { // TODO: change this so only admins load all requests
+    if (userInfo["role"] === "admin") { // TODO: change this so only admins load all requests
       fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
         .then((res) => {
           return res.json();
@@ -59,7 +58,7 @@ export const Dashboard = () => {
           console.log(data, 'all requests');
           setPendingRequests(data);
         });
-    //}
+    }
   }, []);
 
   return (
