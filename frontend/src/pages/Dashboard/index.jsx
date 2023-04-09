@@ -4,6 +4,7 @@ import {
   Settings as SettingsIcon,
   People as PeopleIcon,
   AdminPanelSettings as AdminPanelSettingsIcon,
+  Logout as LogoutIcon,
 } from "@mui/icons-material";
 
 import {
@@ -139,15 +140,15 @@ export const Dashboard = () => {
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
-                        <MenuItem onClick={handleCloseUserMenu}>
-                          <Typography textAlign="center"
-                            onClick={() => {
+                        <MenuItem onClick={() => {
+                              handleCloseUserMenu();
                               // HACK: clear all cookies
                               document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
                               // TODO: work with daksh to get shibboleth logout working
                               window.location.href = "https://cssc.utm.utoronto.ca/";
-                            }}
-                          >Logout</Typography>
+                            }}>
+                          <LogoutIcon fontSize="small"/>
+                          <Typography>&nbsp;Logout</Typography>
                         </MenuItem>
                     </Menu>
                 </Box>

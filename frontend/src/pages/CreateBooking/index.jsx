@@ -37,6 +37,9 @@ const getMonday = (d) => {
   d = new Date(d);
   var day = d.getDay(),
     diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+  // todo: if the friday of that date is in the past, then we want to get the monday of the next week
+
+
   return new Date(d.setDate(diff));
 };
 
@@ -91,12 +94,6 @@ export const CreateBooking = () => {
 
   const handleFinish = () => {
     let finish = true;
-    // if (reason === "") {
-    //   setReasonError(true);
-    //   finish = false;
-    // } else {
-    //   setReasonError(false);
-    // }
 
     if (details === "") {
       setDetailError(true);
@@ -205,9 +202,6 @@ export const CreateBooking = () => {
             <Typography component="p" variant="h3">
               Booking Submitted
             </Typography>
-            {/* <Typography component="p" variant="h5">
-              Booking for: {reason}
-            </Typography> */}
             <Typography component="p" variant="h5">
               Group: {group.name}
             </Typography>
@@ -231,68 +225,6 @@ export const CreateBooking = () => {
               flexWrap: "nowrap",
             }}
           >
-          {/*    <Typography
-               component="p"
-               variant="h5"
-               color={reasonError ? "error" : ""}
-               sx={{ marginBottom: "1em" }}
-             >
-               {reasonError ? "*" : ""} What is the purpose of this booking?
-             </Typography>
-             <Box
-               sx={{
-                 display: "flex",
-                 flexDirection: "row",
-                 justifyContent: "space-around",
-                 alignItems: "center",
-                 flexWrap: "nowrap",
-                 marginTop: "1em",
-                 marginBottom: "3em",
-                 gap: "5vw",
-               }}
-             >
-               <Button
-                 size="large"
-                 variant={reason === "club" ? "contained" : "outlined"}
-                 color={reason === "club" ? "success" : "primary"}
-                 onClick={() => {
-                   setReason("club");
-                   setReasonError(false);
-                 }}
-                 sx={{
-                   flexDirection: "column",
-                   textTransform: "none",
-                 }}
-               >
-                 <GroupsIcon
-                   sx={{
-                     fontSize: "5em",
-                   }}
-                 />
-                 For a club or organization
-               </Button>
-               <Button
-                 size="large"
-                 color={reason === "academic" ? "success" : "primary"}
-                 variant={reason === "academic" ? "contained" : "outlined"}
-                 onClick={() => {
-                   setReason("academic");
-                   setReasonError(false);
-                 }}
-                 sx={{
-                   flexDirection: "column",
-                   textTransform: "none",
-                 }}
-               >
-                 <SchoolIcon
-                   sx={{
-                     fontSize: "5em",
-                   }}
-                 />
-                 For a class or academic purpose
-               </Button>
-             </Box> */}
-
             {userGroups.length > 0 && (
               <Box
                 sx={{
