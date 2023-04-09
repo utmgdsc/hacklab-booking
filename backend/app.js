@@ -87,7 +87,7 @@ app.use(async (req, res, next) => {
     });
     await tcardapprover.save();
   }
-  let approver = await Account.findOne({ utorid: "mliut" }); // change to michael liut's actual utorid
+  let approver = await Account.findOne({ utorid: "liutmich" }); // change to michael liut's actual utorid
   if (approver === null) {
     let approver = new Account({
       utorid: "liutmich",

@@ -27,16 +27,23 @@ router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, 
   res.send(requests);
 });
 
-router.get("/allRequests", roleVerify(["admin"]), async (req, res) => {
+router.get("/allRequests", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let account = await Account.findOne({ utorid: req.headers["utorid"] });
   let requests = await Request.find({status: "pending"});
+
+  if (account["role"] !== "admin") {
+    requests = []
+  }
+
   res.send(requests);
 });
 
 router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res) => {
     let hacklab = await Room.findOne({ name: "Hacklab" });
 
+    // TODO: tcardapprover and approver should be a list of accounts
     let tcardapprover = await Account.findOne({ utorid: "wangandr" });
-    let approver = await Account.findOne({ utorid: "mliut" });
+    let approver = await Account.findOne({ utorid: "liutmich" });
 
     let requester = await Account.findOne({ utorid: req.body["owner"] });
     let group = await Group.findOne({ _id: req.body["group"] });
