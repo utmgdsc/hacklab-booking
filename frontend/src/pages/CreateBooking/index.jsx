@@ -28,31 +28,43 @@ import ScheduleSelector from "react-schedule-selector";
 import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
+import SadMascot from "../../assets/img/sad-mascot.png";
 
 /**
- * given any date, return the date of the Monday of that week
+ * given any date, return the date of the Monday of that week.
+ *
+ * if it is the weekend, return the next Monday.
+ *
  * @param {Date} d the date to get the Monday of
  */
 const getMonday = (d) => {
-  d = new Date(d);
+  d = new dayjs(d);
+  var day = d.day();
 
-  let day = d.getDay(),
-    diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
-
-  // get the friday of that week
-  let friday = new Date(d.setDate(diff + 4));
-
-  // if that friday is in the past (i.e. the week has already passed), set the monday to the monday of the next week
-  if (friday < new Date()) {
-    diff += 7;
+  switch (day) {
+    case 0: // sunday - get the next monday
+      d = d.add(1, "day");
+      break;
+    case 1: // monday
+      break;
+    case 2: case 3: case 4: case 5: // tuesday - friday: get current monday
+      d = d.subtract(day - 1, "day");
+      break;
+    case 6: // saturday - get the next monday
+      d = d.add(2, "day");
+      break;
+    default:
+      throw new Error("Invalid day");
   }
 
-  // BUG: does not handle month overflow! if the monday is in the next month, the code will break.
-  // TODO: fix this!
-
-  return new Date(d.setDate(diff));
+  return d.toDate();
 };
 
+/**
+ * return a formatted date string in the format of "Monday, January 1, 2021"
+ * @param {*} scheduleDate the date to format
+ * @return {string} the formatted date string
+ */
 const getDateString = (scheduleDate) => {
   var d = new Date(scheduleDate);
   return d.toLocaleDateString("en-US", {
@@ -63,6 +75,15 @@ const getDateString = (scheduleDate) => {
   });
 };
 
+/**
+ * given an array of dates, return a formatted string of the time range
+ * from the first date to the last date in the format:
+ *
+ * "from 12:00 to 13:00"
+ *
+ * @param {*} scheduleDates the array of dates
+ * @return {string} the formatted time string
+ */
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
   var dEnd = new Date(scheduleDates[scheduleDates.length - 1]);
@@ -74,8 +95,6 @@ export const CreateBooking = () => {
   const [userGroups, setUserGroups] = useState([]);
 
   useEffect(() => {
-    document.title = 'Hacklab Booking - Create Booking';
-
     fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
       .then((res) => {
         return res.json();
@@ -85,8 +104,6 @@ export const CreateBooking = () => {
       });
   }, []);
 
-  const [reason, setReason] = useState("");
-  const [reasonError, setReasonError] = useState(false);
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
@@ -98,9 +115,7 @@ export const CreateBooking = () => {
   const [validDate, setValidDate] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [group, setGroup] = useState("");
-  const open = Boolean(anchorEl);
 
   const handleFinish = () => {
     let finish = true;
@@ -184,6 +199,7 @@ export const CreateBooking = () => {
     const newDates = dates.map((date) => {
       return date;
     });
+
     setScheduleDates(newDates);
   };
 
@@ -330,7 +346,7 @@ export const CreateBooking = () => {
                         color="gray"
                         onClick={() => {
                           setDate(dayjs());
-                          setScheduleDates([]);
+                          // setScheduleDates([]);
                         }}
                         sx={{
                           textTransform: "none",
@@ -344,7 +360,7 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.subtract(7, "day"));
-                            setScheduleDates([]);
+                            // setScheduleDates([]);
                           }}
                           disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
                         >
@@ -355,7 +371,7 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.add(7, "day"));
-                            setScheduleDates([]);
+                            // setScheduleDates([]);
                           }}
                         >
                           <ArrowForwardIcon />
@@ -470,6 +486,13 @@ export const CreateBooking = () => {
                 sx={{
                   marginTop: "2em",
                 }}
+                disabled={
+                  details === ""
+                  || calendarDateError === null
+                  || scheduleDates.length === 0
+                  || !validDate
+                  || !showSchedule
+                }
               >
                 Finish
               </Button>
@@ -480,25 +503,28 @@ export const CreateBooking = () => {
     );
   } else {
     return (
-      <SubPage name="Cannot create booking">
-        <Box
+      <SubPage name="Cannot create booking" showHead={false}>
+        <Container
           sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
             justifyContent: "space-around",
             alignItems: "center",
             flexWrap: "nowrap",
+            marginTop: "2em",
             gap: "1em",
           }}
         >
-          <Typography variant="h4" component="p">
+          <img width="300" src={SadMascot} alt={"Sparkle Mascot"} />
+          <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>Cannot Create Booking</Typography>
+          <Typography variant="body1">
             Please{" "}
             <Link isInternalLink href="/group">
               create a group
             </Link>{" "}
             before making a booking request.
           </Typography>
-        </Box>
+        </Container>
       </SubPage>
     );
   }

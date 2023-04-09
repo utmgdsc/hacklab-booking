@@ -68,8 +68,6 @@ export const Admin = () => {
 
     // useEffect hook for fetching the rows
     useEffect(() => {
-        document.title = 'Hacklab Booking - Admin';
-
         fetch(process.env.REACT_APP_API_URL + '/accounts/all', {
             method: 'GET',
         })

@@ -10,10 +10,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ActiveRequestCard } from "../../components";
 
 export const Calendar = () => {
-    React.useEffect(() => {
-        document.title = 'Hacklab Booking - Calendar';
-    }, []);
-
     let { id } = useParams();
     const navigate = useNavigate();
 
@@ -22,6 +18,7 @@ export const Calendar = () => {
             <iframe
               src="https://calendar.google.com/calendar/embed?src=hacklabbooking%40gmail.com&ctz=America%2FToronto"
               style={{width: "100%", height: "50em", border: "0"}}
+              title="Hacklab Calendar"
             ></iframe>
         </SubPage>
     );

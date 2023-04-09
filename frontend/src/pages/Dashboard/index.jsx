@@ -38,8 +38,6 @@ export const Dashboard = () => {
   const [openEditRequest, setOpenEditRequest] = useState(false);
 
   useEffect(() => {
-    document.title = "Hacklab Booking - Dashboard";
-
     fetch(process.env.REACT_APP_API_URL + "/requests/myRequests")
       .then((res) => {
         return res.json();

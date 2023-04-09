@@ -8,9 +8,13 @@ import {
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link, ErrorBoundary } from "../components";
 
-export const SubPage = ({ name, children, maxWidth="md", ...props }) => {
+export const SubPage = ({ name, children, maxWidth = "md", py = 8, showHead = true, ...props }) => {
+    React.useEffect(() => {
+        document.title = 'Hacklab Booking - ' + name;
+    }, [name]);
+
     return (
-        <Container sx={{ py: 8 }} maxWidth={maxWidth} component="main" {...props}>
+        <Container sx={{ py: py }} maxWidth={maxWidth} component="main" {...props}>
             <Typography variant="h4" sx={{
                 marginTop: {
                     xs: "-2em",
@@ -26,20 +30,22 @@ export const SubPage = ({ name, children, maxWidth="md", ...props }) => {
                     </Button>
                 </Link>
             </Typography>
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    marginBottom: "4em"
-                }}
-            >
-                <Typography variant="h1" gutterBottom sx={{ marginTop: "2em" }}>
-                    {name}
-                </Typography>
+            {showHead && (
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        marginBottom: "4em"
+                    }}
+                >
+                    <Typography variant="h1" gutterBottom sx={{ marginTop: "2em" }}>
+                        {name}
+                    </Typography>
 
-            </Box>
+                </Box>
+            )}
             <ErrorBoundary>
                 {children}
             </ErrorBoundary>
