@@ -380,36 +380,46 @@ export const CreateBooking = () => {
                     </LocalizationProvider>
                   </Box>
                 </Box>
-                <ScheduleSelector
-                  selection={scheduleDates}
-                  numDays={5}
-                  minTime={8}
-                  maxTime={22}
-                  hourlyChunks={1}
-                  startDate={getMonday(calendarDate)}
-                  onChange={handleScheduleDate}
-                  selectionScheme="linear"
-                  renderDateLabel={(date) => {
-                    return (
-                      <Box
-                        sx={{
-                          textAlign: "center",
-                          marginBottom: "0.5em",
-                        }}
-                      >
-                        {date.toLocaleDateString("en-US", {
-                          weekday: "short",
-                        })}
-                        <Typography component="p" variant="h5">
-                          {date.toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "long",
-                          })}
-                        </Typography>
-                      </Box>
-                    );
+                <Box
+                  onMouseDown={() => {
+                    setScheduleDates([]);
                   }}
-                />
+                  sx={{
+                    marginBottom: "1em",
+                    width: "100%",
+                  }}
+                >
+                  <ScheduleSelector
+                    selection={scheduleDates}
+                    numDays={5}
+                    minTime={8}
+                    maxTime={22}
+                    hourlyChunks={1}
+                    startDate={getMonday(calendarDate)}
+                    onChange={handleScheduleDate}
+                    selectionScheme="linear"
+                    renderDateLabel={(date) => {
+                      return (
+                        <Box
+                          sx={{
+                            textAlign: "center",
+                            marginBottom: "0.5em",
+                          }}
+                        >
+                          {date.toLocaleDateString("en-US", {
+                            weekday: "short",
+                          })}
+                          <Typography component="p" variant="h5">
+                            {date.toLocaleDateString("en-US", {
+                              day: "numeric",
+                              month: "long",
+                            })}
+                          </Typography>
+                        </Box>
+                      );
+                    }}
+                  />
+                </Box>
                 {dateError && (
                   <Typography
                     component="p"
