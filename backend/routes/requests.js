@@ -41,6 +41,15 @@ router.get("/allRequests", roleVerify(["student", "prof", "admin"]), async (req,
 router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res) => {
     let hacklab = await Room.findOne({ name: "Hacklab" });
 
+    // date data checking
+    // start date and end date must be in the future, and start date must be before end date
+    let start_date = new Date(req.body["startTime"]);
+    let end_date = new Date(req.body["endTime"]);
+    if (start_date < new Date() || end_date < new Date() || start_date > end_date) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+
     // TODO: tcardapprover and approver should be a list of accounts
     let tcardapprover = await Account.findOne({ utorid: "wangandr" });
     let approver = await Account.findOne({ utorid: "liutmich" });
