@@ -35,10 +35,20 @@ import { SubPage } from "../../layouts/SubPage";
  */
 const getMonday = (d) => {
   d = new Date(d);
-  var day = d.getDay(),
-    diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
-  // todo: if the friday of that date is in the past, then we want to get the monday of the next week
 
+  let day = d.getDay(),
+    diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
+
+  // get the friday of that week
+  let friday = new Date(d.setDate(diff + 4));
+
+  // if that friday is in the past (i.e. the week has already passed), set the monday to the monday of the next week
+  if (friday < new Date()) {
+    diff += 7;
+  }
+
+  // BUG: does not handle month overflow! if the monday is in the next month, the code will break.
+  // TODO: fix this!
 
   return new Date(d.setDate(diff));
 };
