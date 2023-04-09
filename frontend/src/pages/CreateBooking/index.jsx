@@ -77,6 +77,7 @@ export const CreateBooking = () => {
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
+  const [datePastError, setDatePastError] = useState(false);
   const [calendarDate, setDate] = useState(dayjs(new Date()));
   const [calendarDateError, setCalendarDateError] = useState(false);
   const [scheduleDates, setScheduleDates] = useState([]);
@@ -151,8 +152,16 @@ export const CreateBooking = () => {
   const handleScheduleDate = (dates) => {
     var currDate = 0;
     setDateError(false);
+    setDatePastError(false);
     for (var i = 0; i < dates.length; i++) {
       var d = new Date(dates[i]);
+      // if in the past
+      if (d < new Date()) {
+        setDatePastError(true);
+        return;
+      }
+
+      // if not the same day
       if (d.getDate() !== currDate && i > 0) {
         setDateError(true);
         return;
@@ -395,6 +404,7 @@ export const CreateBooking = () => {
                             setDate(calendarDate.subtract(7, "day"));
                             setScheduleDates([]);
                           }}
+                          disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
                         >
                           <ArrowBackIcon />
                         </IconButton>
@@ -433,6 +443,7 @@ export const CreateBooking = () => {
                           setCalendarDateError(false);
                           setScheduleDates([]);
                         }}
+                        disablePast
                       />
                     </LocalizationProvider>
                   </Box>
@@ -474,6 +485,15 @@ export const CreateBooking = () => {
                     sx={{ marginTop: "1em" }}
                   >
                     * please only select one day
+                  </Typography>
+                )}
+                {datePastError && (
+                  <Typography
+                    component="p"
+                    color="error"
+                    sx={{ marginTop: "1em" }}
+                  >
+                    * do not select a day in the past
                   </Typography>
                 )}
                 {scheduleError && (
