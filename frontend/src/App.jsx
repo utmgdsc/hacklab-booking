@@ -12,6 +12,7 @@ import { CreateBooking } from "./pages/CreateBooking";
 import { Group } from "./pages/Group/Group";
 import { GroupDirectory } from "./pages/Group/GroupDirectory";
 import { Admin } from "./pages/Admin";
+import { NotFound } from "./pages/NotFound";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -51,6 +52,7 @@ function App() {
               <Route exact path="/group/" element={<GroupDirectory />} />
               <Route exact path="/group/:id" element={<Group />} />
               <Route exact path="/admin" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
         </ErrorBoundary>
