@@ -59,6 +59,16 @@ export const Dashboard = () => {
         });
   }, []);
 
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenUserMenu = (event) => {
+      setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+      setAnchorElUser(null);
+  };
+
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <Box
@@ -109,8 +119,36 @@ export const Dashboard = () => {
         </Box>
 
         <Box sx={{ flexGrow: 0 }}>
-          <InitialsAvatar name={userInfo["name"]} />
-        </Box>
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <InitialsAvatar name={userInfo["name"]} />
+                    </IconButton>
+                    <Menu
+                        sx={{ mt: '45px' }}
+                        anchorEl={anchorElUser}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}
+                    >
+                        <MenuItem onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center"
+                            onClick={() => {
+                              // HACK: clear all cookies
+                              document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+                              // TODO: work with daksh to get shibboleth logout working
+                              window.location.href = "https://cssc.utm.utoronto.ca/";
+                            }}
+                          >Logout</Typography>
+                        </MenuItem>
+                    </Menu>
+                </Box>
       </Box>
 
       <Box
