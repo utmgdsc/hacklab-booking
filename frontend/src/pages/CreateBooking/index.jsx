@@ -203,7 +203,7 @@ export const CreateBooking = () => {
     setScheduleDates(newDates);
   };
 
-  if (false && userGroups.length > 0) {
+  if (userGroups.length > 0) {
     return (
       <SubPage name="Create a booking">
         {submitted ? (
@@ -515,7 +515,7 @@ export const CreateBooking = () => {
             gap: "1em",
           }}
         >
-          <img width="200" src={SadMascot} alt={"Sparkle Mascot"} />
+          <img width="300" src={SadMascot} alt={"Sparkle Mascot"} />
           <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>Cannot Create Booking</Typography>
           <Typography variant="body1">
             Please{" "}
