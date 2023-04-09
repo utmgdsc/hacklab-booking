@@ -72,11 +72,6 @@ export const CreateBooking = () => {
       });
   }, []);
 
-  // // TODO for testing purposes: remove after done testing
-  // useEffect(() => {
-  //   setUserGroups([{ name: "GDSC" }, { name: "MDSC" }]);
-  // }, []);
-
   const [reason, setReason] = useState("");
   const [reasonError, setReasonError] = useState(false);
   const [details, setDetails] = useState("");

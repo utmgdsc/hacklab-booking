@@ -44,19 +44,21 @@ export const Dashboard = () => {
         console.log("data");
         console.log(data);
         setActiveRequests(data);
-        setPendingRequests(data.filter((request) => request.status === "pending"));
+        setPendingRequests([]);
       });
   }, []);
 
-  useEffect(() => { // TODO: change this so only admins load all requests
-      fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          console.log(data, 'all requests');
-          setPendingRequests(data);
-        });
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data, "all requests");
+        setPendingRequests(
+          data.filter((request) => request.status === "pending")
+        );
+      });
   }, []);
 
   return (
@@ -189,76 +191,67 @@ export const Dashboard = () => {
           </Tooltip>
         )}
       </Box>
+      <Typography variant="h2" gutterBottom>
+        Your Active Requests
+      </Typography>
+      {active_requests.length === 0 && (
+        <NoRequestsPlaceholder
+          text={
+            "You have no active requests. Create one using the 'Book' button above."
+          }
+        />
+      )}
+      {active_requests.map((request) => {
+        console.log(request);
+        return (
+          <ActiveRequestCard
+            key={request["_id"]}
+            title={request["title"]}
+            description={request["description"]}
+            date={request["start_date"]}
+            location={request["room"]["friendlyName"]}
+            teamName={request["group"]["name"]}
+            status={request["status"]}
+            owner={request["owner"]["name"]}
+            ownerHasTCard={request["owner"]["accessGranted"]}
+            approver={request["approver"]["name"]}
+          />
+        );
+      })}
 
-      {//(active_requests && active_requests.length > 0) &&
-      userInfo["role"] === "student" && (
+      {userInfo["role"] === "admin" && (
         <>
           <Typography variant="h2" gutterBottom>
-            Your Active Requests
+            Your{" "}
+            <acronym title="Booking requests that demand your attention">
+              Pending Requests
+            </acronym>
           </Typography>
-          {active_requests.length === 0 && (
+          {pending_requests && pending_requests.length === 0 && (
             <NoRequestsPlaceholder
-              text={
-                "You have no active requests. Create one using the 'Book' button above."
-              }
+              text={"No requests demand your attention. Horray!"}
             />
           )}
-          {active_requests.map((request) => {
-            console.log(request);
-            return (
-              <ActiveRequestCard
-                key={request["_id"]}
-                title={request["title"]}
-                description={request["description"]}
-                date={request["start_date"]}
-                location={request["room"]["friendlyName"]}
-                teamName={request["group"]["name"]}
-                status={request["status"]}
-                owner={request["owner"]["name"]}
-                ownerHasTCard={request["owner"]["accessGranted"]}
-                approver={request["approver"]["name"]}
-              />
-            );
-          })}
+          {pending_requests &&
+            pending_requests.length > 0 &&
+            pending_requests.map((request) => {
+              console.log(request);
+              return (
+                <PendingRequestCard
+                  key={request["_id"]}
+                  title={request["title"]}
+                  description={request["description"]}
+                  date={request["start_date"]}
+                  name={request["title"]}
+                  utorid={request["owner"]["utorid"]}
+                  location={request["room"]["friendlyName"]}
+                  teamName={request["group"]["name"]}
+                  reqID={request["_id"]}
+                />
+              );
+            })}
         </>
       )}
-
-      {
-        //(pending_requests && pending_requests.length > 0) &&
-        (userInfo["role"] === "prof" || userInfo["role"] === "admin") && (
-          <>
-            <Typography variant="h2" gutterBottom>
-              Your{" "}
-              <acronym title="Booking requests that demand your attention">
-                Pending Requests
-              </acronym>
-            </Typography>
-            {pending_requests && pending_requests.length === 0 && (
-              <NoRequestsPlaceholder
-                text={"No requests demand your attention. Horray!"}
-              />
-            )}
-            {pending_requests &&
-              pending_requests.length > 0 &&
-              pending_requests.map((request) => {
-                console.log(request);
-                return (
-                  <PendingRequestCard
-                    key={request["_id"]}
-                    title={request["title"]}
-                    description={request["description"]}
-                    date={request["start_date"]}
-                    name={request["title"]}
-                    utorid={request["owner"]["utorid"]}
-                    location={request["room"]["friendlyName"]}
-                    teamName={request["group"]["name"]}
-                    reqID={request["_id"]}
-                  />
-                );
-              })}
-          </>
-        )
-      }
     </Container>
   );
 };

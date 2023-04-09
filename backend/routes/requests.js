@@ -27,8 +27,14 @@ router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, 
   res.send(requests);
 });
 
-router.get("/allRequests", roleVerify(["admin"]), async (req, res) => {
+router.get("/allRequests", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let account = await Account.findOne({ utorid: req.headers["utorid"] });
   let requests = await Request.find({status: "pending"});
+
+  if (account["role"] !== "admin") {
+    requests = []
+  }
+
   res.send(requests);
 });
 
