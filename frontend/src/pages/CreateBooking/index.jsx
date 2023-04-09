@@ -30,7 +30,10 @@ import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 
 /**
- * given any date, return the date of the Monday of that week
+ * given any date, return the date of the Monday of that week.
+ *
+ * if it is the weekend, return the next Monday.
+ *
  * @param {Date} d the date to get the Monday of
  */
 const getMonday = (d) => {
@@ -88,8 +91,6 @@ export const CreateBooking = () => {
       });
   }, []);
 
-  const [reason, setReason] = useState("");
-  const [reasonError, setReasonError] = useState(false);
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
@@ -101,9 +102,7 @@ export const CreateBooking = () => {
   const [validDate, setValidDate] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [group, setGroup] = useState("");
-  const open = Boolean(anchorEl);
 
   const handleFinish = () => {
     let finish = true;
@@ -333,7 +332,7 @@ export const CreateBooking = () => {
                         color="gray"
                         onClick={() => {
                           setDate(dayjs());
-                          setScheduleDates([]);
+                          // setScheduleDates([]);
                         }}
                         sx={{
                           textTransform: "none",
@@ -347,7 +346,7 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.subtract(7, "day"));
-                            setScheduleDates([]);
+                            // setScheduleDates([]);
                           }}
                           disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
                         >
@@ -358,7 +357,7 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.add(7, "day"));
-                            setScheduleDates([]);
+                            // setScheduleDates([]);
                           }}
                         >
                           <ArrowForwardIcon />
@@ -473,6 +472,13 @@ export const CreateBooking = () => {
                 sx={{
                   marginTop: "2em",
                 }}
+                disabled={
+                  details === ""
+                  || calendarDateError === null
+                  || scheduleDates.length === 0
+                  || !validDate
+                  || !showSchedule
+                }
               >
                 Finish
               </Button>
