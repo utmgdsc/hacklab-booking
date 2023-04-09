@@ -28,6 +28,7 @@ import ScheduleSelector from "react-schedule-selector";
 import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
+import SadMascot from "../../assets/img/sad-mascot.png";
 
 /**
  * given any date, return the date of the Monday of that week.
@@ -59,6 +60,11 @@ const getMonday = (d) => {
   return d.toDate();
 };
 
+/**
+ * return a formatted date string in the format of "Monday, January 1, 2021"
+ * @param {*} scheduleDate the date to format
+ * @return {string} the formatted date string
+ */
 const getDateString = (scheduleDate) => {
   var d = new Date(scheduleDate);
   return d.toLocaleDateString("en-US", {
@@ -69,6 +75,15 @@ const getDateString = (scheduleDate) => {
   });
 };
 
+/**
+ * given an array of dates, return a formatted string of the time range
+ * from the first date to the last date in the format:
+ *
+ * "from 12:00 to 13:00"
+ *
+ * @param {*} scheduleDates the array of dates
+ * @return {string} the formatted time string
+ */
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
   var dEnd = new Date(scheduleDates[scheduleDates.length - 1]);
@@ -80,8 +95,6 @@ export const CreateBooking = () => {
   const [userGroups, setUserGroups] = useState([]);
 
   useEffect(() => {
-    document.title = 'Hacklab Booking - Create Booking';
-
     fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
       .then((res) => {
         return res.json();
@@ -186,10 +199,11 @@ export const CreateBooking = () => {
     const newDates = dates.map((date) => {
       return date;
     });
+
     setScheduleDates(newDates);
   };
 
-  if (userGroups.length > 0) {
+  if (false && userGroups.length > 0) {
     return (
       <SubPage name="Create a booking">
         {submitted ? (
@@ -489,25 +503,28 @@ export const CreateBooking = () => {
     );
   } else {
     return (
-      <SubPage name="Cannot create booking">
-        <Box
+      <SubPage name="Cannot create booking" showHead={false}>
+        <Container
           sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
             justifyContent: "space-around",
             alignItems: "center",
             flexWrap: "nowrap",
+            marginTop: "2em",
             gap: "1em",
           }}
         >
-          <Typography variant="h4" component="p">
+          <img width="200" src={SadMascot} alt={"Sparkle Mascot"} />
+          <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>Cannot Create Booking</Typography>
+          <Typography variant="body1">
             Please{" "}
             <Link isInternalLink href="/group">
               create a group
             </Link>{" "}
             before making a booking request.
           </Typography>
-        </Box>
+        </Container>
       </SubPage>
     );
   }

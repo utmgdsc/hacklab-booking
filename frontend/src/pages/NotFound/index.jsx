@@ -1,7 +1,7 @@
 import { React } from "react";
 import { Link } from "../../components";
 import { Typography, Container } from "@mui/material";
-import SparkleMascot from "../../assets/img/sparkle-mascot.png";
+import SadMascot from "../../assets/img/sad-mascot.png";
 
 export const NotFound = () => {
   return (
@@ -16,7 +16,7 @@ export const NotFound = () => {
         gap: "1em",
       }}
     >
-        <img width="200" src={SparkleMascot} alt={"Sparkle Mascot"} />
+        <img width="200" src={SadMascot} alt={"Sparkle Mascot"} />
       <Typography variant="h3">Page not found</Typography>
       <Typography variant="body1">
         The page you are looking for does not exist.
