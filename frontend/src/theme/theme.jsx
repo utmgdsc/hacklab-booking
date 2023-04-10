@@ -118,24 +118,24 @@ export const GoogleTheme = ({ mode }) => {
                     }
                 }
             },
-        },
-        MuiCardContent: {
-            styleOverrides: {
-                root: {
-                    padding: "1.25em 1.25em 0",
+            MuiCardContent: {
+                styleOverrides: {
+                    root: {
+                        padding: "1.25em 1.25em 0",
+                    }
                 }
-            }
-        },
-        MuiCardActions: {
-            styleOverrides: {
-                root: {
-                    padding: "1.25em",
-                    borderTop: "1px solid #e8eaed",
-                    marginTop: "1.25em",
-                    gap: "2em"
+            },
+            MuiCardActions: {
+                styleOverrides: {
+                    root: {
+                        padding: "1.25em",
+                        borderTop: "1px solid",
+                        borderColor: mode === THEME.LIGHT ? "#e8eaed" : "#0a0a0a",
+                        marginTop: "1.25em",
+                        gap: "2em"
+                    }
                 }
             }
         }
-    }
-    )
+    })
 }
