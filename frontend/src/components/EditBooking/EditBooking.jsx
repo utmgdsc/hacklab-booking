@@ -272,7 +272,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
             />
 
             <Typography component="p" variant="h3">
-              Booking Submitted
+              Booking Changed
             </Typography>
             <Typography component="p" variant="h5">
               Group: {group.name}
