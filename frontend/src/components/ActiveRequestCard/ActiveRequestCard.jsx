@@ -46,7 +46,7 @@ export const ActiveRequestCard = ({
   approver,
   ownerHasTCard,
   owner,
-  edit
+  edit,
 }) => {
   const convertStatus = (status) => {
     switch (status) {
@@ -79,8 +79,12 @@ export const ActiveRequestCard = ({
           <Typography variant="h5" component="div" fontWeight={600}>
             {title}
           </Typography>
-
-          <IconButton aria-label="edit" component="label" onClick={handleEdit}>
+          <IconButton
+            aria-label="edit"
+            component="label"
+            onClick={handleEdit}
+            disabled={!(status === "pending")}
+          >
             <EditIcon />
           </IconButton>
         </Box>

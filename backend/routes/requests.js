@@ -139,4 +139,29 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
   // req.status(200).send("Request found");
 });
 
+router.get("/getRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let request = await Request.findOne({ _id: req.params.id });
+  res.send(request);
+});
+
+router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let start_date = new Date(req.body["startTime"]);
+  let end_date = new Date(req.body["endTime"]);
+  if (start_date < new Date() || end_date < new Date() || start_date > end_date) {
+    res.status(400).send("Invalid date");
+    return;
+  }
+  
+  let group = await Group.findOne({ _id: req.body["group"] });
+
+  await Request.updateMany({ _id: req.params.id }, {$set: { title: req.body["title"] }});
+  await Request.updateMany({ _id: req.params.id }, {$set: { description: req.body["title"] }});
+  await Request.updateMany({ _id: req.params.id }, {$set: { reason: req.body["title"] }});
+  await Request.updateMany({ _id: req.params.id }, {$set: { start_date: req.body["startTime"] }});
+  await Request.updateMany({ _id: req.params.id }, {$set: { end_date: req.body["endTime"] }});
+  await Request.updateMany({ _id: req.params.id }, {$set: { group: group }});
+
+  return;
+});
+
 module.exports = router;
