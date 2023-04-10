@@ -13,6 +13,7 @@ import {
   ActiveRequestCard,
   InitialsAvatar,
   PendingRequestCard,
+  EditBooking,
 } from "../../components";
 import {
   Typography,
@@ -33,6 +34,8 @@ export const Dashboard = () => {
   const userInfo = useContext(UserContext);
   const [pending_requests, setPendingRequests] = useState([]);
   const [active_requests, setActiveRequests] = useState([]);
+  const [editRequestID, setEditRequestID] = useState(null);
+  const [openEditRequest, setOpenEditRequest] = useState(false);
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_URL + "/requests/myRequests")
@@ -63,11 +66,17 @@ export const Dashboard = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
-      setAnchorElUser(event.currentTarget);
+    setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseUserMenu = () => {
-      setAnchorElUser(null);
+    setAnchorElUser(null);
+  };
+
+  const editThisRequest = (reqID) => {
+    console.log(reqID, "edit this request");
+    setEditRequestID(reqID);
+    setOpenEditRequest(true);
   };
 
   return (
@@ -120,36 +129,45 @@ export const Dashboard = () => {
         </Box>
 
         <Box sx={{ flexGrow: 0 }}>
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <InitialsAvatar name={userInfo["name"]} />
-                    </IconButton>
-                    <Menu
-                        sx={{ mt: '45px' }}
-                        anchorEl={anchorElUser}
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={Boolean(anchorElUser)}
-                        onClose={handleCloseUserMenu}
-                    >
-                        <MenuItem onClick={() => {
-                              handleCloseUserMenu();
-                              // HACK: clear all cookies
-                              document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-                              // TODO: work with daksh to get shibboleth logout working
-                              window.location.href = "https://cssc.utm.utoronto.ca/";
-                            }}>
-                          <LogoutIcon fontSize="small"/>
-                          <Typography>&nbsp;Logout</Typography>
-                        </MenuItem>
-                    </Menu>
-                </Box>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <InitialsAvatar name={userInfo["name"]} />
+          </IconButton>
+          <Menu
+            sx={{ mt: "45px" }}
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+          >
+            <MenuItem
+              onClick={() => {
+                handleCloseUserMenu();
+                // HACK: clear all cookies
+                document.cookie.split(";").forEach(function (c) {
+                  document.cookie = c
+                    .replace(/^ +/, "")
+                    .replace(
+                      /=.*/,
+                      "=;expires=" + new Date().toUTCString() + ";path=/"
+                    );
+                });
+                // TODO: work with daksh to get shibboleth logout working
+                window.location.href = "https://cssc.utm.utoronto.ca/";
+              }}
+            >
+              <LogoutIcon fontSize="small" />
+              <Typography>&nbsp;Logout</Typography>
+            </MenuItem>
+          </Menu>
+        </Box>
       </Box>
 
       <Box
@@ -243,6 +261,7 @@ export const Dashboard = () => {
         return (
           <ActiveRequestCard
             key={request["_id"]}
+            reqID={request["_id"]}
             title={request["title"]}
             description={request["description"]}
             date={request["start_date"]}
@@ -252,9 +271,18 @@ export const Dashboard = () => {
             owner={request["owner"]["name"]}
             ownerHasTCard={request["owner"]["accessGranted"]}
             approver={request["approver"]["name"]}
+            edit={editThisRequest}
           />
         );
       })}
+
+      {openEditRequest && (
+        <EditBooking
+          isOpen={openEditRequest}
+          reqID={editRequestID}
+          setOpenEditRequest={setOpenEditRequest}
+        />
+      )}
 
       {userInfo["role"] === "admin" && (
         <>
