@@ -47,12 +47,7 @@ export const GoogleTheme = ({ mode }) => {
                 }
             },
             gray: {
-                light: {
-                    main: "#5f6368"
-                },
-                dark: {
-                    main: "#202124"
-                }
+                main: mode === THEME.DARK ? "#c5d3e3" : "#5f6368",
             },
             // Used by `getContrastText()` to maximize the contrast between
             // the background and the text.

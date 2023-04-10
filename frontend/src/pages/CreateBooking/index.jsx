@@ -17,7 +17,8 @@ import {
   Tooltip,
   Select,
   IconButton,
-  Divider
+  Divider,
+  useTheme
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
@@ -104,6 +105,7 @@ export const CreateBooking = () => {
       });
   }, []);
 
+  const theme = useTheme();
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
@@ -346,10 +348,9 @@ export const CreateBooking = () => {
                         color="gray"
                         onClick={() => {
                           setDate(dayjs());
-                          // setScheduleDates([]);
                         }}
                         sx={{
-                          textTransform: "none",
+                          textTransform: "none"
                         }}
                       >
                         Today
@@ -360,7 +361,6 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.subtract(7, "day"));
-                            // setScheduleDates([]);
                           }}
                           disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
                         >
@@ -371,7 +371,6 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.add(7, "day"));
-                            // setScheduleDates([]);
                           }}
                         >
                           <ArrowForwardIcon />
@@ -424,7 +423,7 @@ export const CreateBooking = () => {
                     startDate={getMonday(calendarDate)}
                     onChange={handleScheduleDate}
                     selectionScheme="linear"
-                    renderDateLabel={(date) => {
+                    renderDateLabel={date => {
                       return (
                         <Box
                           sx={{
@@ -444,6 +443,27 @@ export const CreateBooking = () => {
                         </Box>
                       );
                     }}
+                    renderTimeLabel={time => {
+                      return (
+                        <Typography
+                          component="p"
+                          variant="subtitle2"
+                          color="gray"
+                          sx={{ textAlign: "right", marginRight: "0.5em" }}
+                          size="small"
+                        >
+                          {time.toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+
+                          }).replace(":00", "").replace(" ", "").toLowerCase()}
+                        </Typography>
+                      );
+                    }}
+                    unselectedColor={ theme.palette.action.hover }
+                    selectedColor={ theme.palette.action.active }
+                    hoveredColor={ theme.palette.action.disabled }
                   />
                 </Box>
                 {dateError && (
