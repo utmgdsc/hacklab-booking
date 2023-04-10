@@ -172,4 +172,14 @@ router.post("/cancelRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
   return;
 });
 
+router.get("/getRoom/:id", roleVerify(["admin"]), async (req, res) => {
+  let room = await Room.findOne({ _id: req.params.id });
+  res.send(room);
+});
+
+router.get('/getUtorid/:id', roleVerify(['admin']), async (req, res) => {
+  let account = await Account.findOne({ _id: req.params.id });
+  res.send(account);
+});
+
 module.exports = router;

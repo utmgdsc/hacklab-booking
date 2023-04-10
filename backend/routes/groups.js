@@ -170,4 +170,9 @@ router.get('/search/byID/:id', roleVerify(['student', 'prof', 'admin']), async (
   }
 });
 
+router.get('/getGroup/:id', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+  let group = await Group.findOne({ _id: req.params.id });
+  res.send(group);
+});
+
 module.exports = router;

@@ -322,9 +322,12 @@ export const Dashboard = () => {
                   description={request["description"]}
                   date={request["start_date"]}
                   name={request["title"]}
-                  utorid={request["owner"]["utorid"]}
-                  location={request["room"]["friendlyName"]}
-                  teamName={request["group"]["name"]}
+                  ownerID={request["owner"]}
+                  groupID={request["group"]}
+                  locationID={request["room"]}
+                  //utorid={request["owner"]["utorid"]}
+                  //location={request["room"]["friendlyName"]}
+                  //teamName={request["group"]["name"]}
                   reqID={request["_id"]}
                 />
               );
