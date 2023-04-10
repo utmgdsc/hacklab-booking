@@ -212,16 +212,17 @@ export const Group = () => {
                   )
                 }
 
-                {userInfo.utorid === person.utorid ? null : (
-                  <Button
-                    color="error"
-                    onClick={() => {
-                      removePerson(person.utorid);
-                    }}
-                  >
-                    Remove Student
-                  </Button>
-                )}
+                <Button
+                  color="error"
+                  onClick={() => {
+                    removePerson(person.utorid);
+                    if (userInfo.utorid === person.utorid) {
+                      navigate('/group', { replace: true });
+                    }
+                  }}
+                >
+                  Remove Student
+                </Button>
               </CardActions>
             )}
           </Card>
