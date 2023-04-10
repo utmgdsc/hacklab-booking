@@ -1,54 +1,24 @@
-import React, {useEffect} from "react";
 import {
-  Typography,
+  Box,
   Button,
   Card,
-  CardContent,
   CardActions,
-  Box,
-  Tooltip,
+  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  useMediaQuery,
-  useTheme,
   TextField,
+  Typography,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
-import { SubPage } from "../../layouts/SubPage";
+import React, { useContext, useEffect } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
 import { InitialsAvatar } from "../../components";
-import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
-
-// let people = [
-//     {
-//         name: "Hatsune Miku",
-//         email: "h.miku@utoronto.ca",
-//         utorid: "hatsunem",
-//         admin: true,
-//     },
-//     {
-//         name: "Kagamine Rin",
-//         email: "k.rin@mail.utoronto.ca",
-//         utorid: "kagaminr",
-//         admin: false,
-//     },
-//     {
-//         name: "Kagamine Len",
-//         email: "k.len@mail.utoronto.ca",
-//         utorid: "kagaminl",
-//         admin: false,
-//     }
-// ]
-// const group = {
-//     people: people,
-//     name: "Google Developers Student Club",
-//     faculty_representative: {
-//         name: "Yowane Haku",
-//         email: "y.haku@cs.toronto.edu",
-//         utorid: "yowanh"
-//     }
-// }
+import { UserContext } from "../../contexts/UserContext";
+import { SubPage } from "../../layouts/SubPage";
 
 export const Group = () => {
   const [open, setOpen] = React.useState(false);
@@ -60,6 +30,7 @@ export const Group = () => {
   const [group, setGroup] = React.useState({});
   const [inviteUtorid, setInviteUtorid] = React.useState('');
   const navigate = useNavigate();
+  const userInfo = useContext(UserContext);
 
   const getGroups = () => {
     fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
@@ -201,7 +172,7 @@ export const Group = () => {
             }}
           >
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={() => {handleClose(); addPerson(inviteUtorid); setInviteUtorid('')}} variant="contained">Add</Button>
+            <Button onClick={() => { handleClose(); addPerson(inviteUtorid); setInviteUtorid('') }} variant="contained">Add</Button>
           </DialogActions>
         </Dialog>
       </Box>
@@ -221,34 +192,38 @@ export const Group = () => {
                 <InitialsAvatar name={person.name} />
               </Box>
               <Box>
-                <Typography variant="h5">{person.name} <Typography sx={{color: "grey", display: "inline"}}>({person.utorid})</Typography></Typography>
+                <Typography variant="h5">{person.name} <Typography sx={{ color: "grey", display: "inline" }}>({person.utorid})</Typography></Typography>
                 {person.admin ? <Typography color="success">Group manager</Typography> : null}
                 <Typography variant="body1">{person.email}</Typography>
               </Box>
             </CardContent>
-            <CardActions>
-              {
-                person.admin ? null : (
+            {person.admin && userInfo.utorid === person.utorid ? null : (
+
+              <CardActions>
+                {
+                  person.admin ? null : (
+                    <Button
+                      onClick={() => {
+                        makeAdmin(person.utorid);
+                      }}
+                    >
+                      Make Admin
+                    </Button>
+                  )
+                }
+
+                {userInfo.utorid === person.utorid ? null : (
                   <Button
+                    color="error"
                     onClick={() => {
-                      makeAdmin(person.utorid);
+                      removePerson(person.utorid);
                     }}
                   >
-                    Make Admin
+                    Remove Student
                   </Button>
-                )
-              }
-
-              <Button
-                color="error"
-                onClick={() => {
-                  removePerson(person.utorid);
-                }}
-              >
-                Remove Student
-              </Button>
-
-            </CardActions>
+                )}
+              </CardActions>
+            )}
           </Card>
         ))
       }
