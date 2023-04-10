@@ -79,6 +79,19 @@ export const Dashboard = () => {
     setOpenEditRequest(true);
   };
 
+  const cancelThisRequest = (reqID) => {
+    console.log(reqID, "cancel this request");
+    fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setActiveRequests(
+      active_requests.filter((request) => request._id !== reqID)
+    );
+  };
+
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <Box
@@ -272,6 +285,7 @@ export const Dashboard = () => {
             ownerHasTCard={request["owner"]["accessGranted"]}
             approver={request["approver"]["name"]}
             edit={editThisRequest}
+            cancel={cancelThisRequest}
           />
         );
       })}
@@ -308,9 +322,12 @@ export const Dashboard = () => {
                   description={request["description"]}
                   date={request["start_date"]}
                   name={request["title"]}
-                  utorid={request["owner"]["utorid"]}
-                  location={request["room"]["friendlyName"]}
-                  teamName={request["group"]["name"]}
+                  ownerID={request["owner"]}
+                  groupID={request["group"]}
+                  locationID={request["room"]}
+                  //utorid={request["owner"]["utorid"]}
+                  //location={request["room"]["friendlyName"]}
+                  //teamName={request["group"]["name"]}
                   reqID={request["_id"]}
                 />
               );

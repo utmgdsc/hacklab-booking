@@ -16,7 +16,7 @@ import {
 import { ConvertDate } from ".."
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * A card that displays a pending request
@@ -29,10 +29,39 @@ import { useState } from 'react';
  * @param {string} location the location of the request
  * @param {string} teamName the name of the team that the request is for
  */
-export const PendingRequestCard = ({ name, utorid, title, date, description, location, teamName, reqID }) => {
+export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, date, description, reqID }) => {
     const [open, setOpen] = useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [utorid, setUtorid] = useState("utorid");
+    const [location, setLocation] = useState("location");
+    const [teamName, setTeamName] = useState("teamName");
+
+    useEffect(() => {
+        fetch(process.env.REACT_APP_API_URL + "/requests/getUtorid/" + ownerID)
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                setUtorid(data.utorid);
+            });
+
+        fetch(process.env.REACT_APP_API_URL + "/requests/getRoom/" + locationID)
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                setLocation(data.friendlyName);
+            });
+        fetch(process.env.REACT_APP_API_URL + "/groups/getGroup/" + groupID)
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                setTeamName(data.name);
+            });
+    }, []);
 
     const handleClickOpen = () => { setOpen(true); };
     const handleClose = () => { setOpen(false); };

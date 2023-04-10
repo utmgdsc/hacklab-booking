@@ -12,9 +12,8 @@ import {
   Typography,
 } from "@mui/material";
 import { ConvertDate } from "..";
-import DoneIcon from "@mui/icons-material/Done";
-import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const data = {
   title: "Machine Learning Workshop",
@@ -47,6 +46,7 @@ export const ActiveRequestCard = ({
   ownerHasTCard,
   owner,
   edit,
+  cancel,
 }) => {
   const convertStatus = (status) => {
     switch (status) {
@@ -67,6 +67,10 @@ export const ActiveRequestCard = ({
     edit(reqID);
   };
 
+  const handleCancel = () => {
+    cancel(reqID);
+  };
+
   return (
     <Card>
       <CardContent>
@@ -79,14 +83,30 @@ export const ActiveRequestCard = ({
           <Typography variant="h5" component="div" fontWeight={600}>
             {title}
           </Typography>
-          <IconButton
-            aria-label="edit"
-            component="label"
-            onClick={handleEdit}
-            disabled={!(status === "pending")}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "1rem",
+            }}
           >
-            <EditIcon />
-          </IconButton>
+            <IconButton
+              aria-label="edit"
+              component="label"
+              onClick={handleEdit}
+              disabled={!(status === "pending")}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              aria-label="cancel"
+              component="label"
+              onClick={handleCancel}
+              disabled={!(status === "pending") && !status === "approval"}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
         </Box>
 
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
