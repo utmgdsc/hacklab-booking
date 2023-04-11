@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "google-test": "node google/test.js"
+    "google-test": "node google/test.js",
+    "create-token": "node google/create_token.js"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.1",

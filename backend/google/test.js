@@ -1,16 +1,12 @@
 const fs = require('fs').promises;
 const path = require('path');
 const process = require('process');
-const {authenticate} = require('@google-cloud/local-auth');
 const {google} = require('googleapis');
 
-// If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
-const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
 
 /**
  * Reads previously authorized credentials from the save file.
@@ -28,25 +24,6 @@ async function loadSavedCredentialsIfExist() {
 }
 
 /**
- * Serializes credentials to a file compatible with GoogleAUth.fromJSON.
- *
- * @param {OAuth2Client} client
- * @return {Promise<void>}
- */
-async function saveCredentials(client) {
-  const content = await fs.readFile(CREDENTIALS_PATH);
-  const keys = JSON.parse(content);
-  const key = keys.installed || keys.web;
-  const payload = JSON.stringify({
-    type: 'authorized_user',
-    client_id: key.client_id,
-    client_secret: key.client_secret,
-    refresh_token: client.credentials.refresh_token,
-  });
-  await fs.writeFile(TOKEN_PATH, payload);
-}
-
-/**
  * Load or request or authorization to call APIs.
  *
  */
@@ -54,15 +31,9 @@ async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
     return client;
+  } else {
+    throw new Error('No credentials found. Please run create_token.js first.');
   }
-  client = await authenticate({
-    scopes: SCOPES,
-    keyfilePath: CREDENTIALS_PATH,
-  });
-  if (client.credentials) {
-    await saveCredentials(client);
-  }
-  return client;
 }
 
 /**
@@ -105,9 +76,52 @@ async function createEvent(auth, event) {
   });
 }
 
-authorize().then(listEvents).catch(console.error);
+async function createEmail(auth, email) {
+  const people = google.people({version: 'v1', auth});
+  const pres = await people.people.get({
+    resourceName: 'people/me',
+    personFields: 'emailAddresses',
+  });
+  const address = pres.data.emailAddresses.find(e => e.metadata.primary).value;
+
+  const gmail = google.gmail({version: 'v1', auth});
+  const messageParts = [
+    `From: Booking System <${address}>`,
+    `To: ${email.name} <${email.address}>`,
+    'Content-Type: text/html; charset=utf-8',
+    'MIME-Version: 1.0',
+    `Subject: ${email.subject}`,
+    '',
+    `${email.message}`
+  ];
+  const message = messageParts.join('\n');
+  const encodedMessage = Buffer.from(message)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+
+  const res = await gmail.users.messages.send({
+    userId: 'me',
+    requestBody: {
+      raw: encodedMessage,
+    }
+  });
+
+  console.log(res.data);
+  return res.data;
+}
 const addEvent = (event) => authorize().then((auth) => createEvent(auth, event)).catch(console.error);
+const sendEmail = (email) => authorize().then((auth) => createEmail(auth, email)).catch(console.error);
 
 module.exports = {
-  addEvent
+  addEvent,
+  sendEmail
 }
+sendEmail({
+  name: 'person',
+  address: 'person@utoronto.ca',
+  subject: 'Booking confirmed',
+  message: 'Booking confirmed'
+}) .then(r => console.log(r));
+authorize().then(listEvents).catch(console.error);
