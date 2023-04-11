@@ -164,16 +164,16 @@ export const Dashboard = () => {
               onClick={() => {
                 handleCloseUserMenu();
                 // HACK: clear all cookies
-                document.cookie.split(";").forEach(function (c) {
-                  document.cookie = c
-                    .replace(/^ +/, "")
-                    .replace(
-                      /=.*/,
-                      "=;expires=" + new Date().toUTCString() + ";path=/"
-                    );
-                });
+                // document.cookie.split(";").forEach(function (c) {
+                //   document.cookie = c
+                //     .replace(/^ +/, "")
+                //     .replace(
+                //       /=.*/,
+                //       "=;expires=" + new Date().toUTCString() + ";path=/"
+                //     );
+                // });
                 // TODO: work with daksh to get shibboleth logout working
-                window.location.href = "https://cssc.utm.utoronto.ca/";
+                window.location.href = "https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/";
               }}
             >
               <LogoutIcon fontSize="small" />
