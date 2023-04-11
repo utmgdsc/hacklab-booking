@@ -1,33 +1,32 @@
 import {
+  AdminPanelSettings as AdminPanelSettingsIcon,
   CalendarToday as CalendarTodayIcon,
   Inventory as InventoryIcon,
-  Settings as SettingsIcon,
-  People as PeopleIcon,
-  AdminPanelSettings as AdminPanelSettingsIcon,
   Logout as LogoutIcon,
+  People as PeopleIcon,
+  Settings as SettingsIcon,
 } from "@mui/icons-material";
 
 import {
-  LabelledIconButton,
-  NoRequestsPlaceholder,
-  ActiveRequestCard,
-  InitialsAvatar,
-  PendingRequestCard,
-  EditBooking,
-} from "../../components";
-import {
-  Typography,
   Box,
   Container,
   IconButton,
   Menu,
-  Tooltip,
   MenuItem,
+  Tooltip,
+  Typography,
+  useTheme
 } from "@mui/material";
-import { Avatar } from "@mui/material";
-import React from "react";
-import { useEffect, useState, useContext } from "react";
-import { Link } from "../../components";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  ActiveRequestCard,
+  EditBooking,
+  InitialsAvatar,
+  LabelledIconButton,
+  Link,
+  NoRequestsPlaceholder,
+  PendingRequestCard,
+} from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 
 export const Dashboard = () => {
@@ -92,6 +91,8 @@ export const Dashboard = () => {
     );
   };
 
+  const theme = useTheme();
+
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <Box
@@ -118,8 +119,8 @@ export const Dashboard = () => {
               {userInfo["role"] === "admin"
                 ? "Administrator"
                 : userInfo["role"] === "prof"
-                ? "Professor"
-                : null}
+                  ? "Professor"
+                  : null}
             </Typography>
             <Typography variant="h2">
               <strong>{userInfo["name"]}</strong>
@@ -160,25 +161,15 @@ export const Dashboard = () => {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            <MenuItem
-              onClick={() => {
-                handleCloseUserMenu();
-                // HACK: clear all cookies
-                // document.cookie.split(";").forEach(function (c) {
-                //   document.cookie = c
-                //     .replace(/^ +/, "")
-                //     .replace(
-                //       /=.*/,
-                //       "=;expires=" + new Date().toUTCString() + ";path=/"
-                //     );
-                // });
-                // TODO: work with daksh to get shibboleth logout working
-                window.location.href = "https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/";
-              }}
+            <Link
+              href="https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/"
+              sx={{ textDecoration: "none", color: theme.palette.text.primary }}
             >
-              <LogoutIcon fontSize="small" />
-              <Typography>&nbsp;Logout</Typography>
-            </MenuItem>
+              <MenuItem onClick={() => { handleCloseUserMenu(); }}>
+                <LogoutIcon fontSize="small" />
+                <Typography>&nbsp;Logout</Typography>
+              </MenuItem>
+            </Link>
           </Menu>
         </Box>
       </Box>
