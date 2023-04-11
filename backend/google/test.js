@@ -45,11 +45,12 @@ async function listEvents(auth) {
   const res = await calendar.events.list({
     calendarId: 'primary',
     // timeMin: new Date().toISOString(),
-    maxResults: 10,
+    // maxResults: 10,
     singleEvents: true,
     orderBy: 'startTime',
   });
   const events = res.data.items;
+  return events;
   if (!events || events.length === 0) {
     console.log('No upcoming events found.');
     return;
@@ -111,17 +112,44 @@ async function createEmail(auth, email) {
   console.log(res.data);
   return res.data;
 }
+
 const addEvent = (event) => authorize().then((auth) => createEvent(auth, event)).catch(console.error);
 const sendEmail = (email) => authorize().then((auth) => createEmail(auth, email)).catch(console.error);
+const getEvents = () => authorize().then(listEvents).catch(console.error);
 
 module.exports = {
   addEvent,
-  sendEmail
+  sendEmail,
+  getEvents
 }
-sendEmail({
-  name: 'person',
-  address: 'person@utoronto.ca',
-  subject: 'Booking confirmed',
-  message: 'Booking confirmed'
-}) .then(r => console.log(r));
-authorize().then(listEvents).catch(console.error);
+
+const test = async () => {
+  let r;
+  r = await sendEmail({
+    name: 'person',
+    address: 'person@utoronto.ca',
+    subject: 'Booking confirmed',
+    message: 'Booking confirmed'
+  });
+  console.log(r)
+
+  r = await addEvent({
+    'summary': 'HB 00000000000000000000000000 Title',
+    'location': 'DH2014',
+    'description': 'description reason',
+    'start': {
+      'dateTime': `${(new Date(Date.now())).toISOString()}`,
+      'timeZone': 'America/Toronto',
+    },
+    'end': {
+      'dateTime': `${(new Date(Date.now() + (2 * 60 * 60 * 1000))).toISOString()}`,
+      'timeZone': 'America/Toronto',
+    }
+  });
+  console.log(r)
+
+  r = await getEvents();
+  console.log(r)
+}
+
+test();
