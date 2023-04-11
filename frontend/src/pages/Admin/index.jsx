@@ -12,11 +12,15 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
-    FormControl
+    FormControl,
+    Tooltip
 } from "@mui/material";
+import {
+    Inventory as InventoryIcon,
+} from "@mui/icons-material";
 import { TableVirtuoso } from 'react-virtuoso';
 import { SubPage } from "../../layouts/SubPage";
-import { Link } from "../../components";
+import { Link, LabelledIconButton } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 
@@ -71,18 +75,18 @@ export const Admin = () => {
         fetch(process.env.REACT_APP_API_URL + '/accounts/all', {
             method: 'GET',
         })
-        .then(res => {
-            return res.json();
-        })
-        .then(data => {
-            console.log(data);
-            setRows(data);
-            setRowsToDisplay(data);
-            setUpdate(Math.random());
-        })
-        .catch(err => {
-            console.log(err);
-        });
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                console.log(data);
+                setRows(data);
+                setRowsToDisplay(data);
+                setUpdate(Math.random());
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }, []);
 
     // useEffect hook for changing the rows to display based on the filter
@@ -108,6 +112,28 @@ export const Admin = () => {
 
     return (
         <SubPage name="Admin" maxWidth="xl">
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "left",
+                    alignItems: "center",
+                    marginTop: "2em",
+                    marginBottom: "2em",
+                    flexWrap: "no-wrap",
+                    overflowX: "auto",
+                }}
+            >
+                <Tooltip title="View all requests made by all students" arrow placement="top">
+                    <Link href="/admin/all-requests" isInternalLink>
+                        <LabelledIconButton
+                            icon={<InventoryIcon />}
+                            color="#f35325"
+                            label="All Requests"
+                        />
+                    </Link>
+                </Tooltip>
+            </Box>
             <Box
                 sx={{
                     display: 'flex',
@@ -167,15 +193,15 @@ export const Admin = () => {
                                                         "accessGranted": true
                                                     })
                                                 })
-                                                .then(res => {
-                                                    return res.json();
-                                                })
-                                                .then(data => {
-                                                    console.log(data);
-                                                })
-                                                .catch(err => {
-                                                    console.log(err);
-                                                });
+                                                    .then(res => {
+                                                        return res.json();
+                                                    })
+                                                    .then(data => {
+                                                        console.log(data);
+                                                    })
+                                                    .catch(err => {
+                                                        console.log(err);
+                                                    });
 
                                                 console.log("Granting access to " + row['utorid']);
                                                 // update row['grant'] to true

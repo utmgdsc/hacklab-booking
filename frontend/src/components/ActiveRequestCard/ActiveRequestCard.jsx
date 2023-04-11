@@ -47,6 +47,7 @@ export const ActiveRequestCard = ({
   owner,
   edit,
   cancel,
+  viewOnly = false
 }) => {
   const convertStatus = (status) => {
     switch (status) {
@@ -83,32 +84,33 @@ export const ActiveRequestCard = ({
           <Typography variant="h5" component="div" fontWeight={600}>
             {title}
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: "1rem",
-            }}
-          >
-            <IconButton
-              aria-label="edit"
-              component="label"
-              onClick={handleEdit}
-              disabled={!(status === "pending")}
+          {!viewOnly && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "1rem",
+              }}
             >
-              <EditIcon />
-            </IconButton>
-            <IconButton
-              aria-label="cancel"
-              component="label"
-              onClick={handleCancel}
-              disabled={!(status === "pending") && !status === "approval"}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Box>
+              <IconButton
+                aria-label="edit"
+                component="label"
+                onClick={handleEdit}
+                disabled={!(status === "pending")}
+              >
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                aria-label="cancel"
+                component="label"
+                onClick={handleCancel}
+                disabled={!(status === "pending") && !status === "approval"}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          )}
         </Box>
-
         <Typography sx={{ mb: 1.5 }} color="text.secondary">
           <ConvertDate date={date} /> • {location} • {teamName} • {owner}
         </Typography>

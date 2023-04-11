@@ -13,6 +13,7 @@ import { Group } from "./pages/Group/Group";
 import { GroupDirectory } from "./pages/Group/GroupDirectory";
 import { Admin } from "./pages/Admin";
 import { NotFound } from "./pages/NotFound";
+import { AllRequests } from "./pages/Admin/AllRequests";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -62,6 +63,7 @@ function App() {
               <Route exact path="/group/" element={<GroupDirectory />} />
               <Route exact path="/group/:id" element={<Group />} />
               <Route exact path="/admin" element={<Admin />} />
+              <Route exact path="/admin/all-requests" element={<AllRequests />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>

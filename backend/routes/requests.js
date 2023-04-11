@@ -13,9 +13,9 @@ router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, 
   let group = await Group.find({ members: account });
 
   // concatenate all the requests from each group
-  let requests = await Request.find({ 
-    group: { $in: group }, 
-    status: { $in: ["pending", "denied", "approval", "tcard", "completed"]} 
+  let requests = await Request.find({
+    group: { $in: group },
+    status: { $in: ["pending", "denied", "approval", "tcard", "completed"]}
   });
 
   // for each request, fill out group, owner, approved
@@ -154,7 +154,7 @@ router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
     res.status(400).send("Invalid date");
     return;
   }
-  
+
   let group = await Group.findOne({ _id: req.body["group"] });
 
   await Request.updateMany({ _id: req.params.id }, {$set: { title: req.body["title"] }});
@@ -180,6 +180,11 @@ router.get("/getRoom/:id", roleVerify(["admin"]), async (req, res) => {
 router.get('/getUtorid/:id', roleVerify(['admin']), async (req, res) => {
   let account = await Account.findOne({ _id: req.params.id });
   res.send(account);
+});
+
+router.get('/getAllRequests', roleVerify(['admin']), async (req, res) => {
+  let requests = await Request.find({});
+  res.send(requests);
 });
 
 module.exports = router;
