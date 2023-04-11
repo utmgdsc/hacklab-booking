@@ -8,12 +8,15 @@
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.1",
+    "@neo4j/graphql": "^3.17.2",
+    "apollo-server": "^3.12.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "googleapis": "^113.0.0",
     "mongodb": "^5.0.1",
     "mongoose": "^6.9.1",
+    "neo4j-driver": "^5.7.0",
     "process": "^0.11.10"
   }
 }
