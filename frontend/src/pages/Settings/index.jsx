@@ -9,20 +9,6 @@ import {
     Radio,
     RadioGroup,
     FormControlLabel,
-    FormControl,
-    FormLabel,
-    Divider,
-    Stack,
-    TextField,
-    MenuItem,
-    InputLabel,
-    Select,
-    Input,
-    Chip,
-    Avatar,
-    Grid,
-    Dialog,
-    DialogActions,
 } from "@mui/material";
 import { SubPage } from "../../layouts/SubPage";
 import { InitialsAvatar } from "../../components";
@@ -84,13 +70,26 @@ export const Settings = () => {
                         row
                         aria-labelledby="appearance-radio-label"
                         name="appearance-radio"
-                        // onChange={(e) => setTheme(e.target.value)}
-                        value={THEME.LIGHT}
-                        disabled
+                        onChange={(e) =>
+                            fetch(process.env.REACT_APP_API_URL + "/accounts/modifyTheme", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    theme: e.target.value,
+                                }),
+                            })
+                                .then(() => {
+                                    // reload the page
+                                    window.location.reload();
+                                })
+                        }
+                        value={userInfo["theme"] ?? null}
                     >
-                        <FormControlLabel value={THEME.DEFAULT} control={<Radio />} label="System Default" disabled />
-                        <FormControlLabel value={THEME.LIGHT} control={<Radio />} label="Light" disabled />
-                        <FormControlLabel value={THEME.DARK} control={<Radio />} label="Dark" disabled />
+                        <FormControlLabel value={THEME.DEFAULT} control={<Radio />} label="System Default" />
+                        <FormControlLabel value={THEME.LIGHT} control={<Radio />} label="Light" />
+                        <FormControlLabel value={THEME.DARK} control={<Radio />} label="Dark" />
                     </RadioGroup>
                 </CardActions>
             </Card>

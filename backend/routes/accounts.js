@@ -33,6 +33,14 @@ router.get('/:id', roleVerify(['admin']), async (req, res) => {
 //   res.send(account);
 // });
 
+// change theme prop of an account
+router.post('/modifyTheme', async (req, res) => {
+    let account = await Account.findOne({ utorid: req.headers['utorid'] });
+    account.theme = req.body.theme;
+    await account.save();
+    res.send(account);
+});
+
 // change the access prop of an account
 router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
     let account = await Account.findOne({ utorid: req.params.id });
