@@ -12,7 +12,8 @@ import {
     Button,
     Checkbox,
     FormControlLabel,
-    FormControl
+    FormControl,
+    Grid
 } from "@mui/material";
 import { TableVirtuoso } from 'react-virtuoso';
 import { SubPage } from "../../../layouts/SubPage";
@@ -34,6 +35,13 @@ export const AllRequests = () => {
             })
             .then(data => {
                 console.log(data);
+
+                data.forEach((request) => {
+                    if (request["group"] === null) {
+                        request["group"] = { "name": "Group Deleted" };
+                    }
+                });
+
                 setRequests(data);
             })
             .catch(err => {
@@ -59,25 +67,29 @@ export const AllRequests = () => {
                         Loading...
                     </Typography>
                 ) : (
-                    requests.map((request, index) => {
-                        return (
-                            <ActiveRequestCard
-                                key={request["_id"]}
-                                reqID={request["_id"]}
-                                title={request["title"]}
-                                description={request["description"]}
-                                date={request["start_date"]}
-                                location={request["room"]["friendlyName"]}
-                                teamName={request["group"]["name"]}
-                                status={request["status"]}
-                                owner={request["owner"]["name"]}
-                                ownerHasTCard={request["owner"]["accessGranted"]}
-                                approver={request["approver"]["name"]}
-                                viewOnly={true}
-                            />
-                        );
-                    }
-                    ))
+                    <Grid container spacing={2}>
+                        {
+                            requests.map((request, index) => {
+                                return (
+                                    <Grid item xs={12} md={6} lg={4} key={index}>
+                                        <ActiveRequestCard
+                                            reqID={request["_id"]}
+                                            title={request["title"]}
+                                            description={request["description"]}
+                                            date={request["start_date"]}
+                                            location={request["room"]["friendlyName"]}
+                                            teamName={request["group"]["name"]}
+                                            status={request["status"]}
+                                            owner={request["owner"]["name"]}
+                                            ownerHasTCard={request["owner"]["accessGranted"]}
+                                            approver={request["approver"]["name"]}
+                                            viewOnly={true}
+                                        />
+                                    </Grid>
+                                );
+                            })}
+                    </Grid>
+                )
             }
         </SubPage>
     );

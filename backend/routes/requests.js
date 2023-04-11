@@ -184,6 +184,16 @@ router.get('/getUtorid/:id', roleVerify(['admin']), async (req, res) => {
 
 router.get('/getAllRequests', roleVerify(['admin']), async (req, res) => {
   let requests = await Request.find({});
+
+  // for each request, fill out group, owner, approved
+  for (let i = 0; i < requests.length; i++) {
+    requests[i].group = await Group.findOne({ _id: requests[i].group });
+    requests[i].owner = await Account.findOne({ _id: requests[i].owner });
+    requests[i].approver = await Account.findOne({ _id: requests[i].approver });
+    requests[i].tcardapprover = await Account.findOne({ _id: requests[i].tcardapprover });
+    requests[i].room = await Room.findOne({ _id: requests[i].room });
+  }
+
   res.send(requests);
 });
 
