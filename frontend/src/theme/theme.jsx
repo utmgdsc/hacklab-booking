@@ -49,6 +49,18 @@ export const GoogleTheme = ({ mode }) => {
             gray: {
                 main: mode === THEME.DARK ? "#c5d3e3" : "#5f6368",
             },
+            text: {
+                primary: mode === THEME.DARK ? "rgba(255,255,255,.87)" : "#202124",
+                secondary: mode === THEME.DARK ? "rgba(255,255,255,.60)" : "#5f6368",
+                disabled: mode === THEME.DARK ? "rgba(255,255,255,.38)" : "#5f6368",
+            },
+            app_colors: {
+                red: mode === THEME.DARK ? "#ea4335" : "#f35325",
+                blue: mode === THEME.DARK ? "#4285f4" : "#05a6f0",
+                green: mode === THEME.DARK ? "#34a853" : "#81bc06",
+                yellow: mode === THEME.DARK ? "#fbbc04" : "#ffb900",
+                purple: mode === THEME.DARK ? "#a142f4" : "#7b00ff",
+            },
             // Used by `getContrastText()` to maximize the contrast between
             // the background and the text.
             contrastThreshold: 3,

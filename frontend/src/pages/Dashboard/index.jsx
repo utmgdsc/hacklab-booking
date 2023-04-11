@@ -114,7 +114,7 @@ export const Dashboard = () => {
       >
         <Box>
           <>
-            <Typography component="p" variant="h5">
+            <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
               Welcome,{" "}
               {userInfo["role"] === "admin"
                 ? "Administrator"
@@ -135,7 +135,7 @@ export const Dashboard = () => {
             {pending_requests &&
               (userInfo["role"] === "admin" || userInfo["role"] === "prof") &&
               pending_requests.length > 0 && (
-                <Typography component="p" variant="h5">
+                <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
                   You have {pending_requests.length} pending requests
                 </Typography>
               )}
@@ -190,7 +190,7 @@ export const Dashboard = () => {
           <Link href="/calendar" isInternalLink>
             <LabelledIconButton
               icon={<InventoryIcon />}
-              color="#f35325"
+              color={theme.palette.app_colors.red}
               label="View Events"
             />
           </Link>
@@ -204,7 +204,7 @@ export const Dashboard = () => {
           <Link href="/book" isInternalLink>
             <LabelledIconButton
               icon={<CalendarTodayIcon />}
-              color="#81bc06"
+              color={theme.palette.app_colors.green}
               label="Book"
             />
           </Link>
@@ -218,7 +218,7 @@ export const Dashboard = () => {
           <Link href="/group" isInternalLink>
             <LabelledIconButton
               icon={<PeopleIcon />}
-              color="#05a6f0"
+              color={theme.palette.app_colors.blue}
               label="Your Group"
             />
           </Link>
@@ -228,7 +228,7 @@ export const Dashboard = () => {
           <Link href="/settings" isInternalLink>
             <LabelledIconButton
               icon={<SettingsIcon />}
-              color="#ffb900"
+              color={theme.palette.app_colors.yellow}
               label="Settings"
             />
           </Link>
@@ -243,7 +243,7 @@ export const Dashboard = () => {
             <Link href="/admin" isInternalLink>
               <LabelledIconButton
                 icon={<AdminPanelSettingsIcon />}
-                color="#7b00ff"
+                color={theme.palette.app_colors.purple}
                 label="Admin"
               />
             </Link>
