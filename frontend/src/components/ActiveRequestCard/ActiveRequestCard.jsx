@@ -10,6 +10,7 @@ import {
   StepLabel,
   StepContent,
   Typography,
+  Tooltip
 } from "@mui/material";
 import { ConvertDate } from "..";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,7 +28,7 @@ const data = {
 
 /**
  * A card that displays a active request
- * TODO: fetch data from backend via GUID instead of passing in props
+ *
  * @param {string} name the name of the user who sent the request
  * @param {string} utorid the utorid of the user who sent the request
  * @param {string} title the title of the request
@@ -81,39 +82,46 @@ export const ActiveRequestCard = ({
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h5" component="div" fontWeight={600}>
-            {title}
-          </Typography>
+          <Box>
+            <Typography variant="h5" component="div" fontWeight={600}>
+              {title}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
+              <ConvertDate date={date} /> • {location} • {teamName} • {owner}
+            </Typography>
+          </Box>
           {!viewOnly && (
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
                 gap: "1rem",
+                height: "100%",
+                justifyContent: "space-between",
               }}
             >
-              <IconButton
-                aria-label="edit"
-                component="label"
-                onClick={handleEdit}
-                disabled={!(status === "pending")}
-              >
-                <EditIcon />
-              </IconButton>
-              <IconButton
-                aria-label="cancel"
-                component="label"
-                onClick={handleCancel}
-                disabled={!(status === "pending") && !status === "approval"}
-              >
-                <DeleteIcon />
-              </IconButton>
+              <Tooltip title="Edit this Request">
+                <IconButton
+                  aria-label="edit"
+                  component="label"
+                  onClick={handleEdit}
+                  disabled={!(status === "pending")}
+                >
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Cancel this Request">
+                <IconButton
+                  aria-label="cancel"
+                  component="label"
+                  onClick={handleCancel}
+                  disabled={!(status === "pending") && !status === "approval"}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
           )}
         </Box>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          <ConvertDate date={date} /> • {location} • {teamName} • {owner}
-        </Typography>
 
         <Stepper activeStep={convertStatus(status)} orientation="vertical">
           <Step>
