@@ -198,3 +198,31 @@ router.get('/getAllRequests', roleVerify(['admin']), async (req, res) => {
 });
 
 module.exports = router;
+
+router.get('/checkDate/:start/:end', roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let start_date = new Date(req.params.start);
+  let end_date = new Date(req.params.end);
+
+  let requests = await Request.find({status: {$in: ["approval", "completed"]}, 
+  //end_date: {$gte: new Date()}
+  });
+
+  for (let i = 0; i < requests.length; i++) {
+    let r_start = new Date(requests[i].start_date);
+    let r_end = new Date(requests[i].end_date);
+    if (start_date >= r_start && start_date <= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+    if (end_date >= r_start && end_date <= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+    if (start_date <= r_start && end_date >= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+  }
+
+  res.status(200).send("Valid date");
+});

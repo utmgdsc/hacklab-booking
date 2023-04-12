@@ -18,7 +18,7 @@ import {
   Select,
   IconButton,
   Divider,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
@@ -48,7 +48,10 @@ const getMonday = (d) => {
       break;
     case 1: // monday
       break;
-    case 2: case 3: case 4: case 5: // tuesday - friday: get current monday
+    case 2:
+    case 3:
+    case 4:
+    case 5: // tuesday - friday: get current monday
       d = d.subtract(day - 1, "day");
       break;
     case 6: // saturday - get the next monday
@@ -115,6 +118,7 @@ export const CreateBooking = () => {
   const [scheduleDates, setScheduleDates] = useState([]);
   const [scheduleError, setScheduleError] = useState(false);
   const [validDate, setValidDate] = useState(false);
+  const [timeTakenError, setTimeTakenError] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [group, setGroup] = useState("");
@@ -147,13 +151,13 @@ export const CreateBooking = () => {
 
     // compile into json object
     const booking = {
-      owner: userInfo['utorid'],
+      owner: userInfo["utorid"],
       group: group["_id"],
       // reason: reason,
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1]
+      endTime: scheduleDates[scheduleDates.length - 1],
     };
 
     console.log(booking);
@@ -177,6 +181,7 @@ export const CreateBooking = () => {
     var currDate = 0;
     setDateError(false);
     setDatePastError(false);
+    setTimeTakenError(false);
     for (var i = 0; i < dates.length; i++) {
       var d = new Date(dates[i]);
       // if in the past
@@ -194,7 +199,21 @@ export const CreateBooking = () => {
       currDate = d.getDate();
     }
     if (dates.length > 0) {
-      setValidDate(true);
+      fetch(process.env.REACT_APP_API_URL + "/requests/checkDate/" + dates[0] + "/" + dates[dates.length - 1], {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          setValidDate(true);
+          setTimeTakenError(false);
+        }
+        else if (res.status === 400) {
+          setValidDate(false);
+          setTimeTakenError(true);
+        }
+      });
+
       setScheduleError(false);
     } else setValidDate(false);
 
@@ -283,7 +302,9 @@ export const CreateBooking = () => {
                   >
                     {userGroups.map((group) => {
                       return (
-                        <MenuItem value={group} key={group}>{group.name}</MenuItem>
+                        <MenuItem value={group} key={group}>
+                          {group.name}
+                        </MenuItem>
                       );
                     })}
                   </Select>
@@ -350,7 +371,7 @@ export const CreateBooking = () => {
                           setDate(dayjs());
                         }}
                         sx={{
-                          textTransform: "none"
+                          textTransform: "none",
                         }}
                       >
                         Today
@@ -362,7 +383,9 @@ export const CreateBooking = () => {
                           onClick={() => {
                             setDate(calendarDate.subtract(7, "day"));
                           }}
-                          disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
+                          disabled={calendarDate
+                            .subtract(7, "day")
+                            .isBefore(dayjs(), "day")}
                         >
                           <ArrowBackIcon />
                         </IconButton>
@@ -377,10 +400,7 @@ export const CreateBooking = () => {
                         </IconButton>
                       </Tooltip>
                     </Box>
-                    <Typography
-                      component="p"
-                      variant="h5"
-                    >
+                    <Typography component="p" variant="h5">
                       {getMonday(calendarDate).toLocaleDateString("en-US", {
                         month: "long",
                         year: "numeric",
@@ -423,7 +443,7 @@ export const CreateBooking = () => {
                     startDate={getMonday(calendarDate)}
                     onChange={handleScheduleDate}
                     selectionScheme="linear"
-                    renderDateLabel={date => {
+                    renderDateLabel={(date) => {
                       return (
                         <Box
                           sx={{
@@ -443,7 +463,7 @@ export const CreateBooking = () => {
                         </Box>
                       );
                     }}
-                    renderTimeLabel={time => {
+                    renderTimeLabel={(time) => {
                       return (
                         <Typography
                           component="p"
@@ -452,18 +472,21 @@ export const CreateBooking = () => {
                           sx={{ textAlign: "right", marginRight: "0.5em" }}
                           size="small"
                         >
-                          {time.toLocaleTimeString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-
-                          }).replace(":00", "").replace(" ", "").toLowerCase()}
+                          {time
+                            .toLocaleTimeString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })
+                            .replace(":00", "")
+                            .replace(" ", "")
+                            .toLowerCase()}
                         </Typography>
                       );
                     }}
-                    unselectedColor={ theme.palette.action.hover }
-                    selectedColor={ theme.palette.action.active }
-                    hoveredColor={ theme.palette.action.disabled }
+                    unselectedColor={theme.palette.action.hover}
+                    selectedColor={theme.palette.action.active}
+                    hoveredColor={theme.palette.action.disabled}
                   />
                 </Box>
                 {dateError && (
@@ -493,6 +516,15 @@ export const CreateBooking = () => {
                     * please select a time
                   </Typography>
                 )}
+                {timeTakenError && (
+                  <Typography
+                    component="p"
+                    color="error"
+                    sx={{ marginTop: "1em" }}
+                  >
+                    * this time overlaps with another booking, please choose a different time and/or date
+                  </Typography>
+                )}
               </>
             )}
 
@@ -507,11 +539,11 @@ export const CreateBooking = () => {
                   marginTop: "2em",
                 }}
                 disabled={
-                  details === ""
-                  || calendarDateError === null
-                  || scheduleDates.length === 0
-                  || !validDate
-                  || !showSchedule
+                  details === "" ||
+                  calendarDateError === null ||
+                  scheduleDates.length === 0 ||
+                  !validDate ||
+                  !showSchedule
                 }
               >
                 Finish
@@ -536,7 +568,9 @@ export const CreateBooking = () => {
           }}
         >
           <img width="300" src={SadMascot} alt={"Sparkle Mascot"} />
-          <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>Cannot Create Booking</Typography>
+          <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>
+            Cannot Create Booking
+          </Typography>
           <Typography variant="body1">
             Please{" "}
             <Link isInternalLink href="/group">
