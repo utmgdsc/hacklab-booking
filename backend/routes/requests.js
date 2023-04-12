@@ -128,6 +128,10 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
         };
         await addEvent(event);
       }
+      else {
+        owner.needsAccess = true;
+        await owner.save();
+      }
     }
     await request.save();
 
@@ -169,6 +173,9 @@ router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
 
 router.post("/cancelRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
   await Request.updateMany({ _id: req.params.id }, {$set: { status: "cancelled" }});
+  let acc = await Account.findOne({ utorid: req.headers["utorid"] });
+  acc.needsAccess = false;
+  await acc.save();
   return;
 });
 
