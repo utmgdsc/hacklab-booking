@@ -1,27 +1,22 @@
-import React from "react";
+import { Inventory as InventoryIcon } from "@mui/icons-material";
 import {
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Box,
   Button,
   Checkbox,
-  FormControlLabel,
   FormControl,
+  FormControlLabel,
+  Paper,
+  TableCell,
   Tooltip,
+  Typography,
   useTheme,
+  TableRow
 } from "@mui/material";
-import { Inventory as InventoryIcon } from "@mui/icons-material";
+import React, { useContext, useEffect, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import { SubPage } from "../../layouts/SubPage";
-import { Link, LabelledIconButton } from "../../components";
+import { LabelledIconButton, Link, VirtuosoTableComponents } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
-import { useContext, useEffect, useState } from "react";
+import { SubPage } from "../../layouts/SubPage";
 
 const columns = [
   { label: "UTORid", dataKey: "utorid" },
@@ -31,23 +26,6 @@ const columns = [
   { label: "Has Access", dataKey: "accessGranted" },
   { label: "Grant Access", dataKey: "accessGranted" },
 ];
-
-const VirtuosoTableComponents = {
-  Scroller: React.forwardRef((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
-  )),
-  Table: (props) => (
-    <Table
-      {...props}
-      sx={{ borderCollapse: "separate", tableLayout: "fixed" }}
-    />
-  ),
-  TableHead,
-  TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
-  TableBody: React.forwardRef((props, ref) => (
-    <TableBody {...props} ref={ref} />
-  )),
-};
 
 function fixedHeaderContent() {
   return (
@@ -76,24 +54,24 @@ export const Admin = () => {
 
   const theme = useTheme();
 
-    // useEffect hook for fetching the rows
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + '/accounts/all', {
-            method: 'GET',
-        })
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                console.log(data);
-                setRows(data);
-                setRowsToDisplay(data);
-                setUpdate(Math.random());
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }, []);
+  // useEffect hook for fetching the rows
+  useEffect(() => {
+    fetch(process.env.REACT_APP_API_URL + '/accounts/all', {
+      method: 'GET',
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        console.log(data);
+        setRows(data);
+        setRowsToDisplay(data);
+        setUpdate(Math.random());
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   // useEffect hook for changing the rows to display based on the filter
   useEffect(() => {
@@ -208,8 +186,8 @@ export const Admin = () => {
                           // send post request to api to grant access
                           fetch(
                             process.env.REACT_APP_API_URL +
-                              "/accounts/modifyAccess/" +
-                              row["utorid"],
+                            "/accounts/modifyAccess/" +
+                            row["utorid"],
                             {
                               method: "POST",
                               headers: {

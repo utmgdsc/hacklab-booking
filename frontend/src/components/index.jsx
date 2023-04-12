@@ -11,3 +11,4 @@ export { InitialsAvatar }  from "./InitialsAvatar/InitialsAvatar";
 export { ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
 export { GroupCard } from "./GroupCard/GroupCard";
 export { EditBooking } from "./EditBooking/EditBooking";
+export { VirtuosoTableComponents } from "./Admin/VirtuosoTableComponents";
