@@ -6,6 +6,7 @@ const { Room } = require("../models/room");
 const { Group } = require("../models/group");
 const { roleVerify } = require("../middleware/role_middleware");
 const { addEvent } = require("../google/test.js");
+const { sendEmail } = require("../google/test.js");
 
 router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, res) => {
   let account = await Account.findOne({ utorid: req.headers["utorid"] });
@@ -82,6 +83,13 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
     await tcardapprover.update({ $push: { pendingRequests: request } });
     await approver.update({ $push: { pendingRequests: request } });
 
+    await sendEmail({ // Send approvers an email for new request
+      name: approver.name,
+      address: approver.email,
+      subject: 'New HackLab Booking Request',
+      message: `There's a new booking request for the HackLab from ${requester.name} (${requester.utorid}).\n Their reason for booking was: ${requests[i].title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${date} from ${startTime.getHours()}:00 to ${endTime.getHours()}:00.`
+    });
+
     res.send(request);
   }
 );
@@ -128,6 +136,23 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
         };
         await addEvent(event);
       }
+      else {
+        let group = await Group.findOne({ _id: request.group });
+        // send email to owner
+        await sendEmail({
+          name: owner.name,
+          address: owner.email,
+          subject: 'HackLab Booking Request Approved',
+          message: `Your booking request for the HackLab has been approved, you will be sent an email soon once you're granted TCard access to the HackLab.\n Your reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${request.start_date.toDateString()} from ${request.start_date.getHours()}:00 to ${request.end_date.getHours()}:00.`
+        });
+        let tcardapprover = await Account.findOne({ utorid: "wangandr" });
+        // send email to tcard approver
+        await sendEmail({
+          name: tcardapprover.name,
+          address: tcardapprover.email,
+          subject: 'TCard Access Request for HackLab',
+          message: `There's a new TCard access request for the HackLab from ${owner.name} (${owner.utorid}).\n Their reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${request.start_date.toDateString()} from ${request.start_date.getHours()}:00 to ${request.end_date.getHours()}:00.`
+      });
     }
     await request.save();
 
@@ -140,7 +165,7 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
   }
 
   // req.status(200).send("Request found");
-});
+}});
 
 router.get("/getRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
   let request = await Request.findOne({ _id: req.params.id });
