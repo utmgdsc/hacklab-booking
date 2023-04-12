@@ -1,10 +1,6 @@
 import {
-  CheckCircle as CheckCircleIcon
-} from "@mui/icons-material";
-import {
   Box,
   Button,
-  Container,
   Divider,
   FormControl,
   InputLabel,
@@ -18,42 +14,8 @@ import { DateTimePicker } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { NotInGroup } from "./NotInGroup";
-
+import { Submitted } from "./Submitted";
 const { addHours } = require('date-fns');
-
-
-
-/**
- * return a formatted date string in the format of "Monday, January 1, 2021"
- * @param {*} scheduleDate the date to format
- * @return {string} the formatted date string
- */
-const getDateString = (scheduleDate) => {
-  var d = new Date(scheduleDate);
-  return d.toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
-
-/**
- * given an array of dates, return a formatted string of the time range
- * from the first date to the last date in the format:
- *
- * "from 12:00 to 13:00"
- *
- * @param {*} scheduleDates the array of dates
- * @return {string} the formatted time string
- */
-const getTimeString = (scheduleDates) => {
-  var dStart = new Date(scheduleDates[0]);
-  let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
-  endDate = addHours(endDate, 1);
-  var dEnd = new Date(endDate);
-  return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
-};
 
 export const CreateBooking = () => {
   const userInfo = useContext(UserContext);
@@ -72,11 +34,8 @@ export const CreateBooking = () => {
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
-  const [datePastError, setDatePastError] = useState(false);
   const [scheduleDates, setScheduleDates] = useState([]);
-  const [scheduleError, setScheduleError] = useState(false);
   const [validDate, setValidDate] = useState(false);
-  const [timeTakenError, setTimeTakenError] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [group, setGroup] = useState("");
@@ -92,7 +51,7 @@ export const CreateBooking = () => {
     }
 
     if (scheduleDates.length === 0 && showSchedule) {
-      setScheduleError(true);
+      setDateError("please select a time");
     }
 
     if (!validDate) {
@@ -129,26 +88,20 @@ export const CreateBooking = () => {
     setSubmitted(true);
   };
 
-  const handleDetails = (e) => {
-    setDetails(e.target.value);
-  };
-
   const handleScheduleDate = (dates) => {
     var currDate = 0;
-    setDateError(false);
-    setDatePastError(false);
-    setTimeTakenError(false);
+    setDateError("");
     for (var i = 0; i < dates.length; i++) {
       var d = new Date(dates[i]);
       // if in the past
       if (d < new Date()) {
-        setDatePastError(true);
+        setDateError("please select a date in the future");
         return;
       }
 
       // if not the same day
       if (d.getDate() !== currDate && i > 0) {
-        setDateError(true);
+        setDateError("please only select one day");
         return;
       }
       // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
@@ -162,15 +115,13 @@ export const CreateBooking = () => {
         console.log(res);
         if (res.status === 200) {
           setValidDate(true);
-          setTimeTakenError(false);
+          setDateError("");
         }
         else if (res.status === 400) {
           setValidDate(false);
-          setTimeTakenError(true);
+          setDateError("this time overlaps with another booking, please choose a different time and/or date");
         }
       });
-
-      setScheduleError(false);
     } else setValidDate(false);
 
     const newDates = dates.map((date) => {
@@ -184,40 +135,11 @@ export const CreateBooking = () => {
     return (
       <SubPage name="Create a booking">
         {submitted ? (
-          <Container
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-around",
-              alignItems: "center",
-              flexWrap: "nowrap",
-              marginBottom: "2em",
-              gap: "1em",
-            }}
-          >
-            <CheckCircleIcon
-              sx={{
-                fontSize: "10em",
-                color: "green",
-              }}
-            />
-
-            <Typography component="p" variant="h3">
-              Booking Submitted
-            </Typography>
-            <Typography component="p" variant="h5">
-              Group: {group.name}
-            </Typography>
-            <Typography component="p" variant="h5">
-              Details: {details}
-            </Typography>
-            <Typography component="p" variant="h5">
-              Date: {getDateString(scheduleDates[0])}
-            </Typography>
-            <Typography component="p" variant="h5">
-              Time: {getTimeString(scheduleDates)}
-            </Typography>
-          </Container>
+          <Submitted
+            details={details}
+            scheduleDates={scheduleDates}
+            group={group.name}
+          />
         ) : (
           <Box
             sx={{
@@ -276,7 +198,7 @@ export const CreateBooking = () => {
                   label="Please provide an explanation"
                   required
                   onChange={(e) => {
-                    handleDetails(e);
+                    setDetails(e.target.value);
                     setDetailError(false);
                     setShowSchedule(true);
                   }}
@@ -310,34 +232,7 @@ export const CreateBooking = () => {
                     color="error"
                     sx={{ marginTop: "1em" }}
                   >
-                    * please only select one day
-                  </Typography>
-                )}
-                {datePastError && (
-                  <Typography
-                    component="p"
-                    color="error"
-                    sx={{ marginTop: "1em" }}
-                  >
-                    * do not select a day in the past
-                  </Typography>
-                )}
-                {scheduleError && (
-                  <Typography
-                    component="p"
-                    color="error"
-                    sx={{ marginTop: "1em" }}
-                  >
-                    * please select a time
-                  </Typography>
-                )}
-                {timeTakenError && (
-                  <Typography
-                    component="p"
-                    color="error"
-                    sx={{ marginTop: "1em" }}
-                  >
-                    * this time overlaps with another booking, please choose a different time and/or date
+                    * {dateError}
                   </Typography>
                 )}
               </>
