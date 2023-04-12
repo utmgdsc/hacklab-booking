@@ -2,8 +2,10 @@ const express = require("express");
 const router = express.Router();
 const { Account } = require("../models/accounts");
 const { Request } = require("../models/requests");
+const { Group } = require("../models/groups");
 const { roleVerify } = require("../middleware/role_middleware");
 const {addEvent} = require("../google/test");
+const {sendEmail} = require("../google/test");
 
 router.get("/info", async (req, res) => {
   console.log(req.headers);
@@ -69,6 +71,21 @@ router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
                 }
               };
               await addEvent(event);
+              let group = await Group.findOne({_id: requests[i].group});
+              let startTime = new Date(requests[i].start_date);
+              let date =  startTime.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+              let endTime = new Date(requests[i].end_date);
+              await sendEmail({
+                name: account.name,
+                address: account.email,
+                subject: 'HackLab Booking Completed',
+                message: `Your booking request for the HackLab has been completed.\n Your reason for booking was: ${requests[i].title}.\n This booking is associated with the group ${group.name}.\n Your booking is on ${date} from ${startTime.getHours()}:00 to ${endTime.getHours()}:00.`
+              });
               await requests[i].save();
           }
       }
