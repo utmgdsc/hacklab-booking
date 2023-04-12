@@ -270,6 +270,7 @@ export const Dashboard = () => {
             title={request["title"]}
             description={request["description"]}
             date={request["start_date"]}
+            end={request["end_date"]}
             location={request["room"]["friendlyName"]}
             teamName={request["group"]["name"]}
             status={request["status"]}
@@ -313,6 +314,7 @@ export const Dashboard = () => {
                   title={request["title"]}
                   description={request["description"]}
                   date={request["start_date"]}
+                  end={request["end_date"]}
                   name={request["title"]}
                   ownerID={request["owner"]}
                   groupID={request["group"]}

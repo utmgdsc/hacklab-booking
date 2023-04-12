@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "google-test": "node google/test.js"
+    "google-test": "node google/test.js",
+    "create-token": "node google/create_token.js"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.1",
@@ -12,7 +13,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "googleapis": "^113.0.0",
-    "mongodb": "^5.0.1",
+    "mongodb": "^5.2.0",
     "mongoose": "^6.9.1",
     "process": "^0.11.10"
   }
