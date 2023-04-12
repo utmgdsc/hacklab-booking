@@ -128,6 +128,10 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
         };
         await addEvent(event);
       }
+      else {
+        owner.needsAccess = true;
+        await owner.save();
+      }
     }
     await request.save();
 
@@ -169,6 +173,9 @@ router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
 
 router.post("/cancelRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
   await Request.updateMany({ _id: req.params.id }, {$set: { status: "cancelled" }});
+  let acc = await Account.findOne({ utorid: req.headers["utorid"] });
+  acc.needsAccess = false;
+  await acc.save();
   return;
 });
 
@@ -198,3 +205,36 @@ router.get('/getAllRequests', roleVerify(['admin']), async (req, res) => {
 });
 
 module.exports = router;
+
+router.get('/checkDate/:start/:end/:reqID', roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let start_date = new Date(req.params.start);
+  let end_date = new Date(req.params.end);
+  let reqID = null;
+  if (req.params.reqID != "null") {
+    reqID = req.params.reqID;
+  }
+  let requests = await Request.find({status: {$in: ["approval", "completed", "pending"]}, end_date: {$gte: new Date()}
+  });
+
+  for (let i = 0; i < requests.length; i++) {
+    if (reqID && requests[i]._id == reqID) {
+      continue;
+    }
+    let r_start = new Date(requests[i].start_date);
+    let r_end = new Date(requests[i].end_date);
+    if (start_date >= r_start && start_date <= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+    if (end_date >= r_start && end_date <= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+    if (start_date <= r_start && end_date >= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+  }
+
+  res.status(200).send("Valid date");
+});

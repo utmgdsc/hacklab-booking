@@ -46,6 +46,7 @@ app.use(async (req, res, next) => {
         utorid: req.headers["utorid"],
         email: req.headers["http_mail"],
         name: req.headers["utorid"],
+        needsAccess: false,
       });
       await acc.save();
       next();

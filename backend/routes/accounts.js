@@ -45,6 +45,7 @@ router.post('/modifyTheme', async (req, res) => {
 router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
     let account = await Account.findOne({ utorid: req.params.id });
     account.accessGranted = req.body.accessGranted;
+    account.needsAccess = false;
     await account.save();
 
     // for all requests in which this account is an owner, if the current status is "approval," then change it to "complete"
@@ -55,15 +56,15 @@ router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
           if (requests[i].status === "approval") {
               requests[i].status = "completed";
               const event = {
-                'summary': `HB ${request["_id"]} ${request.title}`,
+                'summary': `HB ${requests[i]["_id"]} ${requests[i].title}`,
                 'location': 'DH2014',
-                'description': `${request.description} ${request.reason}`,
+                'description': `${requests[i].description} ${requests[i].reason}`,
                 'start': {
-                  'dateTime': `${request.start_date.toISOString()}`,
+                  'dateTime': `${requests[i].start_date.toISOString()}`,
                   'timeZone': 'America/Toronto',
                 },
                 'end': {
-                  'dateTime': `${request.end_date.toISOString()}`,
+                  'dateTime': `${requests[i].end_date.toISOString()}`,
                   'timeZone': 'America/Toronto',
                 }
               };

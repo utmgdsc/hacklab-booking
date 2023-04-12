@@ -80,6 +80,7 @@ export const Dashboard = () => {
 
   const cancelThisRequest = (reqID) => {
     console.log(reqID, "cancel this request");
+    // TODO: if request is completed, remove from calendar events
     fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
       method: "POST",
       headers: {

@@ -13,6 +13,7 @@ const AccountSchema = new Schema({
     default: "student",
   },
   accessGranted: { type: Boolean, required: true, default: false },
+  needsAccess: { type: Boolean, default: false },
   theme: {
     type: String,
     required: true,
