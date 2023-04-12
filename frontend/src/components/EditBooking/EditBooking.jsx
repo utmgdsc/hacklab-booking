@@ -33,6 +33,8 @@ import ScheduleSelector from "react-schedule-selector";
 import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 
+const {addHours} = require('date-fns');
+
 /**
  * given any date, return the date of the Monday of that week.
  *
@@ -92,7 +94,9 @@ const getDateString = (scheduleDate) => {
  */
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
-  var dEnd = new Date(scheduleDates[scheduleDates.length - 1]);
+  let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+  endDate = addHours(endDate, 1);
+  var dEnd = new Date(endDate);
   return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };
 
@@ -142,6 +146,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
   const [submitted, setSubmitted] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [group, setGroup] = useState("");
+  const [timeTakenError, setTimeTakenError] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClose = () => {
@@ -174,12 +179,14 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       return;
     }
 
+    let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+
     const modifiedRequest = {
       group: group["_id"],
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1],
+      endTime: addHours(endDate, 1),
     };
 
     fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
@@ -199,6 +206,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
     var currDate = 0;
     setDateError(false);
     setDatePastError(false);
+    setTimeTakenError(false);
     for (var i = 0; i < dates.length; i++) {
       var d = new Date(dates[i]);
       // if in the past
@@ -216,7 +224,28 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       currDate = d.getDate();
     }
     if (dates.length > 0) {
-      setValidDate(true);
+      fetch(
+        process.env.REACT_APP_API_URL +
+          "/requests/checkDate/" +
+          dates[0] +
+          "/" +
+          dates[dates.length - 1] +
+          "/" +
+          reqID,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      ).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          setValidDate(true);
+          setTimeTakenError(false);
+        } else if (res.status === 400) {
+          setValidDate(false);
+          setTimeTakenError(true);
+        }
+      });
       setScheduleError(false);
     } else setValidDate(false);
 
@@ -519,6 +548,16 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
                     sx={{ marginTop: "1em" }}
                   >
                     * please select a time
+                  </Typography>
+                )}
+                {timeTakenError && (
+                  <Typography
+                    component="p"
+                    color="error"
+                    sx={{ marginTop: "1em" }}
+                  >
+                    * this time overlaps with another booking, please choose a
+                    different time and/or date
                   </Typography>
                 )}
               </>

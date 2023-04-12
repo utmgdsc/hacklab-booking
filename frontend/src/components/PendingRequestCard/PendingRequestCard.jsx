@@ -29,7 +29,7 @@ import { useEffect, useState } from 'react';
  * @param {string} location the location of the request
  * @param {string} teamName the name of the team that the request is for
  */
-export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, date, description, reqID }) => {
+export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, date, end, description, reqID }) => {
     const [open, setOpen] = useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -65,6 +65,14 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
 
     const handleClickOpen = () => { setOpen(true); };
     const handleClose = () => { setOpen(false); };
+
+    const getTime = () => {
+        let startHour = new Date(date);
+        startHour = startHour.getHours();
+        let endHour = new Date(end);
+        endHour = endHour.getHours();
+        return `${startHour}:00 - ${endHour}:00`;
+      };
 
     const [approved, setApproved] = useState(false);
 
@@ -108,7 +116,7 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
                         {title}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        <ConvertDate date={date} /> • {location}
+                        <ConvertDate date={date} /> from {getTime()} • {location}
                     </Typography>
 
                     <Typography variant="p">{description}</Typography>

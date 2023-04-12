@@ -13,15 +13,16 @@ import { Group } from "./pages/Group/Group";
 import { GroupDirectory } from "./pages/Group/GroupDirectory";
 import { Admin } from "./pages/Admin";
 import { NotFound } from "./pages/NotFound";
+import { AllRequests } from "./pages/Admin/AllRequests";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { UserContext } from "./contexts/UserContext";
 import { ErrorBoundary } from "./components";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, useMediaQuery, createTheme } from "@mui/material";
 
-import { GoogleTheme } from "./theme/theme";
+import { GoogleTheme, THEME } from "./theme/theme";
 
 function App() {
   let [userInfo, setUserInfo] = useState({});
@@ -38,9 +39,19 @@ function App() {
 
   console.log(userInfo);
 
-  return (
+  const systemTheme = useMediaQuery('(prefers-color-scheme: dark)');
+
+	const theme = useMemo(
+		() =>
+			createTheme(GoogleTheme({
+				mode: userInfo["theme"] === THEME.DEFAULT ? (systemTheme ? THEME.DARK : THEME.LIGHT) : userInfo["theme"],
+			})),
+		[systemTheme, userInfo],
+	);
+
+  return !userInfo ? null : (
     <UserContext.Provider value={userInfo}>
-      <ThemeProvider theme={GoogleTheme}>
+      <ThemeProvider theme={theme}>
         <ErrorBoundary>
           <CssBaseline enableColorScheme />
           <Router>
@@ -52,6 +63,7 @@ function App() {
               <Route exact path="/group/" element={<GroupDirectory />} />
               <Route exact path="/group/:id" element={<Group />} />
               <Route exact path="/admin" element={<Admin />} />
+              <Route exact path="/admin/all-requests" element={<AllRequests />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>

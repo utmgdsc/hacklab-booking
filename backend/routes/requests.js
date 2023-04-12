@@ -14,9 +14,9 @@ router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, 
   let group = await Group.find({ members: account });
 
   // concatenate all the requests from each group
-  let requests = await Request.find({ 
-    group: { $in: group }, 
-    status: { $in: ["pending", "denied", "approval", "tcard", "completed"]} 
+  let requests = await Request.find({
+    group: { $in: group },
+    status: { $in: ["pending", "denied", "approval", "tcard", "completed"]}
   });
 
   // for each request, fill out group, owner, approved
@@ -137,6 +137,8 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
         await addEvent(event);
       }
       else {
+        owner.needsAccess = true;
+        await owner.save();
         let group = await Group.findOne({ _id: request.group });
         // send email to owner
         await sendEmail({
@@ -179,7 +181,7 @@ router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
     res.status(400).send("Invalid date");
     return;
   }
-  
+
   let group = await Group.findOne({ _id: req.body["group"] });
 
   await Request.updateMany({ _id: req.params.id }, {$set: { title: req.body["title"] }});
@@ -194,6 +196,9 @@ router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
 
 router.post("/cancelRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
   await Request.updateMany({ _id: req.params.id }, {$set: { status: "cancelled" }});
+  let acc = await Account.findOne({ utorid: req.headers["utorid"] });
+  acc.needsAccess = false;
+  await acc.save();
   return;
 });
 
@@ -207,4 +212,52 @@ router.get('/getUtorid/:id', roleVerify(['admin']), async (req, res) => {
   res.send(account);
 });
 
+router.get('/getAllRequests', roleVerify(['admin']), async (req, res) => {
+  let requests = await Request.find({});
+
+  // for each request, fill out group, owner, approved
+  for (let i = 0; i < requests.length; i++) {
+    requests[i].group = await Group.findOne({ _id: requests[i].group });
+    requests[i].owner = await Account.findOne({ _id: requests[i].owner });
+    requests[i].approver = await Account.findOne({ _id: requests[i].approver });
+    requests[i].tcardapprover = await Account.findOne({ _id: requests[i].tcardapprover });
+    requests[i].room = await Room.findOne({ _id: requests[i].room });
+  }
+
+  res.send(requests);
+});
+
 module.exports = router;
+
+router.get('/checkDate/:start/:end/:reqID', roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let start_date = new Date(req.params.start);
+  let end_date = new Date(req.params.end);
+  let reqID = null;
+  if (req.params.reqID != "null") {
+    reqID = req.params.reqID;
+  }
+  let requests = await Request.find({status: {$in: ["approval", "completed", "pending"]}, end_date: {$gte: new Date()}
+  });
+
+  for (let i = 0; i < requests.length; i++) {
+    if (reqID && requests[i]._id == reqID) {
+      continue;
+    }
+    let r_start = new Date(requests[i].start_date);
+    let r_end = new Date(requests[i].end_date);
+    if (start_date >= r_start && start_date <= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+    if (end_date >= r_start && end_date <= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+    if (start_date <= r_start && end_date >= r_end) {
+      res.status(400).send("Invalid date");
+      return;
+    }
+  }
+
+  res.status(200).send("Valid date");
+});

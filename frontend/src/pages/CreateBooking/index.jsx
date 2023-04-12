@@ -17,7 +17,8 @@ import {
   Tooltip,
   Select,
   IconButton,
-  Divider
+  Divider,
+  useTheme,
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
@@ -28,7 +29,9 @@ import ScheduleSelector from "react-schedule-selector";
 import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
-import SadMascot from "../../assets/img/sad-mascot.png";
+import { NotInGroup } from "./NotInGroup";
+
+const {addHours} = require('date-fns');
 
 /**
  * given any date, return the date of the Monday of that week.
@@ -47,7 +50,10 @@ const getMonday = (d) => {
       break;
     case 1: // monday
       break;
-    case 2: case 3: case 4: case 5: // tuesday - friday: get current monday
+    case 2:
+    case 3:
+    case 4:
+    case 5: // tuesday - friday: get current monday
       d = d.subtract(day - 1, "day");
       break;
     case 6: // saturday - get the next monday
@@ -86,7 +92,9 @@ const getDateString = (scheduleDate) => {
  */
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
-  var dEnd = new Date(scheduleDates[scheduleDates.length - 1]);
+  let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+  endDate = addHours(endDate, 1);
+  var dEnd = new Date(endDate);
   return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };
 
@@ -104,6 +112,7 @@ export const CreateBooking = () => {
       });
   }, []);
 
+  const theme = useTheme();
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
@@ -113,6 +122,7 @@ export const CreateBooking = () => {
   const [scheduleDates, setScheduleDates] = useState([]);
   const [scheduleError, setScheduleError] = useState(false);
   const [validDate, setValidDate] = useState(false);
+  const [timeTakenError, setTimeTakenError] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [group, setGroup] = useState("");
@@ -143,15 +153,17 @@ export const CreateBooking = () => {
       return;
     }
 
+    let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+
     // compile into json object
     const booking = {
-      owner: userInfo['utorid'],
+      owner: userInfo["utorid"],
       group: group["_id"],
       // reason: reason,
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1]
+      endTime: addHours(endDate, 1),
     };
 
     console.log(booking);
@@ -175,6 +187,7 @@ export const CreateBooking = () => {
     var currDate = 0;
     setDateError(false);
     setDatePastError(false);
+    setTimeTakenError(false);
     for (var i = 0; i < dates.length; i++) {
       var d = new Date(dates[i]);
       // if in the past
@@ -192,7 +205,21 @@ export const CreateBooking = () => {
       currDate = d.getDate();
     }
     if (dates.length > 0) {
-      setValidDate(true);
+      fetch(process.env.REACT_APP_API_URL + "/requests/checkDate/" + dates[0] + "/" + dates[dates.length - 1] + "/null", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          setValidDate(true);
+          setTimeTakenError(false);
+        }
+        else if (res.status === 400) {
+          setValidDate(false);
+          setTimeTakenError(true);
+        }
+      });
+
       setScheduleError(false);
     } else setValidDate(false);
 
@@ -281,7 +308,9 @@ export const CreateBooking = () => {
                   >
                     {userGroups.map((group) => {
                       return (
-                        <MenuItem value={group} key={group}>{group.name}</MenuItem>
+                        <MenuItem value={group} key={group}>
+                          {group.name}
+                        </MenuItem>
                       );
                     })}
                   </Select>
@@ -346,7 +375,6 @@ export const CreateBooking = () => {
                         color="gray"
                         onClick={() => {
                           setDate(dayjs());
-                          // setScheduleDates([]);
                         }}
                         sx={{
                           textTransform: "none",
@@ -360,9 +388,10 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.subtract(7, "day"));
-                            // setScheduleDates([]);
                           }}
-                          disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
+                          disabled={calendarDate
+                            .subtract(7, "day")
+                            .isBefore(dayjs(), "day")}
                         >
                           <ArrowBackIcon />
                         </IconButton>
@@ -371,17 +400,13 @@ export const CreateBooking = () => {
                         <IconButton
                           onClick={() => {
                             setDate(calendarDate.add(7, "day"));
-                            // setScheduleDates([]);
                           }}
                         >
                           <ArrowForwardIcon />
                         </IconButton>
                       </Tooltip>
                     </Box>
-                    <Typography
-                      component="p"
-                      variant="h5"
-                    >
+                    <Typography component="p" variant="h5">
                       {getMonday(calendarDate).toLocaleDateString("en-US", {
                         month: "long",
                         year: "numeric",
@@ -444,6 +469,30 @@ export const CreateBooking = () => {
                         </Box>
                       );
                     }}
+                    renderTimeLabel={(time) => {
+                      return (
+                        <Typography
+                          component="p"
+                          variant="subtitle2"
+                          color="gray"
+                          sx={{ textAlign: "right", marginRight: "0.5em" }}
+                          size="small"
+                        >
+                          {time
+                            .toLocaleTimeString("en-US", {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })
+                            .replace(":00", "")
+                            .replace(" ", "")
+                            .toLowerCase()}
+                        </Typography>
+                      );
+                    }}
+                    unselectedColor={theme.palette.action.hover}
+                    selectedColor={theme.palette.action.active}
+                    hoveredColor={theme.palette.action.disabled}
                   />
                 </Box>
                 {dateError && (
@@ -473,6 +522,15 @@ export const CreateBooking = () => {
                     * please select a time
                   </Typography>
                 )}
+                {timeTakenError && (
+                  <Typography
+                    component="p"
+                    color="error"
+                    sx={{ marginTop: "1em" }}
+                  >
+                    * this time overlaps with another booking, please choose a different time and/or date
+                  </Typography>
+                )}
               </>
             )}
 
@@ -487,11 +545,11 @@ export const CreateBooking = () => {
                   marginTop: "2em",
                 }}
                 disabled={
-                  details === ""
-                  || calendarDateError === null
-                  || scheduleDates.length === 0
-                  || !validDate
-                  || !showSchedule
+                  details === "" ||
+                  calendarDateError === null ||
+                  scheduleDates.length === 0 ||
+                  !validDate ||
+                  !showSchedule
                 }
               >
                 Finish
@@ -503,29 +561,7 @@ export const CreateBooking = () => {
     );
   } else {
     return (
-      <SubPage name="Cannot create booking" showHead={false}>
-        <Container
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center",
-            flexWrap: "nowrap",
-            marginTop: "2em",
-            gap: "1em",
-          }}
-        >
-          <img width="300" src={SadMascot} alt={"Sparkle Mascot"} />
-          <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>Cannot Create Booking</Typography>
-          <Typography variant="body1">
-            Please{" "}
-            <Link isInternalLink href="/group">
-              create a group
-            </Link>{" "}
-            before making a booking request.
-          </Typography>
-        </Container>
-      </SubPage>
+      <NotInGroup/>
     );
   }
 };

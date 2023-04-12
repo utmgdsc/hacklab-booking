@@ -1,33 +1,32 @@
 import {
+  AdminPanelSettings as AdminPanelSettingsIcon,
   CalendarToday as CalendarTodayIcon,
   Inventory as InventoryIcon,
-  Settings as SettingsIcon,
-  People as PeopleIcon,
-  AdminPanelSettings as AdminPanelSettingsIcon,
   Logout as LogoutIcon,
+  People as PeopleIcon,
+  Settings as SettingsIcon,
 } from "@mui/icons-material";
 
 import {
-  LabelledIconButton,
-  NoRequestsPlaceholder,
-  ActiveRequestCard,
-  InitialsAvatar,
-  PendingRequestCard,
-  EditBooking,
-} from "../../components";
-import {
-  Typography,
   Box,
   Container,
   IconButton,
   Menu,
-  Tooltip,
   MenuItem,
+  Tooltip,
+  Typography,
+  useTheme
 } from "@mui/material";
-import { Avatar } from "@mui/material";
-import React from "react";
-import { useEffect, useState, useContext } from "react";
-import { Link } from "../../components";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  ActiveRequestCard,
+  EditBooking,
+  InitialsAvatar,
+  LabelledIconButton,
+  Link,
+  NoRequestsPlaceholder,
+  PendingRequestCard,
+} from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 
 export const Dashboard = () => {
@@ -81,6 +80,7 @@ export const Dashboard = () => {
 
   const cancelThisRequest = (reqID) => {
     console.log(reqID, "cancel this request");
+    // TODO: if request is completed, remove from calendar events
     fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
       method: "POST",
       headers: {
@@ -91,6 +91,8 @@ export const Dashboard = () => {
       active_requests.filter((request) => request._id !== reqID)
     );
   };
+
+  const theme = useTheme();
 
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
@@ -113,13 +115,13 @@ export const Dashboard = () => {
       >
         <Box>
           <>
-            <Typography component="p" variant="h5">
+            <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
               Welcome,{" "}
               {userInfo["role"] === "admin"
                 ? "Administrator"
                 : userInfo["role"] === "prof"
-                ? "Professor"
-                : null}
+                  ? "Professor"
+                  : null}
             </Typography>
             <Typography variant="h2">
               <strong>{userInfo["name"]}</strong>
@@ -134,7 +136,7 @@ export const Dashboard = () => {
             {pending_requests &&
               (userInfo["role"] === "admin" || userInfo["role"] === "prof") &&
               pending_requests.length > 0 && (
-                <Typography component="p" variant="h5">
+                <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
                   You have {pending_requests.length} pending requests
                 </Typography>
               )}
@@ -160,25 +162,15 @@ export const Dashboard = () => {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            <MenuItem
-              onClick={() => {
-                handleCloseUserMenu();
-                // HACK: clear all cookies
-                // document.cookie.split(";").forEach(function (c) {
-                //   document.cookie = c
-                //     .replace(/^ +/, "")
-                //     .replace(
-                //       /=.*/,
-                //       "=;expires=" + new Date().toUTCString() + ";path=/"
-                //     );
-                // });
-                // TODO: work with daksh to get shibboleth logout working
-                window.location.href = "https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/";
-              }}
+            <Link
+              href="https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/"
+              sx={{ textDecoration: "none", color: theme.palette.text.primary }}
             >
-              <LogoutIcon fontSize="small" />
-              <Typography>&nbsp;Logout</Typography>
-            </MenuItem>
+              <MenuItem onClick={() => { handleCloseUserMenu(); }}>
+                <LogoutIcon fontSize="small" />
+                <Typography>&nbsp;Logout</Typography>
+              </MenuItem>
+            </Link>
           </Menu>
         </Box>
       </Box>
@@ -199,7 +191,7 @@ export const Dashboard = () => {
           <Link href="/calendar" isInternalLink>
             <LabelledIconButton
               icon={<InventoryIcon />}
-              color="#f35325"
+              color={theme.palette.app_colors.red}
               label="View Events"
             />
           </Link>
@@ -213,7 +205,7 @@ export const Dashboard = () => {
           <Link href="/book" isInternalLink>
             <LabelledIconButton
               icon={<CalendarTodayIcon />}
-              color="#81bc06"
+              color={theme.palette.app_colors.green}
               label="Book"
             />
           </Link>
@@ -227,7 +219,7 @@ export const Dashboard = () => {
           <Link href="/group" isInternalLink>
             <LabelledIconButton
               icon={<PeopleIcon />}
-              color="#05a6f0"
+              color={theme.palette.app_colors.blue}
               label="Your Group"
             />
           </Link>
@@ -237,7 +229,7 @@ export const Dashboard = () => {
           <Link href="/settings" isInternalLink>
             <LabelledIconButton
               icon={<SettingsIcon />}
-              color="#ffb900"
+              color={theme.palette.app_colors.yellow}
               label="Settings"
             />
           </Link>
@@ -252,7 +244,7 @@ export const Dashboard = () => {
             <Link href="/admin" isInternalLink>
               <LabelledIconButton
                 icon={<AdminPanelSettingsIcon />}
-                color="#7b00ff"
+                color={theme.palette.app_colors.purple}
                 label="Admin"
               />
             </Link>
@@ -278,6 +270,7 @@ export const Dashboard = () => {
             title={request["title"]}
             description={request["description"]}
             date={request["start_date"]}
+            end={request["end_date"]}
             location={request["room"]["friendlyName"]}
             teamName={request["group"]["name"]}
             status={request["status"]}
@@ -321,6 +314,7 @@ export const Dashboard = () => {
                   title={request["title"]}
                   description={request["description"]}
                   date={request["start_date"]}
+                  end={request["end_date"]}
                   name={request["title"]}
                   ownerID={request["owner"]}
                   groupID={request["group"]}

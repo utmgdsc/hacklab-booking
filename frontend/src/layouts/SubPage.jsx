@@ -7,11 +7,14 @@ import {
 } from "@mui/material";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link, ErrorBoundary } from "../components";
+import { useNavigate } from "react-router-dom";
 
 export const SubPage = ({ name, children, maxWidth = "md", py = 8, showHead = true, ...props }) => {
     React.useEffect(() => {
         document.title = 'Hacklab Booking - ' + name;
     }, [name]);
+
+    const navigate = useNavigate();
 
     return (
         <Container sx={{ py: py }} maxWidth={maxWidth} component="main" {...props}>
@@ -24,11 +27,9 @@ export const SubPage = ({ name, children, maxWidth = "md", py = 8, showHead = tr
                     xl: "2em",
                 },
             }}>
-                <Link isInternalLink href="/">
-                    <Button>
-                        <ArrowBackIosIcon /> Back
-                    </Button>
-                </Link>
+                <Button onClick={() => navigate(-1)}>
+                    <ArrowBackIosIcon /> Back
+                </Button>
             </Typography>
             {showHead && (
                 <Box
