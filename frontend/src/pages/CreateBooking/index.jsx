@@ -29,7 +29,7 @@ import ScheduleSelector from "react-schedule-selector";
 import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
-import SadMascot from "../../assets/img/sad-mascot.png";
+import { NotInGroup } from "./NotInGroup";
 
 /**
  * given any date, return the date of the Monday of that week.
@@ -523,29 +523,7 @@ export const CreateBooking = () => {
     );
   } else {
     return (
-      <SubPage name="Cannot create booking" showHead={false}>
-        <Container
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-            alignItems: "center",
-            flexWrap: "nowrap",
-            marginTop: "2em",
-            gap: "1em",
-          }}
-        >
-          <img width="300" src={SadMascot} alt={"Sparkle Mascot"} />
-          <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>Cannot Create Booking</Typography>
-          <Typography variant="body1">
-            Please{" "}
-            <Link isInternalLink href="/group">
-              create a group
-            </Link>{" "}
-            before making a booking request.
-          </Typography>
-        </Container>
-      </SubPage>
+      <NotInGroup/>
     );
   }
 };

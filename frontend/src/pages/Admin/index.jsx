@@ -13,7 +13,8 @@ import {
     Checkbox,
     FormControlLabel,
     FormControl,
-    Tooltip
+    Tooltip,
+    useTheme
 } from "@mui/material";
 import {
     Inventory as InventoryIcon,
@@ -69,6 +70,8 @@ export const Admin = () => {
     const [rowsToDisplay, setRowsToDisplay] = useState(null);
     const [rows, setRows] = useState(null);
     const [update, setUpdate] = useState(0);
+
+  const theme = useTheme();
 
     // useEffect hook for fetching the rows
     useEffect(() => {
@@ -128,7 +131,7 @@ export const Admin = () => {
                     <Link href="/admin/all-requests" isInternalLink>
                         <LabelledIconButton
                             icon={<InventoryIcon />}
-                            color="#f35325"
+                            color={theme.palette.app_colors.red}
                             label="All Requests"
                         />
                     </Link>
@@ -157,19 +160,6 @@ export const Admin = () => {
                         />
                     </FormControl>
                 </Box>
-                {/* <Button
-                    onClick={() => {
-                        // todo daksh: send request to backend to grant access to all
-                        console.log("Granting access to all");
-                        for (let i = 0; i < rowsToDisplay.length; i++) {
-                            rowsToDisplay[i]['grant'] = true;
-                        }
-                        // update state of parent component
-                        setUpdate(Math.random());
-                    }}
-                >
-                    Mark all as granted
-                </Button> */}
             </Box>
             <Paper style={{ height: "90vh", width: '100%' }}>
                 <TableVirtuoso
