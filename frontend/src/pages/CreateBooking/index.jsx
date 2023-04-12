@@ -1,70 +1,27 @@
 import {
-  CheckCircle as CheckCircleIcon,
-  Groups as GroupsIcon,
-  School as SchoolIcon,
-  ArrowBackIos as ArrowBackIcon,
-  ArrowForwardIos as ArrowForwardIcon,
+  CheckCircle as CheckCircleIcon
 } from "@mui/icons-material";
 import {
   Box,
   Button,
   Container,
-  MenuItem,
-  TextField,
-  Typography,
+  Divider,
   FormControl,
   InputLabel,
-  Tooltip,
+  MenuItem,
   Select,
-  IconButton,
-  Divider,
-  useTheme,
+  TextField,
+  Typography
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
 import { React, useContext, useEffect, useState } from "react";
-import ScheduleSelector from "react-schedule-selector";
-import { Link } from "../../components";
+import { DateTimePicker } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { NotInGroup } from "./NotInGroup";
 
-const {addHours} = require('date-fns');
+const { addHours } = require('date-fns');
 
-/**
- * given any date, return the date of the Monday of that week.
- *
- * if it is the weekend, return the next Monday.
- *
- * @param {Date} d the date to get the Monday of
- */
-const getMonday = (d) => {
-  d = new dayjs(d);
-  var day = d.day();
 
-  switch (day) {
-    case 0: // sunday - get the next monday
-      d = d.add(1, "day");
-      break;
-    case 1: // monday
-      break;
-    case 2:
-    case 3:
-    case 4:
-    case 5: // tuesday - friday: get current monday
-      d = d.subtract(day - 1, "day");
-      break;
-    case 6: // saturday - get the next monday
-      d = d.add(2, "day");
-      break;
-    default:
-      throw new Error("Invalid day");
-  }
-
-  return d.toDate();
-};
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
@@ -112,13 +69,10 @@ export const CreateBooking = () => {
       });
   }, []);
 
-  const theme = useTheme();
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [datePastError, setDatePastError] = useState(false);
-  const [calendarDate, setDate] = useState(dayjs(new Date()));
-  const [calendarDateError, setCalendarDateError] = useState(false);
   const [scheduleDates, setScheduleDates] = useState([]);
   const [scheduleError, setScheduleError] = useState(false);
   const [validDate, setValidDate] = useState(false);
@@ -135,10 +89,6 @@ export const CreateBooking = () => {
       finish = false;
     } else {
       setDetailError(false);
-    }
-
-    if (calendarDate === null) {
-      setCalendarDateError(true);
     }
 
     if (scheduleDates.length === 0 && showSchedule) {
@@ -348,153 +298,12 @@ export const CreateBooking = () => {
               <>
                 <Divider>Select a date</Divider>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "nowrap",
-                    marginBottom: "1em",
-                    gap: "1em",
-                    width: "100%",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "start",
-                      alignItems: "center",
-                      gap: "1em",
-                    }}
-                  >
-                    <Box>
-                      <Button
-                        variant="outlined"
-                        color="gray"
-                        onClick={() => {
-                          setDate(dayjs());
-                        }}
-                        sx={{
-                          textTransform: "none",
-                        }}
-                      >
-                        Today
-                      </Button>
-                    </Box>
-                    <Box>
-                      <Tooltip title="Previous week">
-                        <IconButton
-                          onClick={() => {
-                            setDate(calendarDate.subtract(7, "day"));
-                          }}
-                          disabled={calendarDate
-                            .subtract(7, "day")
-                            .isBefore(dayjs(), "day")}
-                        >
-                          <ArrowBackIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Next week">
-                        <IconButton
-                          onClick={() => {
-                            setDate(calendarDate.add(7, "day"));
-                          }}
-                        >
-                          <ArrowForwardIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                    <Typography component="p" variant="h5">
-                      {getMonday(calendarDate).toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography component="p" variant="h5" color="error">
-                      {calendarDateError ? "*" : ""}
-                    </Typography>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        label="Select a day"
-                        value={calendarDate}
-                        onChange={(newDate) => {
-                          setDate(newDate);
-                          setCalendarDateError(false);
-                          setScheduleDates([]);
-                        }}
-                        disablePast
-                      />
-                    </LocalizationProvider>
-                  </Box>
-                </Box>
-                <Box
-                  onMouseDown={() => {
-                    setScheduleDates([]);
-                  }}
-                  sx={{
-                    marginBottom: "1em",
-                    width: "100%",
-                  }}
-                >
-                  <ScheduleSelector
-                    selection={scheduleDates}
-                    numDays={5}
-                    minTime={8}
-                    maxTime={22}
-                    hourlyChunks={1}
-                    startDate={getMonday(calendarDate)}
-                    onChange={handleScheduleDate}
-                    selectionScheme="linear"
-                    renderDateLabel={(date) => {
-                      return (
-                        <Box
-                          sx={{
-                            textAlign: "center",
-                            marginBottom: "0.5em",
-                          }}
-                        >
-                          {date.toLocaleDateString("en-US", {
-                            weekday: "short",
-                          })}
-                          <Typography component="p" variant="h5">
-                            {date.toLocaleDateString("en-US", {
-                              day: "numeric",
-                              month: "long",
-                            })}
-                          </Typography>
-                        </Box>
-                      );
-                    }}
-                    renderTimeLabel={(time) => {
-                      return (
-                        <Typography
-                          component="p"
-                          variant="subtitle2"
-                          color="gray"
-                          sx={{ textAlign: "right", marginRight: "0.5em" }}
-                          size="small"
-                        >
-                          {time
-                            .toLocaleTimeString("en-US", {
-                              hour: "numeric",
-                              minute: "numeric",
-                              hour12: true,
-                            })
-                            .replace(":00", "")
-                            .replace(" ", "")
-                            .toLowerCase()}
-                        </Typography>
-                      );
-                    }}
-                    unselectedColor={theme.palette.action.hover}
-                    selectedColor={theme.palette.action.active}
-                    hoveredColor={theme.palette.action.disabled}
-                  />
-                </Box>
+                <DateTimePicker
+                  handleScheduleDate={handleScheduleDate}
+                  scheduleDates={scheduleDates}
+                  setScheduleDates={setScheduleDates}
+                />
+
                 {dateError && (
                   <Typography
                     component="p"
@@ -534,7 +343,7 @@ export const CreateBooking = () => {
               </>
             )}
 
-            {calendarDate && showSchedule && group && (
+            {showSchedule && group && (
               <Button
                 variant="contained"
                 size="large"
@@ -546,7 +355,6 @@ export const CreateBooking = () => {
                 }}
                 disabled={
                   details === "" ||
-                  calendarDateError === null ||
                   scheduleDates.length === 0 ||
                   !validDate ||
                   !showSchedule
@@ -561,7 +369,7 @@ export const CreateBooking = () => {
     );
   } else {
     return (
-      <NotInGroup/>
+      <NotInGroup />
     );
   }
 };
