@@ -14,6 +14,7 @@ import {
   FormControlLabel,
   FormControl,
   Tooltip,
+  useTheme,
 } from "@mui/material";
 import { Inventory as InventoryIcon } from "@mui/icons-material";
 import { TableVirtuoso } from "react-virtuoso";
