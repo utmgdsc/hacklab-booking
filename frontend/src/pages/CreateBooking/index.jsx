@@ -31,6 +31,8 @@ import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { NotInGroup } from "./NotInGroup";
 
+const {addHours} = require('date-fns');
+
 /**
  * given any date, return the date of the Monday of that week.
  *
@@ -90,7 +92,9 @@ const getDateString = (scheduleDate) => {
  */
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
-  var dEnd = new Date(scheduleDates[scheduleDates.length - 1]);
+  let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+  endDate = addHours(endDate, 1);
+  var dEnd = new Date(endDate);
   return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };
 
@@ -149,6 +153,8 @@ export const CreateBooking = () => {
       return;
     }
 
+    let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+
     // compile into json object
     const booking = {
       owner: userInfo["utorid"],
@@ -157,7 +163,7 @@ export const CreateBooking = () => {
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1],
+      endTime: addHours(endDate, 1),
     };
 
     console.log(booking);

@@ -40,6 +40,7 @@ export const ActiveRequestCard = ({
   reqID,
   title,
   date,
+  end,
   location,
   teamName,
   status,
@@ -73,6 +74,14 @@ export const ActiveRequestCard = ({
     cancel(reqID);
   };
 
+  const getTime = () => {
+    let startHour = new Date(date);
+    startHour = startHour.getHours();
+    let endHour = new Date(end);
+    endHour = endHour.getHours();
+    return `${startHour}:00 - ${endHour}:00`;
+  };
+
   return (
     <Card>
       <CardContent>
@@ -87,7 +96,7 @@ export const ActiveRequestCard = ({
               {title}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              <ConvertDate date={date} /> • {location} • {teamName} • {owner}
+              <ConvertDate date={date} /> from {getTime()} • {location} • {teamName} • {owner}
             </Typography>
           </Box>
           {!viewOnly && (

@@ -33,6 +33,8 @@ import ScheduleSelector from "react-schedule-selector";
 import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 
+const {addHours} = require('date-fns');
+
 /**
  * given any date, return the date of the Monday of that week.
  *
@@ -92,7 +94,9 @@ const getDateString = (scheduleDate) => {
  */
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
-  var dEnd = new Date(scheduleDates[scheduleDates.length - 1]);
+  let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+  endDate = addHours(endDate, 1);
+  var dEnd = new Date(endDate);
   return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };
 
@@ -175,12 +179,14 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       return;
     }
 
+    let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
+
     const modifiedRequest = {
       group: group["_id"],
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1],
+      endTime: addHours(endDate, 1),
     };
 
     fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
