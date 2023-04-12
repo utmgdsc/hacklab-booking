@@ -199,7 +199,7 @@ export const CreateBooking = () => {
       currDate = d.getDate();
     }
     if (dates.length > 0) {
-      fetch(process.env.REACT_APP_API_URL + "/requests/checkDate/" + dates[0] + "/" + dates[dates.length - 1], {
+      fetch(process.env.REACT_APP_API_URL + "/requests/checkDate/" + dates[0] + "/" + dates[dates.length - 1] + "/null", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }).then((res) => {
