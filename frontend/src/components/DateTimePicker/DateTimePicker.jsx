@@ -10,13 +10,13 @@ import { PrevNextWeek } from './PrevNextWeek';
 /**
  * A Google Calendar and When2meet style date and time picker
  * @param {function} handleScheduleDate a function that takes a list of dates, and will validate them
- * @param {Date[]} scheduleDates a react hook that is a list of dates that are currently selected
+ * @param {Date[]} scheduleDates a list of dates that are currently selected
  * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
- * @param {Date[]} blockedDates a list of dates that are blocked, i.e., already booked
  * @returns
  */
-export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates, blockedDates = [] }) => {
+export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates }) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
+    const [blockedDates, setBlockedDates] = useState([]);
 
     return (
         <>
@@ -24,10 +24,11 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
                 calendarDate={calendarDate}
                 setDate={setDate}
                 setScheduleDates={setScheduleDates}
+                setBlockedDates={setBlockedDates}
             />
             <Box
                 onMouseDown={() => {
-                    setScheduleDates(blockedDates);
+                    setScheduleDates([]);
                 }}
 
                 sx={{
@@ -39,6 +40,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
                     scheduleDates={scheduleDates}
                     handleScheduleDate={handleScheduleDate}
                     calendarDate={calendarDate}
+                    blockedDates={blockedDates}
                 />
             </Box>
         </>

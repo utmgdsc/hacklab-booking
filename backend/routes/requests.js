@@ -261,3 +261,36 @@ router.get('/checkDate/:start/:end/:reqID', roleVerify(["student", "prof", "admi
 
   res.status(200).send("Valid date");
 });
+
+/** helper to check if a date is in range */
+const dateInRange = (date, start, end) => {
+  return (date >= start && date <= end);
+}
+
+/**
+ * given a start and end date, return all dates that are blocked.
+ * :start and :end MUST be in the ISO date format. (YYYY-MM-DD)
+ */
+router.get('/getBlockedDates/:start/:end', roleVerify(["student", "prof", "admin"]), async (req, res) => {
+  let start_date = new Date(req.params.start);
+  let end_date = new Date(req.params.end);
+  let requests = await Request.find({status: {$in: ["approval", "completed", "pending"]}, end_date: {$gte: new Date()}});
+
+  let blockedDates = [];
+
+  for (let i = 0; i < requests.length; i++) {
+    let r_start = new Date(requests[i].start_date);
+    let r_end = new Date(requests[i].end_date);
+
+    // calculate duration of this request in hours
+    let duration = (r_end - r_start) / 1000 / 60 / 60;
+
+    if (dateInRange(r_start, start_date, end_date)) {
+      for (let j = 0; j < duration; j++) {
+        blockedDates.push(new Date(r_start.getTime() + j * 60 * 60 * 1000));
+      }
+    }
+  }
+
+  res.status(200).send(blockedDates);
+});

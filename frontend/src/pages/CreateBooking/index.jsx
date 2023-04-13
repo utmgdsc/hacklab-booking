@@ -10,11 +10,12 @@ import {
   Typography
 } from "@mui/material";
 import { React, useContext, useEffect, useState } from "react";
-import { DateTimePicker } from "../../components";
+import { DateTimePicker, GetMonday } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { NotInGroup } from "./NotInGroup";
 import { Submitted } from "./Submitted";
+import dayjs from "dayjs";
 const { addHours } = require('date-fns');
 
 export const CreateBooking = () => {
@@ -68,7 +69,6 @@ export const CreateBooking = () => {
     const booking = {
       owner: userInfo["utorid"],
       group: group["_id"],
-      // reason: reason,
       details: details,
       title: details,
       startTime: scheduleDates[0],
@@ -175,7 +175,7 @@ export const CreateBooking = () => {
                       minWidth: "20em",
                     }}
                     onChange={(e) => {
-                      setGroup(e.target.value);
+                      setGroup(typeof e.target.value === "string" ? "" : e.target.value);
                     }}
                   >
                     {userGroups.map((group) => {
@@ -195,24 +195,24 @@ export const CreateBooking = () => {
                 <Divider>Provide an explanation</Divider>
 
                 <TextField
+                  error={detailError}
+                  fullWidth
+                  helperText={detailError ? "An explanation is required" : ""}
+                  id="explanation-field"
                   label="Please provide an explanation"
+                  minRows={4}
+                  multiline
                   required
+                  value={details}
                   onChange={(e) => {
                     setDetails(e.target.value);
                     setDetailError(false);
                     setShowSchedule(true);
                   }}
-                  value={details}
-                  error={detailError}
-                  fullWidth
-                  multiline
                   sx={{
                     marginBottom: "3em",
                     marginTop: "1em",
                   }}
-                  minRows={4}
-                  helperText={detailError ? "An explanation is required" : ""}
-                  id="explanation-field"
                 />
               </>
             )}
@@ -248,12 +248,7 @@ export const CreateBooking = () => {
                 sx={{
                   marginTop: "2em",
                 }}
-                disabled={
-                  details === "" ||
-                  scheduleDates.length === 0 ||
-                  !validDate ||
-                  !showSchedule
-                }
+                disabled={!validDate}
               >
                 Finish
               </Button>

@@ -17,7 +17,9 @@ import { React } from "react";
 import { GetMonday } from "../../components";
 
 /**
- * controls the previous and next week buttons, and the date picker
+ * controls the previous and next week buttons, and the date picker.
+ *
+ * it also handles for the blocked dates
  *
  * @param {Object} scheduleDates a react hook
  * @param {Function} handleScheduleDate a react hook
@@ -25,7 +27,28 @@ import { GetMonday } from "../../components";
  *
  * @returns the previous and next week buttons, and the date picker
  */
-export const PrevNextWeek = ({ calendarDate, setDate, setScheduleDates }) => {
+export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates, setBlockedDates }) => {
+    const handleBlockedDates = async (startDate) => {
+        // the end date is 5 days after the start date
+        let endDate = startDate.add(5, "day").toDate();
+
+        // console.log(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + calendarDate.toISOString() + "/" + endDate.toISOString());
+
+        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startDate.toISOString() + "/" + endDate.toISOString())
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                // convert dates into date objects
+                let blocked = [];
+                data.forEach((date) => {
+                    blocked.push(new Date(date));
+                }
+                );
+                setBlockedDates(blocked);
+            });
+    };
+
     return (
         <>
             <Box
@@ -55,6 +78,7 @@ export const PrevNextWeek = ({ calendarDate, setDate, setScheduleDates }) => {
                             color="gray"
                             onClick={() => {
                                 setDate(dayjs());
+                                handleBlockedDates(calendarDate);
                             }}
                             sx={{
                                 textTransform: "none",
@@ -69,10 +93,9 @@ export const PrevNextWeek = ({ calendarDate, setDate, setScheduleDates }) => {
                                 <IconButton
                                     onClick={() => {
                                         setDate(calendarDate.subtract(7, "day"));
+                                        handleBlockedDates(calendarDate);
                                     }}
-                                    disabled={calendarDate
-                                        .subtract(7, "day")
-                                        .isBefore(dayjs(), "day")}
+                                    disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
                                 >
                                     <ArrowBackIcon />
                                 </IconButton>
@@ -83,6 +106,7 @@ export const PrevNextWeek = ({ calendarDate, setDate, setScheduleDates }) => {
                                 <IconButton
                                     onClick={() => {
                                         setDate(calendarDate.add(7, "day"));
+                                        handleBlockedDates(calendarDate);
                                     }}
                                 >
                                     <ArrowForwardIcon />
@@ -104,7 +128,8 @@ export const PrevNextWeek = ({ calendarDate, setDate, setScheduleDates }) => {
                             value={calendarDate}
                             onChange={(newDate) => {
                                 setDate(newDate);
-                                setScheduleDates([]);
+                                setScheduleDates();
+                                handleBlockedDates(calendarDate);
                             }}
                             disablePast
                         />
