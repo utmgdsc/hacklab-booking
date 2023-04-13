@@ -18,11 +18,18 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
 
+    /**
+     * sets BlockedDates to the dates that are blocked for the week of startDate.
+     * by blocked, we mean that there is already a request (pending or approved)
+     * for that date.
+     *
+     * precondition: startDate is a Monday
+     *
+     * @param {date} startDate the start date of the week to get blocked dates for
+     */
     const handleBlockedDates = async (startDate) => {
         // the end date is 5 days after the start date
         let endDate = startDate.add(5, "day").toDate();
-
-        // console.log(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + calendarDate.toISOString() + "/" + endDate.toISOString());
 
         await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startDate.toISOString() + "/" + endDate.toISOString())
             .then((res) => {
