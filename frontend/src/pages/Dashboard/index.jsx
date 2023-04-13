@@ -2,32 +2,102 @@ import {
   AdminPanelSettings as AdminPanelSettingsIcon,
   CalendarToday as CalendarTodayIcon,
   Inventory as InventoryIcon,
-  Logout as LogoutIcon,
   People as PeopleIcon,
-  Settings as SettingsIcon,
+  Settings as SettingsIcon
 } from "@mui/icons-material";
 
 import {
   Box,
   Container,
-  IconButton,
-  Menu,
-  MenuItem,
-  Tooltip,
   Typography,
   useTheme
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import {
   ActiveRequestCard,
+  AppButtons,
+  DashboardHeader,
   EditBooking,
-  InitialsAvatar,
-  LabelledIconButton,
-  Link,
   NoRequestsPlaceholder,
-  PendingRequestCard,
+  PendingRequestCard
 } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
+
+/**
+ * all active requests cards given a list of active requests
+ * @param {*} active_requests a list of requests received from the backend
+ * @param {*} editThisRequest a function that will be called when a user wants to edit a request
+ * @param {*} cancelThisRequest a function that will be called when a user wants to cancel a request
+ * @returns all active requests cards
+ */
+const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisRequest }) => (
+  <>
+    <Typography variant="h2" gutterBottom>
+      Your Active Requests
+    </Typography>
+    {
+      active_requests.length === 0 && (
+        <NoRequestsPlaceholder text={"You have no active requests. Create one using the 'Book' button above."} />
+      )
+    }
+    {
+      active_requests.map((request) => {
+        return (
+          <ActiveRequestCard
+            key={request["_id"]}
+            reqID={request["_id"]}
+            title={request["title"]}
+            description={request["description"]}
+            date={request["start_date"]}
+            end={request["end_date"]}
+            location={request["room"]["friendlyName"]}
+            teamName={request["group"]["name"]}
+            status={request["status"]}
+            owner={request["owner"]["name"]}
+            ownerHasTCard={request["owner"]["accessGranted"]}
+            approver={request["approver"]["name"]}
+            edit={editThisRequest}
+            cancel={cancelThisRequest}
+          />
+        );
+      })
+    }
+  </>
+)
+
+/**
+ * all pending requests cards given a list of pending requests
+ * @param {*} pending_requests a list of requests received from the backend
+ * @returns all pending requests cards
+ */
+const PendingRequestCards = ({ pending_requests }) => (
+  <>
+    <Typography variant="h2" gutterBottom>Your Pending Requests</Typography>
+    {pending_requests && pending_requests.length === 0 && (
+      <NoRequestsPlaceholder
+        text={"No requests demand your attention. Horray!"}
+      />
+    )}
+    {pending_requests &&
+      pending_requests.length > 0 &&
+      pending_requests.map((request) => {
+        return (
+          <PendingRequestCard
+            key={request["_id"]}
+            title={request["title"]}
+            description={request["description"]}
+            date={request["start_date"]}
+            end={request["end_date"]}
+            name={request["title"]}
+            ownerID={request["owner"]}
+            groupID={request["group"]}
+            locationID={request["room"]}
+            reqID={request["_id"]}
+          />
+        );
+      })}
+  </>
+)
 
 export const Dashboard = () => {
   const userInfo = useContext(UserContext);
@@ -62,16 +132,6 @@ export const Dashboard = () => {
       });
   }, []);
 
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
   const editThisRequest = (reqID) => {
     // console.log(reqID, "edit this request");
     setEditRequestID(reqID);
@@ -94,7 +154,7 @@ export const Dashboard = () => {
 
   const theme = useTheme();
 
-  const AppButtons = [
+  const homeButtons = [
     {
       title: "View the Hacklab Calendar",
       href: "/calendar",
@@ -135,81 +195,7 @@ export const Dashboard = () => {
 
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: {
-            xs: "-2em",
-            sm: "-1em",
-            md: "0em",
-            lg: "1em",
-            xl: "2em",
-          },
-        }}
-      >
-        <Box>
-          <>
-            <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
-              Welcome,{" "}
-              {userInfo["role"] === "admin"
-                ? "Administrator"
-                : userInfo["role"] === "prof"
-                  ? "Professor"
-                  : null}
-            </Typography>
-            <Typography variant="h2">
-              <strong>{userInfo["name"]}</strong>
-            </Typography>
-            {active_requests &&
-              userInfo["role"] === "student" &&
-              active_requests.length > 0 && (
-                <Typography component="p" variant="h5">
-                  You have {active_requests.length} active requests
-                </Typography>
-              )}
-            {pending_requests &&
-              (userInfo["role"] === "admin" || userInfo["role"] === "prof") &&
-              pending_requests.length > 0 && (
-                <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
-                  You have {pending_requests.length} pending requests
-                </Typography>
-              )}
-          </>
-        </Box>
-
-        <Box sx={{ flexGrow: 0 }}>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <InitialsAvatar name={userInfo["name"]} />
-          </IconButton>
-          <Menu
-            sx={{ mt: "45px" }}
-            anchorEl={anchorElUser}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
-          >
-            <Link
-              href="https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/"
-              sx={{ textDecoration: "none", color: theme.palette.text.primary }}
-            >
-              <MenuItem onClick={() => { handleCloseUserMenu(); }}>
-                <LogoutIcon fontSize="small" />
-                <Typography>&nbsp;Logout</Typography>
-              </MenuItem>
-            </Link>
-          </Menu>
-        </Box>
-      </Box>
+      <DashboardHeader active_requests={active_requests} pending_requests={pending_requests} />
 
       <Box
         sx={{
@@ -221,50 +207,8 @@ export const Dashboard = () => {
           overflowX: "auto",
         }}
       >
-        {
-          AppButtons.map((button) => button["hidden"] ? null : (
-            <Tooltip title={button["title"]} arrow placement="top" key={button["href"]}>
-              <Link href={button["href"]} isInternalLink>
-                <LabelledIconButton
-                  icon={button["icon"]}
-                  color={button["color"]}
-                  label={button["label"]}
-                />
-              </Link>
-            </Tooltip>
-          ))
-        }
+        <AppButtons ButtonsToRender={homeButtons} />
       </Box>
-      <Typography variant="h2" gutterBottom>
-        Your Active Requests
-      </Typography>
-      {active_requests.length === 0 && (
-        <NoRequestsPlaceholder
-          text={
-            "You have no active requests. Create one using the 'Book' button above."
-          }
-        />
-      )}
-      {active_requests.map((request) => {
-        return (
-          <ActiveRequestCard
-            key={request["_id"]}
-            reqID={request["_id"]}
-            title={request["title"]}
-            description={request["description"]}
-            date={request["start_date"]}
-            end={request["end_date"]}
-            location={request["room"]["friendlyName"]}
-            teamName={request["group"]["name"]}
-            status={request["status"]}
-            owner={request["owner"]["name"]}
-            ownerHasTCard={request["owner"]["accessGranted"]}
-            approver={request["approver"]["name"]}
-            edit={editThisRequest}
-            cancel={cancelThisRequest}
-          />
-        );
-      })}
 
       {openEditRequest && (
         <EditBooking
@@ -275,33 +219,15 @@ export const Dashboard = () => {
       )}
 
       {userInfo["role"] === "admin" && (
-        <>
-          <Typography variant="h2" gutterBottom>Your Pending Requests</Typography>
-          {pending_requests && pending_requests.length === 0 && (
-            <NoRequestsPlaceholder
-              text={"No requests demand your attention. Horray!"}
-            />
-          )}
-          {pending_requests &&
-            pending_requests.length > 0 &&
-            pending_requests.map((request) => {
-              return (
-                <PendingRequestCard
-                  key={request["_id"]}
-                  title={request["title"]}
-                  description={request["description"]}
-                  date={request["start_date"]}
-                  end={request["end_date"]}
-                  name={request["title"]}
-                  ownerID={request["owner"]}
-                  groupID={request["group"]}
-                  locationID={request["room"]}
-                  reqID={request["_id"]}
-                />
-              );
-            })}
-        </>
+        <PendingRequestCards pending_requests={pending_requests} />
       )}
+
+      <ActiveRequestCards
+        active_requests={active_requests}
+        editThisRequest={editThisRequest}
+        cancelThisRequest={cancelThisRequest}
+      />
+
     </Container>
   );
 };

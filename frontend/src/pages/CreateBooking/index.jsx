@@ -10,11 +10,10 @@ import {
   Typography
 } from "@mui/material";
 import { React, useContext, useEffect, useState } from "react";
-import { DateTimePicker, GetMonday } from "../../components";
+import { DateTimePicker, BookingSubmitted } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
-import { NotInGroup } from "./NotInGroup";
-import { Submitted } from "./Submitted";
+import { NotInGroup } from "../../layouts/NotInGroup";
 import dayjs from "dayjs";
 
 export const CreateBooking = () => {
@@ -137,7 +136,7 @@ export const CreateBooking = () => {
     return (
       <SubPage name="Create a booking">
         {submitted ? (
-          <Submitted
+          <BookingSubmitted
             details={details}
             scheduleDates={scheduleDates}
             group={group.name}

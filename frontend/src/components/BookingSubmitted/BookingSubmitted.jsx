@@ -45,9 +45,10 @@ const getTimeString = (scheduleDates) => {
  * @param {string} groupName the name of the group
  * @param {string} details the details of the booking
  * @param {Array<Date>} scheduleDates the dates of the booking
+ * @param {string} title the title of the page
  * @returns the page that is displayed after a booking is submitted
  */
-export const Submitted = ({groupName, details, scheduleDates}) => {
+export const BookingSubmitted = ({groupName, details, scheduleDates, title = "Booking Submitted"}) => {
     return (
         <Container
             sx={{
@@ -68,7 +69,7 @@ export const Submitted = ({groupName, details, scheduleDates}) => {
             />
 
             <Typography component="p" variant="h3">
-                Booking Submitted
+                {title}
             </Typography>
             <Typography component="p" variant="h5">
                 Group: {groupName}

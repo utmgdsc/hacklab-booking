@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import { LabelledIconButton, Link, VirtuosoTableComponents } from "../../components";
+import { AppButtons, Link, VirtuosoTableComponents } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 
@@ -53,6 +53,16 @@ export const Admin = () => {
   const [update, setUpdate] = useState(0);
 
   const theme = useTheme();
+
+  const adminAppButtons = [
+    {
+      title: "View a list of all booking requests",
+      href: "/admin/all-requests",
+      icon: <InventoryIcon />,
+      label: "All Requests",
+      color: theme.palette.app_colors.red
+    }
+  ]
 
   // useEffect hook for fetching the rows
   useEffect(() => {
@@ -125,19 +135,7 @@ export const Admin = () => {
           overflowX: "auto",
         }}
       >
-        <Tooltip
-          title="View all requests made by all students"
-          arrow
-          placement="top"
-        >
-          <Link href="/admin/all-requests" isInternalLink>
-            <LabelledIconButton
-              icon={<InventoryIcon />}
-              color={theme.palette.app_colors.red}
-              label="All Requests"
-            />
-          </Link>
-        </Tooltip>
+        <AppButtons ButtonsToRender={adminAppButtons} />
       </Box>
       <Box
         sx={{
