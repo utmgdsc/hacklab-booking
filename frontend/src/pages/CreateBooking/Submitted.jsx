@@ -6,7 +6,7 @@ import {
     Typography
 } from "@mui/material";
 import { React } from "react";
-const { addHours } = require('date-fns');
+import dayjs from "dayjs";
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
@@ -35,7 +35,7 @@ const getDateString = (scheduleDate) => {
 const getTimeString = (scheduleDates) => {
     var dStart = new Date(scheduleDates[0]);
     let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
-    endDate = addHours(endDate, 1);
+    endDate = dayjs(endDate).add(1, 'hour').toDate();
     var dEnd = new Date(endDate);
     return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };

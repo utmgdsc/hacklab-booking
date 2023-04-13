@@ -16,7 +16,6 @@ import { SubPage } from "../../layouts/SubPage";
 import { NotInGroup } from "./NotInGroup";
 import { Submitted } from "./Submitted";
 import dayjs from "dayjs";
-const { addHours } = require('date-fns');
 
 export const CreateBooking = () => {
   const userInfo = useContext(UserContext);
@@ -72,7 +71,7 @@ export const CreateBooking = () => {
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: addHours(endDate, 1),
+      endTime: dayjs(endDate).add(1, 'hour').toDate(),
     };
 
     console.log(booking);
@@ -96,12 +95,14 @@ export const CreateBooking = () => {
       // if in the past
       if (d < new Date()) {
         setDateError("please select a date in the future");
+        setScheduleDates([]);
         return;
       }
 
       // if not the same day
       if (d.getDate() !== currDate && i > 0) {
         setDateError("please only select one day");
+        setScheduleDates([]);
         return;
       }
       // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
@@ -120,6 +121,7 @@ export const CreateBooking = () => {
         else if (res.status === 400) {
           setValidDate(false);
           setDateError("this time overlaps with another booking, please choose a different time and/or date");
+          setScheduleDates([]);
         }
       });
     } else setValidDate(false);

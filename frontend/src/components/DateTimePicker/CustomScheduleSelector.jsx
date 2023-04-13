@@ -74,7 +74,7 @@ const RenderTimeLabel = (time) => {
 export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, calendarDate, blockedDates }) => {
     const theme = useTheme();
 
-    const customDateCellRenderer = (date, selected) => {
+    const customDateCellRenderer = (date, selected, refSetter) => {
         const blocked = (blockedDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
         const inPast = (date.getTime() < new Date().getTime());
         var backgroundColor;
@@ -82,7 +82,7 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
         if (blocked) {
             backgroundColor = theme.palette.error.main + " !important";
         } else if (selected) {
-            backgroundColor = theme.palette.action.active;
+            backgroundColor = theme.palette.action.active + " !important";
         } else if (inPast) {
             backgroundColor = theme.palette.action.disabled;
         } else {
@@ -90,14 +90,19 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
         }
 
         return (
-            <Box sx={{
-                backgroundColor: backgroundColor,
-                height: "25px",
-                width: "100%",
-                "&:hover": {
-                    backgroundColor: theme.palette.action.disabled,
-                },
-            }} />
+            <Box
+                role="presentation"
+                ref={refSetter}
+                sx={{
+                    backgroundColor: backgroundColor,
+                    height: "25px",
+                    width: "100%",
+                    placeSelf: "stretch",
+                    touchAction: "none",
+                    "&:hover": {
+                        backgroundColor: theme.palette.action.disabled,
+                    },
+                }} />
 
         );
     };
@@ -118,9 +123,6 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
             selectionScheme="linear"
             renderDateLabel={(date) => RenderDateLabel(date)}
             renderTimeLabel={(time) => RenderTimeLabel(time)}
-            unselectedColor={theme.palette.action.hover}
-            selectedColor={theme.palette.action.active}
-            hoveredColor={theme.palette.action.disabled}
             renderDateCell={customDateCellRenderer}
         />
     );
