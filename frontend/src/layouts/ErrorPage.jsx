@@ -10,12 +10,17 @@ import { Link } from "../components";
 import SadMascot from "../assets/img/sad-mascot.png";
 import SadMascotDark from "../assets/img/sad-mascot_dark.png";
 
+const DefaultCTA = () => (
+    <Typography>Please <Link isInternalLink href="/group"> create a group </Link> before making or editing a booking request.</Typography>
+)
+
 /**
  * Shown when a user is trying to create a booking but is not in a group.
  * @param {string} name The name of the page.
+ *
  * @returns {JSX.Element}
  */
-export const NotInGroup = ({name = "Cannot create booking"}) => {
+export const ErrorPage = ({name = "Cannot create booking", message=<DefaultCTA/>}) => {
     const theme = useTheme();
 
     return (
@@ -36,11 +41,7 @@ export const NotInGroup = ({name = "Cannot create booking"}) => {
 
                 <Typography variant="h1" gutterBottom sx={{ marginTop: "1em" }}>{name}</Typography>
                 <Typography variant="body1">
-                    Please{" "}
-                    <Link isInternalLink href="/group">
-                        create a group
-                    </Link>{" "}
-                    before making or editing a booking request.
+                    {message}
                 </Typography>
             </Container>
         </SubPage>

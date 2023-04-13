@@ -17,6 +17,7 @@ import { TableVirtuoso } from "react-virtuoso";
 import { AppButtons, Link, VirtuosoTableComponents } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
+import { ErrorPage } from "../../layouts/ErrorPage";
 
 const columns = [
   { label: "UTORid", dataKey: "utorid" },
@@ -110,14 +111,12 @@ export const Admin = () => {
 
   if (userInfo["role"] !== "admin") {
     return (
-      <SubPage name="Admin">
-        <Typography variant="h4" component="h1" gutterBottom>
-          You are not an admin.{" "}
-          <Link isInternalLink href="/">
-            Go back
-          </Link>
-        </Typography>
-      </SubPage>
+      <ErrorPage
+        name="You are not an admin"
+        message={
+          <Link href="/">Go back</Link>
+        }
+      />
     );
   }
 

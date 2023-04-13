@@ -13,7 +13,7 @@ import { React, useContext, useEffect, useState } from "react";
 import { DateTimePicker, BookingSubmitted } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
-import { NotInGroup } from "../../layouts/NotInGroup";
+import { ErrorPage } from "../../layouts/ErrorPage";
 import dayjs from "dayjs";
 
 export const CreateBooking = () => {
@@ -260,7 +260,7 @@ export const CreateBooking = () => {
     );
   } else {
     return (
-      <NotInGroup />
+      <ErrorPage />
     );
   }
 };

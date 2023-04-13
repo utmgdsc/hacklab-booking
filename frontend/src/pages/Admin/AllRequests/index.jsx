@@ -1,23 +1,23 @@
 import {
     Paper,
     TableCell,
-    TableRow,
-    Typography
+    TableRow
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { TableVirtuoso } from 'react-virtuoso';
 import { Link, VirtuosoTableComponents } from "../../../components";
 import { UserContext } from "../../../contexts/UserContext";
 import { SubPage } from "../../../layouts/SubPage";
+import { ErrorPage } from "../../../layouts/ErrorPage";
 
 const columns = [
     // { label: "id", dataKey: "_id" },
     { label: "title", dataKey: "title" },
     { label: "approval reason", dataKey: "reason" },
     { label: "status", dataKey: "status" },
-    { label: "approver", dataKey: "approver" },
-    { label: "group", dataKey: "group[name]" },
-    { label: "room", dataKey: "room[roomName]" },
+    { label: "approver", dataKey: "approver", subKey:"name" },
+    { label: "group", dataKey: "group", subKey: "name" },
+    { label: "room", dataKey: "room", subKey: "roomName" },
     { label: "start date", dataKey: "start_date" },
     { label: "end date", dataKey: "end_date" },
 ];
@@ -53,7 +53,7 @@ export const AllRequests = () => {
                 return res.json();
             })
             .then(data => {
-                console.log(data);
+                // console.log(data);
 
                 data.forEach((request) => {
                     if (request["group"] === null) {
@@ -70,16 +70,14 @@ export const AllRequests = () => {
 
     if (userInfo["role"] !== "admin") {
         return (
-            <SubPage name="Admin">
-                <Typography variant="h4" component="h1" gutterBottom>
-                    You are not an admin.{" "}
-                    <Link isInternalLink href="/">
-                        Go back
-                    </Link>
-                </Typography>
-            </SubPage>
+          <ErrorPage
+            name="You are not an admin"
+            message={
+              <Link href="/">Go back</Link>
+            }
+          />
         );
-    }
+      }
 
     return (
         <SubPage name="Request Log" maxWidth="xl">
@@ -91,15 +89,7 @@ export const AllRequests = () => {
                     itemContent={(index, row) => (
                         <>
                             {columns.map((column, index) => {
-                                if (column.dataKey === "room[roomName]") {
-                                    return (
-                                        <TableCell key={index}>{row["room"]["roomName"]}</TableCell>
-                                    );
-                                } else if (column.dataKey === "approver") {
-                                    return (
-                                        <TableCell key={index}>{row["approver"]["name"]}</TableCell>
-                                    );
-                                } else if (column.dataKey === "start_date" || column.dataKey === "end_date") {
+                                if (column.dataKey === "start_date" || column.dataKey === "end_date") {
                                     return (
                                         <TableCell key={index}>{new Date(row[column.dataKey]).toLocaleString("en-ca", {
                                             timeZone: 'EST',
@@ -110,9 +100,9 @@ export const AllRequests = () => {
                                             minute: 'numeric',
                                         })}</TableCell>
                                     );
-                                } else if (column.dataKey === "group[name]") {
+                                } else if (column.subKey) {
                                     return (
-                                        <TableCell key={index}>{row["group"]["name"]}</TableCell>
+                                        <TableCell key={index}>{row[column.dataKey][column.subKey]}</TableCell>
                                     );
                                 } else {
                                     return (
