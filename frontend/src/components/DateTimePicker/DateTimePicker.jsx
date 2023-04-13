@@ -6,6 +6,7 @@ import { React, useState, useEffect } from "react";
 
 import { CustomScheduleSelector } from './CustomScheduleSelector';
 import { PrevNextWeek } from './PrevNextWeek';
+import { GetMonday } from '../GetMonday/GetMonday';
 
 /**
  * A Google Calendar and When2meet style date and time picker
@@ -23,15 +24,13 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
      * by blocked, we mean that there is already a request (pending or approved)
      * for that date.
      *
-     * precondition: startDate is a Monday
-     *
      * @param {date} startDate the start date of the week to get blocked dates for
      */
     const handleBlockedDates = async (startDate) => {
         // the end date is 5 days after the start date
-        let endDate = startDate.add(5, "day").toDate();
+        let endDate = GetMonday(startDate).add(5, "day").toDate();
 
-        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startDate.toISOString() + "/" + endDate.toISOString())
+        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + GetMonday(startDate).toISOString() + "/" + endDate.toISOString())
             .then((res) => {
                 return res.json();
             })
