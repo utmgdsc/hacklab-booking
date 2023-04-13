@@ -18,7 +18,15 @@ import dayjs from "dayjs";
 
 export const CreateBooking = () => {
   const userInfo = useContext(UserContext);
+  const [dateError, setDateError] = useState(false);
+  const [detailError, setDetailError] = useState(false);
+  const [details, setDetails] = useState("");
+  const [group, setGroup] = useState("");
+  const [scheduleDates, setScheduleDates] = useState([]);
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [userGroups, setUserGroups] = useState([]);
+  const [validDate, setValidDate] = useState(false);
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
@@ -30,14 +38,6 @@ export const CreateBooking = () => {
       });
   }, []);
 
-  const [details, setDetails] = useState("");
-  const [detailError, setDetailError] = useState(false);
-  const [dateError, setDateError] = useState(false);
-  const [scheduleDates, setScheduleDates] = useState([]);
-  const [validDate, setValidDate] = useState(false);
-  const [showSchedule, setShowSchedule] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [group, setGroup] = useState("");
 
   const handleFinish = () => {
     let finish = true;
@@ -132,135 +132,130 @@ export const CreateBooking = () => {
     setScheduleDates(newDates);
   };
 
-  if (userGroups.length > 0) {
+  if (userGroups.length <= 0) {
+    return (<ErrorPage />)
+  } else if (submitted) {
     return (
       <SubPage name="Create a booking">
-        {submitted ? (
-          <BookingSubmitted
-            details={details}
-            scheduleDates={scheduleDates}
-            group={group.name}
-          />
-        ) : (
+        <BookingSubmitted
+          details={details}
+          scheduleDates={scheduleDates}
+          group={group.name}
+        />
+      </SubPage>
+    );
+  }
+
+  return (
+    <SubPage name="Create a booking">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-around",
+          alignItems: "center",
+          flexWrap: "nowrap",
+        }}
+      >
+        {userGroups.length > 0 && (
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-around",
-              alignItems: "center",
-              flexWrap: "nowrap",
+              marginBottom: "4em",
+              width: "100%",
             }}
           >
-            {userGroups.length > 0 && (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-around",
-                  alignItems: "center",
-                  flexWrap: "nowrap",
-                  marginBottom: "2em",
+            <Divider>Select the group to book under</Divider>
+
+            <FormControl fullWidth sx={{ marginTop: "1em" }}>
+              <InputLabel id="group-label">Group</InputLabel>
+              <Select
+                labelId="group-label"
+                id="group-select"
+                value={group}
+                fullWidth
+                label="Group"
+                onChange={(e) => {
+                  setGroup(typeof e.target.value === "string" ? "" : e.target.value);
                 }}
               >
-                <Divider>Select the group to book under</Divider>
+                {userGroups.map((group) => {
+                  return (
+                    <MenuItem value={group} key={group}>
+                      {group.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+        )}
 
-                <FormControl fullWidth sx={{ marginTop: "1em" }}>
-                  <InputLabel id="group-label">Group</InputLabel>
-                  <Select
-                    labelId="group-label"
-                    id="group-select"
-                    value={group}
-                    label="Group"
-                    sx={{
-                      marginBottom: "1em",
-                      minWidth: "20em",
-                    }}
-                    onChange={(e) => {
-                      setGroup(typeof e.target.value === "string" ? "" : e.target.value);
-                    }}
-                  >
-                    {userGroups.map((group) => {
-                      return (
-                        <MenuItem value={group} key={group}>
-                          {group.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </Box>
-            )}
+        {group && (
+          <Box
+            sx={{
+              marginBottom: "4em",
+              width: "100%",
+            }}
+          >
+            <Divider>Provide an explanation</Divider>
 
-            {group && (
-              <>
-                <Divider>Provide an explanation</Divider>
+            <TextField
+              error={detailError}
+              fullWidth
+              helperText={detailError ? "An explanation is required" : ""}
+              id="explanation-field"
+              label="Please provide an explanation"
+              minRows={4}
+              multiline
+              required
+              value={details}
+              onChange={(e) => {
+                setDetails(e.target.value);
+                setDetailError(false);
+                setShowSchedule(true);
+              }}
+              sx={{ marginTop: "1em" }}
+            />
+          </Box>
+        )}
+        {showSchedule && (
+          <Box
+            sx={{
+              marginBottom: "4em",
+              width: "100%",
+            }}
+          >
+            <Divider sx={{ marginBottom: "2em" }}>Select a date</Divider>
 
-                <TextField
-                  error={detailError}
-                  fullWidth
-                  helperText={detailError ? "An explanation is required" : ""}
-                  id="explanation-field"
-                  label="Please provide an explanation"
-                  minRows={4}
-                  multiline
-                  required
-                  value={details}
-                  onChange={(e) => {
-                    setDetails(e.target.value);
-                    setDetailError(false);
-                    setShowSchedule(true);
-                  }}
-                  sx={{
-                    marginBottom: "3em",
-                    marginTop: "1em",
-                  }}
-                />
-              </>
-            )}
-            {showSchedule && (
-              <>
-                <Divider>Select a date</Divider>
+            <DateTimePicker
+              handleScheduleDate={handleScheduleDate}
+              scheduleDates={scheduleDates}
+              setScheduleDates={setScheduleDates}
+            />
 
-                <DateTimePicker
-                  handleScheduleDate={handleScheduleDate}
-                  scheduleDates={scheduleDates}
-                  setScheduleDates={setScheduleDates}
-                />
-
-                {dateError && (
-                  <Typography
-                    component="p"
-                    color="error"
-                    sx={{ marginTop: "1em" }}
-                  >
-                    * {dateError}
-                  </Typography>
-                )}
-              </>
-            )}
-
-            {showSchedule && group && (
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => {
-                  handleFinish();
-                }}
-                sx={{
-                  marginTop: "2em",
-                }}
-                disabled={!validDate}
+            {dateError && (
+              <Typography
+                component="p"
+                color="error"
+                sx={{ marginTop: "1em" }}
               >
-                Finish
-              </Button>
+                * {dateError}
+              </Typography>
             )}
           </Box>
         )}
-      </SubPage>
-    );
-  } else {
-    return (
-      <ErrorPage />
-    );
-  }
+
+        {showSchedule && group && (
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => { handleFinish(); }}
+            disabled={!validDate}
+          >
+            Finish
+          </Button>
+        )}
+      </Box>
+    </SubPage>
+  );
 };

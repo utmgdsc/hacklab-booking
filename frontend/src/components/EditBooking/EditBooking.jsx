@@ -129,8 +129,6 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       });
   }, []);
 
-  const [reason, setReason] = useState("");
-  const [reasonError, setReasonError] = useState(false);
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
   const [dateError, setDateError] = useState(false);
