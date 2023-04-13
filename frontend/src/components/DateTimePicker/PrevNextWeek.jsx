@@ -27,27 +27,7 @@ import { GetMonday } from "../../components";
  *
  * @returns the previous and next week buttons, and the date picker
  */
-export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates, setBlockedDates }) => {
-    const handleBlockedDates = async (startDate) => {
-        // the end date is 5 days after the start date
-        let endDate = startDate.add(5, "day").toDate();
-
-        // console.log(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + calendarDate.toISOString() + "/" + endDate.toISOString());
-
-        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startDate.toISOString() + "/" + endDate.toISOString())
-            .then((res) => {
-                return res.json();
-            })
-            .then((data) => {
-                // convert dates into date objects
-                let blocked = [];
-                data.forEach((date) => {
-                    blocked.push(new Date(date));
-                }
-                );
-                setBlockedDates(blocked);
-            });
-    };
+export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates, handleBlockedDates }) => {
 
     return (
         <>

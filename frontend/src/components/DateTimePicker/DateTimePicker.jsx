@@ -2,7 +2,7 @@ import {
     Box
 } from "@mui/material";
 import dayjs from "dayjs";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 
 import { CustomScheduleSelector } from './CustomScheduleSelector';
 import { PrevNextWeek } from './PrevNextWeek';
@@ -18,13 +18,38 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
 
+    const handleBlockedDates = async (startDate) => {
+        // the end date is 5 days after the start date
+        let endDate = startDate.add(5, "day").toDate();
+
+        // console.log(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + calendarDate.toISOString() + "/" + endDate.toISOString());
+
+        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startDate.toISOString() + "/" + endDate.toISOString())
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                // convert dates into date objects
+                let blocked = [];
+                data.forEach((date) => {
+                    blocked.push(new Date(date));
+                }
+                );
+                setBlockedDates(blocked);
+            });
+    };
+
+    useEffect(() => {
+        handleBlockedDates(calendarDate);
+    }, [calendarDate]);
+
     return (
         <>
             <PrevNextWeek
                 calendarDate={calendarDate}
                 setDate={setDate}
                 setScheduleDates={setScheduleDates}
-                setBlockedDates={setBlockedDates}
+                handleBlockedDates={handleBlockedDates}
             />
             <Box
                 onMouseDown={() => {
