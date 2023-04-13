@@ -28,9 +28,10 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
      */
     const handleBlockedDates = async (startDate) => {
         // the end date is 5 days after the start date
-        let endDate = GetMonday(startDate).add(5, "day").toDate();
+        const startMonday = GetMonday(startDate);
+        const endDate = dayjs(startMonday).add(5, "day").toDate();
 
-        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + GetMonday(startDate).toISOString() + "/" + endDate.toISOString())
+        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString())
             .then((res) => {
                 return res.json();
             })

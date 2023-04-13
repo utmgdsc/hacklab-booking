@@ -76,10 +76,22 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
 
     const customDateCellRenderer = (date, selected) => {
         const blocked = (blockedDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
+        const inPast = (date.getTime() < new Date().getTime());
+        var backgroundColor;
+
+        if (blocked) {
+            backgroundColor = theme.palette.error.main + " !important";
+        } else if (selected) {
+            backgroundColor = theme.palette.action.active;
+        } else if (inPast) {
+            backgroundColor = theme.palette.action.disabled;
+        } else {
+            backgroundColor = theme.palette.action.hover;
+        }
 
         return (
             <Box sx={{
-                backgroundColor: (blocked ? theme.palette.error.main + "!important" : (selected ? theme.palette.action.active : theme.palette.action.hover)),
+                backgroundColor: backgroundColor,
                 height: "25px",
                 width: "100%",
                 "&:hover": {
