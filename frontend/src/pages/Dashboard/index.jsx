@@ -42,8 +42,8 @@ export const Dashboard = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("data");
-        console.log(data);
+        // console.log("data");
+        // console.log(data);
         setActiveRequests(data);
         setPendingRequests([]);
       });
@@ -55,7 +55,7 @@ export const Dashboard = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data, "all requests");
+        // console.log(data, "all requests");
         setPendingRequests(
           data.filter((request) => request.status === "pending")
         );
@@ -73,13 +73,13 @@ export const Dashboard = () => {
   };
 
   const editThisRequest = (reqID) => {
-    console.log(reqID, "edit this request");
+    // console.log(reqID, "edit this request");
     setEditRequestID(reqID);
     setOpenEditRequest(true);
   };
 
   const cancelThisRequest = (reqID) => {
-    console.log(reqID, "cancel this request");
+    // console.log(reqID, "cancel this request");
     // TODO: if request is completed, remove from calendar events
     fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
       method: "POST",
@@ -94,15 +94,52 @@ export const Dashboard = () => {
 
   const theme = useTheme();
 
+  const AppButtons = [
+    {
+      title: "View the Hacklab Calendar",
+      href: "/calendar",
+      icon: <InventoryIcon />,
+      label: "View Events",
+      color: theme.palette.app_colors.red
+    },
+    {
+      title: "Create a booking for Professors to review",
+      href: "/book",
+      icon: <CalendarTodayIcon />,
+      label: "Book",
+      color: theme.palette.app_colors.green
+    },
+    {
+      title: "View the student group(s) you're in",
+      href: "/group",
+      icon: <PeopleIcon />,
+      label: "Groups",
+      color: theme.palette.app_colors.blue
+    },
+    {
+      title: "View and edit your profile",
+      href: "/settings",
+      icon: <SettingsIcon />,
+      label: "Settings",
+      color: theme.palette.app_colors.yellow
+    },
+    {
+      title: "Admin dashboard",
+      href: "/admin",
+      icon: <AdminPanelSettingsIcon />,
+      label: "Admin",
+      color: theme.palette.app_colors.purple,
+      hidden: userInfo["role"] !== "admin"
+    }
+  ];
+
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          flexWrap: "nowrap",
           marginTop: {
             xs: "-2em",
             sm: "-1em",
@@ -110,7 +147,6 @@ export const Dashboard = () => {
             lg: "1em",
             xl: "2em",
           },
-          marginBottom: "2em",
         }}
       >
         <Box>
@@ -178,8 +214,6 @@ export const Dashboard = () => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "left",
           alignItems: "center",
           marginTop: "2em",
           marginBottom: "2em",
@@ -187,69 +221,19 @@ export const Dashboard = () => {
           overflowX: "auto",
         }}
       >
-        <Tooltip title="View the Hacklab Calendar" arrow placement="top">
-          <Link href="/calendar" isInternalLink>
-            <LabelledIconButton
-              icon={<InventoryIcon />}
-              color={theme.palette.app_colors.red}
-              label="View Events"
-            />
-          </Link>
-        </Tooltip>
-
-        <Tooltip
-          title="Create a booking for Professors to review"
-          arrow
-          placement="top"
-        >
-          <Link href="/book" isInternalLink>
-            <LabelledIconButton
-              icon={<CalendarTodayIcon />}
-              color={theme.palette.app_colors.green}
-              label="Book"
-            />
-          </Link>
-        </Tooltip>
-
-        <Tooltip
-          title="View the student group you're associated with"
-          arrow
-          placement="top"
-        >
-          <Link href="/group" isInternalLink>
-            <LabelledIconButton
-              icon={<PeopleIcon />}
-              color={theme.palette.app_colors.blue}
-              label="Your Group"
-            />
-          </Link>
-        </Tooltip>
-
-        <Tooltip title="Access your settings" arrow placement="top">
-          <Link href="/settings" isInternalLink>
-            <LabelledIconButton
-              icon={<SettingsIcon />}
-              color={theme.palette.app_colors.yellow}
-              label="Settings"
-            />
-          </Link>
-        </Tooltip>
-
-        {userInfo["role"] === "admin" && (
-          <Tooltip
-            title="Manage people who have Hacklab Access"
-            arrow
-            placement="top"
-          >
-            <Link href="/admin" isInternalLink>
-              <LabelledIconButton
-                icon={<AdminPanelSettingsIcon />}
-                color={theme.palette.app_colors.purple}
-                label="Admin"
-              />
-            </Link>
-          </Tooltip>
-        )}
+        {
+          AppButtons.map((button) => button["hidden"] ? null : (
+            <Tooltip title={button["title"]} arrow placement="top" key={button["href"]}>
+              <Link href={button["href"]} isInternalLink>
+                <LabelledIconButton
+                  icon={button["icon"]}
+                  color={button["color"]}
+                  label={button["label"]}
+                />
+              </Link>
+            </Tooltip>
+          ))
+        }
       </Box>
       <Typography variant="h2" gutterBottom>
         Your Active Requests
@@ -262,7 +246,6 @@ export const Dashboard = () => {
         />
       )}
       {active_requests.map((request) => {
-        console.log(request);
         return (
           <ActiveRequestCard
             key={request["_id"]}
@@ -293,12 +276,7 @@ export const Dashboard = () => {
 
       {userInfo["role"] === "admin" && (
         <>
-          <Typography variant="h2" gutterBottom>
-            Your{" "}
-            <acronym title="Booking requests that demand your attention">
-              Pending Requests
-            </acronym>
-          </Typography>
+          <Typography variant="h2" gutterBottom>Your Pending Requests</Typography>
           {pending_requests && pending_requests.length === 0 && (
             <NoRequestsPlaceholder
               text={"No requests demand your attention. Horray!"}
@@ -307,7 +285,6 @@ export const Dashboard = () => {
           {pending_requests &&
             pending_requests.length > 0 &&
             pending_requests.map((request) => {
-              console.log(request);
               return (
                 <PendingRequestCard
                   key={request["_id"]}
@@ -319,9 +296,6 @@ export const Dashboard = () => {
                   ownerID={request["owner"]}
                   groupID={request["group"]}
                   locationID={request["room"]}
-                  //utorid={request["owner"]["utorid"]}
-                  //location={request["room"]["friendlyName"]}
-                  //teamName={request["group"]["name"]}
                   reqID={request["_id"]}
                 />
               );
