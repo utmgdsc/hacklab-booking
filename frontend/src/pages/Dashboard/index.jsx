@@ -73,13 +73,12 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
 const PendingRequestCards = ({ pending_requests }) => (
   <>
     <Typography variant="h2" gutterBottom>Your Pending Requests</Typography>
-    {pending_requests && pending_requests.length === 0 && (
+    {pending_requests.length === 0 && (
       <NoRequestsPlaceholder
         text={"No requests demand your attention. Horray!"}
       />
     )}
-    {pending_requests &&
-      pending_requests.length > 0 &&
+    {
       pending_requests.map((request) => {
         return (
           <PendingRequestCard
@@ -126,9 +125,7 @@ export const Dashboard = () => {
       })
       .then((data) => {
         // console.log(data, "all requests");
-        setPendingRequests(
-          data.filter((request) => request.status === "pending")
-        );
+        setPendingRequests(data);
       });
   }, []);
 

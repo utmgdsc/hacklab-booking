@@ -83,11 +83,18 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
     await tcardapprover.update({ $push: { pendingRequests: request } });
     await approver.update({ $push: { pendingRequests: request } });
 
+    let date = start_date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
     await sendEmail({ // Send approvers an email for new request
       name: approver.name,
       address: approver.email,
       subject: 'New HackLab Booking Request',
-      message: `There's a new booking request for the HackLab from ${requester.name} (${requester.utorid}).\n Their reason for booking was: ${requests[i].title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${date} from ${startTime.getHours()}:00 to ${endTime.getHours()}:00.`
+      message: `There's a new booking request for the HackLab from ${requester.name} (${requester.utorid}).\n Their reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${date} from ${start_date.getHours()}:00 to ${end_date.getHours() + 1}:00.`
     });
 
     res.send(request);
@@ -140,12 +147,14 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
         owner.needsAccess = true;
         await owner.save();
         let group = await Group.findOne({ _id: request.group });
+        let start_date = new Date(request.start_date);
+        let end_date = new Date(request.end_date);
         // send email to owner
         await sendEmail({
           name: owner.name,
           address: owner.email,
           subject: 'HackLab Booking Request Approved',
-          message: `Your booking request for the HackLab has been approved, you will be sent an email soon once you're granted TCard access to the HackLab.\n Your reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${request.start_date.toDateString()} from ${request.start_date.getHours()}:00 to ${request.end_date.getHours()}:00.`
+          message: `Your booking request for the HackLab has been approved, you will be sent an email soon once you're granted TCard access to the HackLab.\n Your reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${start_date.toDateString()} from ${start_date.getHours()}:00 to ${end_date.getHours() + 1}:00.`
         });
         let tcardapprover = await Account.findOne({ utorid: "wangandr" });
         // send email to tcard approver
@@ -153,7 +162,7 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
           name: tcardapprover.name,
           address: tcardapprover.email,
           subject: 'TCard Access Request for HackLab',
-          message: `There's a new TCard access request for the HackLab from ${owner.name} (${owner.utorid}).\n Their reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${request.start_date.toDateString()} from ${request.start_date.getHours()}:00 to ${request.end_date.getHours()}:00.`
+          message: `There's a new TCard access request for the HackLab from ${owner.name} (${owner.utorid}).\n Their reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${start_date.toDateString()} from ${start_date.getHours()}:00 to ${end_date.getHours() + 1}:00.`
       });
     }
     await request.save();
@@ -286,7 +295,7 @@ router.get('/getBlockedDates/:start/:end', roleVerify(["student", "prof", "admin
     let duration = (r_end - r_start) / 1000 / 60 / 60;
 
     if (dateInRange(r_start, start_date, end_date)) {
-      for (let j = 0; j < duration; j++) {
+      for (let j = 0; j < duration + 1; j++) {
         blockedDates.push(new Date(r_start.getTime() + j * 60 * 60 * 1000));
       }
     }

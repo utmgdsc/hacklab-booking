@@ -14,7 +14,6 @@ import { DateTimePicker, BookingSubmitted } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { ErrorPage } from "../../layouts/ErrorPage";
-import dayjs from "dayjs";
 
 export const CreateBooking = () => {
   const userInfo = useContext(UserContext);
@@ -61,8 +60,6 @@ export const CreateBooking = () => {
       return;
     }
 
-    let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
-
     // compile into json object
     const booking = {
       owner: userInfo["utorid"],
@@ -70,7 +67,7 @@ export const CreateBooking = () => {
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: dayjs(endDate).add(1, 'hour').toDate(),
+      endTime: scheduleDates[scheduleDates.length - 1],
     };
 
     console.log(booking);

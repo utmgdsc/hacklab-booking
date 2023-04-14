@@ -78,7 +78,7 @@ export const ActiveRequestCard = ({
     let startHour = new Date(date);
     startHour = startHour.getHours();
     let endHour = new Date(end);
-    endHour = endHour.getHours();
+    endHour = endHour.getHours() + 1;
     return `${startHour}:00 - ${endHour}:00`;
   };
 

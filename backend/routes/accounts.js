@@ -84,7 +84,7 @@ router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
                 name: account.name,
                 address: account.email,
                 subject: 'HackLab Booking Completed',
-                message: `Your booking request for the HackLab has been completed.\n Your reason for booking was: ${requests[i].title}.\n This booking is associated with the group ${group.name}.\n Your booking is on ${date} from ${startTime.getHours()}:00 to ${endTime.getHours()}:00.`
+                message: `Your booking request for the HackLab has been completed.\n Your reason for booking was: ${requests[i].title}.\n This booking is associated with the group ${group.name}.\n Your booking is on ${date} from ${startTime.getHours()}:00 to ${endTime.getHours() + 1}:00.`
               });
               await requests[i].save();
           }
