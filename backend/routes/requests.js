@@ -280,14 +280,21 @@ const dateInRange = (date, start, end) => {
  * given a start and end date, return all dates that are blocked.
  * :start and :end MUST be in the ISO date format. (YYYY-MM-DD)
  */
-router.get('/getBlockedDates/:start/:end', roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.get('/getBlockedDates/:start/:end/:reqID', roleVerify(["student", "prof", "admin"]), async (req, res) => {
   let start_date = new Date(req.params.start);
   let end_date = new Date(req.params.end);
+  let reqID = null;
+  if (req.params.reqID != "null") {
+    reqID = req.params.reqID;
+  }
   let requests = await Request.find({status: {$in: ["approval", "completed", "pending"]}, end_date: {$gte: new Date()}});
 
   let blockedDates = [];
 
   for (let i = 0; i < requests.length; i++) {
+    if (reqID && requests[i]._id == reqID) {
+      continue;
+    }
     let r_start = new Date(requests[i].start_date);
     let r_end = new Date(requests[i].end_date);
 

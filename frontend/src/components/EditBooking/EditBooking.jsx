@@ -19,52 +19,12 @@ import {
 } from "@mui/material";
 import { React, useContext, useEffect, useState } from "react";
 import { forwardRef } from "react";
+import { DateTimePicker, BookingSubmitted } from "../../components";
 import {
   Close as CloseIcon,
   CheckCircle as CheckCircleIcon,
-  ArrowBackIos as ArrowBackIcon,
-  ArrowForwardIos as ArrowForwardIcon,
 } from "@mui/icons-material";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import ScheduleSelector from "react-schedule-selector";
-import { Link } from "../../components";
-import { UserContext } from "../../contexts/UserContext";
-
-/**
- * given any date, return the date of the Monday of that week.
- *
- * if it is the weekend, return the next Monday.
- *
- * @param {Date} d the date to get the Monday of
- */
-const getMonday = (d) => {
-  d = new dayjs(d);
-  var day = d.day();
-
-  switch (day) {
-    case 0: // sunday - get the next monday
-      d = d.add(1, "day");
-      break;
-    case 1: // monday
-      break;
-    case 2:
-    case 3:
-    case 4:
-    case 5: // tuesday - friday: get current monday
-      d = d.subtract(day - 1, "day");
-      break;
-    case 6: // saturday - get the next monday
-      d = d.add(2, "day");
-      break;
-    default:
-      throw new Error("Invalid day");
-  }
-
-  return d.toDate();
-};
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
@@ -93,7 +53,7 @@ const getDateString = (scheduleDate) => {
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
   let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
-  endDate = dayjs(endDate).add(1, 'hour').toDate();
+  endDate = dayjs(endDate).add(1, "hour").toDate();
   var dEnd = new Date(endDate);
   return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };
@@ -175,14 +135,12 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       return;
     }
 
-    let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
-
     const modifiedRequest = {
       group: group["_id"],
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: dayjs(endDate).add(1, 'hour').toDate(),
+      endTime: scheduleDates[scheduleDates.length - 1],
     };
 
     fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
@@ -200,20 +158,20 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
 
   const handleScheduleDate = (dates) => {
     var currDate = 0;
-    setDateError(false);
-    setDatePastError(false);
-    setTimeTakenError(false);
+    setDateError("");
     for (var i = 0; i < dates.length; i++) {
       var d = new Date(dates[i]);
       // if in the past
       if (d < new Date()) {
-        setDatePastError(true);
+        setDateError("please select a date in the future");
+        setScheduleDates([]);
         return;
       }
 
       // if not the same day
       if (d.getDate() !== currDate && i > 0) {
-        setDateError(true);
+        setDateError("please only select one day");
+        setScheduleDates([]);
         return;
       }
       // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
@@ -236,13 +194,15 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
         console.log(res);
         if (res.status === 200) {
           setValidDate(true);
-          setTimeTakenError(false);
+          setDateError("");
         } else if (res.status === 400) {
           setValidDate(false);
-          setTimeTakenError(true);
+          setDateError(
+            "this time overlaps with another booking, please choose a different time and/or date"
+          );
+          setScheduleDates([]);
         }
       });
-      setScheduleError(false);
     } else setValidDate(false);
 
     const newDates = dates.map((date) => {
@@ -391,169 +351,22 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
             )}
             {showSchedule && (
               <>
-                <Divider>Select a date</Divider>
+                <Divider sx={{ marginBottom: "2em" }}>Select a date</Divider>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "nowrap",
-                    marginBottom: "1em",
-                    gap: "1em",
-                    width: "100%",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "start",
-                      alignItems: "center",
-                      gap: "1em",
-                    }}
-                  >
-                    <Box>
-                      <Button
-                        variant="outlined"
-                        color="gray"
-                        onClick={() => {
-                          setDate(dayjs());
-                          // setScheduleDates([]);
-                        }}
-                        sx={{
-                          textTransform: "none",
-                        }}
-                      >
-                        Today
-                      </Button>
-                    </Box>
-                    <Box>
-                      <Tooltip title="Previous week">
-                        <IconButton
-                          onClick={() => {
-                            setDate(calendarDate.subtract(7, "day"));
-                            // setScheduleDates([]);
-                          }}
-                          disabled={calendarDate
-                            .subtract(7, "day")
-                            .isBefore(dayjs(), "day")}
-                        >
-                          <ArrowBackIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Next week">
-                        <IconButton
-                          onClick={() => {
-                            setDate(calendarDate.add(7, "day"));
-                            // setScheduleDates([]);
-                          }}
-                        >
-                          <ArrowForwardIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                    <Typography component="p" variant="h5">
-                      {getMonday(calendarDate).toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography component="p" variant="h5" color="error">
-                      {calendarDateError ? "*" : ""}
-                    </Typography>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        label="Select a day"
-                        value={calendarDate}
-                        onChange={(newDate) => {
-                          setDate(newDate);
-                          setCalendarDateError(false);
-                          setScheduleDates([]);
-                        }}
-                        disablePast
-                      />
-                    </LocalizationProvider>
-                  </Box>
-                </Box>
-                <Box
-                  onMouseDown={() => {
-                    setScheduleDates([]);
-                  }}
-                  sx={{
-                    marginBottom: "1em",
-                    width: "100%",
-                  }}
-                >
-                  <ScheduleSelector
-                    selection={scheduleDates}
-                    numDays={5}
-                    minTime={8}
-                    maxTime={22}
-                    hourlyChunks={1}
-                    startDate={getMonday(calendarDate)}
-                    onChange={handleScheduleDate}
-                    selectionScheme="linear"
-                    renderDateLabel={(date) => {
-                      return (
-                        <Box
-                          sx={{
-                            textAlign: "center",
-                            marginBottom: "0.5em",
-                          }}
-                        >
-                          {date.toLocaleDateString("en-US", {
-                            weekday: "short",
-                          })}
-                          <Typography component="p" variant="h5">
-                            {date.toLocaleDateString("en-US", {
-                              day: "numeric",
-                              month: "long",
-                            })}
-                          </Typography>
-                        </Box>
-                      );
-                    }}
-                  />
-                </Box>
+                <DateTimePicker
+                  handleScheduleDate={handleScheduleDate}
+                  scheduleDates={scheduleDates}
+                  setScheduleDates={setScheduleDates}
+                  reqID={reqID}
+                />
+
                 {dateError && (
                   <Typography
                     component="p"
                     color="error"
                     sx={{ marginTop: "1em" }}
                   >
-                    * please only select one day
-                  </Typography>
-                )}
-                {datePastError && (
-                  <Typography
-                    component="p"
-                    color="error"
-                    sx={{ marginTop: "1em" }}
-                  >
-                    * do not select a day in the past
-                  </Typography>
-                )}
-                {scheduleError && (
-                  <Typography
-                    component="p"
-                    color="error"
-                    sx={{ marginTop: "1em" }}
-                  >
-                    * please select a time
-                  </Typography>
-                )}
-                {timeTakenError && (
-                  <Typography
-                    component="p"
-                    color="error"
-                    sx={{ marginTop: "1em" }}
-                  >
-                    * this time overlaps with another booking, please choose a
-                    different time and/or date
+                    * {dateError}
                   </Typography>
                 )}
               </>
