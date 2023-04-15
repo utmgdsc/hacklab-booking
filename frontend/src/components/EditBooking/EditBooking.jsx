@@ -15,9 +15,8 @@ import {
   Tooltip,
   Select,
   Divider,
-  getListItemSecondaryActionClassesUtilityClass,
 } from "@mui/material";
-import { React, useContext, useEffect, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { forwardRef } from "react";
 import {
   Close as CloseIcon,
@@ -30,7 +29,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import ScheduleSelector from "react-schedule-selector";
-import { Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 
 /**
@@ -93,7 +91,7 @@ const getDateString = (scheduleDate) => {
 const getTimeString = (scheduleDates) => {
   var dStart = new Date(scheduleDates[0]);
   let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
-  endDate = dayjs(endDate).add(1, 'hour').toDate();
+  endDate = dayjs(endDate).add(1, "hour").toDate();
   var dEnd = new Date(endDate);
   return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };
@@ -182,7 +180,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       details: details,
       title: details,
       startTime: scheduleDates[0],
-      endTime: dayjs(endDate).add(1, 'hour').toDate(),
+      endTime: dayjs(endDate).add(1, "hour").toDate(),
     };
 
     fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
@@ -387,6 +385,32 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
                   helperText={detailError ? "An explanation is required" : ""}
                   id="explanation-field"
                 />
+              </>
+            )}
+            {showSchedule && (
+              <>
+                <Divider>Choose Approvers to review your request</Divider>
+
+                <Box
+                  sx={{
+                    marginBottom: "4em",
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <ApproverSelect setApprovers={setApprovers} />
+                  {approversError && (
+                    <Typography
+                      component="p"
+                      color="error"
+                      sx={{ marginTop: "1em" }}
+                    >
+                      * please select an approver
+                    </Typography>
+                  )}
+                </Box>
               </>
             )}
             {showSchedule && (

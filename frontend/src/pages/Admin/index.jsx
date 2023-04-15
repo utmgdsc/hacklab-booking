@@ -10,11 +10,16 @@ import {
   Tooltip,
   Typography,
   useTheme,
-  TableRow
+  TableRow,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
-import { AppButtons, Link, VirtuosoTableComponents } from "../../components";
+import {
+  AppButtons,
+  Link,
+  VirtuosoTableComponents,
+  RoleChanger,
+} from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { ErrorPage } from "../../layouts/ErrorPage";
@@ -62,25 +67,25 @@ export const Admin = () => {
       href: "/admin/all-requests",
       icon: <InventoryIcon />,
       label: "All Requests",
-      color: theme.palette.app_colors.red
+      color: theme.palette.app_colors.red,
     },
-  ]
+  ];
 
   // useEffect hook for fetching the rows
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + '/accounts/all', {
-      method: 'GET',
+    fetch(process.env.REACT_APP_API_URL + "/accounts/all", {
+      method: "GET",
     })
-      .then(res => {
+      .then((res) => {
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
         setRows(data);
         setRowsToDisplay(data);
         setUpdate(Math.random());
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   }, []);
@@ -114,9 +119,7 @@ export const Admin = () => {
     return (
       <ErrorPage
         name="You are not an admin"
-        message={
-          <Link href="/">Go back</Link>
-        }
+        message={<Link href="/">Go back</Link>}
       />
     );
   }
@@ -176,6 +179,17 @@ export const Admin = () => {
                       {row[column.dataKey] ? "Yes" : "No"}
                     </TableCell>
                   );
+                } else if (index === 2) {
+                  return (
+                    <TableCell key={index}>
+                      <Typography>{row[column.dataKey]}</Typography>
+                      <RoleChanger
+                        utorid={row["utorid"]}
+                        userRole={row["role"]}
+                        setUpdate={setUpdate}
+                      />
+                    </TableCell>
+                  );
                 } else if (needsApproval(row, column)) {
                   return (
                     <TableCell key={index}>
@@ -184,8 +198,8 @@ export const Admin = () => {
                           // send post request to api to grant access
                           fetch(
                             process.env.REACT_APP_API_URL +
-                            "/accounts/modifyAccess/" +
-                            row["utorid"],
+                              "/accounts/modifyAccess/" +
+                              row["utorid"],
                             {
                               method: "POST",
                               headers: {

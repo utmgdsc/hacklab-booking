@@ -17,3 +17,5 @@ export { Link } from "./Link/Link";
 export { NoRequestsPlaceholder } from "./NoRequestsPlaceholder/NoRequestsPlaceholder";
 export { PendingRequestCard } from "./PendingRequestCard/PendingRequestCard";
 export { VirtuosoTableComponents } from "./Admin/VirtuosoTableComponents";
+export { RoleChanger } from "./RoleChanger/RoleChanger";
+export { ApproverSelect } from "./ApproverSelect/ApproverSelect";

@@ -11,7 +11,7 @@ const columns = [
   { label: "title", dataKey: "title" },
   { label: "approval reason", dataKey: "reason" },
   { label: "status", dataKey: "status" },
-  { label: "approver", dataKey: "approver", subKey: "name" }, // TODO: change to approver list
+  { label: "approvers", dataKey: "approvers" },
   { label: "group", dataKey: "group", subKey: "name" },
   { label: "room", dataKey: "room", subKey: "roomName" },
   { label: "start date", dataKey: "start_date" },

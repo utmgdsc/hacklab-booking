@@ -7,10 +7,14 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { React, useContext, useEffect, useState } from "react";
-import { DateTimePicker, BookingSubmitted } from "../../components";
+import {
+  DateTimePicker,
+  BookingSubmitted,
+  ApproverSelect,
+} from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { ErrorPage } from "../../layouts/ErrorPage";
@@ -26,6 +30,8 @@ export const CreateBooking = () => {
   const [submitted, setSubmitted] = useState(false);
   const [userGroups, setUserGroups] = useState([]);
   const [validDate, setValidDate] = useState(false);
+  const [approvers, setApprovers] = useState([]);
+  const [approversError, setApproversError] = useState(false);
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
@@ -36,7 +42,6 @@ export const CreateBooking = () => {
         setUserGroups(data);
       });
   }, []);
-
 
   const handleFinish = () => {
     let finish = true;
@@ -50,6 +55,13 @@ export const CreateBooking = () => {
 
     if (scheduleDates.length === 0 && showSchedule) {
       setDateError("please select a time");
+    }
+
+    if (approvers.length === 0) {
+      setApproversError(true);
+      finish = false;
+    } else {
+      setApproversError(false);
     }
 
     if (!validDate) {
@@ -68,6 +80,7 @@ export const CreateBooking = () => {
       title: details,
       startTime: scheduleDates[0],
       endTime: scheduleDates[scheduleDates.length - 1],
+      approvers: approvers,
     };
 
     console.log(booking);
@@ -105,18 +118,27 @@ export const CreateBooking = () => {
       currDate = d.getDate();
     }
     if (dates.length > 0) {
-      fetch(process.env.REACT_APP_API_URL + "/requests/checkDate/" + dates[0] + "/" + dates[dates.length - 1] + "/null", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }).then((res) => {
+      fetch(
+        process.env.REACT_APP_API_URL +
+          "/requests/checkDate/" +
+          dates[0] +
+          "/" +
+          dates[dates.length - 1] +
+          "/null",
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      ).then((res) => {
         console.log(res);
         if (res.status === 200) {
           setValidDate(true);
           setDateError("");
-        }
-        else if (res.status === 400) {
+        } else if (res.status === 400) {
           setValidDate(false);
-          setDateError("this time overlaps with another booking, please choose a different time and/or date");
+          setDateError(
+            "this time overlaps with another booking, please choose a different time and/or date"
+          );
           setScheduleDates([]);
         }
       });
@@ -130,7 +152,7 @@ export const CreateBooking = () => {
   };
 
   if (userGroups.length <= 0) {
-    return (<ErrorPage />)
+    return <ErrorPage />;
   } else if (submitted) {
     return (
       <SubPage name="Create a booking">
@@ -172,7 +194,9 @@ export const CreateBooking = () => {
                 fullWidth
                 label="Group"
                 onChange={(e) => {
-                  setGroup(typeof e.target.value === "string" ? "" : e.target.value);
+                  setGroup(
+                    typeof e.target.value === "string" ? "" : e.target.value
+                  );
                 }}
               >
                 {userGroups.map((group) => {
@@ -216,6 +240,32 @@ export const CreateBooking = () => {
           </Box>
         )}
         {showSchedule && (
+          <>
+            <Box
+              sx={{
+                marginBottom: "4em",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Divider>Choose Approvers to review your request</Divider>
+
+              <ApproverSelect setApprovers={setApprovers} />
+              {approversError && (
+                <Typography
+                  component="p"
+                  color="error"
+                  sx={{ marginTop: "1em" }}
+                >
+                  * please select an approver
+                </Typography>
+              )}
+            </Box>
+          </>
+        )}
+        {showSchedule && (
           <Box
             sx={{
               marginBottom: "4em",
@@ -231,11 +281,7 @@ export const CreateBooking = () => {
             />
 
             {dateError && (
-              <Typography
-                component="p"
-                color="error"
-                sx={{ marginTop: "1em" }}
-              >
+              <Typography component="p" color="error" sx={{ marginTop: "1em" }}>
                 * {dateError}
               </Typography>
             )}
@@ -246,7 +292,9 @@ export const CreateBooking = () => {
           <Button
             variant="contained"
             size="large"
-            onClick={() => { handleFinish(); }}
+            onClick={() => {
+              handleFinish();
+            }}
             disabled={!validDate}
           >
             Finish

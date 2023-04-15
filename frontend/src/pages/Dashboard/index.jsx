@@ -55,7 +55,6 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
             status={request["status"]}
             owner={request["owner"]["name"]}
             ownerHasTCard={request["owner"]["accessGranted"]}
-            approver={request["approver"]["name"]}
             edit={editThisRequest}
             cancel={cancelThisRequest}
           />

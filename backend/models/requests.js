@@ -6,7 +6,7 @@ const RequestSchema = new Schema({
   status: {required: true, type: String, enum: ["pending", "denied", "cancelled", "approval", "tcard", "completed"], default: "pending"},
   group: {required: true, type: Schema.Types.ObjectId, ref: 'Group'},
   owner: {required: true, type: Schema.Types.ObjectId, ref: 'Account'},
-  approvers: [{type: Schema.Types.ObjectId, ref: 'Account'}],
+  approvers: [{type: String}],
   start_date: {required: true, type: Date},
   end_date: {required: true, type: Date},
   description: {type: String},

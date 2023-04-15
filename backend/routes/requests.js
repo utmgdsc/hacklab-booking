@@ -33,13 +33,20 @@ router.get("/myRequests", roleVerify(["student", "approver", "tcard", "admin"]),
 
 router.get("/allRequests", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   let account = await Account.findOne({ utorid: req.headers["utorid"] });
-  let requests = await Request.find({status: "pending"});
-
-  if (account["role"] !== "admin" && account["role"] !== "approver") {
-    requests = []
+  
+  if (account.role == "admin") {
+    let requests = await Request.find({ status: { $in: ["pending"] } });
+    res.send(requests);
+    return;
+  }
+  else if (account.role == "approver"){
+    // find requests that have a pending status and have the accounts utorid in approvers list
+    let requests = await Request.find({ status: { $in: ["pending"] }, approvers: { $in: [account.utorid] } });
+    res.send(requests);
+    return;
   }
 
-  res.send(requests);
+  res.send([]);
 });
 
 router.post("/submit", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
@@ -54,10 +61,6 @@ router.post("/submit", roleVerify(["student", "approver", "tcard", "admin"]), as
       return;
     }
 
-    // TODO: tcardapprover and approver should be a list of accounts
-    let tcardapprover = await Account.findOne({ utorid: "wangandr" });
-    let approver = await Account.findOne({ utorid: "liutmich" });
-
     let requester = await Account.findOne({ utorid: req.body["owner"] });
     let group = await Group.findOne({ _id: req.body["group"] });
 
@@ -65,8 +68,7 @@ router.post("/submit", roleVerify(["student", "approver", "tcard", "admin"]), as
       status: "pending",
       group: group,
       owner: requester,
-      approver: approver,
-      tcardapprover: tcardapprover,
+      approvers: req.body["approvers"],
       start_date: req.body["startTime"],
       end_date: req.body["endTime"],
       description: req.body["details"],
@@ -76,12 +78,7 @@ router.post("/submit", roleVerify(["student", "approver", "tcard", "admin"]), as
     await request.save();
 
     await group.update({ $push: { requests: request } });
-    await requester.update({ $push: { activeRequests: request } });
     await hacklab.update({ $push: { requests: request } });
-
-    // add request to approver and tcardapprover's pendingRequests
-    await tcardapprover.update({ $push: { pendingRequests: request } });
-    await approver.update({ $push: { pendingRequests: request } });
 
     let date = start_date.toLocaleDateString("en-US", {
       weekday: "long",
@@ -90,12 +87,16 @@ router.post("/submit", roleVerify(["student", "approver", "tcard", "admin"]), as
       day: "numeric",
     });
 
-    await sendEmail({ // Send approvers an email for new request
-      name: approver.name,
-      address: approver.email,
-      subject: 'New HackLab Booking Request',
-      message: `There's a new booking request for the HackLab from ${requester.name} (${requester.utorid}).\n Their reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${date} from ${start_date.getHours()}:00 to ${end_date.getHours() + 1}:00.`
-    });
+    for (let i = 0; i < req.body["approvers"].length; i++) {
+      let approver = await Account.findOne({ utorid: req.body["approvers"][i] });
+      // send approvers email for new request
+      await sendEmail({
+        name: approver.name,
+        address: approver.email,
+        subject: "New HackLab Booking Request",
+        message: `There's a new booking request for the HackLab from ${requester.name} (${requester.utorid}).\n Their reason for booking was: ${request.title}.\n This booking is associated with the group ${group.name}.\n The booking is on ${date} from ${start_date.getHours()}:00 to ${end_date.getHours() + 1}:00.`,
+      });
+    }
 
     res.send(request);
   }
@@ -209,6 +210,11 @@ router.post("/cancelRequest/:id", roleVerify(["student", "approver", "tcard", "a
   acc.needsAccess = false;
   await acc.save();
   return;
+});
+
+router.get('/approvers', roleVerify(['admin', 'tcard', 'student', 'approver']), async (req, res) => {
+  let accounts = await Account.find({role: "approver"});
+  res.send(accounts);
 });
 
 router.get("/getRoom/:id", roleVerify(["admin", "approver"]), async (req, res) => {

@@ -23,6 +23,13 @@ router.get('/:id', roleVerify(['admin', 'tcard']), async (req, res) => {
   res.send(account);
 });
 
+router.put('/changeRole/:id', roleVerify(['admin', 'tcard']), async (req, res) => {
+  let account = await Account.findOne({ utorid: req.params.id });
+  account.role = req.body.role;
+  await account.save();
+  res.send(account);
+});
+
 // router.post('/:id', roleVerify(['admin']), async (req, res) => {
 //   let account = new Account(await Account.findOne({ utorid: req.params.id }));
 //   if (req.body.role) {
