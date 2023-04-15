@@ -55,7 +55,6 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
             status={request["status"]}
             owner={request["owner"]["name"]}
             ownerHasTCard={request["owner"]["accessGranted"]}
-            approver={request["approver"]["name"]}
             edit={editThisRequest}
             cancel={cancelThisRequest}
           />
@@ -186,7 +185,7 @@ export const Dashboard = () => {
       icon: <AdminPanelSettingsIcon />,
       label: "Admin",
       color: theme.palette.app_colors.purple,
-      hidden: userInfo["role"] !== "admin"
+      hidden: userInfo["role"] !== "admin" && userInfo["role"] !== "tcard"
     }
   ];
 
@@ -215,7 +214,7 @@ export const Dashboard = () => {
         />
       )}
 
-      {userInfo["role"] === "admin" && (
+      {(userInfo["role"] === "admin" || userInfo["role"] === "approver") && (
         <PendingRequestCards pending_requests={pending_requests} />
       )}
 

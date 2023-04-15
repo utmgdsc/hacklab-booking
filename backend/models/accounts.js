@@ -9,7 +9,7 @@ const AccountSchema = new Schema({
   role: {
     type: String,
     required: true,
-    enum: ["student", "prof", "admin"],
+    enum: ["student", "admin", "approver", "tcard"],
     default: "student",
   },
   accessGranted: { type: Boolean, required: true, default: false },

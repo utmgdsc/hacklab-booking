@@ -44,7 +44,6 @@ export const ActiveRequestCard = ({
   location,
   teamName,
   status,
-  approver,
   ownerHasTCard,
   owner,
   edit,
@@ -137,14 +136,14 @@ export const ActiveRequestCard = ({
             <StepLabel>Request Sent</StepLabel>
             <StepContent>
               <Typography>
-                Your request has been sent to {approver} for approval.
+                Your request has been sent for approval.
               </Typography>
             </StepContent>
           </Step>
           <Step>
             <StepLabel>Request Approved</StepLabel>
             <StepContent>
-              <Typography>{approver} has approved your request.</Typography>
+              <Typography>your request has been approved.</Typography>
             </StepContent>
           </Step>
           {ownerHasTCard ? null : (

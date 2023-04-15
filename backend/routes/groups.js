@@ -10,14 +10,14 @@ router.get('/all', roleVerify(['admin']), async (req, res) => {
   res.send(group);
 });
 
-router.post('/create', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.post('/create', roleVerify(['student', 'admin', 'tcard', 'approver']), async (req, res) => {
   let acc = await Account.findOne({ utorid: req.headers['utorid'] });
   let group = new Group({name: req.body.name, members: [acc], requests: [], managers: [acc]});
   await group.save();
   res.send(group);
 });
 
-router.post('/invite', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.post('/invite', roleVerify(['student', 'tcard', 'approver', 'admin']), async (req, res) => {
   console.log(req)
   console.log(req.body)
   let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
@@ -37,7 +37,7 @@ router.post('/invite', roleVerify(['student', 'prof', 'admin']), async (req, res
   }
 });
 
-router.post('/remove', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.post('/remove', roleVerify(['student', 'approver', 'tcard', 'admin']), async (req, res) => {
   console.log(req)
   console.log(req.body)
   let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
@@ -69,7 +69,7 @@ router.post('/del', roleVerify(['admin']), async (req, res) => {
   res.send(group);
 });
 
-router.post('/del', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.post('/del', roleVerify(['student', 'approver', 'tcard', 'admin']), async (req, res) => {
   console.log(req)
   console.log(req.body)
   let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
@@ -87,7 +87,7 @@ router.post('/del', roleVerify(['student', 'prof', 'admin']), async (req, res) =
   }
 });
 
-router.post('/makeAdmin', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.post('/makeAdmin', roleVerify(['student', 'approver', 'tcard', 'admin']), async (req, res) => {
   console.log(req)
   console.log(req.body)
   let group = await Group.findOne({ _id: new ObjectId(req.body.id) });
@@ -117,7 +117,7 @@ router.get('/search/byMember/:utorid', roleVerify(['admin']), async (req, res) =
   res.send(group);
 });
 
-router.get('/myGroups', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.get('/myGroups', roleVerify(['student', 'approver', 'tcard', 'admin']), async (req, res) => {
   let acc = await Account.findOne({ utorid: req.headers['utorid'] });
   let group = await Group.find({ members: acc });
   res.send(group);
@@ -145,7 +145,7 @@ router.get('/search/byID/:id', roleVerify(['admin']), async (req, res) => {
   res.send(group);
 });
 
-router.get('/search/byID/:id', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.get('/search/byID/:id', roleVerify(['student', 'approver', 'tcard', 'admin']), async (req, res) => {
   let group = await Group.findOne({ _id: req.params.id });
   let acc = await Account.findOne({ utorid: req.headers['utorid'] });
   console.log(group.members)
@@ -170,7 +170,7 @@ router.get('/search/byID/:id', roleVerify(['student', 'prof', 'admin']), async (
   }
 });
 
-router.get('/getGroup/:id', roleVerify(['student', 'prof', 'admin']), async (req, res) => {
+router.get('/getGroup/:id', roleVerify(['student', 'approver', 'tcard', 'admin']), async (req, res) => {
   let group = await Group.findOne({ _id: req.params.id });
   res.send(group);
 });

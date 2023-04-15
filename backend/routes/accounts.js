@@ -13,13 +13,20 @@ router.get("/info", async (req, res) => {
   res.send(account);
 });
 
-router.get('/all', roleVerify(['admin']), async (req, res) => {
+router.get('/all', roleVerify(['admin', 'tcard']), async (req, res) => {
   let account = await Account.find({});
   res.send(account);
 });
 
-router.get('/:id', roleVerify(['admin']), async (req, res) => {
+router.get('/:id', roleVerify(['admin', 'tcard']), async (req, res) => {
   let account = await Account.findOne({ utorid: req.params.id });
+  res.send(account);
+});
+
+router.put('/changeRole/:id', roleVerify(['admin', 'tcard']), async (req, res) => {
+  let account = await Account.findOne({ utorid: req.params.id });
+  account.role = req.body.role;
+  await account.save();
   res.send(account);
 });
 
@@ -44,7 +51,7 @@ router.post('/modifyTheme', async (req, res) => {
 });
 
 // change the access prop of an account
-router.post('/modifyAccess/:id', roleVerify(['admin']), async (req, res) => {
+router.post('/modifyAccess/:id', roleVerify(['admin', 'tcard']), async (req, res) => {
     let account = await Account.findOne({ utorid: req.params.id });
     account.accessGranted = req.body.accessGranted;
     account.needsAccess = false;
