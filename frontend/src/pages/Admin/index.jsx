@@ -22,6 +22,7 @@ import { ErrorPage } from "../../layouts/ErrorPage";
 const columns = [
   { label: "UTORid", dataKey: "utorid" },
   { label: "Email", dataKey: "email" },
+  { label: "Role", dataKey: "role" },
   // { label: 'Room Requested', dataKey: 'room' },
   // { label: 'Professor Approved', dataKey: 'prof' },
   { label: "Has Access", dataKey: "accessGranted" },
@@ -62,7 +63,7 @@ export const Admin = () => {
       icon: <InventoryIcon />,
       label: "All Requests",
       color: theme.palette.app_colors.red
-    }
+    },
   ]
 
   // useEffect hook for fetching the rows
@@ -109,7 +110,7 @@ export const Admin = () => {
     );
   };
 
-  if (userInfo["role"] !== "admin") {
+  if (userInfo["role"] !== "admin" && userInfo["role"] !== "tcard") {
     return (
       <ErrorPage
         name="You are not an admin"
@@ -169,7 +170,7 @@ export const Admin = () => {
           itemContent={(index, row) => (
             <>
               {columns.map((column, index) => {
-                if (index === 2) {
+                if (index === 3) {
                   return (
                     <TableCell key={index}>
                       {row[column.dataKey] ? "Yes" : "No"}

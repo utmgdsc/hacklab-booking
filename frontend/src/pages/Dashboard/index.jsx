@@ -186,7 +186,7 @@ export const Dashboard = () => {
       icon: <AdminPanelSettingsIcon />,
       label: "Admin",
       color: theme.palette.app_colors.purple,
-      hidden: userInfo["role"] !== "admin"
+      hidden: userInfo["role"] !== "admin" && userInfo["role"] !== "tcard"
     }
   ];
 
@@ -215,7 +215,7 @@ export const Dashboard = () => {
         />
       )}
 
-      {userInfo["role"] === "admin" && (
+      {(userInfo["role"] === "admin" || userInfo["role"] === "approver") && (
         <PendingRequestCards pending_requests={pending_requests} />
       )}
 

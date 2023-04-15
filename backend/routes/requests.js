@@ -8,7 +8,7 @@ const { roleVerify } = require("../middleware/role_middleware");
 const { addEvent } = require("../google/test.js");
 const { sendEmail } = require("../google/test.js");
 
-router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.get("/myRequests", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   let account = await Account.findOne({ utorid: req.headers["utorid"] });
   // iterate through every group that the user is in
   let group = await Group.find({ members: account });
@@ -31,18 +31,18 @@ router.get("/myRequests", roleVerify(["student", "prof", "admin"]), async (req, 
   res.send(requests);
 });
 
-router.get("/allRequests", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.get("/allRequests", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   let account = await Account.findOne({ utorid: req.headers["utorid"] });
   let requests = await Request.find({status: "pending"});
 
-  if (account["role"] !== "admin") {
+  if (account["role"] !== "admin" && account["role"] !== "approver") {
     requests = []
   }
 
   res.send(requests);
 });
 
-router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.post("/submit", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
     let hacklab = await Room.findOne({ name: "Hacklab" });
 
     // date data checking
@@ -101,7 +101,7 @@ router.post("/submit", roleVerify(["student", "prof", "admin"]), async (req, res
   }
 );
 
-router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res) => {
+router.post("/changeStatus/:id", roleVerify(["approver", "admin"]), async (req, res) => {
   // iterate through all requests in pendingRequests and find the one with the same id
   let account = await Account.findOne({ utorid: req.headers["utorid"] });
 
@@ -178,12 +178,12 @@ router.post("/changeStatus/:id", roleVerify(["prof", "admin"]), async (req, res)
   // req.status(200).send("Request found");
 }});
 
-router.get("/getRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.get("/getRequest/:id", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   let request = await Request.findOne({ _id: req.params.id });
   res.send(request);
 });
 
-router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.post("/modifyRequest/:id", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   let start_date = new Date(req.body["startTime"]);
   let end_date = new Date(req.body["endTime"]);
   if (start_date < new Date() || end_date < new Date() || start_date > end_date) {
@@ -203,7 +203,7 @@ router.post("/modifyRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
   return;
 });
 
-router.post("/cancelRequest/:id", roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.post("/cancelRequest/:id", roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   await Request.updateMany({ _id: req.params.id }, {$set: { status: "cancelled" }});
   let acc = await Account.findOne({ utorid: req.headers["utorid"] });
   acc.needsAccess = false;
@@ -211,17 +211,17 @@ router.post("/cancelRequest/:id", roleVerify(["student", "prof", "admin"]), asyn
   return;
 });
 
-router.get("/getRoom/:id", roleVerify(["admin"]), async (req, res) => {
+router.get("/getRoom/:id", roleVerify(["admin", "approver"]), async (req, res) => {
   let room = await Room.findOne({ _id: req.params.id });
   res.send(room);
 });
 
-router.get('/getUtorid/:id', roleVerify(['admin']), async (req, res) => {
+router.get('/getUtorid/:id', roleVerify(['admin', "approver"]), async (req, res) => {
   let account = await Account.findOne({ _id: req.params.id });
   res.send(account);
 });
 
-router.get('/getAllRequests', roleVerify(['admin']), async (req, res) => {
+router.get('/getAllRequests', roleVerify(['admin', 'approver', 'tcard']), async (req, res) => {
   let requests = await Request.find({});
 
   // for each request, fill out group, owner, approved
@@ -238,7 +238,7 @@ router.get('/getAllRequests', roleVerify(['admin']), async (req, res) => {
 
 module.exports = router;
 
-router.get('/checkDate/:start/:end/:reqID', roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.get('/checkDate/:start/:end/:reqID', roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   let start_date = new Date(req.params.start);
   let end_date = new Date(req.params.end);
   let reqID = null;
@@ -280,7 +280,7 @@ const dateInRange = (date, start, end) => {
  * given a start and end date, return all dates that are blocked.
  * :start and :end MUST be in the ISO date format. (YYYY-MM-DD)
  */
-router.get('/getBlockedDates/:start/:end', roleVerify(["student", "prof", "admin"]), async (req, res) => {
+router.get('/getBlockedDates/:start/:end', roleVerify(["student", "approver", "tcard", "admin"]), async (req, res) => {
   let start_date = new Date(req.params.start);
   let end_date = new Date(req.params.end);
   let requests = await Request.find({status: {$in: ["approval", "completed", "pending"]}, end_date: {$gte: new Date()}});
