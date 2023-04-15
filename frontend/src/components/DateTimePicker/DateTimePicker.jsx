@@ -15,7 +15,7 @@ import { GetMonday } from '../GetMonday/GetMonday';
  * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
-export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates }) => {
+export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates, reqID }) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
 
@@ -31,7 +31,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
         const startMonday = GetMonday(startDate);
         const endDate = dayjs(startMonday).add(5, "day").toDate();
 
-        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString())
+        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString()  + "/" + reqID)
             .then((res) => {
                 return res.json();
             })

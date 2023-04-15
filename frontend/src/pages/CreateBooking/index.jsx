@@ -278,6 +278,7 @@ export const CreateBooking = () => {
               handleScheduleDate={handleScheduleDate}
               scheduleDates={scheduleDates}
               setScheduleDates={setScheduleDates}
+              reqId={null}
             />
 
             {dateError && (
