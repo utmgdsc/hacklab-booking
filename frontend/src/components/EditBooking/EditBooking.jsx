@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { React, useEffect, useState } from "react";
 import { forwardRef } from "react";
-import { DateTimePicker, BookingSubmitted } from "../../components";
+import { DateTimePicker, ApproverSelect } from "../../components";
 import {
   Close as CloseIcon,
   CheckCircle as CheckCircleIcon,
@@ -101,7 +101,8 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
   const [submitted, setSubmitted] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [group, setGroup] = useState("");
-  const [timeTakenError, setTimeTakenError] = useState(false);
+  const [approvers, setApprovers] = useState([]);
+  const [approversError, setApproversError] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClose = () => {
@@ -126,6 +127,13 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       setScheduleError(true);
     }
 
+    if (approvers.length === 0) {
+      setApproversError(true);
+      finish = false;
+    } else {
+      setApproversError(false);
+    }
+
     if (!validDate) {
       finish = false;
     }
@@ -140,6 +148,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       title: details,
       startTime: scheduleDates[0],
       endTime: scheduleDates[scheduleDates.length - 1],
+      approvers: approvers,
     };
 
     fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
@@ -350,7 +359,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
             )}
             {showSchedule && (
               <>
-                <Divider>Choose Approvers to review your request</Divider>
+                <Divider sx={{ marginBottom: "2em" }}>Choose Approvers to review your request</Divider>
 
                 <Box
                   sx={{

@@ -199,6 +199,7 @@ router.post("/modifyRequest/:id", roleVerify(["student", "approver", "tcard", "a
   await Request.updateMany({ _id: req.params.id }, {$set: { reason: req.body["title"] }});
   await Request.updateMany({ _id: req.params.id }, {$set: { start_date: req.body["startTime"] }});
   await Request.updateMany({ _id: req.params.id }, {$set: { end_date: req.body["endTime"] }});
+  await Request.updateMany({ _id: req.params.id }, {$set: { approvers: req.body["approvers"] }});
   await Request.updateMany({ _id: req.params.id }, {$set: { group: group }});
 
   return;

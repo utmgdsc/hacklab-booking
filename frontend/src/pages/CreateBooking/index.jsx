@@ -241,6 +241,10 @@ export const CreateBooking = () => {
         )}
         {showSchedule && (
           <>
+            <Divider sx={{ marginBottom: "2em" }}>
+              Choose Approvers to review your request
+            </Divider>
+
             <Box
               sx={{
                 marginBottom: "4em",
@@ -250,8 +254,6 @@ export const CreateBooking = () => {
                 alignItems: "center",
               }}
             >
-              <Divider>Choose Approvers to review your request</Divider>
-
               <ApproverSelect setApprovers={setApprovers} />
               {approversError && (
                 <Typography
