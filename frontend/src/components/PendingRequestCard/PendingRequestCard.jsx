@@ -97,7 +97,7 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
             .catch(err => {
                 console.log(err);
             });
-
+        window.location.reload();
         console.log(status + " request with reason " + reason);
     }
 
