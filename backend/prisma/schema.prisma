@@ -11,11 +11,16 @@ datasource db {
 }
 
 model User {
-  id     Int         @id @default(dbgenerated())
-  email  String      @unique
-  utorid String      @unique
-  name   String
-  role   AccountRole @default(student)
+  id       Int         @id @default(dbgenerated())
+  email    String      @unique
+  utorid   String      @unique
+  name     String
+  role     AccountRole @default(student)
+  groups   Group[]     @relation(name: "Members")
+  invited  Group[]     @relation(name: "Invited")
+  manager  Group[]     @relation(name: "Managers")
+  requests Requset[]   @relation(name: "Author")
+  approver Requset[]   @relation(name: "Approver")
 }
 
 enum AccountRole {
@@ -30,9 +35,9 @@ model Requset {
   status      RequestStatus @default(pending) // the status of the request defined by the Request status enum
   group       Group         @relation(fields: [groupId], references: [id]) // the group making the request
   groupId     Int
-  author      User          @relation(fields: [authorId], references: [id]) // the author of the request
+  author      User          @relation(name: "Author", fields: [authorId], references: [id]) // the author of the request
   authorId    Int
-  approver    User          @relation(fields: [approverId], references: [id]) // the author of the request
+  approver    User          @relation(name: "Approver", fields: [approverId], references: [id]) // the author of the request
   approverId  Int
   start_date  DateTime // the starting date and time of the request in ISO 8601 format
   end_date    DateTime // the ending date and time of the request in ISO 8601 format
@@ -54,15 +59,17 @@ enum RequestStatus {
 }
 
 model Group {
-  id       Int    @id @default(dbgenerated())
-  members  User[] // all members of the group, including managers, excluding any invited users
-  invited  User[] // users that have been invited to the group and have yet to accept
-  managers User[] // the managers of the group
+  id       Int       @id @default(dbgenerated())
+  members  User[]    @relation(name: "Members") // all members of the group, including managers, excluding any invited users
+  invited  User[]    @relation(name: "Invited") // users that have been invited to the group and have yet to accept
+  managers User[]    @relation(name: "Managers") // the managers of the group
+  Requset  Requset[]
 }
 
 model Room {
-  id            Int     @id @default(dbgenerated())
+  id            Int       @id @default(dbgenerated())
   room_name     String // the room number, eg. DH2014
   friendly_name String // friendly name, eg. Hacklab
   capacity      Int? // (optional) occupancy limit
+  requests      Requset[] // all requests made for this room
 }
