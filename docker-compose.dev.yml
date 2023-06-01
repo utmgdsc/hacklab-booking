@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  nginx:
+    restart: always
+    depends_on:
+      - frontend
+      - backend
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "3555:80"
+
+  backend:
+    restart: always
+    image: node
+    command: npm run dev
+    environment:
+      - DATABASE_URL=postgres://postgres:example@db:5432/postgres
+    volumes:
+      - ./backend:/app:ro
+
+  frontend:
+    image: node
+    restart: always
+    command: ["npm","run", "dev", "--prefix", "/app"]
+    volumes:
+      - ./frontend:/app
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
