@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     Int         @id @default(dbgenerated())
+  email  String      @unique
+  utorid String      @unique
+  name   String
+  role   AccountRole @default(student)
+}
+
+enum AccountRole {
+  student
+  admin
+  approver
+  tcard
+}
+
+model Requset {
+  id          Int           @id @default(dbgenerated())
+  status      RequestStatus @default(pending) // the status of the request defined by the Request status enum
+  group       Group         @relation(fields: [groupId], references: [id]) // the group making the request
+  groupId     Int
+  author      User          @relation(fields: [authorId], references: [id]) // the author of the request
+  authorId    Int
+  approver    User          @relation(fields: [approverId], references: [id]) // the author of the request
+  approverId  Int
+  start_date  DateTime // the starting date and time of the request in ISO 8601 format
+  end_date    DateTime // the ending date and time of the request in ISO 8601 format
+  description String // a summary of the event provided to the approvers for review
+  title       String // the name of the event
+  room        Room          @relation(fields: [roomId], references: [id]) // the room booked
+  roomId      Int
+  reason      String? // the reason for the denial/approval of a request
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum RequestStatus {
+  pending // the request is awaiting approver's approval
+  denied // the request has been denied by approver
+  cancelled // the request has been cancelled by the author or group manager
+  need_tcard // the request has been approved by an approver but still needs TCard approval
+  completed // the request is approved and author has TCard access
+}
+
+model Group {
+  id       Int    @id @default(dbgenerated())
+  members  User[] // all members of the group, including managers, excluding any invited users
+  invited  User[] // users that have been invited to the group and have yet to accept
+  managers User[] // the managers of the group
+}
+
+model Room {
+  id            Int     @id @default(dbgenerated())
+  room_name     String // the room number, eg. DH2014
+  friendly_name String // friendly name, eg. Hacklab
+  capacity      Int? // (optional) occupancy limit
+}
