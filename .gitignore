@@ -1,0 +1,4 @@
+# Keep environment variables out of version control
+.env
+db_data
+.idea
