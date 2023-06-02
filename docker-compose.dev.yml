@@ -15,11 +15,11 @@ services:
   backend:
     restart: always
     image: node
-    command: npm run dev
+    command: ["npm","run", "dev", "--prefix", "/app"]
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
     volumes:
-      - ./backend:/app:ro
+      - ./backend:/app
 
   frontend:
     image: node
