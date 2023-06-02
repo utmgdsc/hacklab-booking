@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["windows", "debian-openssl-1.1.x"]
 }
 
@@ -40,8 +40,8 @@ model Request {
   authorId    Int
   approver    User          @relation(name: "Approver", fields: [approverId], references: [id]) // the author of the request
   approverId  Int
-  startDate  DateTime // the starting date and time of the request in ISO 8601 format
-  endDate    DateTime // the ending date and time of the request in ISO 8601 format
+  startDate   DateTime // the starting date and time of the request in ISO 8601 format
+  endDate     DateTime // the ending date and time of the request in ISO 8601 format
   description String // a summary of the event provided to the approvers for review
   title       String // the name of the event
   room        Room          @relation(fields: [roomId], references: [id]) // the room booked
@@ -61,6 +61,7 @@ enum RequestStatus {
 
 model Group {
   id       Int       @id @default(dbgenerated())
+  name     String // the name of the group
   members  User[]    @relation(name: "Members") // all members of the group, including managers, excluding any invited users
   invited  User[]    @relation(name: "Invited") // users that have been invited to the group and have yet to accept
   managers User[]    @relation(name: "Managers") // the managers of the group
@@ -68,9 +69,9 @@ model Group {
 }
 
 model Room {
-  id            Int       @id @default(dbgenerated())
+  id           Int       @id @default(dbgenerated())
   roomName     String // the room number, eg. DH2014
   friendlyName String // friendly name, eg. Hacklab
-  capacity      Int? // (optional) occupancy limit
-  requests      Request[] // all requests made for this room
+  capacity     Int? // (optional) occupancy limit
+  requests     Request[] // all requests made for this room
 }
