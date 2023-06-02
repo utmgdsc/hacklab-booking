@@ -4,7 +4,9 @@
   "description": "The backend for the hacklab booking system",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "prisma generate && tsc",
+    "eslint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -29,8 +31,21 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-import": "^2.25.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
     "prisma": "^4.15.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
