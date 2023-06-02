@@ -1,4 +1,4 @@
-name: Eslint
+name: Checks
 on: [push, pull_request]
 jobs:
   build:
@@ -8,4 +8,6 @@ jobs:
     - name: Install modules
       run: npm i --prefix ./backend
     - name: Run ESLint
-      run: npm run eslint . --ext .js,.jsx,.ts,.tsx --fix --prefix ./backend
+      run: npm run eslint . --fix --prefix ./backend
+    - name: Build typescript
+      run: npm run build --prefix ./backend
