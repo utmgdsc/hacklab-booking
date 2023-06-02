@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "prisma generate && tsc",
-    "eslint": "eslint ."
+    "eslint": "eslint .",
+    "start": "npm run dev",
+    "dev": "nodemon --watch \"./src/**/*.ts\" --exec \"ts-node src/index.ts\""
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-import": "^2.25.2",
+    "nodemon": "^2.0.22",
     "prisma": "^4.15.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
