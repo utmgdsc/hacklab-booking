@@ -6,6 +6,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install modules
-      run: npm i
+      run: npm i --prefix ./backend
     - name: Run ESLint
-      run: eslint . --ext .js,.jsx,.ts,.tsx --fix
+      run: npm run eslint . --ext .js,.jsx,.ts,.tsx --fix --prefix ./backend
