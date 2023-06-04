@@ -21,7 +21,7 @@ export const THEME = {
     DEFAULT: "system",
 }
 
-export const GoogleTheme = ({ mode }) => {
+export const GoogleTheme = ( mode: string ) => {
     return ({
         palette: {
             mode: mode,
