@@ -12,16 +12,15 @@ datasource db {
 }
 
 model User {
-  id       Int         @id @default(dbgenerated())
   email    String      @unique
-  utorid   String      @unique
+  utorid   String      @id
   name     String
   role     AccountRole @default(student)
   groups   Group[]     @relation(name: "Members")
   invited  Group[]     @relation(name: "Invited")
   manager  Group[]     @relation(name: "Managers")
   requests Request[]   @relation(name: "Author")
-  approver Request[]   @relation(name: "Approver")
+  approved Request[]   @relation(name: "Approver")
 }
 
 enum AccountRole {
@@ -32,23 +31,23 @@ enum AccountRole {
 }
 
 model Request {
-  id          Int           @id @default(dbgenerated())
-  status      RequestStatus @default(pending) // the status of the request defined by the Request status enum
-  group       Group         @relation(fields: [groupId], references: [id]) // the group making the request
-  groupId     Int
-  author      User          @relation(name: "Author", fields: [authorId], references: [id]) // the author of the request
-  authorId    Int
-  approver    User          @relation(name: "Approver", fields: [approverId], references: [id]) // the author of the request
-  approverId  Int
-  startDate   DateTime // the starting date and time of the request in ISO 8601 format
-  endDate     DateTime // the ending date and time of the request in ISO 8601 format
-  description String // a summary of the event provided to the approvers for review
-  title       String // the name of the event
-  room        Room          @relation(fields: [roomId], references: [id]) // the room booked
-  roomId      Int
-  reason      String? // the reason for the denial/approval of a request
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id             Int           @id @default(dbgenerated())
+  status         RequestStatus @default(pending) // the status of the request defined by the Request status enum
+  group          Group         @relation(fields: [groupId], references: [id]) // the group making the request
+  groupId        Int
+  author         User          @relation(name: "Author", fields: [authorUtorid], references: [utorid]) // the author of the request
+  authorUtorid   String
+  approver       User?         @relation(name: "Approver", fields: [approverUtorid], references: [utorid]) // the author of the request
+  approverUtorid String?
+  startDate      DateTime // the starting date and time of the request in ISO 8601 format
+  endDate        DateTime // the ending date and time of the request in ISO 8601 format
+  description    String // a summary of the event provided to the approvers for review
+  title          String // the name of the event
+  room           Room          @relation(fields: [roomId], references: [id]) // the room booked
+  roomId         Int
+  reason         String? // the reason for the denial/approval of a request
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 enum RequestStatus {
@@ -61,7 +60,7 @@ enum RequestStatus {
 
 model Group {
   id       Int       @id @default(dbgenerated())
-  name     String // the name of the group
+  name     String    @unique // the name of the group
   members  User[]    @relation(name: "Members") // all members of the group, including managers, excluding any invited users
   invited  User[]    @relation(name: "Invited") // users that have been invited to the group and have yet to accept
   managers User[]    @relation(name: "Managers") // the managers of the group
