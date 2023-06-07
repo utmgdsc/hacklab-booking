@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import { User } from '../types/user';
 
+// todo old user data model
 export const defaultUser: User = {
     _id: "",
     utorid: "noutorid",

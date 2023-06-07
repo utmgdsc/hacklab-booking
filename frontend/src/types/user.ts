@@ -1,3 +1,4 @@
+// todo old user data model
 declare interface User {
     _id: string,
     utorid: string,
