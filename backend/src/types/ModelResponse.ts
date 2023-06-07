@@ -2,11 +2,11 @@ interface ModelResponseBase {
   status: number;
 }
 
-interface ModelResponseSuccess<T> extends ModelResponseBase {
+export interface ModelResponseSuccess<T> extends ModelResponseBase {
   data: NonNullable<T>;
 }
 
-interface ModelResponseError extends ModelResponseBase {
+export interface ModelResponseError extends ModelResponseBase {
   message: string;
 }
 type ModelResponse<T> = ModelResponseSuccess<T> | ModelResponseError;
