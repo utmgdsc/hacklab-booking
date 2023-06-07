@@ -4,6 +4,7 @@ import routes from './routes';
 import logger from '../common/logger';
 import { sendResponse } from './utils';
 import db from '../common/db';
+import accountsModel from '../models/accountsModel';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -32,17 +33,12 @@ app.use(async (req, res, next) => {
     });
     return;
   }
-  req.user = await db.user.upsert({
-    where: { utorid: req.header('utorid') },
-    update: { email: req.header('http_mail') as string },
-    create: {
-      utorid: req.header('utorid') as string,
-      email: req.header('http_mail') as string,
-      name: req.header('http_cn') as string,
-    },
+  await accountsModel.upsertUser({
+    utorid: req.headers.utorid as string,
+    email: req.headers.http_mail as string,
+    name: req.headers.http_cn as string,
   });
   next();
-
 });
 
 
