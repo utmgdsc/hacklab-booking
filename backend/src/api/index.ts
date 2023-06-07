@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import routes from './routes';
 import logger from '../common/logger';
 import { sendResponse } from './utils';
-import db from '../common/db';
 import accountsModel from '../models/accountsModel';
 
 const port = process.env.PORT || 3000;
