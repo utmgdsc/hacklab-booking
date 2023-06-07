@@ -9,6 +9,7 @@ interface NonForwardLinkProps extends MaterialLinkProps {
   forwardedRef?: Ref<any>;
   internal?: boolean;
   noIcon?: boolean;
+  isInternalLink?: boolean;
 }
 
 /**
@@ -28,7 +29,7 @@ const NonForwardLink = ({
   href,
   external,
   forwardedRef,
-  internal: isInternalLink,
+  isInternalLink,
   noIcon,
   ...props
 }: NonForwardLinkProps): JSX.Element => {
