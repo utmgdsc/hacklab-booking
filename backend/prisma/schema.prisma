@@ -21,6 +21,13 @@ model User {
   manager  Group[]     @relation(name: "Managers")
   requests Request[]   @relation(name: "Author")
   approved Request[]   @relation(name: "Approver")
+  theme    Theme       @default(system)
+}
+
+enum Theme {
+  system
+  light
+  dark
 }
 
 enum AccountRole {
