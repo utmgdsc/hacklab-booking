@@ -4,9 +4,8 @@ import { Request } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export default {
-  getRequests: async (filters:{[key:string]:string}, admin:boolean) => {
-
-      if(filters.start_date)
+  getRequests: async (filters:{ [key:string]:string }, admin:boolean) => {
+    throw new Error('Not implemented');
   },
   createRequest: async (request: {
     description: string,
