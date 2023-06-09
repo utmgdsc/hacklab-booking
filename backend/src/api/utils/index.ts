@@ -10,7 +10,7 @@ import ModelResponse, {
 } from '../../types/ModelResponse';
 import { AccountRole } from '@prisma/client';
 
-export const routeNotImplemented: RequestHandler = (req: Request, res: Response, next: NextFunction | undefined) => {
+export const routeNotImplemented: RequestHandler = (req: Request, res: Response) => {
   res.statusCode = 501;
   res.json({ message: 'Not implemented' });
 };
