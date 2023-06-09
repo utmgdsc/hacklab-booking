@@ -5,15 +5,14 @@ import {
     Container,
     Typography
 } from "@mui/material";
-import { React } from "react";
 import dayjs from "dayjs";
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
- * @param {*} scheduleDate the date to format
+ * @param {Date | string} scheduleDate the date to format
  * @return {string} the formatted date string
  */
-const getDateString = (scheduleDate) => {
+const getDateString = (scheduleDate: Date | string): string => {
     var d = new Date(scheduleDate);
     return d.toLocaleDateString("en-US", {
         weekday: "long",
@@ -29,16 +28,27 @@ const getDateString = (scheduleDate) => {
  *
  * "from 12:00 to 13:00"
  *
- * @param {*} scheduleDates the array of dates
+ * @param {Array<Date>} scheduleDates the array of dates
  * @return {string} the formatted time string
  */
-const getTimeString = (scheduleDates) => {
+const getTimeString = (scheduleDates: Array<Date>) => {
     var dStart = new Date(scheduleDates[0]);
     let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
     endDate = dayjs(endDate).add(1, 'hour').toDate();
     var dEnd = new Date(endDate);
     return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
 };
+
+interface BookingSubmittedProps {
+    /** the name of the group */
+    groupName: string;
+    /** the details of the booking */
+    details: string;
+    /** the dates of the booking */
+    scheduleDates: Array<Date>;
+    /** the title of the page */
+    title?: string;
+}
 
 /**
  * The page that is displayed after a booking is submitted
@@ -48,7 +58,7 @@ const getTimeString = (scheduleDates) => {
  * @param {string} title the title of the page
  * @returns the page that is displayed after a booking is submitted
  */
-export const BookingSubmitted = ({groupName, details, scheduleDates, title = "Booking Submitted"}) => {
+export const BookingSubmitted = ({groupName, details, scheduleDates, title = "Booking Submitted"}: BookingSubmittedProps) => {
     return (
         <Container
             sx={{
