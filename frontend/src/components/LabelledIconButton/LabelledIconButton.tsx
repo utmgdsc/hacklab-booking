@@ -1,10 +1,19 @@
-import { ButtonBase, Typography, useTheme } from '@mui/material';
+import { ButtonBase, Theme, Typography, useTheme } from '@mui/material';
+
+interface LabelledIconButtonProps {
+    /** the icon to render */
+    icon: JSX.Element;
+    /** the label to render */
+    label: string;
+    /** the color of the icon */
+    color: string;
+}
 
 /**
- * A rounded icon button with a tooltip and a ripple effect
+ * A rounded icon button with a tooltip and a ripple effect.
  */
-export const LabelledIconButton = ({ icon, label, color, ...props }) => {
-    const theme = useTheme();
+export const LabelledIconButton = ({ icon, label, color, ...props }: LabelledIconButtonProps): JSX.Element => {
+    const theme: Theme = useTheme();
 
     return (
         <ButtonBase
