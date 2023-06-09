@@ -1,9 +1,14 @@
+interface ConvertDateProps {
+    /** The date string in DD-MM-YYYY or ISP 8601 format */
+    date: string;
+}
+
 /**
  * Converts ISP 8601 date string to more unambiguous format
  * @param {string} date The date string in DD-MM-YYYY or ISP 8601 format
  * @returns {string} The localized date string
  */
-export const ConvertDate = ({ date }) => {
+export const ConvertDate = ({ date }: ConvertDateProps): string => {
     // parse the date string into a date object
     const dateObj = Date.parse(date);
 
