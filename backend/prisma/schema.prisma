@@ -71,7 +71,7 @@ model Group {
   members  User[]    @relation(name: "Members") // all members of the group, including managers, excluding any invited users
   invited  User[]    @relation(name: "Invited") // users that have been invited to the group and have yet to accept
   managers User[]    @relation(name: "Managers") // the managers of the group
-  Request  Request[]
+  requests Request[]
 }
 
 model Room {
