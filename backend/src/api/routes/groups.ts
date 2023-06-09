@@ -34,6 +34,10 @@ router.post('/:id/invite/accept', async (req, res) => {
 router.post('/:id/invite/reject', async (req, res) => {
   sendResponse(res, await groupsModel.rejectInvite(parseInt(req.params.id), req.user));
 });
-router.post('/:id/remove', routeNotImplemented);
-router.delete('/:id', routeNotImplemented);
+router.post('/:id/remove', async (req, res) => {
+  sendResponse(res, await groupsModel.removeMember(parseInt(req.params.id), req.body.utorid, req.user));
+});
+router.delete('/:id', async (req, res) => {
+  sendResponse(res, await groupsModel.deleteGroup(parseInt(req.params.id), req.user));
+});
 export default router;

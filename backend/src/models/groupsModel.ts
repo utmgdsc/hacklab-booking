@@ -187,12 +187,35 @@ export default {
         message: 'You are not allowed to modify this group.',
       };
     }
+    if (!group.members.some(x => x.utorid === utorid)) {
+      return { status: 400, message: 'User is not a member of this group.' };
+    }
     await db.group.update({ where: { id },
       data: {
         members: { disconnect: { utorid } },
         managers: { disconnect: { utorid } },
       },
     });
+    return { status: 200, data: {} };
+  },
+  deleteGroup: async (id: number, manager: User) => {
+    const group = await db.group.findUnique({
+      where: { id },
+      include: {
+        managers: { select: { utorid: true } },
+        members: { select: { utorid: true } },
+      },
+    });
+    if (!group) {
+      return { status: 404, message: 'Group not found' };
+    }
+    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+      return {
+        status: 403,
+        message: 'You are not allowed to modify this group.',
+      };
+    }
+    await db.group.delete({ where: { id } });
     return { status: 200, data: {} };
   },
 } satisfies Model;
