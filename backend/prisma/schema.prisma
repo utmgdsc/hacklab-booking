@@ -12,16 +12,17 @@ datasource db {
 }
 
 model User {
-  email    String      @unique
-  utorid   String      @id
-  name     String
-  role     AccountRole @default(student)
-  groups   Group[]     @relation(name: "Members")
-  invited  Group[]     @relation(name: "Invited")
-  manager  Group[]     @relation(name: "Managers")
-  requests Request[]   @relation(name: "Author")
-  approved Request[]   @relation(name: "Approver")
-  theme    Theme       @default(system)
+  email      String      @unique
+  utorid     String      @id
+  name       String
+  role       AccountRole @default(student)
+  groups     Group[]     @relation(name: "Members")
+  invited    Group[]     @relation(name: "Invited")
+  manager    Group[]     @relation(name: "Managers")
+  requests   Request[]   @relation(name: "Author")
+  approved   Request[]   @relation(name: "Approver")
+  theme      Theme       @default(system)
+  roomAccess Room[]      @relation(name: "RoomAccess")
 }
 
 enum Theme {
@@ -50,8 +51,8 @@ model Request {
   endDate        DateTime // the ending date and time of the request in ISO 8601 format
   description    String // a summary of the event provided to the approvers for review
   title          String // the name of the event
-  room           Room          @relation(fields: [roomId], references: [id]) // the room booked
-  roomId         Int
+  room           Room          @relation(fields: [roomName], references: [roomName]) // the room booked
+  roomName       String
   reason         String? // the reason for the denial/approval of a request
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -75,9 +76,9 @@ model Group {
 }
 
 model Room {
-  id           Int       @id @default(dbgenerated())
-  roomName     String // the room number, eg. DH2014
+  roomName     String    @id // the room number, eg. DH2014
   friendlyName String // friendly name, eg. Hacklab
   capacity     Int? // (optional) occupancy limit
   requests     Request[] // all requests made for this room
+  userAccess   User[]    @relation("RoomAccess") // all users with access to this room
 }
