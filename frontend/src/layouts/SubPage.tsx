@@ -3,13 +3,23 @@ import {
     Box,
     Typography,
     Container,
-    Button
+    Button,
+    Breakpoint
 } from "@mui/material";
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Link, ErrorBoundary } from "../components";
+import { ArrowBackIos } from '@mui/icons-material';
+import { ErrorBoundary } from "../components";
 import { useNavigate } from "react-router-dom";
 
-export const SubPage = ({ name, children, maxWidth = "md", py = 8, showHead = true, ...props }) => {
+interface SubPageProps {
+    name: string;
+    children: React.ReactNode;
+    maxWidth?: Breakpoint;
+    py?: number;
+    showHead?: boolean;
+    [key: string]: any;
+}
+
+export const SubPage: React.FC<SubPageProps> = ({ name, children, maxWidth = "md", py = 8, showHead = true, ...props }) => {
     React.useEffect(() => {
         document.title = 'Hacklab Booking - ' + name;
     }, [name]);
@@ -28,7 +38,7 @@ export const SubPage = ({ name, children, maxWidth = "md", py = 8, showHead = tr
                 },
             }}>
                 <Button onClick={() => navigate(-1)}>
-                    <ArrowBackIosIcon /> Back
+                    <ArrowBackIos /> Back
                 </Button>
             </Typography>
             {showHead && (

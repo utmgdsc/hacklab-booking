@@ -7,13 +7,12 @@ import dayjs from "dayjs";
  *
  * @param {Date} d the date to get the Monday of
  */
-export const GetMonday = (d) => {
-    d = new dayjs(d);
-    var day = d.day();
-
+export const GetMonday = (d: Date): Date => {
+    let dayjsObj = dayjs(d);
+    const day = dayjsObj.day();
     switch (day) {
       case 0: // sunday - get the next monday
-        d = d.add(1, "day");
+        dayjsObj = dayjsObj.add(1, "day");
         break;
       case 1: // monday
         break;
@@ -21,14 +20,14 @@ export const GetMonday = (d) => {
       case 3:
       case 4:
       case 5: // tuesday - friday: get current monday
-        d = d.subtract(day - 1, "day");
+        dayjsObj = dayjsObj.subtract(day - 1, "day");
         break;
       case 6: // saturday - get the next monday
-        d = d.add(2, "day");
+        dayjsObj = dayjsObj.add(1, "day");
         break;
       default:
         throw new Error("Invalid day");
     }
 
-    return d.toDate();
+    return dayjsObj.toDate();
   };

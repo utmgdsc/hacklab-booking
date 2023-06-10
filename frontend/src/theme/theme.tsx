@@ -1,4 +1,3 @@
-import { createTheme } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 
 /**
@@ -21,7 +20,7 @@ export const THEME = {
     DEFAULT: "system",
 }
 
-export const GoogleTheme = ({ mode }) => {
+export const GoogleTheme = ( mode: string ) => {
     return ({
         palette: {
             mode: mode,
@@ -146,3 +145,24 @@ export const GoogleTheme = ({ mode }) => {
         }
     })
 }
+
+/*
+ * Typescript declarations for custom theme properties
+ */
+declare module '@mui/material/styles' {
+    interface TypographyVariants {
+      gray: React.CSSProperties;
+    }
+
+    // allow configuration using `createTheme`
+    interface TypographyVariantsOptions {
+      gray?: React.CSSProperties;
+    }
+  }
+
+  // Update the Typography's variant prop options
+  declare module '@mui/material/Typography' {
+    interface TypographyPropsVariantOverrides {
+      gray: true;
+    }
+  }
