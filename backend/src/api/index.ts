@@ -4,6 +4,7 @@ import routes from './routes';
 import logger from '../common/logger';
 import { sendResponse } from './utils';
 import accountsModel from '../models/accountsModel';
+import { User } from '@prisma/client';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -25,6 +26,8 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json());
 app.use(async (req, res, next) => {
+  logger.debug('Shibboleth headers:');
+  logger.debug(JSON.stringify(req.headers));
   if (!req.headers.utorid || !req.headers.http_mail || !req.headers.http_cn) {
     sendResponse(res, {
       status: 401,
@@ -32,11 +35,17 @@ app.use(async (req, res, next) => {
     });
     return;
   }
-  await accountsModel.upsertUser({
+  const data = (await accountsModel.upsertUser({
     utorid: req.headers.utorid as string,
     email: req.headers.http_mail as string,
     name: req.headers.http_cn as string,
-  });
+  }));
+  if (data.status !== 200) {
+    sendResponse(res, data);
+    return;
+  }
+  req.user = data.data as User;
+  logger.debug(req.user);
   next();
 });
 
