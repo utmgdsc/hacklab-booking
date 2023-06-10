@@ -6,7 +6,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export default {
   upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string, theme?:Theme }) => {
-    if (user.name.trim()) {
+    if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
     }
     if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(user.email)) {
