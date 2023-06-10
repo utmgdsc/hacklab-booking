@@ -30,6 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
       format.splat(),
       format.simple(),
     ),
+    level: 'debug',
   }));
 }
 process.on('uncaughtException', (err) => {
