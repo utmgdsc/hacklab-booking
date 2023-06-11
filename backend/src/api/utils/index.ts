@@ -63,3 +63,12 @@ export const checkRequiredFields = (requiredFields: string[]) => (req: Request, 
   }
   next();
 };
+
+export const checkUuidMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  if (!/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i.test(req.params.id)) {
+    res.statusCode = 400;
+    res.json({ message: 'Invalid id.' });
+    return;
+  }
+  next();
+};

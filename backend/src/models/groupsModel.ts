@@ -2,18 +2,31 @@ import Model from '../types/Model';
 import { AccountRole, Group, User } from '@prisma/client';
 import db from '../common/db';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import logger from '../common/logger';
 
 export default {
   getGroups: async (user: User) => {
     let groups: Group[];
     if (user.role === AccountRole.student) {
-      groups = await db.user.findUnique({ where: { utorid: user.utorid } }).groups() as Group[];
+      groups = await db.user.findUnique({ where: { utorid: user.utorid } }).groups({
+        include: {
+          members: true,
+          invited: true,
+          managers: true,
+          requests: true,
+        },
+      }) as Group[];
     } else {
-      groups = await db.group.findMany();
+      groups = await db.group.findMany({ include:{
+        members: true,
+        invited: true,
+        managers: true,
+        requests: true,
+      } });
     }
     return { status: 200, data: groups };
   },
-  getGroup: async (id: number, user: User) => {
+  getGroup: async (id: string, user: User) => {
     const group = await db.group.findUnique({
       where: { id },
       include: {
@@ -34,17 +47,26 @@ export default {
     }
     return { status: 200, data: group };
   },
+
   createGroup: async (name: string, user: User) => {
-    const group = db.group.create({
-      data: {
-        name,
-        managers: { connect: { utorid: user.utorid } },
-        members: { connect: { utorid: user.utorid } },
-      },
-    });
-    return { status: 200, data: group };
+    try {
+      const group = await db.group.create({
+        data: {
+          name,
+          managers: { connect: { utorid: user.utorid } },
+          members: { connect: { utorid: user.utorid } },
+        },
+      });
+      return { status: 200, data: group };
+    } catch (e) {
+      logger.debug((e as PrismaClientKnownRequestError).code);
+      if ((e as PrismaClientKnownRequestError).code === 'P2002') {
+        return { status: 400, message: 'Group name already exists.' };
+      }
+      throw e;
+    }
   },
-  changeRole: async (id: number, targetUtorid: string, role: 'manager' | 'member', manager: User) => {
+  changeRole: async (id: string, targetUtorid: string, role: 'manager' | 'member', manager: User) => {
     const group = await db.group.findUnique({
       where: { id },
       include: {
@@ -68,7 +90,7 @@ export default {
         }
         await db.group.update({
           where: { id },
-          data: { managers: { connect: { utorid:targetUtorid } } },
+          data: { managers: { connect: { utorid: targetUtorid } } },
         });
         return { status: 200, data: {} };
       }
@@ -78,7 +100,7 @@ export default {
         }
         await db.group.update({
           where: { id },
-          data: { managers: { disconnect: { utorid:targetUtorid } } },
+          data: { managers: { disconnect: { utorid: targetUtorid } } },
         });
         return { status: 200, data: {} };
       }
@@ -90,7 +112,7 @@ export default {
     }
     return { status: 400, message: 'Invalid role.' };
   },
-  invite: async (id: number, utorid: string, manager: User) => {
+  invite: async (id: string, utorid: string, manager: User) => {
     const group = await db.group.findUnique({
       where: { id },
       include: {
@@ -127,7 +149,7 @@ export default {
       throw e;
     }
   },
-  acceptInvite: async (id: number, user: User) => {
+  acceptInvite: async (id: string, user: User) => {
     const group = await db.group.findUnique({
       where: { id },
       include: {
@@ -150,7 +172,7 @@ export default {
     });
     return { status: 200, data: {} };
   },
-  rejectInvite: async (id: number, user: User) => {
+  rejectInvite: async (id: string, user: User) => {
     const group = await db.group.findUnique({
       where: { id },
       include: {
@@ -170,7 +192,7 @@ export default {
     });
     return { status: 200, data: {} };
   },
-  removeMember: async (id: number, utorid: string, manager: User) => {
+  removeMember: async (id: string, utorid: string, manager: User) => {
     const group = await db.group.findUnique({
       where: { id },
       include: {
@@ -188,9 +210,13 @@ export default {
       };
     }
     if (!group.members.some(x => x.utorid === utorid)) {
-      return { status: 400, message: 'User is not a member of this group.' };
+      return {
+        status: 400,
+        message: 'User is not a member of this group.',
+      };
     }
-    await db.group.update({ where: { id },
+    await db.group.update({
+      where: { id },
       data: {
         members: { disconnect: { utorid } },
         managers: { disconnect: { utorid } },
@@ -198,7 +224,7 @@ export default {
     });
     return { status: 200, data: {} };
   },
-  deleteGroup: async (id: number, manager: User) => {
+  deleteGroup: async (id: string, manager: User) => {
     const group = await db.group.findUnique({
       where: { id },
       include: {

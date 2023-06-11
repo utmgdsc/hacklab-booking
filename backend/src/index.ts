@@ -15,6 +15,6 @@ common.db.$connect().then(async () => {
   logger.info('App started!');
 }).catch((e: Error) => {
   logger.error('Failed to connect to database.');
-  logger.error(e);
+  logger.error(`${e.name}\n${e.message}\n${ e.stack}`);
   process.exit(1);
 });

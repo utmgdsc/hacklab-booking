@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  checkRequiredFields,
+  checkRequiredFields, checkUuidMiddleware,
   PermissionLevel,
   permissionMiddleware,
   sendResponse,
@@ -24,32 +24,22 @@ router.post('/create', checkRequiredFields(['title', 'description', 'roomName', 
     approvers: req.body.approvers,
   }, req.user));
 });
-router.use('/:id', async (req, res, next) => {
-  const id = parseInt(req.params.id);
-  if (isNaN(id) || !isFinite(id)) {
-    sendResponse(res, {
-      status: 400,
-      message: 'Invalid id.',
-    });
-    return;
-  }
-  next();
-});
+router.use('/:id', checkUuidMiddleware);
 router.get('/:id', async (req, res) => {
-  sendResponse(res, await requestsModel.getRequest(parseInt(req.params.id), req.user));
+  sendResponse(res, await requestsModel.getRequest(req.params.id, req.user));
 });
 router.delete('/:id', async (req, res) => {
-  sendResponse(res, await requestsModel.setRequestStatus(parseInt(req.params.id), req.user, RequestStatus.cancelled));
+  sendResponse(res, await requestsModel.setRequestStatus(req.params.id, req.user, RequestStatus.cancelled));
 });
 router.put('/:id/approve', permissionMiddleware(PermissionLevel.approver), async (req, res) => {
-  sendResponse(res, await requestsModel.approveRequest(parseInt(req.params.id)));
+  sendResponse(res, await requestsModel.approveRequest(req.params.id));
 });
 router.put('/:id/deny', permissionMiddleware(PermissionLevel.approver), async (req, res) => {
-  sendResponse(res, await requestsModel.setRequestStatus(parseInt(req.params.id), req.user, RequestStatus.denied));
+  sendResponse(res, await requestsModel.setRequestStatus(req.params.id, req.user, RequestStatus.denied));
 });
 router.put('/:id', async (req, res) => {
   sendResponse(res, await requestsModel.updateRequest({
-    id: parseInt(req.params.id),
+    id: req.params.id,
     title: req.body.title,
     description: req.body.description,
     roomName: req.body.roomName,

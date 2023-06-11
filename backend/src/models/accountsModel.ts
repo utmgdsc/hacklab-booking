@@ -48,7 +48,7 @@ export default {
     await db.user.update({ where: { utorid: typeof user === 'string' ? user : user.utorid }, data: { role: role as AccountRole } });
     return { status: 200, data: {} };
   },
-  acceptGroupInvite: async (user: User | string, groupId: number) => {
+  acceptGroupInvite: async (user: User | string, groupId: string) => {
     const utorid = typeof user === 'string' ? user : user.utorid;
     const userFetched = await db.user.findUnique({
       where: { utorid: utorid },

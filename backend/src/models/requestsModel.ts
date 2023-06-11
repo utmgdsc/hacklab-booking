@@ -6,7 +6,7 @@ import { CreateRequest } from '../types/CreateRequest';
 import { ModelResponseError } from '../types/ModelResponse';
 import requests from '../api/routes/requests';
 
-const validateRequest = async (request: CreateRequest) : Promise<ModelResponseError | undefined>=> {
+const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {
     return { status: 400, message: 'Missing required fields.' };
   }
@@ -71,7 +71,7 @@ export default {
       if (user.role === AccountRole.student && !(await db.user.findFirst({
         where: {
           utorid: user.utorid,
-          groups: { some: { id: query.groupId as number } },
+          groups: { some: { id: query.groupId as string } },
         },
       }))) {
         return {
@@ -134,9 +134,9 @@ export default {
         status: 200,
         data: <Request>(await db.request.create({
           data: {
-            approvers: { connect:request.approvers.map(utorid=>({ utorid }))  },
+            approvers: { connect: request.approvers.map(utorid => ({ utorid })) },
             status: RequestStatus.pending,
-            author: { connect: { utorid:user.utorid } },
+            author: { connect: { utorid: user.utorid } },
             group: { connect: { id: request.groupId } },
             room: { connect: { roomName: request.roomName } },
             startDate: new Date(request.startDate),
@@ -156,7 +156,7 @@ export default {
       throw e;
     }
   },
-  getRequest: async (id: number, user: User) => {
+  getRequest: async (id: string, user: User) => {
     const request = await db.request.findUnique({
       where: { id },
       include: {
@@ -177,7 +177,7 @@ export default {
     }
     return { status: 200, data: request };
   },
-  setRequestStatus: async (id: number, user: User, status: RequestStatus) => {
+  setRequestStatus: async (id: string, user: User, status: RequestStatus) => {
     if (!Object.keys(RequestStatus).includes(status)) {
       return { status: 400, message: 'Invalid status.' };
     }
@@ -209,7 +209,7 @@ export default {
     });
     return { status: 200, data: {} };
   },
-  approveRequest: async (id: number) => {
+  approveRequest: async (id: string) => {
     const request = await db.request.findUnique({
       where: { id },
       include: {
@@ -235,7 +235,7 @@ export default {
     });
     return { status: 200, data: {} };
   },
-  updateRequest: async (request: CreateRequest & { id:number }, user: User) => {
+  updateRequest: async (request: CreateRequest & { id: string }, user: User) => {
     const error = await validateRequest(request);
     if (error) {
       return error;
@@ -245,7 +245,7 @@ export default {
       include: {
         author: { select: { utorid: true } },
         group: { include: { managers: { select: { utorid: true } } } },
-        approvers:{ select:{ utorid:true } },
+        approvers: { select: { utorid: true } },
       },
     });
     if (!oldRequest) {
@@ -257,7 +257,7 @@ export default {
         message: 'User does not have permission to update this request.',
       };
     }
-    const data  = {
+    const data = {
       startDate: new Date(request.startDate),
       endDate: new Date(request.endDate),
       title: request.title ?? oldRequest.title,
@@ -265,13 +265,13 @@ export default {
       room: { connect: { roomName: request.roomName ?? oldRequest } },
       approvers: {},
     };
-    const approversObject : { disconnect?: object, connect?:object } = {};
+    const approversObject: { disconnect?: object, connect?: object } = {};
     if (request.approvers) {
       if (request.approvers.length === 0) {
         approversObject.disconnect = {};
       } else {
-        approversObject.connect = request.approvers.map(utorid=>({ utorid }));
-        approversObject.disconnect = oldRequest.approvers.map(x=>x.utorid).filter(x=>!request.approvers?.includes(x)).map(utorid=>({ utorid }));
+        approversObject.connect = request.approvers.map(utorid => ({ utorid }));
+        approversObject.disconnect = oldRequest.approvers.map(x => x.utorid).filter(x => !request.approvers?.includes(x)).map(utorid => ({ utorid }));
       }
       data.approvers = approversObject;
     }
