@@ -39,10 +39,10 @@ enum AccountRole {
 }
 
 model Request {
-  id           Int           @id @default(dbgenerated())
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   status       RequestStatus @default(pending) // the status of the request defined by the Request status enum
   group        Group         @relation(fields: [groupId], references: [id]) // the group making the request
-  groupId      Int
+  groupId      String        @db.Uuid
   author       User          @relation(name: "Author", fields: [authorUtorid], references: [utorid]) // the author of the request
   authorUtorid String
   approvers    User[]        @relation(name: "Approvers") // requested approvers for the request
@@ -66,7 +66,7 @@ enum RequestStatus {
 }
 
 model Group {
-  id       Int       @id @default(dbgenerated())
+  id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name     String    @unique // the name of the group
   members  User[]    @relation(name: "Members") // all members of the group, including managers, excluding any invited users
   invited  User[]    @relation(name: "Invited") // users that have been invited to the group and have yet to accept
