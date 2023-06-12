@@ -77,38 +77,34 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
+    if (!group.members.some(x => x.utorid === targetUtorid)) {
+      return { status: 400, message: 'User is not a member of this group.' };
+    }
     if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
-    try {
-      if (role === 'manager') {
-        if (group.managers.some(x => x.utorid === targetUtorid)) {
-          return { status: 400, message: 'User is already a manager.' };
-        }
-        await db.group.update({
-          where: { id },
-          data: { managers: { connect: { utorid: targetUtorid } } },
-        });
-        return { status: 200, data: {} };
+    if (role === 'manager') {
+      if (group.managers.some(x => x.utorid === targetUtorid)) {
+        return { status: 400, message: 'User is already a manager.' };
       }
-      if (role === 'member') {
-        if (!group.managers.some(x => x.utorid === targetUtorid)) {
-          return { status: 400, message: 'User is already a member.' };
-        }
-        await db.group.update({
-          where: { id },
-          data: { managers: { disconnect: { utorid: targetUtorid } } },
-        });
-        return { status: 200, data: {} };
+      await db.group.update({
+        where: { id },
+        data: { managers: { connect: { utorid: targetUtorid } } },
+      });
+      return { status: 200, data: {} };
+    }
+    if (role === 'member') {
+      if (!group.managers.some(x => x.utorid === targetUtorid)) {
+        return { status: 400, message: 'User is already a member.' };
       }
-    } catch (e) {
-      if ((e as PrismaClientKnownRequestError).code === 'P2003') {
-        return { status: 404, message: 'User not found.' };
-      }
-      throw e;
+      await db.group.update({
+        where: { id },
+        data: { managers: { disconnect: { utorid: targetUtorid } } },
+      });
+      return { status: 200, data: {} };
     }
     return { status: 400, message: 'Invalid role.' };
   },
@@ -143,7 +139,7 @@ export default {
       });
       return { status: 200, data: {} };
     } catch (e) {
-      if ((e as PrismaClientKnownRequestError).code === 'P2003') {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
         return { status: 404, message: 'User not found.' };
       }
       throw e;

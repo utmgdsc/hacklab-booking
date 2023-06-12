@@ -5,7 +5,7 @@ import ModelResponse from '../types/ModelResponse';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export default {
-  upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string, theme?:Theme }) => {
+  upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string, theme?: Theme }) => {
     if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
     }
@@ -19,21 +19,38 @@ export default {
     user.role = Object.keys(AccountRole).includes(<string>user.role) ? user.role : AccountRole.student;
     return {
       status: 200,
-      data: <User>(await db.user.upsert({ where: { utorid: user.utorid }, update:{ email:user.email }, create: <User>user })),
+      data: <User>(await db.user.upsert({
+        where: { utorid: user.utorid },
+        update: { email: user.email },
+        create: <User>user,
+      })),
     };
   },
-  getUser: async (utorid: string) => {
-    const user = await db.user.findUnique({ where: { utorid: utorid } });
-    if (!user) {
+  getUser: async (utorid: string, user: User) => {
+    const moreInfo = user.role === AccountRole.admin || user.utorid === utorid;
+    const userFetched = await db.user.findUnique({
+      where: { utorid: utorid },
+      include: {
+        groups: moreInfo,
+        invited: moreInfo,
+        manager: moreInfo,
+        requests: moreInfo,
+        roomAccess: moreInfo,
+      },
+    });
+    if (!userFetched) {
       return { status: 404, message: 'User not found.' };
     }
-    return { status: 200, data: user };
+    return { status: 200, data: userFetched };
   },
   changeTheme: async (user: User | string, theme: string) => {
     if (!Object.keys(Theme).includes(theme)) {
       return { status: 400, message: 'Invalid theme.' };
     }
-    await db.user.update({ where: { utorid: typeof user === 'string' ? user : user.utorid }, data: { theme: theme as Theme } });
+    await db.user.update({
+      where: { utorid: typeof user === 'string' ? user : user.utorid },
+      data: { theme: theme as Theme },
+    });
     return { status: 200, data: {} };
   },
   changeRole: async (user: User | string, role: string) => {
@@ -45,7 +62,10 @@ export default {
     if (!Object.keys(AccountRole).includes(role)) {
       return { status: 400, message: 'Invalid role.' };
     }
-    await db.user.update({ where: { utorid: typeof user === 'string' ? user : user.utorid }, data: { role: role as AccountRole } });
+    await db.user.update({
+      where: { utorid: typeof user === 'string' ? user : user.utorid },
+      data: { role: role as AccountRole },
+    });
     return { status: 200, data: {} };
   },
   acceptGroupInvite: async (user: User | string, groupId: string) => {

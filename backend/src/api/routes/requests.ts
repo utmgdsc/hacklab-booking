@@ -13,7 +13,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   sendResponse(res, await requestsModel.getRequests(req.body, req.user));
 });
-router.post('/create', checkRequiredFields(['title', 'description', 'roomName', 'groupId', 'startDate', 'endDates']), async (req, res) => {
+router.post('/create', checkRequiredFields(['title', 'description', 'roomName', 'groupId', 'startDate', 'endDate']), async (req, res) => {
   sendResponse(res, await requestsModel.createRequest({
     title: req.body.title,
     description: req.body.description,
