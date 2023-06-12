@@ -31,19 +31,19 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
         const startMonday = GetMonday(startDate);
         const endDate = dayjs(startMonday).add(5, "day").toDate();
 
-        await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString()  + "/" + reqID)
-            .then((res) => {
-                return res.json();
-            })
-            .then((data) => {
-                // convert dates into date objects
-                let blocked = [];
-                data.forEach((date) => {
-                    blocked.push(new Date(date));
-                }
-                );
-                setBlockedDates(blocked);
-            });
+        // await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString()  + "/" + reqID)
+        //     .then((res) => {
+        //         return res.json();
+        //     })
+        //     .then((data) => {
+        //         // convert dates into date objects
+        //         let blocked = [];
+        //         data.forEach((date) => {
+        //             blocked.push(new Date(date));
+        //         }
+        //         );
+        //         setBlockedDates(blocked);
+        //     });
     };
 
     useEffect(() => {

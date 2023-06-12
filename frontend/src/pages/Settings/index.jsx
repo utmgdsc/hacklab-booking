@@ -70,21 +70,21 @@ export const Settings = () => {
                         row
                         aria-labelledby="appearance-radio-label"
                         name="appearance-radio"
-                        onChange={(e) =>
-                            fetch(process.env.REACT_APP_API_URL + "/accounts/modifyTheme", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify({
-                                    theme: e.target.value,
-                                }),
-                            })
-                                .then(() => {
-                                    // reload the page
-                                    window.location.reload();
-                                })
-                        }
+                        // onChange={(e) =>
+                        //     fetch(process.env.REACT_APP_API_URL + "/accounts/modifyTheme", {
+                        //         method: "POST",
+                        //         headers: {
+                        //             "Content-Type": "application/json",
+                        //         },
+                        //         body: JSON.stringify({
+                        //             theme: e.target.value,
+                        //         }),
+                        //     })
+                        //         .then(() => {
+                        //             // reload the page
+                        //             window.location.reload();
+                        //         })
+                        // }
                         value={userInfo["theme"] ?? null}
                     >
                         <FormControlLabel value={THEME.DEFAULT} control={<Radio />} label="System Default" />

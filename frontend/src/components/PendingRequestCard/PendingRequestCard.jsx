@@ -38,30 +38,30 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
     const [location, setLocation] = useState("location");
     const [teamName, setTeamName] = useState("teamName");
 
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + "/requests/getUtorid/" + ownerID)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setUtorid(data.utorid);
-            });
+    // useEffect(() => {
+    //     fetch(process.env.REACT_APP_API_URL + "/requests/getUtorid/" + ownerID)
+    //         .then(res => {
+    //             return res.json();
+    //         })
+    //         .then(data => {
+    //             setUtorid(data.utorid);
+    //         });
 
-        fetch(process.env.REACT_APP_API_URL + "/requests/getRoom/" + locationID)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setLocation(data.friendlyName);
-            });
-        fetch(process.env.REACT_APP_API_URL + "/groups/getGroup/" + groupID)
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setTeamName(data.name);
-            });
-    }, []);
+    //     fetch(process.env.REACT_APP_API_URL + "/requests/getRoom/" + locationID)
+    //         .then(res => {
+    //             return res.json();
+    //         })
+    //         .then(data => {
+    //             setLocation(data.friendlyName);
+    //         });
+    //     fetch(process.env.REACT_APP_API_URL + "/groups/getGroup/" + groupID)
+    //         .then(res => {
+    //             return res.json();
+    //         })
+    //         .then(data => {
+    //             setTeamName(data.name);
+    //         });
+    // }, []);
 
     const handleClickOpen = () => { setOpen(true); };
     const handleClose = () => { setOpen(false); };
@@ -77,28 +77,28 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
     const [approved, setApproved] = useState(false);
 
     const handleChangeStatus = (reason, status) => {
-        // todo: send request to backend to approve request
-        fetch(process.env.REACT_APP_API_URL + "/requests/changeStatus/" + reqID, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                status: status,
-                reason: reason
-            }),
-        })
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-        window.location.reload();
-        console.log(status + " request with reason " + reason);
+    //     // todo: send request to backend to approve request
+    //     fetch(process.env.REACT_APP_API_URL + "/requests/changeStatus/" + reqID, {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify({
+    //             status: status,
+    //             reason: reason
+    //         }),
+    //     })
+    //         .then(res => {
+    //             return res.json();
+    //         })
+    //         .then(data => {
+    //             console.log(data);
+    //         })
+    //         .catch(err => {
+    //             console.log(err);
+    //         });
+    //     window.location.reload();
+    //     console.log(status + " request with reason " + reason);
     }
 
     return (

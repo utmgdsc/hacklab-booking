@@ -20,12 +20,12 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { defaultUser, UserContext } from "./contexts/UserContext";
 import { ErrorBoundary } from "./components";
-import { CssBaseline, ThemeProvider, useMediaQuery, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider, useMediaQuery, createTheme, PaletteMode } from "@mui/material";
 
 import { GoogleTheme, THEME } from "./theme/theme";
 
 function App() {
-  let [userInfo, setUserInfo] = useState(defaultUser);
+  let [userInfo, setUserInfo] : [User, React.Dispatch<React.SetStateAction<User>>] = useState(defaultUser);
 
   useEffect(() => {
     fetch(process.env.REACT_APP_API_URL + "/accounts/info")
@@ -43,9 +43,9 @@ function App() {
 
 	const theme = useMemo(
 		() =>
-			createTheme(GoogleTheme(
-				userInfo["theme"] === THEME.DEFAULT ? (systemTheme ? THEME.DARK : THEME.LIGHT) : userInfo["theme"],
-			)),
+			createTheme(GoogleTheme({mode:
+        (userInfo.theme === "system" ? (systemTheme ? THEME.DARK : THEME.LIGHT) : userInfo.theme) as PaletteMode
+      })),
 		[systemTheme, userInfo],
 	);
 
@@ -56,14 +56,14 @@ function App() {
           <CssBaseline enableColorScheme />
           <Router>
             <Routes>
-              <Route exact path="/" element={<Dashboard />} />
-              <Route exact path="/settings" element={<Settings />} />
-              <Route exact path="/calendar/" element={<Calendar />} />
-              <Route exact path="/book/" element={<CreateBooking />} />
-              <Route exact path="/group/" element={<GroupDirectory />} />
-              <Route exact path="/group/:id" element={<Group />} />
-              <Route exact path="/admin" element={<Admin />} />
-              <Route exact path="/admin/all-requests" element={<AllRequests />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/calendar/" element={<Calendar />} />
+              <Route path="/book/" element={<CreateBooking />} />
+              <Route path="/group/" element={<GroupDirectory />} />
+              <Route path="/group/:id" element={<Group />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/all-requests" element={<AllRequests />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>

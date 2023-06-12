@@ -50,7 +50,7 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
             description={request["description"]}
             date={request["start_date"]}
             end={request["end_date"]}
-            location={request["room"]["friendlyName"]}
+            // location={request["room"]["friendlyName"]}
             teamName={request["group"]["name"]}
             status={request["status"]}
             owner={request["owner"]["name"]}
@@ -104,29 +104,29 @@ export const Dashboard = () => {
   const [editRequestID, setEditRequestID] = useState(null);
   const [openEditRequest, setOpenEditRequest] = useState(false);
 
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/requests/myRequests")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        // console.log("data");
-        // console.log(data);
-        setActiveRequests(data);
-        setPendingRequests([]);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/requests/myRequests")
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       // console.log("data");
+  //       // console.log(data);
+  //       setActiveRequests(data);
+  //       setPendingRequests([]);
+  //     });
+  // }, []);
 
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        // console.log(data, "all requests");
-        setPendingRequests(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       // console.log(data, "all requests");
+  //       setPendingRequests(data);
+  //     });
+  // }, []);
 
   const editThisRequest = (reqID) => {
     // console.log(reqID, "edit this request");
@@ -136,13 +136,13 @@ export const Dashboard = () => {
 
   const cancelThisRequest = (reqID) => {
     // console.log(reqID, "cancel this request");
-    // TODO: if request is completed, remove from calendar events
-    fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    // // TODO: if request is completed, remove from calendar events
+    // fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
     setActiveRequests(
       active_requests.filter((request) => request._id !== reqID)
     );
@@ -185,7 +185,7 @@ export const Dashboard = () => {
       icon: <AdminPanelSettingsIcon />,
       label: "Admin",
       color: theme.palette.app_colors.purple,
-      hidden: userInfo["role"] !== "admin" && userInfo["role"] !== "tcard"
+      hidden: userInfo.role !== "admin" && userInfo.role !== "tcard"
     }
   ];
 

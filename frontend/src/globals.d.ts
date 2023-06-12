@@ -1,13 +1,21 @@
 declare module '*.png';
 declare module '*.svg';
 
-/** Model User  */
+/**
+ * User model
+ * Aligned with api/accounts
+*/
 type User = {
     email: string
     utorid: string
     name: string
     role: "student" | "admin" | "approver" | "tcard"
     theme: "system" | "light" | "dark"
+    groups: Group[]
+    invited: Group[]
+    requests: Request[]
+    manager: Group[]
+    rooms: Room[]
 }
 
 /** Model Request  */

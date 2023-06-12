@@ -46,21 +46,21 @@ export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): 
   };
 
   const handleSave = () => {
-    fetch(process.env.REACT_APP_API_URL + "/accounts/changeRole/" + utorid, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ role: role }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(`Changed ${utorid}'s role to ${data.role}`);
-        setUpdate(Math.random());
-      })
-    setOpen(false);
+  //   fetch(process.env.REACT_APP_API_URL + "/accounts/changeRole/" + utorid, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ role: role }),
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(`Changed ${utorid}'s role to ${data.role}`);
+  //       setUpdate(Math.random());
+  //     })
+  //   setOpen(false);
   };
 
   return (

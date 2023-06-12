@@ -29,24 +29,24 @@ const LeftHeader = ({ active_requests, pending_requests, userInfo, theme }) => (
         sx={{ color: theme.palette.text.secondary }}
       >
         Welcome,{" "}
-        {userInfo["role"] === "admin"
+        {userInfo.role === "admin"
           ? "Administrator"
-          : userInfo["role"] === "approver"
+          : userInfo.role === "approver"
           ? "Approver"
           : null}
       </Typography>
       <Typography variant="h2">
-        <strong>{userInfo["name"]}</strong>
+        <strong>{userInfo.name}</strong>
       </Typography>
       {active_requests &&
-        userInfo["role"] === "student" &&
+        userInfo.role === "student" &&
         active_requests.length > 0 && (
           <Typography component="p" variant="h5">
             You have {active_requests.length} active requests
           </Typography>
         )}
       {pending_requests &&
-        (userInfo["role"] === "admin" || userInfo["role"] === "approver") &&
+        (userInfo.role === "admin" || userInfo.role === "approver") &&
         pending_requests.length > 0 && (
           <Typography
             component="p"
@@ -80,7 +80,7 @@ const RightHeader = ({ userInfo, theme }) => {
   return (
     <Box sx={{ flexGrow: 0 }}>
       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-        <InitialsAvatar name={userInfo["name"]} />
+        <InitialsAvatar name={userInfo.name} />
       </IconButton>
       <Menu
         sx={{ mt: "45px" }}

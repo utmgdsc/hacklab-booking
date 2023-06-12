@@ -1,16 +1,16 @@
 import { createContext } from 'react';
-import { User } from '../types/user';
 
-// todo old user data model
 export const defaultUser: User = {
-    _id: "",
-    utorid: "noutorid",
-    email: "noemail@example.com",
+    email: "hatsune.miku@utoronto.ca",
+    utorid: "mikuhatsune",
     name: "Loading...",
     role: "student",
-    accessGranted: false,
-    needsAccess: false,
-    theme: "system"
+    theme: "system",
+    groups: [],
+    invited: [],
+    requests: [],
+    manager: [],
+    rooms: []
 }
 
 export const UserContext = createContext(defaultUser);

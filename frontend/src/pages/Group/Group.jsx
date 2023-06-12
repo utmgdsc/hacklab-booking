@@ -33,17 +33,17 @@ export const Group = () => {
   const userInfo = useContext(UserContext);
 
   const getGroups = () => {
-    fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
-      method: 'GET',
-    }).then(res => {
-      console.log(res)
-      return res.json();
-    }).then(data => {
-      console.log('data')
-      console.log(data);
-      setGroup(data);
-      setPeople(data.people);
-    })
+  //   fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
+  //     method: 'GET',
+  //   }).then(res => {
+  //     console.log(res)
+  //     return res.json();
+  //   }).then(data => {
+  //     console.log('data')
+  //     console.log(data);
+  //     setGroup(data);
+  //     setPeople(data.people);
+  //   })
   }
 
   useEffect(() => {
@@ -52,70 +52,70 @@ export const Group = () => {
 
   const addPerson = (utorid) => {
     console.log('adding', utorid)
-    fetch(process.env.REACT_APP_API_URL + '/groups/invite/', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: groupID,
-        utorid: utorid
-      })
-    }).then(res => {
-      return res.json();
-    }).then(data => {
-      console.log(data);
-      getGroups();
-    })
+    // fetch(process.env.REACT_APP_API_URL + '/groups/invite/', {
+    //   method: 'POST',
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     id: groupID,
+    //     utorid: utorid
+    //   })
+    // }).then(res => {
+    //   return res.json();
+    // }).then(data => {
+    //   console.log(data);
+    //   getGroups();
+    // })
   }
 
   const removePerson = (utorid) => {
     console.log('deleting', utorid);
-    fetch(process.env.REACT_APP_API_URL + '/groups/remove/', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: groupID,
-        utorid: utorid
-      })
-    }).then(res => {
-      return res.json();
-    }).then(data => {
-      console.log(data);
-      getGroups();
-    })
+    // fetch(process.env.REACT_APP_API_URL + '/groups/remove/', {
+    //   method: 'POST',
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     id: groupID,
+    //     utorid: utorid
+    //   })
+    // }).then(res => {
+    //   return res.json();
+    // }).then(data => {
+    //   console.log(data);
+    //   getGroups();
+    // })
   }
 
   const delGroup = () => {
     console.log('deleting', groupID);
-    fetch(process.env.REACT_APP_API_URL + '/groups/del/', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: groupID,
-      })
-    }).then(res => {
-      return res.json();
-    }).then(data => {
-      console.log(data);
-      navigate('/group', { replace: true });
-    })
+    // fetch(process.env.REACT_APP_API_URL + '/groups/del/', {
+    //   method: 'POST',
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     id: groupID,
+    //   })
+    // }).then(res => {
+    //   return res.json();
+    // }).then(data => {
+    //   console.log(data);
+    //   navigate('/group', { replace: true });
+    // })
   }
 
 
   const makeAdmin = (utorid) => {
     console.log('promoting', utorid);
-    fetch(process.env.REACT_APP_API_URL + '/groups/makeAdmin/', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: groupID,
-        utorid: utorid
-      })
-    }).then(res => {
-      return res.json();
-    }).then(data => {
-      console.log(data);
-      getGroups();
-    })
+    // fetch(process.env.REACT_APP_API_URL + '/groups/makeAdmin/', {
+    //   method: 'POST',
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     id: groupID,
+    //     utorid: utorid
+    //   })
+    // }).then(res => {
+    //   return res.json();
+    // }).then(data => {
+    //   console.log(data);
+    //   getGroups();
+    // })
   }
 
   const handleClickOpen = () => {

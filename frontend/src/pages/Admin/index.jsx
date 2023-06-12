@@ -71,24 +71,24 @@ export const Admin = () => {
     },
   ];
 
-  // useEffect hook for fetching the rows
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/accounts/all", {
-      method: "GET",
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setRows(data);
-        setRowsToDisplay(data);
-        setUpdate(Math.random());
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // // useEffect hook for fetching the rows
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/accounts/all", {
+  //     method: "GET",
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //       setRows(data);
+  //       setRowsToDisplay(data);
+  //       setUpdate(Math.random());
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   // useEffect hook for changing the rows to display based on the filter
   useEffect(() => {

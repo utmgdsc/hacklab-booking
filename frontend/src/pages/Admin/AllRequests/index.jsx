@@ -53,29 +53,29 @@ export const AllRequests = () => {
   const userInfo = useContext(UserContext);
   const [requests, setRequests] = useState(null);
 
-  // useEffect hook for fetching the rows
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/requests/getAllRequests", {
-      method: "GET",
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        // console.log(data);
+  // // useEffect hook for fetching the rows
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/requests/getAllRequests", {
+  //     method: "GET",
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       // console.log(data);
 
-        data.forEach((request) => {
-          if (request["group"] === null) {
-            request["group"] = { name: "Group Deleted" };
-          }
-        });
+  //       data.forEach((request) => {
+  //         if (request["group"] === null) {
+  //           request["group"] = { name: "Group Deleted" };
+  //         }
+  //       });
 
-        setRequests(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  //       setRequests(data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   if (userInfo["role"] !== "admin" && userInfo["role"] !== "tcard") {
     return (

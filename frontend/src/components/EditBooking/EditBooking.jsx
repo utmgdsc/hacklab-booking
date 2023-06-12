@@ -64,29 +64,29 @@ const Transition = forwardRef(function Transition(props, ref) {
 export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
   const [userGroups, setUserGroups] = useState([]);
 
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setUserGroups(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       setUserGroups(data);
+  //     });
+  // }, []);
 
   const [reqInfo, setReqInfo] = useState({});
 
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/requests/getRequest/" + reqID)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setReqInfo(data);
-        console.log(data, "reqInfo");
-        setDetails(data.description);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/requests/getRequest/" + reqID)
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       setReqInfo(data);
+  //       console.log(data, "reqInfo");
+  //       setDetails(data.description);
+  //     });
+  // }, []);
 
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
@@ -151,11 +151,11 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       approvers: approvers,
     };
 
-    fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(modifiedRequest),
-    });
+    // fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(modifiedRequest),
+    // });
 
     setSubmitted(true);
   };

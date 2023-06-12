@@ -33,15 +33,15 @@ export const CreateBooking = () => {
   const [approvers, setApprovers] = useState([]);
   const [approversError, setApproversError] = useState(false);
 
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setUserGroups(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       setUserGroups(data);
+  //     });
+  // }, []);
 
   const handleFinish = () => {
     let finish = true;
@@ -86,12 +86,12 @@ export const CreateBooking = () => {
     console.log(booking);
     console.log(group);
 
-    // submit to API
-    fetch(process.env.REACT_APP_API_URL + "/requests/submit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(booking),
-    });
+    // // submit to API
+    // fetch(process.env.REACT_APP_API_URL + "/requests/submit", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(booking),
+    // });
 
     setSubmitted(true);
   };
@@ -159,7 +159,7 @@ export const CreateBooking = () => {
         <BookingSubmitted
           details={details}
           scheduleDates={scheduleDates}
-          group={group.name}
+          group={group}
         />
       </SubPage>
     );

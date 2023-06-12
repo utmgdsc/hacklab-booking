@@ -39,38 +39,38 @@ export const GroupDirectory = () => {
     };
 
     const sendAddGroup = () => {
-        fetch(process.env.REACT_APP_API_URL + '/groups/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: document.getElementById("group-name").value,
-                // members: [userInfo.utorid],
-                // requests: [],
-            }),
-        })
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                console.log(data);
-                window.location.reload(); // HACK
-            });
+        // fetch(process.env.REACT_APP_API_URL + '/groups/create', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         name: document.getElementById("group-name").value,
+        //         // members: [userInfo.utorid],
+        //         // requests: [],
+        //     }),
+        // })
+        //     .then(res => {
+        //         return res.json();
+        //     })
+        //     .then(data => {
+        //         console.log(data);
+        //         window.location.reload(); // HACK
+        //     });
     }
 
     let [myGroups, setMyGroups] = useState({});
 
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + '/groups/myGroups')
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setMyGroups(data);
-                console.log(data);
-            });
-    }, []);
+    // useEffect(() => {
+    //     fetch(process.env.REACT_APP_API_URL + '/groups/myGroups')
+    //         .then(res => {
+    //             return res.json();
+    //         })
+    //         .then(data => {
+    //             setMyGroups(data);
+    //             console.log(data);
+    //         });
+    // }, []);
 
     return (
         <SubPage name="Your Groups">

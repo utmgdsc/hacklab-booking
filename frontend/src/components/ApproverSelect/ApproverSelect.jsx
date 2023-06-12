@@ -6,18 +6,18 @@ export const ApproverSelect = ({ setApprovers }) => {
   const [selected, setSelected] = useState([]);
   const [approvers, setApproversBackend] = useState([]);
 
-  useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/requests/approvers", {
-      method: "GET",
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data, "approvers");
-        setApproversBackend(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(process.env.REACT_APP_API_URL + "/requests/approvers", {
+  //     method: "GET",
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(data, "approvers");
+  //       setApproversBackend(data);
+  //     });
+  // }, []);
 
   const handleOpen = () => {
     setOpen(true);

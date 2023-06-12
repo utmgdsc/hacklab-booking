@@ -1,3 +1,4 @@
+import { PaletteMode, ThemeOptions } from '@mui/material';
 import { grey } from '@mui/material/colors';
 
 /**
@@ -7,20 +8,54 @@ import { grey } from '@mui/material/colors';
  */
 export const THEME = {
     /** Light theme
-     * @type {string}
+     * @type {PaletteMode}
      */
-    LIGHT: "light",
+    LIGHT: ("light") as PaletteMode,
     /** Dark theme
-     * @type {string}
+     * @type {PaletteMode}
      */
-    DARK: "dark",
+    DARK: ("dark") as PaletteMode,
     /** System default theme
      * @type {string}
      */
     DEFAULT: "system",
 }
 
-export const GoogleTheme = ( mode: string ) => {
+/*
+ * Typescript declarations for custom theme properties
+ */
+declare module '@mui/material/styles' {
+    interface TypographyVariants {
+      gray: React.CSSProperties;
+    }
+
+    // allow configuration using `createTheme`
+    interface TypographyVariantsOptions {
+      gray?: React.CSSProperties;
+    }
+
+    interface PaletteOptions {
+        app_colors?: {
+            red?: string;
+            blue?: string;
+            green?: string;
+            yellow?: string;
+            purple?: string;
+        }
+        gray?: {
+            main?: string;
+        }
+    }
+}
+
+// Update the Typography's variant prop options
+declare module '@mui/material/Typography' {
+    interface TypographyPropsVariantOverrides {
+      gray: true;
+    }
+}
+
+export const GoogleTheme = ({mode}: {mode: PaletteMode}): ThemeOptions => {
     return ({
         palette: {
             mode: mode,
@@ -39,12 +74,12 @@ export const GoogleTheme = ( mode: string ) => {
             success: {
                 main: "#0f9d58",
             },
-            action: {
-                light: {
-                    active: "#000",
-                    disabled: "#5f6368",
-                }
-            },
+            // action: {
+            //     light: {
+            //         active: "#000",
+            //         disabled: "#5f6368",
+            //     }
+            // },
             gray: {
                 main: mode === THEME.DARK ? "#c5d3e3" : "#5f6368",
             },
@@ -145,24 +180,3 @@ export const GoogleTheme = ( mode: string ) => {
         }
     })
 }
-
-/*
- * Typescript declarations for custom theme properties
- */
-declare module '@mui/material/styles' {
-    interface TypographyVariants {
-      gray: React.CSSProperties;
-    }
-
-    // allow configuration using `createTheme`
-    interface TypographyVariantsOptions {
-      gray?: React.CSSProperties;
-    }
-  }
-
-  // Update the Typography's variant prop options
-  declare module '@mui/material/Typography' {
-    interface TypographyPropsVariantOverrides {
-      gray: true;
-    }
-  }
