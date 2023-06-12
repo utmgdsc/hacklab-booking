@@ -5,6 +5,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { CreateRequest } from '../types/CreateRequest';
 import { ModelResponseError } from '../types/ModelResponse';
 import requests from '../api/routes/requests';
+import logger from '../common/logger';
 
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {
@@ -31,7 +32,7 @@ const validateRequest = async (request: CreateRequest): Promise<ModelResponseErr
       message: 'Start date cannot be before today.',
     };
   }
-  if (!(await db.request.findFirst({
+  if ((await db.request.findFirst({
     where: {
       startDate: { lte: startDate },
       endDate: { gte: endDate },
@@ -85,7 +86,7 @@ export default {
     if (filters.room) {
       query.roomName = filters.room;
     }
-    if (!Object.keys(RequestStatus).includes(filters.status)) {
+    if (filters.status && !Object.keys(RequestStatus).includes(filters.status)) {
       return { status: 400, message: 'Invalid status.' };
     }
     if (filters.status) {
@@ -99,11 +100,18 @@ export default {
     if (user.role === AccountRole.approver) {
       query.approvers = { OR: [{ some: { utorid: user.utorid } }, { isEmpty: true }] };
     }
-    db.request.findMany({
-      where: query,
-      include: { group: true, room: true, author: true, approvers: true },
-    });
-    return { status: 200, data: [] };
+    logger.debug(JSON.stringify(query));
+    return {
+      status: 200, data: await db.request.findMany({
+        where: query,
+        include: {
+          group: true,
+          room: true,
+          author: true,
+          approvers: true,
+        },
+      }),
+    };
   },
   createRequest: async (request: CreateRequest, user: User) => {
     const error = await validateRequest(request);
@@ -147,7 +155,7 @@ export default {
         })),
       };
     } catch (e) {
-      if ((e as PrismaClientKnownRequestError).code === 'P2003') {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
         return {
           status: 400,
           message: 'Invalid id for group, room or utorid.',

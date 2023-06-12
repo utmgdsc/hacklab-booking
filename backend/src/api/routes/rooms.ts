@@ -10,8 +10,21 @@ import roomsModel from '../../models/roomsModel';
 
 const router = Router();
 
+router.get('/', async (req, res) => {
+  sendResponse(res, await roomsModel.getRooms());
+});
 router.get('/:room', async (req, res) => {
   sendResponse(res, await roomsModel.getRoom(req.params.room, req.user));
+});
+router.post('/create', permissionMiddleware(PermissionLevel.admin), checkRequiredFields(['friendlyName', 'room']), async (req, res) =>{
+  if (req.body.capacity && isNaN(parseInt(req.body.capacity))) {
+    sendResponse(res, {
+      status: 400,
+      message: 'Invalid capacity.',
+    });
+    return;
+  }
+  sendResponse(res, await roomsModel.createRoom(req.body.friendlyName, req.body.capacity, req.body.room));
 });
 router.get('/:room/blockeddates', async (req, res) => {
   const startDate = req.query.start_date ? new Date(req.query.start_date as string) : new Date();
@@ -26,8 +39,10 @@ router.get('/:room/blockeddates', async (req, res) => {
   }
   sendResponse(res, await roomsModel.getBlockedDates(req.params.room, startDate, endDate));
 });
-router.put('/:rooms/grantAccess', permissionMiddleware(PermissionLevel.tcard), checkRequiredFields(['utorid']), async (req, res) => {
+router.put('/:rooms/grantaccess', permissionMiddleware(PermissionLevel.tcard), checkRequiredFields(['utorid']), async (req, res) => {
   sendResponse(res, await roomsModel.grantAccess(req.params.rooms, req.body.utorid));
 });
-router.get('/:rooms/requests', routeNotImplemented);
+router.put('/:rooms/revokeaccess', permissionMiddleware(PermissionLevel.tcard), checkRequiredFields(['utorid']), async (req, res) => {
+  sendResponse(res, await roomsModel.revokeAccess(req.params.rooms, req.body.utorid));
+});
 export default router;

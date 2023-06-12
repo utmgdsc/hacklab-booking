@@ -20,7 +20,7 @@ router.get('/:id',  async (req, res) => {
   sendResponse(res, await groupsModel.getGroup(req.params.id, req.user));
 });
 router.post('/:id/changerole', checkRequiredFields(['role', 'utorid']), async (req, res) => {
-  sendResponse(res, await groupsModel.changeRole(req.params.id, req.body.role, req.body.utorid, req.user));
+  sendResponse(res, await groupsModel.changeRole(req.params.id, req.body.utorid, req.body.role, req.user));
 });
 router.post('/:id/invite', checkRequiredFields(['utorid']), async (req, res) => {
   sendResponse(res, await groupsModel.invite(req.params.id, req.body.utorid, req.user));

@@ -4,6 +4,25 @@ import { AccountRole, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export default {
+  getRooms: async () => {
+    return { status: 200, data: await db.room.findMany() };
+  },
+  createRoom: async (friendlyName:string, capacity: number | undefined, roomName: string) => {
+    try {
+      return { status:200, data:await db.room.create({
+        data: {
+          friendlyName,
+          capacity,
+          roomName,
+        },
+      }) };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code == 'P2002') {
+        return { status: 400, message: 'Room name already exists.' };
+      }
+      throw e;
+    }
+  },
   getRoom: async (roomName: string, user: User) => {
     let room;
     if (user.role == AccountRole.student) {
@@ -43,8 +62,8 @@ export default {
       include: {
         requests: {
           where: {
-            startDate: { lte: startDate },
-            endDate: { gte: endDate },
+            startDate: { gte: startDate },
+            endDate: { lte: endDate },
           },
         },
       },
@@ -57,13 +76,21 @@ export default {
   grantAccess: async (roomName: string, utorid: string) => {
     try {
       await db.room.update({ where: { roomName }, data:{ userAccess: { connect: { utorid } } } });
-      return { status: 200, message: 'Access granted' };
+      return { status: 200, data:{} };
     } catch (e) {
-      if ((e as PrismaClientKnownRequestError).code === 'P2003') {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
         return { status: 404, message: 'Invalid user or room' };
       }
-      if ((e as PrismaClientKnownRequestError).code === 'P2002') {
-        return { status: 400, message: 'User already has access' };
+      throw e;
+    }
+  },
+  revokeAccess: async (roomName: string, utorid: string) => {
+    try {
+      await db.room.update({ where: { roomName }, data:{ userAccess: { disconnect: { utorid } } } });
+      return { status: 200, data:{} };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
+        return { status: 404, message: 'Invalid user or room' };
       }
       throw e;
     }
