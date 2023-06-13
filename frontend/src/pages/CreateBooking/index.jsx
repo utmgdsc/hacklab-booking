@@ -159,7 +159,7 @@ export const CreateBooking = () => {
         <BookingSubmitted
           details={details}
           scheduleDates={scheduleDates}
-          group={group}
+          groupName={group}
         />
       </SubPage>
     );
