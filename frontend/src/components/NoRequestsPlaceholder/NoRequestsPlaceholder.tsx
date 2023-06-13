@@ -1,6 +1,12 @@
 import { Box, Typography } from '@mui/material';
 import SparkleMascot from "../../assets/img/sparkle-mascot.png";
 
+interface NoRequestsPlaceholderProps {
+    text: string;
+    image?: string;
+    alt?: string;
+}
+
 /**
  * Placeholder for when there are no requests
  * @param {string} text the text to display in the placeholder
@@ -8,7 +14,7 @@ import SparkleMascot from "../../assets/img/sparkle-mascot.png";
  * @param {string} alt [optional] the alt text for the image
  * @returns {JSX.Element} the placeholder
  */
-export const NoRequestsPlaceholder = ({ text, image = SparkleMascot, alt = "Sparkle Mascot" }) => {
+export const NoRequestsPlaceholder = ({ text, image = SparkleMascot, alt = "Sparkle Mascot" }: NoRequestsPlaceholderProps): JSX.Element => {
     return (
         <Box
             sx={{
