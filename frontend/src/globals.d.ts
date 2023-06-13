@@ -19,7 +19,7 @@ type User = {
 }
 
 /** Model Request  */
-type Request = {
+type BookingRequest = {
     id: string
     status: RequestStatus
     groupId: number
