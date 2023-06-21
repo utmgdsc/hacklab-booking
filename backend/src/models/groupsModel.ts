@@ -56,6 +56,12 @@ export default {
           managers: { connect: { utorid: user.utorid } },
           members: { connect: { utorid: user.utorid } },
         },
+        include:{
+          members: true,
+          managers: true,
+          invited: true,
+          requests: true,
+        },
       });
       return { status: 200, data: group };
     } catch (e) {
