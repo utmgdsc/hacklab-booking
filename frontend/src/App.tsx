@@ -27,15 +27,12 @@ import axios from "./axios";
 
 function App() {
   let [userInfo, setUserInfo] = useState<FetchedUser>(defaultUser);
-
+  const fetchUserInfo = async () => {
+    const {data} = await axios("/accounts");
+    setUserInfo(data);
+  }
   useEffect(() => {
-    axios("/accounts")
-      .then((res) => {
-        return res.data;
-      })
-      .then((data) => {
-        setUserInfo(data);
-      });
+    fetchUserInfo();
   }, []);
 
   console.log(userInfo);
@@ -51,7 +48,7 @@ function App() {
 	);
 
   return !userInfo ? null : (
-    <UserContext.Provider value={{userInfo, setUserInfo}}>
+    <UserContext.Provider value={{userInfo, setUserInfo, fetchUserInfo}}>
       <ThemeProvider theme={theme}>
         <ErrorBoundary>
           <CssBaseline enableColorScheme />

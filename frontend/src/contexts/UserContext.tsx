@@ -13,4 +13,4 @@ export const defaultUser: FetchedUser = {
     roomAccess: []
 }
 
-export const UserContext = createContext({userInfo:defaultUser, setUserInfo: (user: FetchedUser) => {}});
+export const UserContext = createContext({userInfo:defaultUser, setUserInfo: (user: FetchedUser) => {}, fetchUserInfo: async () => {}});
