@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { React, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   DateTimePicker,
   BookingSubmitted,
@@ -21,10 +21,10 @@ import { ErrorPage } from "../../layouts/ErrorPage";
 
 export const CreateBooking = () => {
   const { userInfo } = useContext(UserContext);
-  const [dateError, setDateError] = useState(false);
+  const [dateError, setDateError] = useState<string | boolean>(false);
   const [detailError, setDetailError] = useState(false);
   const [details, setDetails] = useState("");
-  const [group, setGroup] = useState("");
+  const [group, setGroup] = useState<string>("");
   const [scheduleDates, setScheduleDates] = useState([]);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -32,7 +32,9 @@ export const CreateBooking = () => {
   const [validDate, setValidDate] = useState(false);
   const [approvers, setApprovers] = useState([]);
   const [approversError, setApproversError] = useState(false);
-
+  useEffect(()=>{
+    setUserGroups(userInfo.groups);
+  }, [userInfo.groups])
   // useEffect(() => {
   //   fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
   //     .then((res) => {
@@ -75,7 +77,7 @@ export const CreateBooking = () => {
     // compile into json object
     const booking = {
       owner: userInfo["utorid"],
-      group: group["_id"],
+      group: group,
       details: details,
       title: details,
       startTime: scheduleDates[0],
@@ -96,11 +98,11 @@ export const CreateBooking = () => {
     setSubmitted(true);
   };
 
-  const handleScheduleDate = (dates) => {
-    var currDate = 0;
+  const handleScheduleDate = (dates: string[]) => {
+    let currDate = 0;
     setDateError("");
-    for (var i = 0; i < dates.length; i++) {
-      var d = new Date(dates[i]);
+    for (let i = 0; i < dates.length; i++) {
+      const d = new Date(dates[i]);
       // if in the past
       if (d < new Date()) {
         setDateError("please select a date in the future");
@@ -165,6 +167,7 @@ export const CreateBooking = () => {
     );
   }
 
+  // @ts-ignore
   return (
     <SubPage name="Create a booking">
       <Box
@@ -280,7 +283,6 @@ export const CreateBooking = () => {
               handleScheduleDate={handleScheduleDate}
               scheduleDates={scheduleDates}
               setScheduleDates={setScheduleDates}
-              reqId={null}
             />
 
             {dateError && (

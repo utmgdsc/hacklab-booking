@@ -2,7 +2,7 @@ import {
     Box
 } from "@mui/material";
 import dayjs from "dayjs";
-import { React, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { CustomScheduleSelector } from './CustomScheduleSelector';
 import { PrevNextWeek } from './PrevNextWeek';
@@ -15,7 +15,7 @@ import { GetMonday } from '../GetMonday/GetMonday';
  * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
-export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates, reqID }) => {
+export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates }: {handleScheduleDate : (dates: string[]) => void, scheduleDates: string[], setScheduleDates: (dates: string[]) => void }) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
 
@@ -26,7 +26,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
      *
      * @param {date} startDate the start date of the week to get blocked dates for
      */
-    const handleBlockedDates = async (startDate) => {
+    const handleBlockedDates = async (startDate:Date) => {
         // the end date is 5 days after the start date
         const startMonday = GetMonday(startDate);
         const endDate = dayjs(startMonday).add(5, "day").toDate();
@@ -47,16 +47,18 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
     };
 
     useEffect(() => {
-        handleBlockedDates(calendarDate);
+        handleBlockedDates(calendarDate.toDate());
     }, [calendarDate]);
 
     return (
         <>
             <PrevNextWeek
-                calendarDate={calendarDate}
-                setDate={setDate}
-                setScheduleDates={setScheduleDates}
-                handleBlockedDates={handleBlockedDates}
+                {...{
+                    calendarDate,
+                    setDate,
+                    setScheduleDates,
+                    handleBlockedDates
+                }}
             />
             <Box
                 onMouseDown={() => {
@@ -69,10 +71,12 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
                 }}
             >
                 <CustomScheduleSelector
-                    scheduleDates={scheduleDates}
-                    handleScheduleDate={handleScheduleDate}
-                    calendarDate={calendarDate}
-                    blockedDates={blockedDates}
+                    {...{
+                        scheduleDates,
+                        handleScheduleDate,
+                        calendarDate,
+                        blockedDates
+                    }}
                 />
             </Box>
         </>
