@@ -9,8 +9,6 @@ interface ColorHashProps {
 
 /**
  * get a hash of a string that is also a color code
- * @param {string} name the name to get the hash of
- * @param {number} lightness the lightness of the color
  * @returns {string} the color code in hsl format
  */
 const colorHash = ({ name = "", lightness = 50 }: ColorHashProps): string => {

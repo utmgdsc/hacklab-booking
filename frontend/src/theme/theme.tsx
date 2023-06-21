@@ -46,6 +46,19 @@ declare module '@mui/material/styles' {
             main?: string;
         }
     }
+
+    interface Palette {
+        app_colors?: {
+            red?: string;
+            blue?: string;
+            green?: string;
+            yellow?: string;
+            purple?: string;
+        }
+        gray?: {
+            main?: string;
+        }
+    }
 }
 
 // Update the Typography's variant prop options

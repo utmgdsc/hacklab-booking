@@ -26,6 +26,15 @@ const data = {
   t_card_gatekeeper: "Andrew Wang",
 };
 
+interface ActiveRequestCardProps {
+  booking: FetchedBookingRequest;
+  edit: (reqID: string) => void;
+  cancel: (reqID: string) => void;
+  viewOnly?: boolean;
+  ownerHasTCard: boolean;
+}
+
+
 /**
  * A card that displays a active request
  *
@@ -36,48 +45,83 @@ const data = {
  * @param {string} description the description of the request
  * @param {string} location the location of the request
  */
-export const ActiveRequestCard = ({
-  reqID,
-  title,
-  date,
-  end,
-  location,
-  teamName,
-  status,
-  ownerHasTCard,
-  owner,
-  edit,
-  cancel,
-  viewOnly = false
-}) => {
-  const convertStatus = (status) => {
+export const ActiveRequestCard = ({booking, edit, cancel, viewOnly = false, ownerHasTCard = false}: ActiveRequestCardProps) => {
+  interface RequestStep {
+    id: string;
+    label: string;
+    description: string;
+    error?: boolean;
+  }
+
+  const steps: RequestStep[] = [{
+      id:"pending",
+      label: "Pending",
+      description: "Your request is pending approval",
+    },
+    {
+      id:"needTCard",
+      label: "Need TCard",
+      description: "Your request has been approved, but you need a TCard to access the room",
+    },
+    {
+      id:"cancelled",
+      label: "Cancelled",
+      description: "Your request has been cancelled",
+    },
+    {
+      id:"denied",
+      label: "Denied",
+      description: "Your request has been denied",
+    },
+    {
+      id:"completed",
+      label: "Completed",
+      description: "Your request has been completed",
+    },
+  ];
+  if (booking.status === "cancelled"){
+    steps.splice(1,0,{
+      id: "cancelled",
+      label: "Cancelled",
+      description: "Your request has been cancelled",
+      error:true
+    })
+  } else if(booking.status === "denied"){
+    steps.splice(1,0, {
+      id:"denied",
+      label: "Denied",
+      description: "Your request has been denied",
+      error:true
+    })
+  }
+  const convertStatus = (status : BookingStatus) => {
     switch (status) {
       case "pending":
         return 0;
-      case "approval":
+      case "needTCard":
         return 1;
-      case "tcard":
+      case "cancelled":
         return 2;
-      case "completed":
+      case "denied":
         return 3;
+      case "completed":
+        return 4;
       default:
         return 0;
     }
   };
 
   const handleEdit = () => {
-    edit(reqID);
+    edit(booking.id);
   };
 
   const handleCancel = () => {
-    cancel(reqID);
+    cancel(booking.id);
   };
 
   const getTime = () => {
-    let startHour = new Date(date);
-    startHour = startHour.getHours();
-    let endHour = new Date(end);
-    endHour = endHour.getHours() + 1;
+    let startHour = new Date(booking.startDate).getHours();
+    let endHour =  new Date(booking.endDate).getHours() + 1;
     return `${startHour}:00 - ${endHour}:00`;
   };
 
@@ -92,10 +136,10 @@ export const ActiveRequestCard = ({
         >
           <Box>
             <Typography variant="h5" component="div" fontWeight={600}>
-              {title}
+              {booking.title}
             </Typography>
             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-              <ConvertDate date={date} /> from {getTime()} • {location} • {teamName} • {owner}
+              {ConvertDate(booking.startDate)} from {getTime()} • {booking.room.friendlyName} • {booking.group.name} • {booking.author.name}
             </Typography>
           </Box>
           {!viewOnly && (
@@ -112,7 +156,7 @@ export const ActiveRequestCard = ({
                   aria-label="edit"
                   component="label"
                   onClick={handleEdit}
-                  disabled={!(status === "pending")}
+                  disabled={!(booking.status === "pending")}
                 >
                   <EditIcon />
                 </IconButton>
@@ -122,7 +166,7 @@ export const ActiveRequestCard = ({
                   aria-label="cancel"
                   component="label"
                   onClick={handleCancel}
-                  disabled={!(status === "pending") && !status === "approval"}
+                  disabled={new Date(booking.endDate) <= new Date()}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -131,37 +175,17 @@ export const ActiveRequestCard = ({
           )}
         </Box>
 
-        <Stepper activeStep={convertStatus(status)} orientation="vertical">
-          <Step>
-            <StepLabel>Request Sent</StepLabel>
-            <StepContent>
-              <Typography>
-                Your request has been sent for approval.
-              </Typography>
-            </StepContent>
-          </Step>
-          <Step>
-            <StepLabel>Request Approved</StepLabel>
-            <StepContent>
-              <Typography>your request has been approved.</Typography>
-            </StepContent>
-          </Step>
-          {ownerHasTCard ? null : (
-            <Step>
-              <StepLabel>Request Submitted for T-Card approval</StepLabel>
-              <StepContent>
-                <Typography>
-                  Your request has been submitted for T-Card access.
-                </Typography>
-              </StepContent>
-            </Step>
-          )}
-          <Step>
-            <StepLabel>Request Completed</StepLabel>
-            <StepContent>
-              <Typography>Your request has been completed.</Typography>
-            </StepContent>
-          </Step>
+        <Stepper activeStep={steps.findIndex(x=>x.id===booking.status)} orientation="vertical">
+          {
+            steps.map((v, i) =>
+              (<Step key={i}>
+                <StepLabel error={v.error}>{v.label}</StepLabel>
+                <StepContent>
+                  <Typography>{v.description}</Typography>
+                </StepContent>
+              </Step>
+            ))
+          }
         </Stepper>
       </CardContent>
     </Card>

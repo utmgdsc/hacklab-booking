@@ -4,24 +4,23 @@ import { OpenInNew } from '@mui/icons-material';
 import { Link as MaterialLink, LinkProps as MaterialLinkProps } from '@mui/material';
 
 interface NonForwardLinkProps extends MaterialLinkProps {
+  /** The link's href */
   href: string;
+  /** If true, the link will open in a new tab */
   external?: boolean;
+  /** A ref to pass to the link */
   forwardedRef?: Ref<any>;
+  /** If true, the link will open in the same tab */
   internal?: boolean;
+  /** If true, the external icon will not be shown */
   noIcon?: boolean;
+  /** If true, the link will use the ReactRouter component */
   isInternalLink?: boolean;
 }
 
 /**
  * A link
  * @param {Object} props The props
- * @param {React.ReactNode} props.children The link's children
- * @param {string} props.href The link's href
- * @param {boolean} props.external If true, the link will open in a new tab
- * @param {React.Ref} props.forwardedRef A ref to pass to the link
- * @param {boolean} props.internal If true, the link will open in the same tab
- * @param {boolean} props.noIcon If true, the external icon will not be shown
- * @param {Object} props.props Any other props
  * @returns {JSX.Element} A link
  */
 const NonForwardLink = ({

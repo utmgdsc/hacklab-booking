@@ -16,89 +16,48 @@ import {
 import { ConvertDate } from ".."
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { instance } from "../../axios";
+
+interface PendingRequestCardProps {
+    /** the request to display as a pending request card */
+    booking: BookingRequest;
+}
 
 /**
  * A card that displays a pending request
- * TODO: fetch data from backend via GUID instead of passing in props
- * @param {string} name the name of the user who sent the request
- * @param {string} utorid the utorid of the user who sent the request
- * @param {string} title the title of the request
- * @param {Date} date the date of the request
- * @param {string} description the description of the request
- * @param {string} location the location of the request
- * @param {string} teamName the name of the team that the request is for
+ * @param {BookingRequest} booking the request to display as a pending request card
  */
-export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, date, end, description, reqID }) => {
-    const [open, setOpen] = useState(false);
+// export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, date, end, description, reqID }) => {
+export const PendingRequestCard = ({ booking }: PendingRequestCardProps) => {
+    const [open, setOpen] = useState<boolean>(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-    const [utorid, setUtorid] = useState("utorid");
-    const [location, setLocation] = useState("location");
-    const [teamName, setTeamName] = useState("teamName");
-
-    // useEffect(() => {
-    //     fetch(process.env.REACT_APP_API_URL + "/requests/getUtorid/" + ownerID)
-    //         .then(res => {
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             setUtorid(data.utorid);
-    //         });
-
-    //     fetch(process.env.REACT_APP_API_URL + "/requests/getRoom/" + locationID)
-    //         .then(res => {
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             setLocation(data.friendlyName);
-    //         });
-    //     fetch(process.env.REACT_APP_API_URL + "/groups/getGroup/" + groupID)
-    //         .then(res => {
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             setTeamName(data.name);
-    //         });
-    // }, []);
-
     const handleClickOpen = () => { setOpen(true); };
     const handleClose = () => { setOpen(false); };
+    const [reason, setReason] = useState<string>("");
 
     const getTime = () => {
-        let startHour = new Date(date);
-        startHour = startHour.getHours();
-        let endHour = new Date(end);
-        endHour = endHour.getHours() + 1;
+        let startHour: number = (new Date(booking.startDate)).getHours();
+        let endHour: number = (new Date(booking.endDate)).getHours() + 1;
         return `${startHour}:00 - ${endHour}:00`;
-      };
+    };
 
     const [approved, setApproved] = useState(false);
 
-    const handleChangeStatus = (reason, status) => {
-    //     // todo: send request to backend to approve request
-    //     fetch(process.env.REACT_APP_API_URL + "/requests/changeStatus/" + reqID, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //             status: status,
-    //             reason: reason
-    //         }),
-    //     })
-    //         .then(res => {
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             console.log(data);
-    //         })
-    //         .catch(err => {
-    //             console.log(err);
-    //         });
-    //     window.location.reload();
-    //     console.log(status + " request with reason " + reason);
+    const handleChangeStatus = (reason: string, status: string) => {
+        instance.post("/requests/changeStatus/" + booking.id, {
+            status: status,
+            reason: reason
+        })
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        window.location.reload();
+        console.log(status + " request with reason " + reason);
     }
 
     return (
@@ -110,16 +69,16 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
                     }}
                 >
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Request from {utorid} {teamName != null ? <>as a part of {teamName}</> : null}
+                        Request from {booking.authorUtorid} as a part of {booking.groupId}
                     </Typography>
                     <Typography variant="h5" component="div" fontWeight={600} gutterBottom>
-                        {title}
+                        {booking.title}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        <ConvertDate date={date} /> from {getTime()} • {location}
+                        {ConvertDate(booking.startDate)} from {getTime()} • {booking.roomName}
                     </Typography>
 
-                    <Typography variant="p">{description}</Typography>
+                    <Typography>{booking.description}</Typography>
                 </CardContent>
                 <CardActions>
                     <Button
@@ -151,7 +110,7 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
                     {
                         approved ? "Approve " : "Deny "
                     }
-                    {title}
+                    {booking.title}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText component={Typography} gutterBottom>
@@ -166,6 +125,7 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
                         fullWidth
                         multiline
                         rows={4}
+                        onChange={(e) => { setReason(e.target.value); }}
                     />
                 </DialogContent>
                 <DialogActions
@@ -182,10 +142,9 @@ export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, 
                         onClick={() => {
                             handleClose();
                             if (approved) {
-                                handleChangeStatus(document.getElementById("reason").value, "approval");
-                            }
-                            else {
-                                handleChangeStatus(document.getElementById("reason").value, "denied");
+                                handleChangeStatus(reason, "approval");
+                            } else {
+                                handleChangeStatus(reason, "denied");
                             }
                         }}
                         variant="contained"

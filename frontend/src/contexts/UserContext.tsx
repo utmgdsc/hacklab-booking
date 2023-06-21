@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-export const defaultUser: User = {
+export const defaultUser: FetchedUser = {
     email: "hatsune.miku@utoronto.ca",
     utorid: "mikuhatsune",
     name: "Loading...",
@@ -10,7 +10,7 @@ export const defaultUser: User = {
     invited: [],
     requests: [],
     manager: [],
-    rooms: []
+    roomAccess: []
 }
 
 export const UserContext = createContext(defaultUser);

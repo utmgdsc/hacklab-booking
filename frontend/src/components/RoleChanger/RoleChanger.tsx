@@ -30,8 +30,8 @@ interface RoleChangerProps {
  * @returns {JSX.Element} - the rendered button
  */
 export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): JSX.Element => {
-  const [role, setRole] = useState(userRole);
-  const [open, setOpen] = useState(false);
+  const [role, setRole] = useState<string>(userRole);
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleRoleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setRole(event.target.value);

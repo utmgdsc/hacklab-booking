@@ -25,10 +25,10 @@ import { CssBaseline, ThemeProvider, useMediaQuery, createTheme, PaletteMode } f
 import { GoogleTheme, THEME } from "./theme/theme";
 
 function App() {
-  let [userInfo, setUserInfo] : [User, React.Dispatch<React.SetStateAction<User>>] = useState(defaultUser);
+  let [userInfo, setUserInfo] = useState<FetchedUser>(defaultUser);
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/accounts/info")
+    fetch(process.env.REACT_APP_API_URL + "/accounts")
       .then((res) => {
         return res.json();
       })

@@ -9,46 +9,31 @@ import {
     Button
 } from "@mui/material";
 
-import { InitialsAvatar } from "../../components";
+import { InitialsAvatar } from "..";
 import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
+import { defaultUser } from "../../contexts/UserContext";
+
+interface GroupCardProps {
+    /** group object */
+    groupObj: FetchedGroup;
+}
 
 /**
- * @param {string} groupObj - group object
+ * A card that displays information about a group
+ * @param {Group} groupObj - group object
  */
-export const GroupCard = (groupObj, ...props) => {
-    const [group, setGroup] = useState({});
-
-    useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupObj["id"]["_id"], {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                setGroup(data);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }, [groupObj]);
-
-    console.log(group);
-
+export const GroupCard = ({groupObj, ...props}: GroupCardProps) => {
     return (
         <Card sx={{ mt: 2, mb: 2 }} {...props}>
             <CardContent>
-                <Typography variant="h3" gutterBottom>{group["name"]}</Typography>
+                <Typography variant="h3" gutterBottom>{groupObj.name}</Typography>
                 <Typography variant="gray">Members:</Typography>
                 <Stack direction="row" spacing={1}>
                     {
-                        group["people"] && group["people"].map((member) => {
+                        groupObj.members.map((member) => {
                             return (
                                 <Tooltip
                                     key={member.utorid}
@@ -71,7 +56,7 @@ export const GroupCard = (groupObj, ...props) => {
                 </Stack>
             </CardContent>
             <CardActions>
-                <Button href={"/group/" + group["_id"]}>View</Button>
+                <Button href={"/group/" + groupObj.id}>View</Button>
             </CardActions>
         </Card>
     );

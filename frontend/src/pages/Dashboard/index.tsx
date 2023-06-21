@@ -22,7 +22,7 @@ import {
   PendingRequestCard
 } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
-
+import axios from '../../axios';
 /**
  * all active requests cards given a list of active requests
  * @param {*} active_requests a list of requests received from the backend
@@ -30,7 +30,11 @@ import { UserContext } from "../../contexts/UserContext";
  * @param {*} cancelThisRequest a function that will be called when a user wants to cancel a request
  * @returns all active requests cards
  */
-const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisRequest }) => (
+const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisRequest }: {
+  active_requests: FetchedBookingRequest[],
+  editThisRequest: (reqID: string) => void,
+  cancelThisRequest: (reqID: string) => void
+}) => (
   <>
     <Typography variant="h2" gutterBottom>
       Your Active Requests
@@ -42,23 +46,13 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
     }
     {
       active_requests.map((request) => {
-        return (
-          <ActiveRequestCard
-            key={request["_id"]}
-            reqID={request["_id"]}
-            title={request["title"]}
-            description={request["description"]}
-            date={request["start_date"]}
-            end={request["end_date"]}
-            // location={request["room"]["friendlyName"]}
-            teamName={request["group"]["name"]}
-            status={request["status"]}
-            owner={request["owner"]["name"]}
-            ownerHasTCard={request["owner"]["accessGranted"]}
+        return <ActiveRequestCard
+            booking={request}
+            ownerHasTCard={!!request["author"]["roomAccess"].find(x=>x.roomName === request.roomName)}
             edit={editThisRequest}
             cancel={cancelThisRequest}
-          />
-        );
+            viewOnly={false}
+        />
       })
     }
   </>
@@ -69,7 +63,7 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
  * @param {*} pending_requests a list of requests received from the backend
  * @returns all pending requests cards
  */
-const PendingRequestCards = ({ pending_requests }) => (
+const PendingRequestCards = ({ pending_requests }: { pending_requests: Array<BookingRequest> }) => (
   <>
     <Typography variant="h2" gutterBottom>Your Pending Requests</Typography>
     {pending_requests.length === 0 && (
@@ -78,63 +72,34 @@ const PendingRequestCards = ({ pending_requests }) => (
       />
     )}
     {
-      pending_requests.map((request) => {
-        return (
-          <PendingRequestCard
-            key={request["_id"]}
-            title={request["title"]}
-            description={request["description"]}
-            date={request["start_date"]}
-            end={request["end_date"]}
-            name={request["title"]}
-            ownerID={request["owner"]}
-            groupID={request["group"]}
-            locationID={request["room"]}
-            reqID={request["_id"]}
-          />
-        );
-      })}
+      pending_requests.map((request: BookingRequest) => {
+        return <PendingRequestCard booking={request} />
+      })
+    }
   </>
 )
 
 export const Dashboard = () => {
   const userInfo = useContext(UserContext);
-  const [pending_requests, setPendingRequests] = useState([]);
-  const [active_requests, setActiveRequests] = useState([]);
-  const [editRequestID, setEditRequestID] = useState(null);
+  const [pending_requests, setPendingRequests] = useState<FetchedBookingRequest[]>([]);
+  const [my_requests, setMyRequests] = useState<FetchedBookingRequest[]>([]);
+  const [editRequestID, setEditRequestID] = useState<string|null>(null);
   const [openEditRequest, setOpenEditRequest] = useState(false);
 
-  // useEffect(() => {
-  //   fetch(process.env.REACT_APP_API_URL + "/requests/myRequests")
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       // console.log("data");
-  //       // console.log(data);
-  //       setActiveRequests(data);
-  //       setPendingRequests([]);
-  //     });
-  // }, []);
+  useEffect(() => {
+    axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
+      setMyRequests(data.filter(x=>x.authorUtorid === userInfo.utorid && userInfo.groups.find(y=>y.id === x.groupId)))
+      setPendingRequests(data);
+    })
+  }, []);
 
-  // useEffect(() => {
-  //   fetch(process.env.REACT_APP_API_URL + "/requests/allRequests")
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       // console.log(data, "all requests");
-  //       setPendingRequests(data);
-  //     });
-  // }, []);
-
-  const editThisRequest = (reqID) => {
+  const editThisRequest = (reqID: string) => {
     // console.log(reqID, "edit this request");
     setEditRequestID(reqID);
     setOpenEditRequest(true);
   };
 
-  const cancelThisRequest = (reqID) => {
+  const cancelThisRequest = (reqID: string) => {
     // console.log(reqID, "cancel this request");
     // // TODO: if request is completed, remove from calendar events
     // fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
@@ -143,8 +108,8 @@ export const Dashboard = () => {
     //     "Content-Type": "application/json",
     //   },
     // });
-    setActiveRequests(
-      active_requests.filter((request) => request._id !== reqID)
+    setMyRequests(
+      my_requests.filter((request) => request.id !== reqID)
     );
   };
 
@@ -191,7 +156,7 @@ export const Dashboard = () => {
 
   return (
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
-      <DashboardHeader active_requests={active_requests} pending_requests={pending_requests} />
+      <DashboardHeader active_requests={my_requests} pending_requests={pending_requests} />
 
       <Box
         sx={{
@@ -219,7 +184,7 @@ export const Dashboard = () => {
       )}
 
       <ActiveRequestCards
-        active_requests={active_requests}
+        active_requests={my_requests}
         editThisRequest={editThisRequest}
         cancelThisRequest={cancelThisRequest}
       />

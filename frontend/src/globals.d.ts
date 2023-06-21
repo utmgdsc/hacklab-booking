@@ -5,24 +5,36 @@ declare module '*.svg';
  * User model
  * Aligned with api/accounts
 */
-type User = {
+interface User {
     email: string
     utorid: string
     name: string
-    role: "student" | "admin" | "approver" | "tcard"
-    theme: "system" | "light" | "dark"
+    role: UserRoles
+    theme: ThemeOptions
+}
+
+type UserRoles = "student" | "admin" | "approver" | "tcard"
+
+type ThemeOptions = "system" | "light" | "dark"
+
+interface RoomsUser extends User {
+    roomAccess: Room[]
+}
+
+interface FetchedUser extends RoomsUser {
     groups: Group[]
     invited: Group[]
     requests: Request[]
     manager: Group[]
-    rooms: Room[]
 }
 
+type BookingStatus = "pending" | "denied" | "cancelled" | "needTCard" | "completed"
+
 /** Model Request  */
-type BookingRequest = {
+interface BookingRequest {
     id: string
-    status: RequestStatus
-    groupId: number
+    status: BookingStatus
+    groupId: string
     authorUtorid: string
     startDate: Date
     endDate: Date
@@ -34,17 +46,32 @@ type BookingRequest = {
     updatedAt: Date
 }
 
+interface FetchedBookingRequest extends BookingRequest {
+    group: Group
+    author: RoomsUser
+    room: Room
+    approvers: User[]
+}
+
 /** Model Group  */
-type Group = {
+interface Group {
     id: string
     name: string
+}
+
+interface MembersGroup extends Group {
+    members: {utorid:string}[]
+}
+
+interface FetchedGroup extends MembersGroup {
     managers: User[]
     members: User[]
+    invited: User[]
     requests: Request[]
 }
 
 /** Model Room */
-type Room = {
+interface Room {
     roomName: string
     friendlyName: string
     capacity: number | null
