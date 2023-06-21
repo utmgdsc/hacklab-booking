@@ -107,7 +107,11 @@ export default {
         include: {
           group: true,
           room: true,
-          author: true,
+          author: {
+            include:{
+              roomAccess: true,
+            },
+          },
           approvers: true,
         },
       }),
@@ -170,7 +174,7 @@ export default {
       include: {
         group: { include: { members: { select: { utorid: true } } } },
         room: true,
-        author: true,
+        author: { include: { roomAccess: true } },
         approvers: true,
       },
     });
