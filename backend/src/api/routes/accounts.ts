@@ -16,6 +16,9 @@ router.get('/', async (req, res) => {
 router.post('/changetheme', checkRequiredFields(['theme']), async (req, res) => {
   sendResponse(res, await accountsModel.changeTheme(req.user, req.body.theme));
 });
+router.get('/approvers', async (req, res) => {
+  sendResponse(res, await accountsModel.getApprovers());
+});
 router.get('/:utorid', permissionMiddleware(PermissionLevel.staff), async (req, res) => {
   sendResponse(res, await accountsModel.getUser(req.params.utorid, req.user));
 });
@@ -24,8 +27,6 @@ router.put('/:utorid/changerole', permissionMiddleware(PermissionLevel.admin), c
   sendResponse(res, await accountsModel.changeRole(req.params.utorid, req.body.role));
 });
 
-router.get('approvers', async (req, res) => {
-  sendResponse(res, await accountsModel.getApprovers());
-});
+
 
 export default router;
