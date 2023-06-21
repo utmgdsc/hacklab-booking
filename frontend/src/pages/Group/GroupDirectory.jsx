@@ -22,6 +22,7 @@ import { SubPage } from "../../layouts/SubPage";
 import { InitialsAvatar, GroupCard } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
+import axios from "../../axios";
 
 export const GroupDirectory = () => {
     const { userInfo, setUserInfo } = useContext(UserContext);
@@ -37,8 +38,21 @@ export const GroupDirectory = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
-    const sendAddGroup = () => {
+    let [myGroups, setMyGroups] = useState({});
+    useEffect(() => {
+        setMyGroups(userInfo.groups.reduce((obj, item) => (obj[item.id] = item, obj), {}))
+    }, [userInfo.groups])
+    const sendAddGroup = async () => {
+        const {data, status} = await axios.post('/groups/create', {
+            name: document.getElementById("group-name").value,
+        })
+        if(status !== 200) {
+            // TODO error handling
+        }
+        console.log(data);
+        setMyGroups(myGroups => ({...myGroups, [data.id]: data}));
+        userInfo.groups.push(data)
+        setUserInfo(userInfo);
         // fetch(process.env.REACT_APP_API_URL + '/groups/create', {
         //     method: 'POST',
         //     headers: {
@@ -59,7 +73,7 @@ export const GroupDirectory = () => {
         //     });
     }
 
-    let [myGroups, setMyGroups] = useState({});
+
 
     // useEffect(() => {
     //     fetch(process.env.REACT_APP_API_URL + '/groups/myGroups')
@@ -121,11 +135,11 @@ export const GroupDirectory = () => {
             </Box>
             {
                 Object.keys(myGroups).map((key) => {
-                    // console.log(myGroups[key]);
+                    console.log(myGroups);
                     return (
                         <GroupCard
                             key={myGroups[key]["id"]}
-                            id={myGroups[key]}
+                            groupObj={myGroups[key]}
                         ></GroupCard>
                     )
                 })
