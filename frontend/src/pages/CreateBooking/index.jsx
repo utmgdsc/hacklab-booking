@@ -20,7 +20,7 @@ import { SubPage } from "../../layouts/SubPage";
 import { ErrorPage } from "../../layouts/ErrorPage";
 
 export const CreateBooking = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const [dateError, setDateError] = useState(false);
   const [detailError, setDetailError] = useState(false);
   const [details, setDetails] = useState("");

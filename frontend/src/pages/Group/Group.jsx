@@ -30,7 +30,7 @@ export const Group = () => {
   const [group, setGroup] = React.useState({});
   const [inviteUtorid, setInviteUtorid] = React.useState('');
   const navigate = useNavigate();
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
 
   const getGroups = () => {
   //   fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {

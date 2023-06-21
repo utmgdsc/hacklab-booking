@@ -53,7 +53,7 @@ function fixedHeaderContent() {
 }
 
 export const Admin = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const [filterApproval, setFilterApproval] = useState(false);
   const [rowsToDisplay, setRowsToDisplay] = useState(null);
   const [rows, setRows] = useState(null);

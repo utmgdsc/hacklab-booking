@@ -23,14 +23,15 @@ import { ErrorBoundary } from "./components";
 import { CssBaseline, ThemeProvider, useMediaQuery, createTheme, PaletteMode } from "@mui/material";
 
 import { GoogleTheme, THEME } from "./theme/theme";
+import axios from "./axios";
 
 function App() {
   let [userInfo, setUserInfo] = useState<FetchedUser>(defaultUser);
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL + "/accounts")
+    axios("/accounts")
       .then((res) => {
-        return res.json();
+        return res.data;
       })
       .then((data) => {
         setUserInfo(data);
@@ -50,7 +51,7 @@ function App() {
 	);
 
   return !userInfo ? null : (
-    <UserContext.Provider value={userInfo}>
+    <UserContext.Provider value={{userInfo, setUserInfo}}>
       <ThemeProvider theme={theme}>
         <ErrorBoundary>
           <CssBaseline enableColorScheme />

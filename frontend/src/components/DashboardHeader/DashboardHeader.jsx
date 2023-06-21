@@ -122,7 +122,7 @@ const RightHeader = ({ userInfo, theme }) => {
  * @returns the header for the dashboard
  */
 export const DashboardHeader = ({ active_requests, pending_requests }) => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const theme = useTheme();
 
   return (

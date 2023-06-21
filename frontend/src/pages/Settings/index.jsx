@@ -17,7 +17,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
 
 export const Settings = () => {
-    const userInfo = useContext(UserContext);
+    const { userInfo } = useContext(UserContext);
 
     return (
         <SubPage name="Settings">

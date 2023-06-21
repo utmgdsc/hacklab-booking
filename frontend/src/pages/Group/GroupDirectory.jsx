@@ -24,7 +24,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { useContext, useEffect, useState } from "react";
 
 export const GroupDirectory = () => {
-    const userInfo = useContext(UserContext);
+    const { userInfo, setUserInfo } = useContext(UserContext);
 
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();

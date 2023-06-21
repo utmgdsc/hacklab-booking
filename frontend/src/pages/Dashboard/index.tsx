@@ -80,7 +80,7 @@ const PendingRequestCards = ({ pending_requests }: { pending_requests: Array<Boo
 )
 
 export const Dashboard = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const [pending_requests, setPendingRequests] = useState<FetchedBookingRequest[]>([]);
   const [my_requests, setMyRequests] = useState<FetchedBookingRequest[]>([]);
   const [editRequestID, setEditRequestID] = useState<string|null>(null);

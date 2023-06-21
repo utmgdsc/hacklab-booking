@@ -50,7 +50,7 @@ const addEndHour = (d) => {
 };
 
 export const AllRequests = () => {
-  const userInfo = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const [requests, setRequests] = useState(null);
 
   // // useEffect hook for fetching the rows
