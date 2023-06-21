@@ -22,18 +22,30 @@ export default {
       data: <User>(await db.user.upsert({
         where: { utorid: user.utorid },
         update: { email: user.email },
+        include: {
+          groups: {
+            include: {
+              members: true,
+            },
+          },
+        },
         create: <User>user,
       })),
     };
   },
   getUser: async (utorid: string, user: User) => {
     const moreInfo = user.role === AccountRole.admin || user.utorid === utorid;
+    const groupsFetching =  moreInfo ? {
+      include: {
+        members: true,
+      },
+    } : false;
     const userFetched = await db.user.findUnique({
       where: { utorid: utorid },
       include: {
-        groups: moreInfo,
-        invited: moreInfo,
-        manager: moreInfo,
+        groups: groupsFetching,
+        invited: groupsFetching,
+        manager: groupsFetching,
         requests: moreInfo,
         roomAccess: moreInfo,
       },
