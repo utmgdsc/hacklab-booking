@@ -19,6 +19,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { InitialsAvatar } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
+import axios from "../../axios";
 
 export const Group = () => {
   const [open, setOpen] = React.useState(false);
@@ -27,12 +28,28 @@ export const Group = () => {
   const { id: groupID } = useParams();
 
   const [people, setPeople] = React.useState([]);
-  const [group, setGroup] = React.useState({});
+  const [group, setGroup] = React.useState<FetchedGroup>({
+    id: "",
+    invited: [],
+    managers: [],
+    members: [],
+    name: "",
+    requests: []
+  });
   const [inviteUtorid, setInviteUtorid] = React.useState('');
   const navigate = useNavigate();
   const { userInfo } = useContext(UserContext);
-
-  const getGroups = () => {
+  const isManager= (user : User | string) : boolean => {
+    const userUtorid = typeof user === 'string' ? user : user.utorid;
+    return !!group.managers.find(x=>x.utorid === userUtorid);
+  }
+  const getGroup = async () => {
+    const { data, status } = await axios.get<FetchedGroup>('/groups/' + groupID);
+    if (status !== 200) {
+      // TODO error handling
+      return;
+    }
+    setGroup(data);
   //   fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
   //     method: 'GET',
   //   }).then(res => {
@@ -47,11 +64,19 @@ export const Group = () => {
   }
 
   useEffect(() => {
-    getGroups();
+    getGroup();
   }, []);
 
-  const addPerson = (utorid) => {
+  const addPerson = async (utorid : string) => {
     console.log('adding', utorid)
+    const {status} = await axios.post(`/groups/${groupID}/invite/`, {
+        utorid
+    });
+    if (status !== 200) {
+        // TODO error handling
+        return;
+    }
+    await getGroup();
     // fetch(process.env.REACT_APP_API_URL + '/groups/invite/', {
     //   method: 'POST',
     //   headers: { "Content-Type": "application/json" },
@@ -67,7 +92,7 @@ export const Group = () => {
     // })
   }
 
-  const removePerson = (utorid) => {
+  const removePerson = (utorid : string) => {
     console.log('deleting', utorid);
     // fetch(process.env.REACT_APP_API_URL + '/groups/remove/', {
     //   method: 'POST',
@@ -86,6 +111,7 @@ export const Group = () => {
 
   const delGroup = () => {
     console.log('deleting', groupID);
+
     // fetch(process.env.REACT_APP_API_URL + '/groups/del/', {
     //   method: 'POST',
     //   headers: { "Content-Type": "application/json" },
@@ -101,8 +127,17 @@ export const Group = () => {
   }
 
 
-  const makeAdmin = (utorid) => {
+  const changeRole = async (utorid: string) => {
     console.log('promoting', utorid);
+    const {status} = await axios.post(`/groups/${groupID}/changerole/`, {
+        utorid,
+        role: isManager(utorid) ? 'member' : 'manager'
+    });
+    if (status !== 200) {
+        // TODO error handling
+        return;
+    }
+    await getGroup();
     // fetch(process.env.REACT_APP_API_URL + '/groups/makeAdmin/', {
     //   method: 'POST',
     //   headers: { "Content-Type": "application/json" },
@@ -179,7 +214,7 @@ export const Group = () => {
 
       {/* list of people in the group */}
       {
-        people.map((person) => (
+        group.members.map((person) => (
           <Card key={person.utorid}>
             <CardContent
               sx={{
@@ -193,24 +228,20 @@ export const Group = () => {
               </Box>
               <Box>
                 <Typography variant="h5">{person.name} <Typography sx={{ color: "grey", display: "inline" }}>({person.utorid})</Typography></Typography>
-                {person.admin ? <Typography color="success">Group manager</Typography> : null}
+                {isManager(person) ? <Typography color="success">Group manager</Typography> : null}
                 <Typography variant="body1">{person.email}</Typography>
               </Box>
             </CardContent>
-            {person.admin && userInfo.utorid === person.utorid ? null : (
-
+            {userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
               <CardActions>
-                {
-                  person.admin ? null : (
-                    <Button
+
+                  <Button
                       onClick={() => {
-                        makeAdmin(person.utorid);
+                          changeRole(person.utorid);
                       }}
-                    >
-                      Make Admin
-                    </Button>
-                  )
-                }
+                  >
+                      {isManager(person) ? 'Demote to Member'  : 'Make Admin'}
+                  </Button>
 
                 <Button
                   color="error"
