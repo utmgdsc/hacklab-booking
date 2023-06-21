@@ -12,7 +12,7 @@ export default {
     if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(user.email)) {
       return { status: 400, message: 'Invalid email.' };
     }
-    if (!/^[a-z|0-9]{8}$/.test(user.utorid)) {
+    if (!/^[a-z|0-9]{1,8}$/.test(user.utorid)) {
       return { status: 400, message: 'Invalid utorid.' };
     }
 
@@ -96,4 +96,3 @@ export default {
     return { status: 200, data: {} };
   },
 } satisfies Model;
-
