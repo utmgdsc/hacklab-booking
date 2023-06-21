@@ -107,4 +107,7 @@ export default {
     });
     return { status: 200, data: {} };
   },
+  getApprovers: async ()=>{
+    return { status: 200, data: await db.user.findMany({ where: { role: { in: [AccountRole.approver, AccountRole.admin] } } }) };
+  },
 } satisfies Model;

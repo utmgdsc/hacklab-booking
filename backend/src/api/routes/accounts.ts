@@ -24,4 +24,8 @@ router.put('/:utorid/changerole', permissionMiddleware(PermissionLevel.admin), c
   sendResponse(res, await accountsModel.changeRole(req.params.utorid, req.body.role));
 });
 
+router.get('approvers', async (req, res) => {
+  sendResponse(res, await accountsModel.getApprovers());
+});
+
 export default router;
