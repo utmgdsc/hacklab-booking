@@ -91,7 +91,7 @@ export const Dashboard = () => {
       setMyRequests(data.filter(x=>x.authorUtorid === userInfo.utorid && userInfo.groups.find(y=>y.id === x.groupId)))
       setPendingRequests(data);
     })
-  }, []);
+  }, [userInfo.groups, userInfo.utorid]);
 
   const editThisRequest = (reqID: string) => {
     // console.log(reqID, "edit this request");
