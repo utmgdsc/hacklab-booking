@@ -18,10 +18,13 @@ import {
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { ErrorPage } from "../../layouts/ErrorPage";
+import axios from "../../axios";
 
 export const CreateBooking = () => {
   const { userInfo } = useContext(UserContext);
   const [dateError, setDateError] = useState<string | boolean>(false);
+  const [room, setRoom] = useState<string>("");
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [detailError, setDetailError] = useState(false);
   const [details, setDetails] = useState("");
   const [group, setGroup] = useState<string>("");
@@ -35,6 +38,11 @@ export const CreateBooking = () => {
   useEffect(()=>{
     setUserGroups(userInfo.groups);
   }, [userInfo.groups])
+    useEffect(() => {
+      axios.get<Room[]>("/rooms").then((res) => {
+        setRooms(res.data);
+      });
+    },[]);
   // useEffect(() => {
   //   fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
   //     .then((res) => {
@@ -45,7 +53,7 @@ export const CreateBooking = () => {
   //     });
   // }, []);
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     let finish = true;
 
     if (details === "") {
@@ -76,17 +84,25 @@ export const CreateBooking = () => {
 
     // compile into json object
     const booking = {
+      roomName: room,
       owner: userInfo["utorid"],
-      group: group,
-      details: details,
+      groupId: group,
+      description: details,
       title: details,
-      startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1],
+      startDate: scheduleDates[0],
+      endDate: scheduleDates[scheduleDates.length - 1],
       approvers: approvers,
     };
 
     console.log(booking);
     console.log(group);
+
+    const {status, data} = await axios.post("/requests/create", booking);
+    if (status === 200) {
+        setSubmitted(true);
+        return;
+    }
+    // todo error handling
 
     // // submit to API
     // fetch(process.env.REACT_APP_API_URL + "/requests/submit", {
@@ -95,7 +111,7 @@ export const CreateBooking = () => {
     //   body: JSON.stringify(booking),
     // });
 
-    setSubmitted(true);
+
   };
 
   const handleScheduleDate = (dates: string[]) => {
@@ -167,7 +183,6 @@ export const CreateBooking = () => {
     );
   }
 
-  // @ts-ignore
   return (
     <SubPage name="Create a booking">
       <Box
@@ -197,14 +212,12 @@ export const CreateBooking = () => {
                 fullWidth
                 label="Group"
                 onChange={(e) => {
-                  setGroup(
-                    typeof e.target.value === "string" ? "" : e.target.value
-                  );
+                  setGroup(e.target.value);
                 }}
               >
                 {userGroups.map((group) => {
                   return (
-                    <MenuItem value={group} key={group}>
+                    <MenuItem value={group.id} key={group.id}>
                       {group.name}
                     </MenuItem>
                   );
@@ -213,8 +226,40 @@ export const CreateBooking = () => {
             </FormControl>
           </Box>
         )}
-
         {group && (
+          <Box
+            sx={{
+              marginBottom: "4em",
+              width: "100%",
+            }}
+          >
+            <Divider>Select the room to book</Divider>
+
+            <FormControl fullWidth sx={{ marginTop: "1em" }}>
+              <InputLabel id="room-label">Room</InputLabel>
+              <Select
+                labelId="room-label"
+                id="room-select"
+                value={room}
+                fullWidth
+                label="Room"
+                onChange={(e) => {
+                  setRoom(e.target.value);
+                }}
+              >
+                {rooms.map((room) => {
+                  return (
+                    <MenuItem value={room.roomName} key={room.roomName}>
+                      {room.roomName} - {room.friendlyName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Box>
+        )}
+
+        {group && room && (
           <Box
             sx={{
               marginBottom: "4em",
@@ -283,6 +328,7 @@ export const CreateBooking = () => {
               handleScheduleDate={handleScheduleDate}
               scheduleDates={scheduleDates}
               setScheduleDates={setScheduleDates}
+              room={room}
             />
 
             {dateError && (

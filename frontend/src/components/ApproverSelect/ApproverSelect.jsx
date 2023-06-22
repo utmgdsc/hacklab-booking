@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 import { Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
+import axios from "../../axios";
 
 export const ApproverSelect = ({ setApprovers }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState([]);
   const [approvers, setApproversBackend] = useState([]);
-
+  useEffect(() => {
+      axios.get('/accounts/approvers').then(({data}) => {
+            setApproversBackend(data);
+      });
+  }, []);
   // useEffect(() => {
   //   fetch(process.env.REACT_APP_API_URL + "/requests/approvers", {
   //     method: "GET",

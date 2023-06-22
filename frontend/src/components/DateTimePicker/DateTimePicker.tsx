@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { CustomScheduleSelector } from './CustomScheduleSelector';
 import { PrevNextWeek } from './PrevNextWeek';
 import { GetMonday } from '../GetMonday/GetMonday';
+import axios from "../../axios";
 
 /**
  * A Google Calendar and When2meet style date and time picker
@@ -15,7 +16,7 @@ import { GetMonday } from '../GetMonday/GetMonday';
  * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
-export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates }: {handleScheduleDate : (dates: string[]) => void, scheduleDates: string[], setScheduleDates: (dates: string[]) => void }) => {
+export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates,room }: {room: string, handleScheduleDate : (dates: string[]) => void, scheduleDates: string[], setScheduleDates: (dates: string[]) => void }) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
 
@@ -31,6 +32,17 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
         const startMonday = GetMonday(startDate);
         const endDate = dayjs(startMonday).add(5, "day").toDate();
 
+        const {data} = await axios.get<string[][]>(`/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`);
+        const blocked: Date[] = []
+        data.forEach((range) => {
+            const start = dayjs(range[0]).startOf("hour");
+            const end = dayjs(range[1]).endOf("hour");
+            while (start.isBefore(end)) {
+                blocked.push(start.toDate());
+                start.add(1, "hour");
+            }
+        })
+        setBlockedDates(blocked);
         // await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString()  + "/" + reqID)
         //     .then((res) => {
         //         return res.json();
@@ -48,7 +60,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
 
     useEffect(() => {
         handleBlockedDates(calendarDate.toDate());
-    }, [calendarDate]);
+    }, [calendarDate, room]);
 
     return (
         <>
