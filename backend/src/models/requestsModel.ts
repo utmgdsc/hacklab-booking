@@ -37,6 +37,7 @@ const validateRequest = async (request: CreateRequest): Promise<ModelResponseErr
       startDate: { lte: startDate },
       endDate: { gte: endDate },
       roomName: request.roomName,
+      status: { notIn: [RequestStatus.denied, RequestStatus.cancelled, RequestStatus.pending] },
     },
   }))) {
     return {

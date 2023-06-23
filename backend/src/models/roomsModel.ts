@@ -64,6 +64,7 @@ export default {
           where: {
             startDate: { gte: startDate },
             endDate: { lte: endDate },
+            status: { notIn: [RequestStatus.denied, RequestStatus.cancelled] },
           },
         },
       },
@@ -71,7 +72,7 @@ export default {
     if (!room) {
       return { status: 404, message: 'Room not found' };
     }
-    return { status: 200, data: room.requests.map(x=>[x.startDate, x.endDate]) };
+    return { status: 200, data: room.requests.map(x=>({ status: x.status, bookedRange:[x.startDate, x.endDate] })) };
   },
   grantAccess: async (roomName: string, utorid: string) => {
     try {
