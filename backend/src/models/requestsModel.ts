@@ -256,6 +256,26 @@ export default {
         status: status,
       },
     });
+    const { startDate, endDate, roomName } = request;
+    await db.request.updateMany({
+      where: {
+        OR:[
+          { startDate: { lte: startDate },
+            endDate: { gte: endDate } },
+          {
+            startDate:{ gte: startDate, lte: endDate },
+          },
+          {
+            endDate:{ gte: startDate, lte: endDate },
+          },
+        ],
+        roomName: roomName,
+        status: RequestStatus.pending,
+      },
+      data: {
+        status: RequestStatus.denied,
+      },
+    });
     return { status: 200, data: {} };
   },
   updateRequest: async (request: CreateRequest & { id: string }, user: User) => {
