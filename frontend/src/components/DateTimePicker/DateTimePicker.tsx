@@ -35,11 +35,11 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
         const {data} = await axios.get<string[][]>(`/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`);
         const blocked: Date[] = []
         data.forEach((range) => {
-            const start = dayjs(range[0]).startOf("hour");
+            let start = dayjs(range[0]).startOf("hour");
             const end = dayjs(range[1]).endOf("hour");
             while (start.isBefore(end)) {
                 blocked.push(start.toDate());
-                start.add(1, "hour");
+                start = start.add(1, "hour");
             }
         })
         setBlockedDates(blocked);
