@@ -32,10 +32,19 @@ const validateRequest = async (request: CreateRequest): Promise<ModelResponseErr
       message: 'Start date cannot be before today.',
     };
   }
+
   if ((await db.request.findFirst({
     where: {
-      startDate: { lte: startDate },
-      endDate: { gte: endDate },
+      OR:[
+        { startDate: { lte: startDate },
+          endDate: { gte: endDate } },
+        {
+          startDate:{ gte: startDate, lte: endDate },
+        },
+        {
+          endDate:{ gte: startDate, lte: endDate },
+        },
+      ],
       roomName: request.roomName,
       status: { notIn: [RequestStatus.denied, RequestStatus.cancelled, RequestStatus.pending] },
     },
