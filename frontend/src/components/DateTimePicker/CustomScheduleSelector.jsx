@@ -71,11 +71,12 @@ const RenderTimeLabel = (time) => {
  * @param {Date} calendarDate the current date of the week to show
  * @returns a when2meet-like schedule selector
  */
-export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, calendarDate, blockedDates }) => {
+export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, calendarDate, blockedDates, pendingDates }) => {
     const theme = useTheme();
 
     const customDateCellRenderer = (date, selected, refSetter) => {
         const blocked = (blockedDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
+        const pending = (pendingDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
         const inPast = (date.getTime() < new Date().getTime());
         var backgroundColor;
 
@@ -83,6 +84,8 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
             backgroundColor = theme.palette.error.main + " !important";
         } else if (selected) {
             backgroundColor = theme.palette.action.active + " !important";
+        } else if (pending){
+            backgroundColor = theme.palette.warning.main + " !important";
         } else if (inPast) {
             backgroundColor = theme.palette.action.disabled;
         } else {

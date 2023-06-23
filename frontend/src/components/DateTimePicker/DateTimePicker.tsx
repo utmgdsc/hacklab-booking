@@ -19,6 +19,7 @@ import axios from "../../axios";
 export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates,room }: {room: string, handleScheduleDate : (dates: string[]) => void, scheduleDates: string[], setScheduleDates: (dates: string[]) => void }) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
+    const [pendingDates, setPendingDates] = useState([]);
 
     /**
      * sets BlockedDates to the dates that are blocked for the week of startDate.
@@ -28,21 +29,24 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
      * @param {date} startDate the start date of the week to get blocked dates for
      */
     const handleBlockedDates = async (startDate:Date) => {
-        // the end date is 5 days after the start date
-        const startMonday = GetMonday(startDate);
-        const endDate = dayjs(startMonday).add(5, "day").toDate();
+        // the end date is 7 days after the start date
+        const startMonday = dayjs(startDate).startOf("week");
+        const endDate = dayjs(startMonday).add(7, "day").toDate();
 
-        const {data} = await axios.get<string[][]>(`/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`);
+        const {data} = await axios.get<{bookedRange:string[],status: BookingStatus }[]>(`/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`);
         const blocked: Date[] = []
-        data.forEach((range) => {
+        const pending: Date[] = []
+        data.forEach((booking) => {
+            const {bookedRange: range, status} = booking;
             let start = dayjs(range[0]).startOf("hour");
             const end = dayjs(range[1]).endOf("hour");
             while (start.isBefore(end)) {
-                blocked.push(start.toDate());
+                (status === "pending" ? pending : blocked).push(start.toDate());
                 start = start.add(1, "hour");
             }
         })
         setBlockedDates(blocked);
+        setPendingDates(pending);
         // await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString()  + "/" + reqID)
         //     .then((res) => {
         //         return res.json();
@@ -87,7 +91,8 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
                         scheduleDates,
                         handleScheduleDate,
                         calendarDate,
-                        blockedDates
+                        blockedDates,
+                        pendingDates
                     }}
                 />
             </Box>
