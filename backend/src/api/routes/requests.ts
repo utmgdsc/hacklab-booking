@@ -32,11 +32,16 @@ router.delete('/:id', async (req, res) => {
   sendResponse(res, await requestsModel.setRequestStatus(req.params.id, req.user, RequestStatus.cancelled));
 });
 router.put('/:id/approve', permissionMiddleware(PermissionLevel.approver), async (req, res) => {
-  sendResponse(res, await requestsModel.approveRequest(req.params.id));
+  sendResponse(res, await requestsModel.approveRequest(req.params.id, req.body.reason));
 });
 router.put('/:id/deny', permissionMiddleware(PermissionLevel.approver), async (req, res) => {
-  sendResponse(res, await requestsModel.setRequestStatus(req.params.id, req.user, RequestStatus.denied));
+  sendResponse(res, await requestsModel.setRequestStatus(req.params.id, req.user, RequestStatus.denied, req.body.reason));
 });
+
+router.put('/:id/cancel', permissionMiddleware(PermissionLevel.approver), async (req, res) => {
+  sendResponse(res, await requestsModel.setRequestStatus(req.params.id, req.user, RequestStatus.cancelled));
+});
+
 router.put('/:id', async (req, res) => {
   sendResponse(res, await requestsModel.updateRequest({
     id: req.params.id,

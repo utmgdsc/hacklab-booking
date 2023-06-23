@@ -189,7 +189,7 @@ export default {
     }
     return { status: 200, data: request };
   },
-  setRequestStatus: async (id: string, user: User, status: RequestStatus) => {
+  setRequestStatus: async (id: string, user: User, status: RequestStatus, reason?: string) => {
     if (!Object.keys(RequestStatus).includes(status)) {
       return { status: 400, message: 'Invalid status.' };
     }
@@ -217,11 +217,11 @@ export default {
     }
     await db.request.update({
       where: { id },
-      data: { status: status },
+      data: { status: status, reason },
     });
     return { status: 200, data: {} };
   },
-  approveRequest: async (id: string) => {
+  approveRequest: async (id: string, reason?: string) => {
     const request = await db.request.findUnique({
       where: { id },
       include: {
@@ -239,9 +239,10 @@ export default {
     if (request.room.userAccess.some((user) => user.utorid === request.author.utorid)) {
       status = RequestStatus.completed;
     }
-    db.request.update({
+    await db.request.update({
       where: { id },
       data: {
+        reason,
         status: status,
       },
     });
