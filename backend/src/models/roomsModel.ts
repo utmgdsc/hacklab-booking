@@ -1,6 +1,6 @@
 import Model from '../types/Model';
 import db from '../common/db';
-import { AccountRole, User } from '@prisma/client';
+import { AccountRole, RequestStatus, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export default {
@@ -76,6 +76,7 @@ export default {
   grantAccess: async (roomName: string, utorid: string) => {
     try {
       await db.room.update({ where: { roomName }, data:{ userAccess: { connect: { utorid } } } });
+      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.needTCard }, data:{ status: RequestStatus.completed } });
       return { status: 200, data:{} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
@@ -87,6 +88,7 @@ export default {
   revokeAccess: async (roomName: string, utorid: string) => {
     try {
       await db.room.update({ where: { roomName }, data:{ userAccess: { disconnect: { utorid } } } });
+      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.completed }, data:{ status: RequestStatus.needTCard } });
       return { status: 200, data:{} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
