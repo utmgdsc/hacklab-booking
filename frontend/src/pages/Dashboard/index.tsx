@@ -61,9 +61,10 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
 /**
  * all pending requests cards given a list of pending requests
  * @param {*} pending_requests a list of requests received from the backend
+ * @param {*} onUpdate a function that will be called when a user wants to change a request
  * @returns all pending requests cards
  */
-const PendingRequestCards = ({ pending_requests }: { pending_requests: Array<BookingRequest> }) => (
+const PendingRequestCards = ({ pending_requests, onUpdate }: { pending_requests: FetchedBookingRequest[], onUpdate: () => void }) => (
   <>
     <Typography variant="h2" gutterBottom>Your Pending Requests</Typography>
     {pending_requests.length === 0 && (
@@ -72,8 +73,8 @@ const PendingRequestCards = ({ pending_requests }: { pending_requests: Array<Boo
       />
     )}
     {
-      pending_requests.map((request: BookingRequest) => {
-        return <PendingRequestCard booking={request} />
+      pending_requests.map((request) => {
+        return <PendingRequestCard key={request.id} booking={request} onUpdate={onUpdate} />
       })
     }
   </>
@@ -87,11 +88,8 @@ export const Dashboard = () => {
   const [openEditRequest, setOpenEditRequest] = useState(false);
 
   useEffect(() => {
-    axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
-      setMyRequests(data.filter(x=>x.authorUtorid === userInfo.utorid && userInfo.groups.find(y=>y.id === x.groupId)))
-      setPendingRequests(data);
-    })
-  }, [userInfo.groups, userInfo.utorid]);
+    update();
+  }, [userInfo.groups, userInfo.utorid, userInfo.role]);
 
   const editThisRequest = (reqID: string) => {
     // console.log(reqID, "edit this request");
@@ -112,7 +110,12 @@ export const Dashboard = () => {
       my_requests.filter((request) => request.id !== reqID)
     );
   };
-
+  const update = () => {
+        axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
+      setMyRequests(data.filter(x=>x.authorUtorid === userInfo.utorid && userInfo.groups.find(y=>y.id === x.groupId)))
+      setPendingRequests(data.filter(x=>x.status === "pending" || (x.status === "needTCard" && ["admin", "tcard"].includes(userInfo.role))));
+    })
+  }
   const theme = useTheme();
 
   const homeButtons = [
@@ -180,7 +183,7 @@ export const Dashboard = () => {
       )}
 
       {(userInfo["role"] === "admin" || userInfo["role"] === "approver") && (
-        <PendingRequestCards pending_requests={pending_requests} />
+        <PendingRequestCards onUpdate={update} pending_requests={pending_requests} />
       )}
 
       <ActiveRequestCards

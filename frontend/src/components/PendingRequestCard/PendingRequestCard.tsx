@@ -21,19 +21,31 @@ import { instance } from "../../axios";
 
 interface PendingRequestCardProps {
     /** the request to display as a pending request card */
-    booking: BookingRequest;
+    booking: FetchedBookingRequest;
+    /** a function that will be called when a user wants to edit a request */
+    onUpdate: () => void;
 }
 
 /**
  * A card that displays a pending request
- * @param {BookingRequest} booking the request to display as a pending request card
+ * @param {FetchedBookingRequest} booking the request to display as a pending request card
+ * @param {Function} onUpdate a function that will be called when a user wants to edit a request
  */
 // export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, date, end, description, reqID }) => {
-export const PendingRequestCard = ({ booking }: PendingRequestCardProps) => {
+export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const handleClickOpen = () => { setOpen(true); };
+    const handleClickOpen = async () => {
+        if (approved && booking.status === "needTCard") {
+            const res = await instance.put('/rooms/' + booking.roomName + '/grantaccess', {utorid: booking.authorUtorid})
+            if (res.status === 200) {
+                onUpdate();
+            }
+            return;
+        }
+        setOpen(true);
+    };
     const handleClose = () => { setOpen(false); };
     const [reason, setReason] = useState<string>("");
 
@@ -45,18 +57,18 @@ export const PendingRequestCard = ({ booking }: PendingRequestCardProps) => {
 
     const [approved, setApproved] = useState(false);
 
-    const handleChangeStatus = (reason: string, status: string) => {
-        instance.post("/requests/changeStatus/" + booking.id, {
-            status: status,
+    const handleChangeStatus = (reason: string, status: 'approve' | 'deny') => {
+        instance.put(`/requests/${booking.id}/${status}`, {
             reason: reason
         })
             .then(res => {
-                console.log(res);
+                if(res.status === 200){
+                    onUpdate();
+                }
             })
             .catch(err => {
                 console.log(err);
             });
-        window.location.reload();
         console.log(status + " request with reason " + reason);
     }
 
@@ -69,7 +81,7 @@ export const PendingRequestCard = ({ booking }: PendingRequestCardProps) => {
                     }}
                 >
                     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                        Request from {booking.authorUtorid} as a part of {booking.groupId}
+                        Request from {booking.authorUtorid} as a part of {booking.group.name}
                     </Typography>
                     <Typography variant="h5" component="div" fontWeight={600} gutterBottom>
                         {booking.title}
@@ -88,7 +100,7 @@ export const PendingRequestCard = ({ booking }: PendingRequestCardProps) => {
                         startIcon={<DoneIcon />}
                         onClick={() => { setApproved(true); handleClickOpen(); }}
                     >
-                        Approve
+                        {booking.status === "needTCard" ? 'Give room access' : 'Approve'}
                     </Button>
                     <Button
                         sx={{ px: "1em" }}
@@ -142,9 +154,9 @@ export const PendingRequestCard = ({ booking }: PendingRequestCardProps) => {
                         onClick={() => {
                             handleClose();
                             if (approved) {
-                                handleChangeStatus(reason, "approval");
+                                handleChangeStatus(reason, "approve");
                             } else {
-                                handleChangeStatus(reason, "denied");
+                                handleChangeStatus(reason, "deny");
                             }
                         }}
                         variant="contained"
