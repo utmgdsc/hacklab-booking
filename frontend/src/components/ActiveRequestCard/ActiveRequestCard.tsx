@@ -51,6 +51,7 @@ export const ActiveRequestCard = ({booking, edit, cancel, viewOnly = false, owne
     label: string;
     description: string;
     error?: boolean;
+    completed?: boolean;
   }
 
   const steps: RequestStep[] = [{
@@ -62,16 +63,7 @@ export const ActiveRequestCard = ({booking, edit, cancel, viewOnly = false, owne
       id:"needTCard",
       label: "Need TCard",
       description: "Your request has been approved, but you need a TCard to access the room",
-    },
-    {
-      id:"cancelled",
-      label: "Cancelled",
-      description: "Your request has been cancelled",
-    },
-    {
-      id:"denied",
-      label: "Denied",
-      description: "Your request has been denied",
+      completed: ownerHasTCard
     },
     {
       id:"completed",
@@ -175,7 +167,7 @@ export const ActiveRequestCard = ({booking, edit, cancel, viewOnly = false, owne
           )}
         </Box>
 
-        <Stepper activeStep={steps.findIndex(x=>x.id===booking.status)} orientation="vertical">
+        <Stepper activeStep={booking.status === "completed" ? steps.length : steps.findIndex(x=>x.id===booking.status)} orientation="vertical">
           {
             steps.map((v, i) =>
               (<Step key={i}>
@@ -187,6 +179,14 @@ export const ActiveRequestCard = ({booking, edit, cancel, viewOnly = false, owne
             ))
           }
         </Stepper>
+        {booking.status === "completed" ?
+            (<Step>
+                  <StepContent>
+                    <Typography>{steps[steps.length - 1].description}</Typography>
+                  </StepContent>
+                </Step>
+            )
+            : ''}
       </CardContent>
     </Card>
   );
