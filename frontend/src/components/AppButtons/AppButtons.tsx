@@ -1,11 +1,6 @@
-import {
-    LabelledIconButton,
-    Link
-} from "..";
-
-import {
-    Tooltip,
-} from "@mui/material";
+import { LabelledIconButton } from "..";
+import { Link } from "react-router-dom";
+import { Tooltip } from "@mui/material";
 
 /**
  * An object that contains the information needed to render a
@@ -42,7 +37,7 @@ export const AppButtons = ({ ButtonsToRender }: AppButtonsProps): JSX.Element =>
     <>
         {ButtonsToRender.map((button: AppButton) => button.hidden ? null : (
             <Tooltip title={button.title} arrow placement="top" key={button.href}>
-                <Link href={button.href} isInternalLink>
+                <Link to={button.href}>
                     <LabelledIconButton
                         icon={button.icon}
                         color={button.color}

@@ -15,9 +15,10 @@ import { InitialsAvatar } from "../../components";
 import { THEME } from "../../theme/theme";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
+import { instance } from "../../axios"
 
 export const Settings = () => {
-    const { userInfo } = useContext(UserContext);
+    const { userInfo, fetchUserInfo } = useContext(UserContext);
 
     return (
         <SubPage name="Settings">
@@ -71,21 +72,14 @@ export const Settings = () => {
                         aria-labelledby="appearance-radio-label"
                         name="appearance-radio"
                         onChange={(e) =>
-                            fetch(process.env.REACT_APP_API_URL + "/accounts/changetheme", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                },
-                                body: JSON.stringify({
-                                    theme: e.target.value,
-                                }),
+                            instance.post("/accounts/changetheme", {
+                                theme: e.target.value,
                             })
                                 .then(() => {
-                                    // reload the page
-                                    window.location.reload();
+                                    fetchUserInfo();
                                 })
                         }
-                        value={userInfo["theme"] ?? null}
+                        value={userInfo.theme}
                     >
                         <FormControlLabel value={THEME.DEFAULT} control={<Radio />} label="System Default" />
                         <FormControlLabel value={THEME.LIGHT} control={<Radio />} label="Light" />
