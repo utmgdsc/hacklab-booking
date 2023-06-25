@@ -6,7 +6,7 @@ import { Link } from "../Link/Link";
 
 /**
  * A component that will only render its children if the user has the specified role
- * @param {UserRoles} props.role the role that the user must have to render the children
+ * @param {UserRoles[]} props.role the list role(s) that the user must have one of to render the children
  * @param {React.ReactNode} props.children the children to protect with the role
  * @returns {React.ReactNode} the children if the user has the role, otherwise a 404 page
  */
@@ -19,9 +19,9 @@ export const RequireRole = (props: { role: UserRoles[], children: React.ReactNod
             name="Sawwy >~<"
             message={
                 <Typography>
-                    Gomennasai, onii-chan, deno wa anata wa kono peeji o miru koto ga dekimasen. Onegai shimasu{" "}
-                    <Link isInternalLink href="/">
-                        return to the dashboard
+                    konna ooki na diamondo mita koto naideshou? ageru neeeeeeeeeeee -{" "}
+                    <Link internal href="/">
+                        Time to twirl to the dashboard
                     </Link>
                     .
                 </Typography>
