@@ -13,7 +13,7 @@ import SadMascotDark from "../assets/img/sad-mascot_dark.png";
 const DefaultCTA: React.FC = () => (
     <Typography>
       Please{' '}
-      <Link isInternalLink href="/group">
+      <Link internal href="/group">
         {' '}
         create a group{' '}
       </Link>{' '}

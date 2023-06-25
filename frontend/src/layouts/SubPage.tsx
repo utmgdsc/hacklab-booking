@@ -7,8 +7,7 @@ import {
     Breakpoint
 } from "@mui/material";
 import { ArrowBackIos } from '@mui/icons-material';
-import { ErrorBoundary } from "../components";
-import { Link } from "react-router-dom";
+import { ErrorBoundary, Link } from "../components";
 import { UserContext } from "../contexts/UserContext";
 
 interface SubPageProps {
@@ -38,7 +37,7 @@ export const SubPage: React.FC<SubPageProps> = ({ name, children, maxWidth = "md
                     xl: "2em",
                 },
             }}>
-                <Link to="../">
+                <Link href="../" internal>
                     <Button onClick={() => fetchUserInfo()}>
                         <ArrowBackIos /> Back
                     </Button>

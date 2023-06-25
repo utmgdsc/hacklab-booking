@@ -9,7 +9,7 @@ export const NotFound = () => {
       message={
         <Typography>
           The page you are looking for does not exist. Please{" "}
-          <Link isInternalLink href="/">
+          <Link internal href="/">
             return to the dashboard
           </Link>
           .

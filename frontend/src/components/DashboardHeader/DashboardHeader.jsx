@@ -101,6 +101,7 @@ const RightHeader = ({ userInfo, theme }) => {
         <Link
           href="https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/"
           sx={{ textDecoration: "none", color: theme.palette.text.primary }}
+          openInNewTab={false}
         >
           <MenuItem
             onClick={() => {

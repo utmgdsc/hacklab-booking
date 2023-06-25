@@ -16,13 +16,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import {
   AppButtons,
-  Link,
   VirtuosoTableComponents,
   RoleChanger,
 } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
-import { ErrorPage } from "../../layouts/ErrorPage";
 
 const columns = [
   { label: "UTORid", dataKey: "utorid" },
