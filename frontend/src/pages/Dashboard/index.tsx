@@ -161,18 +161,7 @@ export const Dashboard = () => {
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <DashboardHeader active_requests={my_requests} pending_requests={pending_requests} />
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          marginTop: "2em",
-          marginBottom: "2em",
-          flexWrap: "no-wrap",
-          overflowX: "auto",
-        }}
-      >
-        <AppButtons ButtonsToRender={homeButtons} />
-      </Box>
+      <AppButtons ButtonsToRender={homeButtons} />
 
       {openEditRequest && (
         <EditBooking

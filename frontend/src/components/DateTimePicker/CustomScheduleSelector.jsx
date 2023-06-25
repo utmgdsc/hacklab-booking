@@ -84,7 +84,7 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
             backgroundColor = theme.palette.error.main + " !important";
         } else if (selected) {
             backgroundColor = theme.palette.action.active + " !important";
-        } else if (pending){
+        } else if (pending) {
             backgroundColor = theme.palette.warning.main + " !important";
         } else if (inPast) {
             backgroundColor = theme.palette.action.disabled;

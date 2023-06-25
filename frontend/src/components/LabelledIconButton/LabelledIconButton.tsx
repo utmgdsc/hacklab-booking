@@ -16,30 +16,32 @@ export const LabelledIconButton = ({ icon, label, color, ...props }: LabelledIco
     const theme: Theme = useTheme();
 
     return (
-        <ButtonBase
-            aria-label={label}
-            sx={{
-                color: "white",
-                borderRadius: "25%",
-                margin: "0.5em",
-                background: color, // TODO: make this a theme color
-                width: "7em",
-                height: "7em",
-                marginBottom: "2em",
-            }}
-            {...props}
-        >
-            {icon}
+        <>
+            <ButtonBase
+                aria-label={label}
+                sx={{
+                    color: "white",
+                    borderRadius: "25%",
+                    margin: "0.5em",
+                    background: color,
+                    width: "7em",
+                    height: "7em",
+                }}
+                {...props}
+            >
+                {icon}
+            </ButtonBase >
             <Typography
                 sx={{
                     color: theme.palette.text.primary,
                     display: "block",
-                    position: "absolute",
-                    top: "6em",
+                    overflowWrap: "anywhere",
+                    textAlign: "center",
+                    width: "6.5em",
                 }}
             >
-                {label}
+                    {label}
             </Typography>
-        </ButtonBase >
+        </>
     );
 }

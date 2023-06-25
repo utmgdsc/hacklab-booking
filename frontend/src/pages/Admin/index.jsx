@@ -69,6 +69,13 @@ export const Admin = () => {
       label: "All Requests",
       color: theme.palette.app_colors.red,
     },
+    {
+      title: "View a list of all booking requests",
+      href: "/admin/all-requests",
+      icon: <InventoryIcon />,
+      label: "Manage Rooms",
+      color: theme.palette.app_colors.green,
+    },
   ];
 
   // // useEffect hook for fetching the rows
@@ -126,20 +133,9 @@ export const Admin = () => {
 
   return (
     <SubPage name="Admin" maxWidth="xl">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "left",
-          alignItems: "center",
-          marginTop: "2em",
-          marginBottom: "2em",
-          flexWrap: "no-wrap",
-          overflowX: "auto",
-        }}
-      >
-        <AppButtons ButtonsToRender={adminAppButtons} />
-      </Box>
+
+      <AppButtons ButtonsToRender={adminAppButtons} />
+
       <Box
         sx={{
           display: "flex",
@@ -198,8 +194,8 @@ export const Admin = () => {
                           // send post request to api to grant access
                           fetch(
                             process.env.REACT_APP_API_URL +
-                              "/accounts/modifyAccess/" +
-                              row["utorid"],
+                            "/accounts/modifyAccess/" +
+                            row["utorid"],
                             {
                               method: "POST",
                               headers: {
