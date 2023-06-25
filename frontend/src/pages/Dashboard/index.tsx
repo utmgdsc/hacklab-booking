@@ -99,6 +99,8 @@ export const Dashboard = () => {
 
   const cancelThisRequest = (reqID: string) => {
     // console.log(reqID, "cancel this request");
+      // TODO INTEGRATE
+
     // // TODO: if request is completed, remove from calendar events
     // fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
     //   method: "POST",

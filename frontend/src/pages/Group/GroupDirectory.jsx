@@ -53,6 +53,8 @@ export const GroupDirectory = () => {
         setMyGroups(myGroups => ({...myGroups, [data.id]: data}));
         userInfo.groups.push(data)
         setUserInfo(userInfo);
+          // TODO INTEGRATE
+
         // fetch(process.env.REACT_APP_API_URL + '/groups/create', {
         //     method: 'POST',
         //     headers: {
@@ -74,6 +76,7 @@ export const GroupDirectory = () => {
     }
 
 
+  // TODO INTEGRATE
 
     // useEffect(() => {
     //     fetch(process.env.REACT_APP_API_URL + '/groups/myGroups')

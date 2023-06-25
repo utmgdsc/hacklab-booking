@@ -43,6 +43,8 @@ export const CreateBooking = () => {
         setRooms(res.data);
       });
     },[]);
+      // TODO INTEGRATE
+
   // useEffect(() => {
   //   fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
   //     .then((res) => {
@@ -135,32 +137,34 @@ export const CreateBooking = () => {
       // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
       currDate = d.getDate();
     }
-    if (dates.length > 0) {
-      fetch(
-        process.env.REACT_APP_API_URL +
-          "/requests/checkDate/" +
-          dates[0] +
-          "/" +
-          dates[dates.length - 1] +
-          "/null",
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      ).then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          setValidDate(true);
-          setDateError("");
-        } else if (res.status === 400) {
-          setValidDate(false);
-          setDateError(
-            "this time overlaps with another booking, please choose a different time and/or date"
-          );
-          setScheduleDates([]);
-        }
-      });
-    } else setValidDate(false);
+
+    setValidDate(true);
+    // if (dates.length > 0) {
+    //   fetch(
+    //     process.env.REACT_APP_API_URL +
+    //       "/requests/checkDate/" +
+    //       dates[0] +
+    //       "/" +
+    //       dates[dates.length - 1] +
+    //       "/null",
+    //     {
+    //       method: "GET",
+    //       headers: { "Content-Type": "application/json" },
+    //     }
+    //   ).then((res) => {
+    //     console.log(res);
+    //     if (res.status === 200) {
+    //       setValidDate(true);
+    //       setDateError("");
+    //     } else if (res.status === 400) {
+    //       setValidDate(false);
+    //       setDateError(
+    //         "this time overlaps with another booking, please choose a different time and/or date"
+    //       );
+    //       setScheduleDates([]);
+    //     }
+    //   });
+    // } else setValidDate(false);
 
     const newDates = dates.map((date) => {
       return date;

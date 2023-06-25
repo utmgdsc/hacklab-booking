@@ -63,7 +63,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
   const [userGroups, setUserGroups] = useState([]);
-
+  // TODO INTEGRATE
   // useEffect(() => {
   //   fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
   //     .then((res) => {
@@ -75,7 +75,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
   // }, []);
 
   const [reqInfo, setReqInfo] = useState({});
-
+  // TODO INTEGRATE
   // useEffect(() => {
   //   fetch(process.env.REACT_APP_API_URL + "/requests/getRequest/" + reqID)
   //     .then((res) => {
@@ -150,7 +150,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       endTime: scheduleDates[scheduleDates.length - 1],
       approvers: approvers,
     };
-
+  // TODO INTEGRATE
     // fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
     //   method: "POST",
     //   headers: { "Content-Type": "application/json" },

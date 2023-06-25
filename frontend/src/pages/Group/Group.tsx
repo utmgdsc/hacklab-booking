@@ -77,6 +77,8 @@ export const Group = () => {
         return;
     }
     await getGroup();
+      // TODO INTEGRATE
+
     // fetch(process.env.REACT_APP_API_URL + '/groups/invite/', {
     //   method: 'POST',
     //   headers: { "Content-Type": "application/json" },
@@ -94,6 +96,8 @@ export const Group = () => {
 
   const removePerson = (utorid : string) => {
     console.log('deleting', utorid);
+      // TODO INTEGRATE
+
     // fetch(process.env.REACT_APP_API_URL + '/groups/remove/', {
     //   method: 'POST',
     //   headers: { "Content-Type": "application/json" },
@@ -111,6 +115,7 @@ export const Group = () => {
 
   const delGroup = () => {
     console.log('deleting', groupID);
+  // TODO INTEGRATE
 
     // fetch(process.env.REACT_APP_API_URL + '/groups/del/', {
     //   method: 'POST',
@@ -138,6 +143,8 @@ export const Group = () => {
         return;
     }
     await getGroup();
+      // TODO INTEGRATE
+
     // fetch(process.env.REACT_APP_API_URL + '/groups/makeAdmin/', {
     //   method: 'POST',
     //   headers: { "Content-Type": "application/json" },

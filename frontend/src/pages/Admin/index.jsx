@@ -77,6 +77,7 @@ export const Admin = () => {
       color: theme.palette.app_colors.green,
     },
   ];
+  // TODO INTEGRATE
 
   // // useEffect hook for fetching the rows
   // useEffect(() => {
