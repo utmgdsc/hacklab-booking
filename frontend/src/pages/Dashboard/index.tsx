@@ -113,7 +113,7 @@ export const Dashboard = () => {
     );
   };
   const update = () => {
-        axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
+      axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
       setMyRequests(data.filter(x=>x.authorUtorid === userInfo.utorid && userInfo.groups.find(y=>y.id === x.groupId)))
       setPendingRequests(data.filter(x=>x.status === "pending" || (x.status === "needTCard" && ["admin", "tcard"].includes(userInfo.role))));
     })
