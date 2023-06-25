@@ -5,30 +5,30 @@ import "@fontsource/roboto/700.css";
 
 import "./App.css";
 
-import { Dashboard } from "./pages/Dashboard";
-import { Settings } from "./pages/Settings";
+import { Admin } from "./pages/Admin";
+import { AllRequests } from "./pages/Admin/AllRequests";
 import { Calendar } from "./pages/Calendar";
 import { CreateBooking } from "./pages/CreateBooking";
+import { Dashboard } from "./pages/Dashboard";
 import { Group } from "./pages/Group/Group";
 import { GroupDirectory } from "./pages/Group/GroupDirectory";
-import { Admin } from "./pages/Admin";
 import { NotFound } from "./pages/NotFound";
-import { AllRequests } from "./pages/Admin/AllRequests";
+import { Settings } from "./pages/Settings";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import { useEffect, useState, useMemo } from "react";
-import { defaultUser, UserContext } from "./contexts/UserContext";
-import { ErrorBoundary } from "./components";
-import { CssBaseline, ThemeProvider, useMediaQuery, createTheme, PaletteMode } from "@mui/material";
+import { CssBaseline, PaletteMode, ThemeProvider, createTheme, useMediaQuery } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
+import { ErrorBoundary, RequireRole } from "./components";
+import { UserContext, defaultUser } from "./contexts/UserContext";
 
-import { GoogleTheme, THEME } from "./theme/theme";
 import axios from "./axios";
+import { GoogleTheme, THEME } from "./theme/theme";
 
 function App() {
   let [userInfo, setUserInfo] = useState<FetchedUser>(defaultUser);
   const fetchUserInfo = async () => {
-    const {data} = await axios("/accounts");
+    const { data } = await axios("/accounts");
     setUserInfo(data);
   }
   useEffect(() => {
@@ -39,16 +39,17 @@ function App() {
 
   const systemTheme = useMediaQuery('(prefers-color-scheme: dark)');
 
-	const theme = useMemo(
-		() =>
-			createTheme(GoogleTheme({mode:
-        (userInfo.theme === "system" ? (systemTheme ? THEME.DARK : THEME.LIGHT) : userInfo.theme) as PaletteMode
+  const theme = useMemo(
+    () =>
+      createTheme(GoogleTheme({
+        mode:
+          (userInfo.theme === "system" ? (systemTheme ? THEME.DARK : THEME.LIGHT) : userInfo.theme) as PaletteMode
       })),
-		[systemTheme, userInfo],
-	);
+    [systemTheme, userInfo],
+  );
 
   return !userInfo ? null : (
-    <UserContext.Provider value={{userInfo, setUserInfo, fetchUserInfo}}>
+    <UserContext.Provider value={{ userInfo, setUserInfo, fetchUserInfo }}>
       <ThemeProvider theme={theme}>
         <ErrorBoundary>
           <CssBaseline enableColorScheme />
@@ -60,8 +61,16 @@ function App() {
               <Route path="/book/" element={<CreateBooking />} />
               <Route path="/group/" element={<GroupDirectory />} />
               <Route path="/group/:id" element={<Group />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/all-requests" element={<AllRequests />} />
+              <Route path="/admin" element={
+                <RequireRole role={["admin"]}>
+                  <Admin />
+                </RequireRole>
+              } />
+              <Route path="/admin/all-requests" element={
+                <RequireRole role={["admin"]}>
+                  <AllRequests />
+                </RequireRole>
+              } />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>

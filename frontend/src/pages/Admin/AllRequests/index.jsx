@@ -78,15 +78,6 @@ export const AllRequests = () => {
   //     });
   // }, []);
 
-  if (userInfo["role"] !== "admin" && userInfo["role"] !== "tcard") {
-    return (
-      <ErrorPage
-        name="You are not an admin"
-        message={<Link href="/">Go back</Link>}
-      />
-    );
-  }
-
   return (
     <SubPage name="Request Log" maxWidth="xl">
       <Paper style={{ height: "90vh", width: "100%" }}>

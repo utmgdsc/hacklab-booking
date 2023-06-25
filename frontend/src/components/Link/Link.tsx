@@ -1,5 +1,5 @@
 import React, { Ref } from 'react';
-// import { NavLink as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { OpenInNew } from '@mui/icons-material';
 import { Link as MaterialLink, LinkProps as MaterialLinkProps } from '@mui/material';
 
@@ -38,8 +38,9 @@ const NonForwardLink = ({
       ref={forwardedRef}
       rel={external ? "noopener noreferrer" : ""}
       target={external ? "_blank" : ""}
-      {...props}
-    >
+      component={isInternalLink ? RouterLink : 'a'}
+      {...(isInternalLink ? { to: href } : { href })}
+      >
       {children}
       {external && !noIcon && (
         <OpenInNew
