@@ -5,9 +5,13 @@ import logger from '../common/logger';
 import { sendResponse } from './utils';
 import accountsModel from '../models/accountsModel';
 import { User } from '@prisma/client';
+import cors from 'cors';
 
 const port = process.env.PORT || 3000;
 const app = express();
+
+app.use(cors());
+
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url}`);
   try {
@@ -55,4 +59,3 @@ app.use(routes);
 app.listen(port, () => {
   logger.info(`Server is listening on port ${port}.`);
 });
-
