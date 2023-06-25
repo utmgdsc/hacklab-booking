@@ -1,4 +1,5 @@
-import dayjs from "dayjs";
+import dayjs, { OpUnitType } from "dayjs";
+import isoWeek from 'dayjs/plugin/isoWeek';
 
 /**
  * given any date, return the date of the Monday of that week.
@@ -8,26 +9,9 @@ import dayjs from "dayjs";
  * @param {Date} d the date to get the Monday of
  */
 export const GetMonday = (d: Date): Date => {
-    let dayjsObj = dayjs(d);
-    const day = dayjsObj.day();
-    switch (day) {
-      case 0: // sunday - get the next monday
-        dayjsObj = dayjsObj.add(1, "day");
-        break;
-      case 1: // monday
-        break;
-      case 2:
-      case 3:
-      case 4:
-      case 5: // tuesday - friday: get current monday
-        dayjsObj = dayjsObj.subtract(day - 1, "day");
-        break;
-      case 6: // saturday - get the next monday
-        dayjsObj = dayjsObj.add(1, "day");
-        break;
-      default:
-        throw new Error("Invalid day");
-    }
+  dayjs.extend(isoWeek);
 
-    return dayjsObj.toDate();
-  };
+  let dayjsObj = dayjs(d).startOf("isoWeek" as OpUnitType);
+
+  return dayjsObj.toDate();
+};
