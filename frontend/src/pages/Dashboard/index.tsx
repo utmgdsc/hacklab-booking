@@ -87,6 +87,10 @@ export const Dashboard = () => {
   const [editRequestID, setEditRequestID] = useState<string|null>(null);
   const [openEditRequest, setOpenEditRequest] = useState(false);
 
+  React.useEffect(() => {
+    document.title = 'Hacklab Booking System';
+  });
+
   useEffect(() => {
     update();
   }, [userInfo.groups, userInfo.utorid, userInfo.role]);
