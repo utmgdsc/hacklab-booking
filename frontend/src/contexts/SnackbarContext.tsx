@@ -16,3 +16,17 @@ export const SnackbarContext = createContext({
      */
     enqueue: (message: string, action?: JSX.Element) => {},
 });
+
+/**
+ * An item in the snackbar queue that is displayed one at a time.
+ */
+export interface SnackbarQueueItem {
+    /** The message that is queued to display */
+    message: string;
+    /** An optional action to display along with the message */
+    action?: JSX.Element;
+    /** If this snack is open or not */
+    open: boolean;
+    /** The id of the snackbar */
+    _id?: number;
+}

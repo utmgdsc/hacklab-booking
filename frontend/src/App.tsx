@@ -22,7 +22,7 @@ import { CssBaseline, PaletteMode, Snackbar, ThemeProvider, createTheme, useMedi
 import { useEffect, useMemo, useState } from "react";
 import { ErrorBoundary, RequireRole } from "./components";
 import { UserContext, defaultUser } from "./contexts/UserContext";
-import { SnackbarContext } from "./contexts/SnackbarContext";
+import { SnackbarContext, SnackbarQueueItem } from "./contexts/SnackbarContext";
 import { GoogleTheme, THEME } from "./theme/theme";
 
 import axios from "./axios";
@@ -56,16 +56,19 @@ function App() {
   /*
    * snackbar
    */
-  const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState("");
-  const [action, setAction] = useState<JSX.Element>(null);
+  const [queue, setQueue] = useState<SnackbarQueueItem[]>([]);
 
   const enqueue = (message: string, action?: JSX.Element) => {
-    setMessage(message);
-    if (action) {
-      setAction(action);
-    }
-    setOpen(true);
+    setQueue((array) => [...array, {
+      open: true,
+      message,
+      action,
+      _id: Math.random()
+    }]);
+  }
+
+  const cleanup = () => {
+    setQueue((array) => array.filter((item) => item.open === true));
   }
 
   /*
@@ -103,13 +106,33 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
-            <Snackbar
-              open={open}
-              autoHideDuration={6000}
-              onClose={(event: React.SyntheticEvent | Event, reason?: string) => {if (reason === 'clickaway') { return; } setOpen(false)}}
-              message={message}
-              action={action}
-            />
+            {
+              queue.map((item, index) => (
+                <Snackbar
+                  key={item._id}
+                  open={item.open}
+                  autoHideDuration={3000}
+                  onClose={(event: React.SyntheticEvent | Event, reason?: string) => {
+                    if (reason === "clickaway") { return; }
+                    // close the snackbar
+                    setQueue((array) => array.map((e) => {
+                      if (e._id === item._id) {
+                        return { ...e, open: false };
+                      }
+                      return e;
+                    }));
+                    // cleanup after animation
+                    setTimeout(cleanup, 20);
+                  }}
+                  message={item.message}
+                  action={item.action}
+                  sx={{
+                    bottom: (index * 60) + 24 + "px !important",
+                    position: "fixed !important",
+                  }}
+                />
+              ))
+            }
           </SnackbarContext.Provider>
         </UserContext.Provider>
       </ErrorBoundary>

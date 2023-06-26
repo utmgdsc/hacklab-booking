@@ -27,6 +27,12 @@ export const RoomManager = () => {
         }}>
         Create Room
       </Button>
+      <Button
+        onClick={() => {
+          enqueue("Room deleted");
+        }}>
+        Create Room
+      </Button>
       <div>
         {rooms.map(room => (
           <div key={room.friendlyName}>
