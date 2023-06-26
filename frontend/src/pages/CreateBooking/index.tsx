@@ -14,6 +14,7 @@ import {
   DateTimePicker,
   BookingSubmitted,
   ApproverSelect,
+  Link,
 } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
@@ -31,29 +32,15 @@ export const CreateBooking = () => {
   const [scheduleDates, setScheduleDates] = useState([]);
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [userGroups, setUserGroups] = useState([]);
   const [validDate, setValidDate] = useState(false);
   const [approvers, setApprovers] = useState([]);
   const [approversError, setApproversError] = useState(false);
-  useEffect(()=>{
-    setUserGroups(userInfo.groups);
-  }, [userInfo.groups])
-    useEffect(() => {
-      axios.get<Room[]>("/rooms").then((res) => {
-        setRooms(res.data);
-      });
-    },[]);
-      // TODO INTEGRATE
 
-  // useEffect(() => {
-  //   fetch(process.env.REACT_APP_API_URL + "/groups/myGroups")
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       setUserGroups(data);
-  //     });
-  // }, []);
+  useEffect(() => {
+    axios.get<Room[]>("/rooms").then((res) => {
+      setRooms(res.data);
+    });
+  }, []);
 
   const handleFinish = async () => {
     let finish = true;
@@ -99,21 +86,12 @@ export const CreateBooking = () => {
     console.log(booking);
     console.log(group);
 
-    const {status, data} = await axios.post("/requests/create", booking);
+    const { status, data } = await axios.post("/requests/create", booking);
     if (status === 200) {
-        setSubmitted(true);
-        return;
+      setSubmitted(true);
+      return;
     }
     // todo error handling
-
-    // // submit to API
-    // fetch(process.env.REACT_APP_API_URL + "/requests/submit", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(booking),
-    // });
-
-
   };
 
   const handleScheduleDate = (dates: string[]) => {
@@ -173,8 +151,16 @@ export const CreateBooking = () => {
     setScheduleDates(newDates);
   };
 
-  if (userGroups.length <= 0) {
-    return <ErrorPage />;
+  /*
+   * cases where user cannot create a booking or booking was successful
+   */
+  if (userInfo.groups.length <= 0) {
+    return <ErrorPage
+      name="Cannot create booking"
+      message={<Typography>Please{' '}
+        <Link internal href="/group">create a group</Link>{' '}
+        before making a booking request.</Typography>}
+    />;
   } else if (submitted) {
     return (
       <SubPage name="Create a booking">
@@ -187,6 +173,9 @@ export const CreateBooking = () => {
     );
   }
 
+  /*
+   * case where user can create a booking
+   */
   return (
     <SubPage name="Create a booking">
       <Box
@@ -198,7 +187,7 @@ export const CreateBooking = () => {
           flexWrap: "nowrap",
         }}
       >
-        {userGroups.length > 0 && (
+        {userInfo.groups.length > 0 && (
           <Box
             sx={{
               marginBottom: "4em",
@@ -219,7 +208,7 @@ export const CreateBooking = () => {
                   setGroup(e.target.value);
                 }}
               >
-                {userGroups.map((group) => {
+                {userInfo.groups.map((group) => {
                   return (
                     <MenuItem value={group.id} key={group.id}>
                       {group.name}

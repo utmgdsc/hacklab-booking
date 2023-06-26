@@ -1,4 +1,4 @@
-import { Inventory as InventoryIcon } from "@mui/icons-material";
+import { Inventory, MeetingRoom } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -63,14 +63,14 @@ export const Admin = () => {
     {
       title: "View a list of all booking requests",
       href: "/admin/all-requests",
-      icon: <InventoryIcon />,
+      icon: <Inventory />,
       label: "All Requests",
       color: theme.palette.app_colors.red,
     },
     {
-      title: "View a list of all booking requests",
-      href: "/admin/all-requests",
-      icon: <InventoryIcon />,
+      title: "Create, edit, and delete rooms",
+      href: "/admin/room-manager",
+      icon: <MeetingRoom />,
       label: "Manage Rooms",
       color: theme.palette.app_colors.green,
     },
