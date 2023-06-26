@@ -58,12 +58,18 @@ function App() {
    */
   const [queue, setQueue] = useState<SnackbarQueueItem[]>([]);
 
-  const enqueue = (message: string, action?: JSX.Element) => {
+  const enqueue = (message: string, action?: JSX.Element, content?: JSX.Element) => {
     console.log(queue);
+
+    // if over 3, remove the first one
+    if (queue.length > 3) {
+      setQueue((array) => array.slice(1));
+    }
 
     setQueue((array) => [...array, {
       open: true,
       message,
+      content,
       action,
       _id: Math.random()
     }]);
@@ -130,7 +136,11 @@ function App() {
                     bottom: (index * 60) + 24 + "px !important",
                     position: "fixed !important",
                   }}
-                />
+                >
+                  {
+                    item.content ? item.content : null
+                  }
+                </Snackbar>
               ))
             }
           </SnackbarContext.Provider>

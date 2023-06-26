@@ -2,7 +2,7 @@ import { SubPage } from "../../../layouts/SubPage"
 import { instance } from "../../../axios"
 import { useContext, useEffect, useState } from "react"
 import { SnackbarContext } from "../../../contexts/SnackbarContext"
-import { Button } from "@mui/material"
+import { Button, Alert } from "@mui/material"
 
 
 export const RoomManager = () => {
@@ -29,7 +29,8 @@ export const RoomManager = () => {
       </Button>
       <Button
         onClick={() => {
-          enqueue("Room deleted");
+          enqueue(null, null, <Alert>Hello</Alert>);
+          enqueue(null, null, <Alert severity="error">Goodbye</Alert>);
         }}>
         Create Room
       </Button>
