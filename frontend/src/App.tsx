@@ -59,16 +59,14 @@ function App() {
   const [queue, setQueue] = useState<SnackbarQueueItem[]>([]);
 
   const enqueue = (message: string, action?: JSX.Element) => {
+    console.log(queue);
+
     setQueue((array) => [...array, {
       open: true,
       message,
       action,
       _id: Math.random()
     }]);
-  }
-
-  const cleanup = () => {
-    setQueue((array) => array.filter((item) => item.open === true));
   }
 
   /*
@@ -121,8 +119,10 @@ function App() {
                       }
                       return e;
                     }));
-                    // cleanup after animation
-                    setTimeout(cleanup, 20);
+                  }}
+                  onTransitionEnd={() => {
+                    // cleanup closed snackbars
+                    setQueue((array) => array.filter((e) => e.open));
                   }}
                   message={item.message}
                   action={item.action}
