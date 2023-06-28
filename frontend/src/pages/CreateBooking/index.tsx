@@ -94,11 +94,11 @@ export const CreateBooking = () => {
     // todo error handling
   };
 
-  const handleScheduleDate = (dates: string[]) => {
+  const handleScheduleDate = (dates: Date[]) => {
     let currDate = 0;
     setDateError("");
     for (let i = 0; i < dates.length; i++) {
-      const d = new Date(dates[i]);
+      const d = dates[i];
       // if in the past
       if (d < new Date()) {
         setDateError("please select a date in the future");

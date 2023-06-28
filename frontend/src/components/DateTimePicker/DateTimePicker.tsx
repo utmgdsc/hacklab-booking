@@ -16,7 +16,7 @@ import axios from "../../axios";
  * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
-export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates,room }: {room: string, handleScheduleDate : (dates: string[]) => void, scheduleDates: string[], setScheduleDates: (dates: string[]) => void }) => {
+export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates,room }: {room: string, handleScheduleDate : (dates: Date[]) => void, scheduleDates: Date[], setScheduleDates: (dates: string[]) => void }) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
     const [pendingDates, setPendingDates] = useState([]);
@@ -86,13 +86,11 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
                 }}
             >
                 <CustomScheduleSelector
-                    {...{
-                        scheduleDates,
-                        handleScheduleDate,
-                        calendarDate,
-                        blockedDates,
-                        pendingDates
-                    }}
+                        scheduleDates={scheduleDates}
+                        handleScheduleDate={handleScheduleDate}
+                        calendarDate={calendarDate.toDate()}
+                        blockedDates={blockedDates}
+                        pendingDates={pendingDates}
                 />
             </Box>
         </>
