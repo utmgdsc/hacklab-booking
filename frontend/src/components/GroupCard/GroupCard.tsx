@@ -9,7 +9,7 @@ import {
     Button
 } from "@mui/material";
 
-import { InitialsAvatar } from "..";
+import { InitialsAvatar, Link } from "..";
 import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
@@ -57,7 +57,9 @@ export const GroupCard = ({groupObj, ...props}: GroupCardProps) => {
                 </Stack>
             </CardContent>
             <CardActions>
-                <Button href={"/group/" + groupObj.id}>View</Button>
+                <Link internal href={"/group/" + groupObj.id}>
+                    <Button>View</Button>
+                </Link>
             </CardActions>
         </Card>
     );
