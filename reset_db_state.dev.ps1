@@ -12,13 +12,19 @@
 
     After that, it starts the dev environment again and reconfigures postgres.
 
-    Precondition: Docker is running. The script will fail otherwise.
+    Precondition: 
+    - Docker is running. The script will fail otherwise.
+    - The script's cwd in the repo's root directory.
 #>
 
 # completely resets the database state
 docker compose -f docker-compose.dev.yml down -v --rmi all --remove-orphans
 Remove-Item "./backend/logs" -Recurse
 Remove-Item "./db_data" -Recurse
+Remove-Item "./backend/node_modules" -Recurse
+cd backend
+npm ci
+cd ..
 docker compose -f docker-compose.dev.yml up -d
 
 timeout 30
