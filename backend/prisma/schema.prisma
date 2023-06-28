@@ -41,7 +41,7 @@ enum AccountRole {
 model Request {
   id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   status       RequestStatus @default(pending) // the status of the request defined by the Request status enum
-  group        Group         @relation(fields: [groupId], references: [id]) // the group making the request
+  group        Group         @relation(fields: [groupId], references: [id], onDelete: Cascade) // the group making the request
   groupId      String        @db.Uuid
   author       User          @relation(name: "Author", fields: [authorUtorid], references: [utorid]) // the author of the request
   authorUtorid String
