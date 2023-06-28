@@ -10,8 +10,9 @@ import {
 import React, {Ref} from "react";
 import {TableProps} from "@mui/material/Table/Table";
 import {TableRowProps} from "@mui/material/TableRow/TableRow";
+import { TableComponents } from "react-virtuoso"
 
-export const VirtuosoTableComponents = {
+export const VirtuosoTableComponents: TableComponents = {
     Scroller: React.forwardRef((props, ref) => (
         <TableContainer component={Paper} {...props} ref={ref as Ref<any>} />
     )),

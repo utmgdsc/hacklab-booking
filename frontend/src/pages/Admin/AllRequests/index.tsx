@@ -4,9 +4,15 @@ import { TableVirtuoso } from "react-virtuoso";
 import { Link, VirtuosoTableComponents } from "../../../components";
 import { UserContext } from "../../../contexts/UserContext";
 import { SubPage } from "../../../layouts/SubPage";
-import { ErrorPage } from "../../../layouts/ErrorPage";
 
-const columns = [
+interface AllRequestTableRow {
+  [key: string]: any;
+  label: string;
+  dataKey: string;
+  subKey?: string;
+}
+
+const columns: AllRequestTableRow[] = [
   // { label: "id", dataKey: "_id" },
   { label: "title", dataKey: "title" },
   { label: "approval reason", dataKey: "reason" },
@@ -23,7 +29,7 @@ function fixedHeaderContent() {
     <TableRow>
       {columns.map((column) => (
         <TableCell
-          key={column}
+          key={column.dataKey}
           variant="head"
           sx={{
             backgroundColor: "background.paper",
@@ -36,7 +42,12 @@ function fixedHeaderContent() {
   );
 }
 
-const addEndHour = (d) => {
+/**
+ * Adds an hour to the end date
+ * @param d a date string
+ * @returns a date string with an hour added
+ */
+const addEndHour = (d: string) => {
   const date = new Date(d);
   date.setHours(date.getHours() + 1);
   return date.toLocaleString("en-ca", {
@@ -85,7 +96,7 @@ export const AllRequests = () => {
           data={requests}
           components={VirtuosoTableComponents}
           fixedHeaderContent={fixedHeaderContent}
-          itemContent={(index, row) => (
+          itemContent={(index: number, row: AllRequestTableRow) => (
             <>
               {columns.map((column, index) => {
                 if (column.dataKey === "start_date") {
