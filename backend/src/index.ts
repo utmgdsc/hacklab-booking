@@ -6,8 +6,9 @@ logger.info('Connecting to database...');
 common.db.$connect().then(async () => {
   logger.info('Connected to database.');
   logger.info('Initializing api routes...');
-  if (process.env.NODE_ENV === 'development') {
-    await import('./types/express');
+  // TODO its currently 3am and this is the only way I can get the types to work for now. I will make this better later, trust me.
+  if (false) {
+    await import('./types/express.d');
   }
   await import('./api');
   logger.info('Initialized api.');

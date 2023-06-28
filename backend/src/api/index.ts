@@ -4,10 +4,20 @@ import routes from './routes';
 import logger from '../common/logger';
 import { sendResponse } from './utils';
 import accountsModel from '../models/accountsModel';
+import cors from 'cors';
 import { User } from '@prisma/client';
 
 const port = process.env.PORT || 3000;
 const app = express();
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3555',
+    ],
+    credentials: true,
+  }));
+}
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.url}`);
   try {
