@@ -1,16 +1,17 @@
 import { Logout, KeyboardArrowDown } from "@mui/icons-material";
 
 import {
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  useTheme,
+    Box,
+    IconButton,
+    Menu,
+    MenuItem, Theme,
+    Typography,
+    useTheme,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, {SyntheticEvent, useContext} from "react";
 import { InitialsAvatar, Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
+import {UserInfo} from "os";
 
 /**
  * Left side of the header containing the user's name and role
@@ -20,7 +21,12 @@ import { UserContext } from "../../contexts/UserContext";
  * @param {*} theme to be passed by the useTheme MUI hook
  * @returns the left side of the header
  */
-const LeftHeader = ({ active_requests, pending_requests, userInfo, theme }) => (
+const LeftHeader = ({ active_requests, pending_requests, userInfo, theme }: {
+    active_requests: BookingRequest[],
+    pending_requests: BookingRequest[],
+    userInfo: User,
+    theme: any
+}) => (
   <Box>
     <>
       <Typography
@@ -66,10 +72,13 @@ const LeftHeader = ({ active_requests, pending_requests, userInfo, theme }) => (
  * @param {*} theme to be passed by the useTheme MUI hook
  * @returns the right side of the header
  */
-const RightHeader = ({ userInfo, theme }) => {
+const RightHeader = ({ userInfo, theme } : {
+    userInfo: User,
+    theme: Theme
+}) => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const handleOpenUserMenu = (event) => {
+  const handleOpenUserMenu = (event : SyntheticEvent<any>) => {
     setAnchorElUser(event.currentTarget);
   };
 
@@ -123,7 +132,10 @@ const RightHeader = ({ userInfo, theme }) => {
  * @param {*} pending_requests a list of requests received from the backend
  * @returns the header for the dashboard
  */
-export const DashboardHeader = ({ active_requests, pending_requests }) => {
+export const DashboardHeader = ({ active_requests, pending_requests } : {
+    active_requests: BookingRequest[],
+    pending_requests: BookingRequest[]
+}) => {
   const { userInfo } = useContext(UserContext);
   const theme = useTheme();
 
