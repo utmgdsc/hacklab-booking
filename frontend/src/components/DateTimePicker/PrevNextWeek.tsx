@@ -12,8 +12,8 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs from "dayjs";
-import { React } from "react";
+import dayjs, {Dayjs} from "dayjs";
+import React from "react";
 import { GetMonday } from "../../components";
 
 /**
@@ -27,7 +27,12 @@ import { GetMonday } from "../../components";
  *
  * @returns the previous and next week buttons, and the date picker
  */
-export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates, handleBlockedDates }) => {
+export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates, handleBlockedDates } : {
+    calendarDate: Dayjs,
+    setDate: (date: Dayjs) => void,
+    setScheduleDates: (dates?: string[]) => void,
+    handleBlockedDates: (date: Date | Dayjs) => void,
+}) => {
 
     return (
         <>
@@ -55,7 +60,7 @@ export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates
                     <Box>
                         <Button
                             variant="outlined"
-                            color="gray"
+                            color="secondary"
                             onClick={() => {
                                 setDate(dayjs());
                                 handleBlockedDates(calendarDate);

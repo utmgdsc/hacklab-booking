@@ -70,12 +70,10 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
     return (
         <>
             <PrevNextWeek
-                {...{
-                    calendarDate,
-                    setDate,
-                    setScheduleDates,
-                    handleBlockedDates
-                }}
+                    calendarDate={calendarDate}
+                    setDate={setDate}
+                    setScheduleDates={setScheduleDates}
+                    handleBlockedDates={handleBlockedDates}
             />
             <Box
                 onMouseDown={() => {

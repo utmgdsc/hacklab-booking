@@ -7,7 +7,7 @@ import dayjs from "dayjs";
  *
  * @param {Date} d the date to get the Monday of
  */
-export const GetMonday = (d: Date): Date => {
+export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
     let dayjsObj = dayjs(d);
     const day = dayjsObj.day();
     switch (day) {
