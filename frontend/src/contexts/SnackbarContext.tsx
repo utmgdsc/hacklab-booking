@@ -15,7 +15,7 @@ export const SnackbarContext = createContext({
      * @param action An optional element to display as an action.
      * @param content An optional element to set the children of the snackbar.
      */
-    enqueue: (message?: string, action?: JSX.Element, content?: JSX.Element) => {},
+    showSnack: (message?: string, action?: JSX.Element, content?: JSX.Element) => {},
 });
 
 /**

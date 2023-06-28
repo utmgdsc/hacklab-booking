@@ -82,7 +82,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <ErrorBoundary>
         <UserContext.Provider value={{ userInfo, setUserInfo, fetchUserInfo }}>
-          <SnackbarContext.Provider value={{ enqueue }}>
+          <SnackbarContext.Provider value={{ showSnack: enqueue }}>
             <CssBaseline enableColorScheme />
             <Router>
               <Routes>

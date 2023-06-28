@@ -8,7 +8,7 @@ import { Button, Alert } from "@mui/material"
 export const RoomManager = () => {
   const [rooms, setRooms] = useState<Room[]>([])
 
-  const { enqueue } = useContext(SnackbarContext)
+  const { showSnack } = useContext(SnackbarContext)
 
   useEffect(() => {
     instance.get('/rooms')
@@ -23,14 +23,14 @@ export const RoomManager = () => {
     <SubPage name="Room Manager" maxWidth="xl">
       <Button
         onClick={() => {
-          enqueue("Room created");
+          showSnack("Room created");
         }}>
         Create Room
       </Button>
       <Button
         onClick={() => {
-          enqueue(null, null, <Alert>Hello</Alert>);
-          enqueue(null, null, <Alert severity="error">Goodbye</Alert>);
+          showSnack(null, null, <Alert>Hello</Alert>);
+          showSnack(null, null, <Alert severity="error">Goodbye</Alert>);
         }}>
         Create Room
       </Button>

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
 import { defaultUser } from "../../contexts/UserContext";
+import { SnackbarContext } from "../../contexts/SnackbarContext";
 
 interface GroupCardProps {
     /** group object */
@@ -23,7 +24,7 @@ interface GroupCardProps {
 
 /**
  * A card that displays information about a group
- * @param {Group} groupObj - group object
+ * @param {FetchedGroup} groupObj - group object
  */
 export const GroupCard = ({groupObj, ...props}: GroupCardProps) => {
     return (

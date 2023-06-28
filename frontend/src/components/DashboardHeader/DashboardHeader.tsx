@@ -11,7 +11,7 @@ import {
 import React, {SyntheticEvent, useContext} from "react";
 import { InitialsAvatar, Link } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
-import {UserInfo} from "os";
+// import {UserInfo} from "os";
 
 /**
  * Left side of the header containing the user's name and role
