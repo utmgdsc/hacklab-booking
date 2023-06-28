@@ -3,6 +3,7 @@
  */
 export { ActiveRequestCard } from "./ActiveRequestCard/ActiveRequestCard";
 export { AppButtons } from "./AppButtons/AppButtons";
+export { ApproverSelect } from "./ApproverSelect/ApproverSelect";
 export { BookingSubmitted } from "./BookingSubmitted/BookingSubmitted";
 export { ConvertDate } from "./ConvertDate/ConvertDate";
 export { DashboardHeader } from "./DashboardHeader/DashboardHeader";
@@ -16,6 +17,6 @@ export { LabelledIconButton } from "./LabelledIconButton/LabelledIconButton";
 export { Link } from "./Link/Link";
 export { NoRequestsPlaceholder } from "./NoRequestsPlaceholder/NoRequestsPlaceholder";
 export { PendingRequestCard } from "./PendingRequestCard/PendingRequestCard";
-export { VirtuosoTableComponents } from "./Admin/VirtuosoTableComponents";
 export { RoleChanger } from "./RoleChanger/RoleChanger";
-export { ApproverSelect } from "./ApproverSelect/ApproverSelect";
+export { VirtuosoTableComponents } from "./Admin/VirtuosoTableComponents";
+export { RequireRole } from "./RequireRole/RequireRole";

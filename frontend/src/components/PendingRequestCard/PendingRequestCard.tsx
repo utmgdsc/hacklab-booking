@@ -95,15 +95,13 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                 <CardActions>
                     <Button
                         sx={{ borderRadius: "100vw" }}
-                        variant="contained"
                         color="success"
                         startIcon={<DoneIcon />}
                         onClick={() => { setApproved(true); handleClickOpen(); }}
                     >
-                        {booking.status === "needTCard" ? 'Give room access' : 'Approve'}
+                        {booking.status === "needTCard" ? 'TCard access was granted' : 'Approve'}
                     </Button>
                     <Button
-                        sx={{ px: "1em" }}
                         color="error"
                         startIcon={<CloseIcon />}
                         onClick={() => { setApproved(false); handleClickOpen(); }}
@@ -119,12 +117,9 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                 aria-labelledby="add-student-title"
             >
                 <DialogTitle id="add-student-title">
-                    {
-                        approved ? "Approve " : "Deny "
-                    }
-                    {booking.title}
+                    { approved ? "Approve " : "Deny " } {booking.title}
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent sx={{paddingBottom: "0"}}>
                     <DialogContentText component={Typography} gutterBottom>
                         To {approved ? "approve " : "deny "} this request, please enter a reason for your decision.
                     </DialogContentText>

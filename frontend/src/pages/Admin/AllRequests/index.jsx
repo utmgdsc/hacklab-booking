@@ -52,6 +52,7 @@ const addEndHour = (d) => {
 export const AllRequests = () => {
   const { userInfo } = useContext(UserContext);
   const [requests, setRequests] = useState(null);
+  // TODO INTEGRATE
 
   // // useEffect hook for fetching the rows
   // useEffect(() => {
@@ -76,15 +77,6 @@ export const AllRequests = () => {
   //       console.log(err);
   //     });
   // }, []);
-
-  if (userInfo["role"] !== "admin" && userInfo["role"] !== "tcard") {
-    return (
-      <ErrorPage
-        name="You are not an admin"
-        message={<Link href="/">Go back</Link>}
-      />
-    );
-  }
 
   return (
     <SubPage name="Request Log" maxWidth="xl">

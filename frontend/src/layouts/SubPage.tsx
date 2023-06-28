@@ -7,8 +7,8 @@ import {
     Breakpoint
 } from "@mui/material";
 import { ArrowBackIos } from '@mui/icons-material';
-import { ErrorBoundary } from "../components";
-import { useNavigate } from "react-router-dom";
+import { ErrorBoundary, Link } from "../components";
+import { UserContext } from "../contexts/UserContext";
 
 interface SubPageProps {
     name: string;
@@ -24,7 +24,7 @@ export const SubPage: React.FC<SubPageProps> = ({ name, children, maxWidth = "md
         document.title = 'Hacklab Booking - ' + name;
     }, [name]);
 
-    const navigate = useNavigate();
+    let { fetchUserInfo } = React.useContext(UserContext);
 
     return (
         <Container sx={{ py: py }} maxWidth={maxWidth} component="main" {...props}>
@@ -37,9 +37,11 @@ export const SubPage: React.FC<SubPageProps> = ({ name, children, maxWidth = "md
                     xl: "2em",
                 },
             }}>
-                <Button onClick={() => navigate(-1)}>
-                    <ArrowBackIos /> Back
-                </Button>
+                <Link href="../" internal>
+                    <Button onClick={() => fetchUserInfo()}>
+                        <ArrowBackIos /> Back
+                    </Button>
+                </Link>
             </Typography>
             {showHead && (
                 <Box

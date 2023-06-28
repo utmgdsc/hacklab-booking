@@ -87,6 +87,10 @@ export const Dashboard = () => {
   const [editRequestID, setEditRequestID] = useState<string|null>(null);
   const [openEditRequest, setOpenEditRequest] = useState(false);
 
+  React.useEffect(() => {
+    document.title = 'Hacklab Booking System';
+  });
+
   useEffect(() => {
     update();
   }, [userInfo.groups, userInfo.utorid, userInfo.role]);
@@ -99,6 +103,8 @@ export const Dashboard = () => {
 
   const cancelThisRequest = (reqID: string) => {
     // console.log(reqID, "cancel this request");
+      // TODO INTEGRATE
+
     // // TODO: if request is completed, remove from calendar events
     // fetch(process.env.REACT_APP_API_URL + "/requests/cancelRequest/" + reqID, {
     //   method: "POST",
@@ -111,7 +117,7 @@ export const Dashboard = () => {
     );
   };
   const update = () => {
-        axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
+      axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
       setMyRequests(data.filter(x=>x.authorUtorid === userInfo.utorid && userInfo.groups.find(y=>y.id === x.groupId)))
       setPendingRequests(data.filter(x=>x.status === "pending" || (x.status === "needTCard" && ["admin", "tcard"].includes(userInfo.role))));
     })
@@ -161,18 +167,7 @@ export const Dashboard = () => {
     <Container sx={{ py: 8 }} maxWidth="md" component="main">
       <DashboardHeader active_requests={my_requests} pending_requests={pending_requests} />
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          marginTop: "2em",
-          marginBottom: "2em",
-          flexWrap: "no-wrap",
-          overflowX: "auto",
-        }}
-      >
-        <AppButtons ButtonsToRender={homeButtons} />
-      </Box>
+      <AppButtons ButtonsToRender={homeButtons} />
 
       {openEditRequest && (
         <EditBooking

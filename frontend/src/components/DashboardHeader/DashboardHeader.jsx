@@ -1,4 +1,4 @@
-import { Logout as LogoutIcon } from "@mui/icons-material";
+import { Logout, KeyboardArrowDown } from "@mui/icons-material";
 
 import {
   Box,
@@ -81,6 +81,7 @@ const RightHeader = ({ userInfo, theme }) => {
     <Box sx={{ flexGrow: 0 }}>
       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
         <InitialsAvatar name={userInfo.name} />
+        <KeyboardArrowDown/>
       </IconButton>
       <Menu
         sx={{ mt: "45px" }}
@@ -100,13 +101,14 @@ const RightHeader = ({ userInfo, theme }) => {
         <Link
           href="https://hacklabbooking.utm.utoronto.ca/Shibboleth.sso/Logout?return=https://cssc.utm.utoronto.ca/"
           sx={{ textDecoration: "none", color: theme.palette.text.primary }}
+          openInNewTab={false}
         >
           <MenuItem
             onClick={() => {
               handleCloseUserMenu();
             }}
           >
-            <LogoutIcon fontSize="small" />
+            <Logout fontSize="small" />
             <Typography>&nbsp;Logout</Typography>
           </MenuItem>
         </Link>

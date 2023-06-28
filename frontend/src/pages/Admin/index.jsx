@@ -1,4 +1,4 @@
-import { Inventory as InventoryIcon } from "@mui/icons-material";
+import { Inventory, MeetingRoom } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -16,13 +16,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import {
   AppButtons,
-  Link,
   VirtuosoTableComponents,
   RoleChanger,
 } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
-import { ErrorPage } from "../../layouts/ErrorPage";
 
 const columns = [
   { label: "UTORid", dataKey: "utorid" },
@@ -65,11 +63,19 @@ export const Admin = () => {
     {
       title: "View a list of all booking requests",
       href: "/admin/all-requests",
-      icon: <InventoryIcon />,
+      icon: <Inventory />,
       label: "All Requests",
       color: theme.palette.app_colors.red,
     },
+    {
+      title: "Create, edit, and delete rooms",
+      href: "/admin/room-manager",
+      icon: <MeetingRoom />,
+      label: "Manage Rooms",
+      color: theme.palette.app_colors.green,
+    },
   ];
+  // TODO INTEGRATE
 
   // // useEffect hook for fetching the rows
   // useEffect(() => {
@@ -115,31 +121,11 @@ export const Admin = () => {
     );
   };
 
-  if (userInfo["role"] !== "admin" && userInfo["role"] !== "tcard") {
-    return (
-      <ErrorPage
-        name="You are not an admin"
-        message={<Link href="/">Go back</Link>}
-      />
-    );
-  }
-
   return (
     <SubPage name="Admin" maxWidth="xl">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "left",
-          alignItems: "center",
-          marginTop: "2em",
-          marginBottom: "2em",
-          flexWrap: "no-wrap",
-          overflowX: "auto",
-        }}
-      >
-        <AppButtons ButtonsToRender={adminAppButtons} />
-      </Box>
+
+      <AppButtons ButtonsToRender={adminAppButtons} />
+
       <Box
         sx={{
           display: "flex",
@@ -198,8 +184,8 @@ export const Admin = () => {
                           // send post request to api to grant access
                           fetch(
                             process.env.REACT_APP_API_URL +
-                              "/accounts/modifyAccess/" +
-                              row["utorid"],
+                            "/accounts/modifyAccess/" +
+                            row["utorid"],
                             {
                               method: "POST",
                               headers: {

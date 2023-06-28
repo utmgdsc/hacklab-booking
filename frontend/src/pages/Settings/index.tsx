@@ -15,9 +15,10 @@ import { InitialsAvatar } from "../../components";
 import { THEME } from "../../theme/theme";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
+import { instance } from "../../axios"
 
 export const Settings = () => {
-    const { userInfo } = useContext(UserContext);
+    const { userInfo, fetchUserInfo } = useContext(UserContext);
 
     return (
         <SubPage name="Settings">
@@ -41,10 +42,10 @@ export const Settings = () => {
                     }}>
                         <InitialsAvatar name={userInfo["name"]} />
                         <Box>
-                            <Typography title="Your Name"><strong>{userInfo["name"]}</strong></Typography>
-                            <Typography variant="gray" title="Your Email">{userInfo["email"]}</Typography><br></br>
-                            <Typography variant="gray" title="Your UTORid">{userInfo["utorid"]}</Typography>
-                            <Typography variant="gray" title="Your Email">{userInfo["accessGranted"] && <><br></br>Hacklab Keycard Haver</>}</Typography>
+                            <Typography title="Your Name"><strong>{userInfo.name}</strong></Typography>
+                            <Typography variant="gray" title="Your Email">{userInfo.email}</Typography><br></br>
+                            <Typography variant="gray" title="Your UTORid">{userInfo.utorid}</Typography>
+                            <Typography variant="gray" title="Your Email">{userInfo.roomAccess && <><br></br>Hacklab Keycard Haver</>}</Typography>
                         </Box>
                     </Box>
                 </CardContent>
@@ -70,22 +71,15 @@ export const Settings = () => {
                         row
                         aria-labelledby="appearance-radio-label"
                         name="appearance-radio"
-                        // onChange={(e) =>
-                        //     fetch(process.env.REACT_APP_API_URL + "/accounts/modifyTheme", {
-                        //         method: "POST",
-                        //         headers: {
-                        //             "Content-Type": "application/json",
-                        //         },
-                        //         body: JSON.stringify({
-                        //             theme: e.target.value,
-                        //         }),
-                        //     })
-                        //         .then(() => {
-                        //             // reload the page
-                        //             window.location.reload();
-                        //         })
-                        // }
-                        value={userInfo["theme"] ?? null}
+                        onChange={(e) =>
+                            instance.post("/accounts/changetheme", {
+                                theme: e.target.value,
+                            })
+                                .then(() => {
+                                    fetchUserInfo();
+                                })
+                        }
+                        value={userInfo.theme}
                     >
                         <FormControlLabel value={THEME.DEFAULT} control={<Radio />} label="System Default" />
                         <FormControlLabel value={THEME.LIGHT} control={<Radio />} label="Light" />
