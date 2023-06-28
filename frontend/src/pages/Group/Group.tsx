@@ -52,17 +52,6 @@ export const Group = () => {
       return;
     }
     setGroup(data);
-  //   fetch(process.env.REACT_APP_API_URL + '/groups/search/byID/' + groupID, {
-  //     method: 'GET',
-  //   }).then(res => {
-  //     console.log(res)
-  //     return res.json();
-  //   }).then(data => {
-  //     console.log('data')
-  //     console.log(data);
-  //     setGroup(data);
-  //     setPeople(data.people);
-  //   })
   }
 
   useEffect(() => {
@@ -115,24 +104,17 @@ export const Group = () => {
     // })
   }
 
-  const delGroup = () => {
+  const delGroup = async () => {
     console.log('deleting', groupID);
   // TODO INTEGRATE
-
-    // fetch(process.env.REACT_APP_API_URL + '/groups/del/', {
-    //   method: 'POST',
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     id: groupID,
-    //   })
-    // }).then(res => {
-    //   return res.json();
-    // }).then(data => {
-    //   console.log(data);
-    //   navigate('/group', { replace: true });
-    // })
+    const {data, status} =await axios.delete(`/groups/${groupID}/`)
+    if (status !== 200) {
+      showSnackSev(data.message, "error");
+      return;
+    }
+    showSnackSev("Group deleted", "success")
+    navigate('/group', { replace: true });
   }
-
 
   const changeRole = async (utorid: string) => {
     console.log('promoting', utorid);
