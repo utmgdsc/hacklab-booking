@@ -52,6 +52,7 @@ const ActiveRequestCards = ({ active_requests, editThisRequest, cancelThisReques
             edit={editThisRequest}
             cancel={cancelThisRequest}
             viewOnly={false}
+            key={request.id}
         />
       })
     }
