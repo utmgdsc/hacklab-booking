@@ -16,7 +16,13 @@ import {
   Select,
   Divider,
 } from "@mui/material";
-import { React, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  React,
+  useEffect,
+  useState
+} from "react";
 import { forwardRef } from "react";
 import { DateTimePicker, ApproverSelect } from "../../components";
 import {
@@ -24,13 +30,14 @@ import {
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
 import dayjs from "dayjs";
+import {TransitionProps} from "@mui/material/transitions";
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
  * @param {*} scheduleDate the date to format
  * @return {string} the formatted date string
  */
-const getDateString = (scheduleDate) => {
+const getDateString = (scheduleDate : string) => {
   var d = new Date(scheduleDate);
   return d.toLocaleDateString("en-US", {
     weekday: "long",
@@ -49,7 +56,7 @@ const getDateString = (scheduleDate) => {
  * @param {*} scheduleDates the array of dates
  * @return {string} the formatted time string
  */
-const getTimeString = (scheduleDates) => {
+const getTimeString = (scheduleDates : string[]) => {
   var dStart = new Date(scheduleDates[0]);
   let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
   endDate = dayjs(endDate).add(1, "hour").toDate();
@@ -58,10 +65,14 @@ const getTimeString = (scheduleDates) => {
 };
 
 const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props}  children={undefined}/>;
 });
 
-export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
+export const EditBooking = ({ isOpen, reqID, setOpenEditRequest } : {
+    isOpen : boolean,
+    reqID : string,
+    setOpenEditRequest : (isOpen : boolean) => void
+}) => {
   const [userGroups, setUserGroups] = useState([]);
   // TODO INTEGRATE
   // useEffect(() => {
@@ -90,7 +101,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
 
   const [details, setDetails] = useState("");
   const [detailError, setDetailError] = useState(false);
-  const [dateError, setDateError] = useState(false);
+  const [dateError, setDateError] = useState<boolean | string>(false);
   const [datePastError, setDatePastError] = useState(false);
   const [calendarDate, setDate] = useState(dayjs(new Date()));
   const [calendarDateError, setCalendarDateError] = useState(false);
@@ -100,7 +111,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
   const [showSchedule, setShowSchedule] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [group, setGroup] = useState("");
+  const [group, setGroup] = useState<boolean | Group>(false);
   const [approvers, setApprovers] = useState([]);
   const [approversError, setApproversError] = useState(false);
   const open = Boolean(anchorEl);
@@ -142,14 +153,14 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       return;
     }
 
-    const modifiedRequest = {
-      group: group["_id"],
-      details: details,
-      title: details,
-      startTime: scheduleDates[0],
-      endTime: scheduleDates[scheduleDates.length - 1],
-      approvers: approvers,
-    };
+    // const modifiedRequest = {
+    //   group: group["_id"],
+    //   details: details,
+    //   title: details,
+    //   startTime: scheduleDates[0],
+    //   endTime: scheduleDates[scheduleDates.length - 1],
+    //   approvers: approvers,
+    // };
   // TODO INTEGRATE
     // fetch(process.env.REACT_APP_API_URL + "/requests/modifyRequest/" + reqID, {
     //   method: "POST",
@@ -160,15 +171,15 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
     setSubmitted(true);
   };
 
-  const handleDetails = (e) => {
+  const handleDetails = (e : ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setDetails(e.target.value);
   };
 
-  const handleScheduleDate = (dates) => {
+  const handleScheduleDate = (dates : Date[]) => {
     var currDate = 0;
     setDateError("");
     for (var i = 0; i < dates.length; i++) {
-      var d = new Date(dates[i]);
+      var d = dates[i];
       // if in the past
       if (d < new Date()) {
         setDateError("please select a date in the future");
@@ -225,7 +236,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
       fullScreen
       open={isOpen}
       onClose={handleClose}
-      TransitionComponent={Transition}
+      TransitionComponent={Transition as  React.JSXElementConstructor<TransitionProps & {children: React.ReactElement<any, any>}>}
     >
       <AppBar sx={{ position: "relative" }}>
         <Toolbar>
@@ -268,7 +279,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
               Booking Changed
             </Typography>
             <Typography component="p" variant="h5">
-              Group: {group.name}
+              Group: {(group as Group).name}
             </Typography>
             <Typography component="p" variant="h5">
               Details: {details}
@@ -316,7 +327,7 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
                       minWidth: "20em",
                     }}
                     onChange={(e) => {
-                      setGroup(e.target.value);
+                      setGroup(e.target.value as Group);
                       setShowSchedule(true);
                     }}
                   >
@@ -391,7 +402,9 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }) => {
                   handleScheduleDate={handleScheduleDate}
                   scheduleDates={scheduleDates}
                   setScheduleDates={setScheduleDates}
-                  reqID={reqID}
+                  // TODO update DateTimePicker to support updating existing requests
+                  // reqID={reqID}
+                  room={(reqInfo as BookingRequest).roomName}
                 />
 
                 {dateError && (
