@@ -22,7 +22,14 @@ import {
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 
-const columns = [
+interface UserTableRow {
+  [key: string]: any;
+  label: string;
+  dataKey: string;
+  subKey?: string;
+}
+
+const columns: UserTableRow[] = [
   { label: "UTORid", dataKey: "utorid" },
   { label: "Email", dataKey: "email" },
   { label: "Role", dataKey: "role" },
@@ -101,7 +108,7 @@ export const Admin = () => {
     if (rows) {
       if (filterApproval) {
         setRowsToDisplay(
-          rows.filter((row) => {
+          rows.filter((row: UserTableRow) => {
             return (
               row["accessGranted"] === false && row["needsAccess"] === true
             );
@@ -113,7 +120,7 @@ export const Admin = () => {
     }
   }, [filterApproval, rows]);
 
-  const needsApproval = (row, column) => {
+  const needsApproval = (row: any, column: UserTableRow) => {
     return (
       row["needsAccess"] &&
       column.dataKey === "accessGranted" &&
@@ -156,7 +163,7 @@ export const Admin = () => {
           data={rowsToDisplay}
           components={VirtuosoTableComponents}
           fixedHeaderContent={fixedHeaderContent}
-          itemContent={(index, row) => (
+          itemContent={(index, row: UserTableRow) => (
             <>
               {columns.map((column, index) => {
                 if (index === 3) {
