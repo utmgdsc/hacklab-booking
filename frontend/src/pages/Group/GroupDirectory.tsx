@@ -85,8 +85,7 @@ export const GroupDirectory = () => {
     useEffect(() => {
         axios.get('/groups')
             .then(res => {
-                console.log(res);
-                setMyGroups(res as unknown as FetchedGroup[]);
+                setMyGroups(res.data as FetchedGroup[]);
             })
             .catch(err => {
                 console.log(err);
@@ -144,15 +143,13 @@ export const GroupDirectory = () => {
                 </Box>
 
                 {
-                    myGroups.forEach((group) => {
-                        console.log(myGroups);
-
+                    myGroups.map((group) => {
                         return (
                             <GroupCard
                                 key={group.id}
                                 groupObj={group}
                             />
-                        )
+                        );
                     })
                 }
             </>
