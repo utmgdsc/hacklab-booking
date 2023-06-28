@@ -20,8 +20,10 @@ import { InitialsAvatar } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import axios from "../../axios";
+import { SnackbarContext } from "../../contexts/SnackbarContext";
 
 export const Group = () => {
+  const { showSnackSev } = useContext(SnackbarContext);
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -46,7 +48,7 @@ export const Group = () => {
   const getGroup = async () => {
     const { data, status } = await axios.get<FetchedGroup>('/groups/' + groupID);
     if (status !== 200) {
-      // TODO error handling
+      showSnackSev("Could not fetch group", "error");
       return;
     }
     setGroup(data);
@@ -139,7 +141,7 @@ export const Group = () => {
         role: isManager(utorid) ? 'member' : 'manager'
     });
     if (status !== 200) {
-        // TODO error handling
+        showSnackSev("Could not change role", "error");
         return;
     }
     await getGroup();

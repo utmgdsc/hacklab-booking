@@ -18,7 +18,7 @@ import { Settings } from "./pages/Settings";
 
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import { CssBaseline, PaletteMode, Snackbar, ThemeProvider, createTheme, useMediaQuery } from "@mui/material";
+import { Alert, AlertColor, CssBaseline, PaletteMode, Snackbar, ThemeProvider, createTheme, useMediaQuery } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { ErrorBoundary, RequireRole } from "./components";
 import { UserContext, defaultUser } from "./contexts/UserContext";
@@ -58,7 +58,7 @@ function App() {
    */
   const [queue, setQueue] = useState<SnackbarQueueItem[]>([]);
 
-  const enqueue = (message: string, action?: JSX.Element, content?: JSX.Element) => {
+  const showSnack = (message: string, action?: JSX.Element, content?: JSX.Element) => {
     console.log(queue);
 
     // if over 3, remove the first one
@@ -75,6 +75,10 @@ function App() {
     }]);
   }
 
+  const showSnackSev = (message: string, severity: AlertColor) => {
+    showSnack(null, null, <Alert severity={severity}>{message}</Alert>);
+  }
+
   /*
    * rest of the horse
    */
@@ -82,7 +86,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <ErrorBoundary>
         <UserContext.Provider value={{ userInfo, setUserInfo, fetchUserInfo }}>
-          <SnackbarContext.Provider value={{ showSnack: enqueue }}>
+          <SnackbarContext.Provider value={{ showSnack, showSnackSev }}>
             <CssBaseline enableColorScheme />
             <Router>
               <Routes>

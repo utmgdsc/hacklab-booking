@@ -20,8 +20,10 @@ import { UserContext } from "../../contexts/UserContext";
 import { SubPage } from "../../layouts/SubPage";
 import { ErrorPage } from "../../layouts/ErrorPage";
 import axios from "../../axios";
+import { SnackbarContext } from "../../contexts/SnackbarContext";
 
 export const CreateBooking = () => {
+  const { showSnackSev } = useContext(SnackbarContext);
   const { userInfo } = useContext(UserContext);
   const [dateError, setDateError] = useState<string | boolean>(false);
   const [room, setRoom] = useState<string>("");
@@ -90,8 +92,9 @@ export const CreateBooking = () => {
     if (status === 200) {
       setSubmitted(true);
       return;
+    } else {
+      showSnackSev("Could not create booking request", "error");
     }
-    // todo error handling
   };
 
   const handleScheduleDate = (dates: Date[]) => {
