@@ -10,6 +10,10 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
+import { SnackbarContext } from "../../contexts/SnackbarContext";
+
+import axios from "../../axios";
+
 interface RoleChangerProps {
   /** the utorid of the user whose role is being changed */
   utorid: string;
@@ -33,6 +37,8 @@ export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): 
   const [role, setRole] = useState<string>(userRole);
   const [open, setOpen] = useState<boolean>(false);
 
+  const { showSnack, showSnackSev } = React.useContext(SnackbarContext);
+
   const handleRoleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setRole(event.target.value);
   };
@@ -46,21 +52,17 @@ export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): 
   };
 
   const handleSave = () => {
-  //   fetch(process.env.REACT_APP_API_URL + "/accounts/changeRole/" + utorid, {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ role: role }),
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       console.log(`Changed ${utorid}'s role to ${data.role}`);
-  //       setUpdate(Math.random());
-  //     })
-  //   setOpen(false);
+    axios.put(`/accounts/changeRole/${utorid}`, { role: role })
+      .then(res => {
+        showSnack(`Changed ${utorid}'s role to ${res.data.role}`);
+        setUpdate(Math.random());
+      })
+      .catch(err => {
+        showSnackSev(`Failed to change ${utorid}'s role`, "error");
+      })
+      .finally(() => {
+        setOpen(false);
+      })
   };
 
   return (
