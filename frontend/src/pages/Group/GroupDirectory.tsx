@@ -1,33 +1,23 @@
-import React from "react";
 import {
-    Typography,
-    Button,
-    Card,
-    CardContent,
-    CardActions,
     Box,
-    Tooltip,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    useMediaQuery,
-    useTheme,
     TextField,
-    Chip,
-    Stack,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
-import { SubPage } from "../../layouts/SubPage";
-import { InitialsAvatar, GroupCard } from "../../components";
-import { UserContext } from "../../contexts/UserContext";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "../../axios";
+import { GroupCard } from "../../components";
 import { SnackbarContext } from "../../contexts/SnackbarContext";
+import { SubPage } from "../../layouts/SubPage";
 
 
 export const GroupDirectory = () => {
-    const { userInfo, setUserInfo } = useContext(UserContext);
     const { showSnackSev } = useContext(SnackbarContext);
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
@@ -40,47 +30,21 @@ export const GroupDirectory = () => {
     const handleClose = () => {
         setOpen(false);
     };
-    let [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
 
-    // useEffect(() => {
-    //     setMyGroups(userInfo.groups.reduce((obj, item) => (obj[item.id] = item, obj), {}))
-    // }, [userInfo.groups])
+    let [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
 
     const sendAddGroup = async () => {
         const { data, status } = await axios.post('/groups/create', {
             name: (document.getElementById("group-name") as HTMLInputElement).value,
-        })
-        if (status !== 200) {
+        });
+
+        if (status === 200) {
+            setMyGroups((array) => [...array, data]);
+            showSnackSev("Group created successfully", "success");
+        } else {
             showSnackSev("Failed to create group", "error");
         }
-        console.log(data);
-        setMyGroups(myGroups => ({ ...myGroups, [data.id]: data }));
-        userInfo.groups.push(data)
-        setUserInfo(userInfo);
-        // TODO INTEGRATE
-
-        // fetch(process.env.REACT_APP_API_URL + '/groups/create', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         name: document.getElementById("group-name").value,
-        //         // members: [userInfo.utorid],
-        //         // requests: [],
-        //     }),
-        // })
-        //     .then(res => {
-        //         return res.json();
-        //     })
-        //     .then(data => {
-        //         console.log(data);
-        //         window.location.reload(); // HACK
-        //     });
     }
-
-
-    // TODO INTEGRATE
 
     useEffect(() => {
         axios.get('/groups')
