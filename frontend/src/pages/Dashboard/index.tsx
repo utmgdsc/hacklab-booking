@@ -82,7 +82,7 @@ const PendingRequestCards = ({ pending_requests, onUpdate }: { pending_requests:
 )
 
 export const Dashboard = () => {
-  const { userInfo } = useContext(UserContext);
+  const { userInfo, fetchUserInfo } = useContext(UserContext);
   const [pending_requests, setPendingRequests] = useState<FetchedBookingRequest[]>([]);
   const [my_requests, setMyRequests] = useState<FetchedBookingRequest[]>([]);
   const [editRequestID, setEditRequestID] = useState<string|null>(null);
@@ -103,14 +103,10 @@ export const Dashboard = () => {
   };
 
   const cancelThisRequest = (reqID: string) => {
-    console.log(reqID, "cancel this request");
-
     // TODO: if request is completed, remove from calendar events
     axios.delete('/requests/' + reqID);
 
-    setMyRequests(
-      my_requests.filter((request) => request.id !== reqID)
-    );
+    fetchUserInfo();
   };
   const update = () => {
       axios.get<FetchedBookingRequest[]>('/requests').then(res=>res.data).then(data=>{
