@@ -87,22 +87,6 @@ export const ActiveRequestCard = ({ booking, edit, cancel, viewOnly = false, own
       error: true
     })
   }
-  const convertStatus = (status: BookingStatus) => {
-    switch (status) {
-      case "pending":
-        return 0;
-      case "needTCard":
-        return 1;
-      case "cancelled":
-        return 2;
-      case "denied":
-        return 3;
-      case "completed":
-        return 4;
-      default:
-        return 0;
-    }
-  };
 
   const handleEdit = () => {
     edit(booking.id);
@@ -136,7 +120,7 @@ export const ActiveRequestCard = ({ booking, edit, cancel, viewOnly = false, own
                 {ConvertDate(booking.startDate)} from {getTime()} • {booking.room.friendlyName} • {booking.group.name} • {booking.author.name}
               </Typography>
             </Box>
-            {!viewOnly && (
+            {(!viewOnly && booking.status !== "cancelled") && (
               <Box
                 sx={{
                   display: "flex",
