@@ -23,51 +23,99 @@ import axios from "../../axios";
 import { SnackbarContext } from "../../contexts/SnackbarContext";
 
 export const CreateBooking = () => {
+  /** context to show snackbars */
   const { showSnackSev } = useContext(SnackbarContext);
+  /** user info */
   const { userInfo } = useContext(UserContext);
-  const [dateError, setDateError] = useState<string | boolean>(false);
-  const [room, setRoom] = useState<string>("");
+  /** currently selected room name */
+  const [roomName, setRoomName] = useState<string>("");
+  /** list of rooms */
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [detailError, setDetailError] = useState(false);
+  /** booking details */
   const [details, setDetails] = useState("");
+  /** currently selected group name */
   const [group, setGroup] = useState<string>("");
+  /** currently selected list of dates */
   const [scheduleDates, setScheduleDates] = useState([]);
-  const [showSchedule, setShowSchedule] = useState(false);
+  /** whether the request was submitted */
   const [submitted, setSubmitted] = useState(false);
+  /** whether the date is valid */
   const [validDate, setValidDate] = useState(false);
+  /** list of approvers */
   const [approvers, setApprovers] = useState([]);
-  const [approversError, setApproversError] = useState(false);
 
+  // get list of rooms
   useEffect(() => {
     axios.get<Room[]>("/rooms").then((res) => {
       setRooms(res.data);
     });
   }, []);
 
+  /**
+   * Checks if the date is not blocked
+   * @param dates list of dates
+   */
+    const checkDate = async (dates: Date[]) => {
+      axios.get(`/rooms/${roomName}/blockeddates`, {
+        params: {
+          start_date: dates[0],
+          end_date: dates[dates.length - 1],
+        }
+      })
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            if (res.data.length > 0) {
+              setValidDate(false);
+              showSnackSev("This time overlaps with another booking, please choose a different time and/or date", "error");
+              setScheduleDates([]);
+            } else {
+              setValidDate(true);
+            }
+          } else {
+            setValidDate(false);
+            showSnackSev("An error occurred while checking the date, please try again", "error");
+            setScheduleDates([]);
+          }
+        });
+    };
+
+  /**
+   * Validate the booking request and submit if valid
+   */
   const handleFinish = async () => {
     let finish = true;
 
     if (details === "") {
-      setDetailError(true);
+      showSnackSev("An explanation is required to submit", "error");
       finish = false;
-    } else {
-      setDetailError(false);
     }
 
-    if (scheduleDates.length === 0 && showSchedule) {
+    if (scheduleDates.length === 0) {
       showSnackSev("Please select a time", "error");
+      finish = false;
     }
 
     if (approvers.length === 0) {
-      setApproversError(true);
+      showSnackSev("Please select an approver", "error");
       finish = false;
-    } else {
-      setApproversError(false);
     }
 
-    if (!validDate) {
+    if (group === "") {
+      showSnackSev("Please select a group", "error");
       finish = false;
     }
+
+    if (roomName === "") {
+      showSnackSev("Please select a room", "error");
+      finish = false;
+    }
+
+    await checkDate(scheduleDates).then(() => {
+      if (!validDate) {
+        finish = false;
+      }
+    })
 
     if (!finish) {
       return;
@@ -75,18 +123,17 @@ export const CreateBooking = () => {
 
     // compile into json object
     const booking = {
-      roomName: room,
+      roomName,
       owner: userInfo["utorid"],
       groupId: group,
       description: details,
       title: details,
       startDate: scheduleDates[0],
       endDate: scheduleDates[scheduleDates.length - 1],
-      approvers: approvers,
+      approvers,
     };
 
     console.log(booking);
-    console.log(group);
 
     const { status, data } = await axios.post("/requests/create", booking);
     if (status === 200) {
@@ -99,7 +146,6 @@ export const CreateBooking = () => {
 
   const handleScheduleDate = (dates: Date[]) => {
     let currDate = 0;
-    setDateError("");
     for (let i = 0; i < dates.length; i++) {
       const d = dates[i];
       // if in the past
@@ -121,29 +167,9 @@ export const CreateBooking = () => {
 
     setValidDate(true);
 
-    axios.get(`/rooms/${room}/blockeddates`, {
-      params: {
-        start_date: dates[0],
-        end_date: dates[dates.length - 1],
-      }
-    })
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          if (res.data.length > 0) {
-            setValidDate(false);
-            showSnackSev("This time overlaps with another booking, please choose a different time and/or date", "error");
-            setScheduleDates([]);
-          } else {
-            setValidDate(true);
-            setDateError("");
-          }
-        } else {
-          setValidDate(false);
-          showSnackSev("An error occurred while checking the date, please try again", "error");
-          setScheduleDates([]);
-        }
-      });
+    if (dates.length > 0) {
+      checkDate(dates);
+    }
 
     const newDates = dates.map((date) => {
       return date;
@@ -234,11 +260,11 @@ export const CreateBooking = () => {
               <Select
                 labelId="room-label"
                 id="room-select"
-                value={room}
+                value={roomName}
                 fullWidth
                 label="Room"
                 onChange={(e) => {
-                  setRoom(e.target.value);
+                  setRoomName(e.target.value);
                 }}
               >
                 {rooms.map((room) => {
@@ -253,7 +279,7 @@ export const CreateBooking = () => {
           </Box>
         )}
 
-        {group && room && (
+        {group && roomName && (
           <Box
             sx={{
               marginBottom: "4em",
@@ -263,9 +289,7 @@ export const CreateBooking = () => {
             <Divider>Provide an explanation</Divider>
 
             <TextField
-              error={detailError}
               fullWidth
-              helperText={detailError ? "An explanation is required" : ""}
               id="explanation-field"
               label="Please provide an explanation"
               minRows={4}
@@ -274,14 +298,12 @@ export const CreateBooking = () => {
               value={details}
               onChange={(e) => {
                 setDetails(e.target.value);
-                setDetailError(false);
-                setShowSchedule(true);
               }}
               sx={{ marginTop: "1em" }}
             />
           </Box>
         )}
-        {showSchedule && (
+        {(group && roomName && (details !== "")) && (
           <>
             <Divider sx={{ marginBottom: "2em" }}>
               Choose Approvers to review your request
@@ -297,19 +319,10 @@ export const CreateBooking = () => {
               }}
             >
               <ApproverSelect setApprovers={setApprovers} />
-              {approversError && (
-                <Typography
-                  component="p"
-                  color="error"
-                  sx={{ marginTop: "1em" }}
-                >
-                  * please select an approver
-                </Typography>
-              )}
             </Box>
           </>
         )}
-        {showSchedule && (
+        {(group && roomName && (details !== "") && approvers.length > 0) && (
           <Box
             sx={{
               marginBottom: "4em",
@@ -322,19 +335,19 @@ export const CreateBooking = () => {
               handleScheduleDate={handleScheduleDate}
               scheduleDates={scheduleDates}
               setScheduleDates={setScheduleDates}
-              room={room}
+              room={roomName}
             />
           </Box>
         )}
 
-        {showSchedule && group && (
+        {(group && roomName && (details !== "") && approvers.length > 0) && (
           <Button
             variant="contained"
             size="large"
             onClick={() => {
               handleFinish();
             }}
-            disabled={!validDate}
+            disabled={!validDate || scheduleDates.length <= 0}
           >
             Finish
           </Button>

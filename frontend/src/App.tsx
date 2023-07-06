@@ -59,8 +59,6 @@ function App() {
   const [queue, setQueue] = useState<SnackbarQueueItem[]>([]);
 
   const showSnack = (message: string, action?: JSX.Element, content?: JSX.Element) => {
-    console.log(queue);
-
     // if over 3, remove the first one
     if (queue.length > 3) {
       setQueue((array) => array.slice(1));
@@ -76,7 +74,7 @@ function App() {
   }
 
   const showSnackSev = (message: string, severity: AlertColor) => {
-    showSnack(null, null, <Alert severity={severity}>{message}</Alert>);
+    showSnack(null, null, <Alert elevation={6} severity={severity}>{message}</Alert>);
   }
 
   /*
