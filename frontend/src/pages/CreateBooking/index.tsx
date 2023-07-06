@@ -55,7 +55,7 @@ export const CreateBooking = () => {
     }
 
     if (scheduleDates.length === 0 && showSchedule) {
-      setDateError("please select a time");
+      showSnackSev("Please select a time", "error");
     }
 
     if (approvers.length === 0) {
@@ -104,14 +104,14 @@ export const CreateBooking = () => {
       const d = dates[i];
       // if in the past
       if (d < new Date()) {
-        setDateError("please select a date in the future");
+        showSnackSev("Please select a date in the future", "error");
         setScheduleDates([]);
         return;
       }
 
       // if not the same day
       if (d.getDate() !== currDate && i > 0) {
-        setDateError("please only select one day");
+        showSnackSev("Please only select one day", "error");
         setScheduleDates([]);
         return;
       }
@@ -132,9 +132,7 @@ export const CreateBooking = () => {
         if (res.status === 200) {
           if (res.data.length > 0) {
             setValidDate(false);
-            setDateError(
-              "this time overlaps with another booking, please choose a different time and/or date"
-            );
+            showSnackSev("This time overlaps with another booking, please choose a different time and/or date", "error");
             setScheduleDates([]);
           } else {
             setValidDate(true);
@@ -142,9 +140,7 @@ export const CreateBooking = () => {
           }
         } else {
           setValidDate(false);
-          setDateError(
-            "an error occurred while checking the date, please try again"
-          );
+          showSnackSev("An error occurred while checking the date, please try again", "error");
           setScheduleDates([]);
         }
       });
@@ -328,12 +324,6 @@ export const CreateBooking = () => {
               setScheduleDates={setScheduleDates}
               room={room}
             />
-
-            {dateError && (
-              <Typography component="p" color="error" sx={{ marginTop: "1em" }}>
-                * {dateError}
-              </Typography>
-            )}
           </Box>
         )}
 

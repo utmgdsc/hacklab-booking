@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
 import axios from "../../axios";
-import {SelectChangeEvent} from "@mui/material/Select/SelectInput";
+import { SelectChangeEvent } from "@mui/material/Select/SelectInput";
 
 export const ApproverSelect = ({ setApprovers }: {
-    setApprovers: (approvers: string[]) => void
+  setApprovers: (approvers: string[]) => void
 }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState([]);
   const [approvers, setApproversBackend] = useState([]);
   useEffect(() => {
-      axios.get('/accounts/approvers').then(({data}) => {
-            setApproversBackend(data);
-      });
+    axios.get('/accounts/approvers').then(({ data }) => {
+      setApproversBackend(data);
+    });
   }, []);
 
   const handleOpen = () => {
@@ -23,7 +23,7 @@ export const ApproverSelect = ({ setApprovers }: {
     setOpen(false);
   };
 
-  const handleSelect = (event : SelectChangeEvent<string[]>) => {
+  const handleSelect = (event: SelectChangeEvent<string[]>) => {
     setSelected(event.target.value as string[]);
     setApprovers(event.target.value as string[]);
   };
