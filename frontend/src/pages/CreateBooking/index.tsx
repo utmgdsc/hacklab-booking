@@ -120,32 +120,34 @@ export const CreateBooking = () => {
     }
 
     setValidDate(true);
-    // if (dates.length > 0) {
-    //   fetch(
-    //     process.env.REACT_APP_API_URL +
-    //       "/requests/checkDate/" +
-    //       dates[0] +
-    //       "/" +
-    //       dates[dates.length - 1] +
-    //       "/null",
-    //     {
-    //       method: "GET",
-    //       headers: { "Content-Type": "application/json" },
-    //     }
-    //   ).then((res) => {
-    //     console.log(res);
-    //     if (res.status === 200) {
-    //       setValidDate(true);
-    //       setDateError("");
-    //     } else if (res.status === 400) {
-    //       setValidDate(false);
-    //       setDateError(
-    //         "this time overlaps with another booking, please choose a different time and/or date"
-    //       );
-    //       setScheduleDates([]);
-    //     }
-    //   });
-    // } else setValidDate(false);
+
+    axios.get(`/rooms/${room}/blockeddates`, {
+      params: {
+        start_date: dates[0],
+        end_date: dates[dates.length - 1],
+      }
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          if (res.data.length > 0) {
+            setValidDate(false);
+            setDateError(
+              "this time overlaps with another booking, please choose a different time and/or date"
+            );
+            setScheduleDates([]);
+          } else {
+            setValidDate(true);
+            setDateError("");
+          }
+        } else {
+          setValidDate(false);
+          setDateError(
+            "an error occurred while checking the date, please try again"
+          );
+          setScheduleDates([]);
+        }
+      });
 
     const newDates = dates.map((date) => {
       return date;
