@@ -1,17 +1,17 @@
 import { createContext } from 'react';
 
 export const defaultUser: FetchedUser = {
-    email: "hatsune.miku@utoronto.ca",
-    utorid: "mikuhatsune",
-    name: "Loading...",
-    role: "student",
-    theme: "system",
+    email: 'hatsune.miku@utoronto.ca',
+    utorid: 'mikuhatsune',
+    name: 'Loading...',
+    role: 'student',
+    theme: 'system',
     groups: [],
     invited: [],
     requests: [],
     manager: [],
-    roomAccess: []
-}
+    roomAccess: [],
+};
 
 /**
  * The context for the user's information.
@@ -21,7 +21,7 @@ export const UserContext = createContext({
      * The user's information. This is set to defaultUser until the user's
      * information is fetched from the backend.
      */
-    userInfo:defaultUser,
+    userInfo: defaultUser,
     /**
      * Sets the user's information to the global state.
      * @param user the user's information to set
@@ -31,5 +31,5 @@ export const UserContext = createContext({
      * Fetches the user's information from the backend and sets it to
      * the global state.
      */
-    fetchUserInfo: async () => {}
+    fetchUserInfo: async () => {},
 });

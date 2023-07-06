@@ -12,15 +12,15 @@ import {
     TextField,
     Typography,
     useMediaQuery,
-    useTheme
-} from "@mui/material";
-import React, { useContext, useEffect } from "react";
+    useTheme,
+} from '@mui/material';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { InitialsAvatar, ConfirmationDialog } from "../../components";
-import { UserContext } from "../../contexts/UserContext";
-import { SubPage } from "../../layouts/SubPage";
-import axios from "../../axios";
-import { SnackbarContext } from "../../contexts/SnackbarContext";
+import { InitialsAvatar, ConfirmationDialog } from '../../components';
+import { UserContext } from '../../contexts/UserContext';
+import { SubPage } from '../../layouts/SubPage';
+import axios from '../../axios';
+import { SnackbarContext } from '../../contexts/SnackbarContext';
 
 export const Group = () => {
     const { showSnackSev } = useContext(SnackbarContext);
@@ -31,12 +31,12 @@ export const Group = () => {
     const { id: groupID } = useParams();
 
     const [group, setGroup] = React.useState<FetchedGroup>({
-        id: "",
+        id: '',
         invited: [],
         managers: [],
         members: [],
-        name: "",
-        requests: []
+        name: '',
+        requests: [],
     });
     const [inviteUtorid, setInviteUtorid] = React.useState('');
     const navigate = useNavigate();
@@ -49,8 +49,8 @@ export const Group = () => {
      */
     const isManager = (user: User | string): boolean => {
         const userUtorid = typeof user === 'string' ? user : user.utorid;
-        return !!group.managers.find(x => x.utorid === userUtorid);
-    }
+        return !!group.managers.find((x) => x.utorid === userUtorid);
+    };
 
     /**
      * Void function to get the group information
@@ -58,11 +58,11 @@ export const Group = () => {
     const getGroup = async () => {
         const { data, status } = await axios.get<FetchedGroup>('/groups/' + groupID);
         if (status !== 200) {
-            showSnackSev("Could not fetch group", "error");
+            showSnackSev('Could not fetch group', 'error');
             return;
         }
         setGroup(data);
-    }
+    };
 
     useEffect(() => {
         getGroup();
@@ -74,16 +74,16 @@ export const Group = () => {
      */
     const addPerson = async (utorid: string) => {
         const { status } = await axios.post(`/groups/${groupID}/invite/`, {
-            utorid
+            utorid,
         });
         if (status === 200) {
-            showSnackSev("Person added", "success");
+            showSnackSev('Person added', 'success');
         } else {
-            showSnackSev("Could not add person", "error");
+            showSnackSev('Could not add person', 'error');
             return;
         }
         await getGroup();
-    }
+    };
 
     /**
      * Void function to remove  someone from a group
@@ -91,17 +91,17 @@ export const Group = () => {
      */
     const removePerson = async (utorid: string) => {
         const { status } = await axios.post(`/groups/${groupID}/remove/`, {
-            utorid
+            utorid,
         });
 
         if (status === 200) {
-            showSnackSev("Person removed", "success");
+            showSnackSev('Person removed', 'success');
         } else {
-            showSnackSev("Could not remove person", "error");
+            showSnackSev('Could not remove person', 'error');
             return;
         }
         await getGroup();
-    }
+    };
 
     /**
      * Void function to delete a group
@@ -110,13 +110,13 @@ export const Group = () => {
         const { status } = await axios.delete(`/groups/${groupID}`);
 
         if (status === 200) {
-            showSnackSev("Group deleted", "success");
+            showSnackSev('Group deleted', 'success');
             navigate('/group', { replace: true }); // group doesnt exist, so go back
         } else {
-            showSnackSev("Could not delete group", "error");
+            showSnackSev('Could not delete group', 'error');
             return;
         }
-    }
+    };
 
     /**
      * Void function to change the role of a person
@@ -125,40 +125,51 @@ export const Group = () => {
     const changeRole = async (utorid: string) => {
         const { status } = await axios.post(`/groups/${groupID}/changerole/`, {
             utorid,
-            role: isManager(utorid) ? 'member' : 'manager'
+            role: isManager(utorid) ? 'member' : 'manager',
         });
         if (status !== 200) {
-            showSnackSev("Could not change role", "error");
+            showSnackSev('Could not change role', 'error');
             return;
         }
         await getGroup();
-    }
+    };
 
     return (
         <SubPage name={group.name}>
             {/* menu bar */}
             <Box
                 sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "1em",
-                    justifyContent: "flex-end",
-                }}>
-                <Button variant="contained" onClick={() => { setOpen(true); }}>
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: '1em',
+                    justifyContent: 'flex-end',
+                }}
+            >
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        setOpen(true);
+                    }}
+                >
                     Add Student
                 </Button>
-                <Button color="error" onClick={() => { setOpenDelete(true); }}>
+                <Button
+                    color="error"
+                    onClick={() => {
+                        setOpenDelete(true);
+                    }}
+                >
                     Delete Group
                 </Button>
                 <Dialog
                     fullScreen={fullScreen}
                     open={open}
-                    onClose={() => { setOpen(false); }}
+                    onClose={() => {
+                        setOpen(false);
+                    }}
                     aria-labelledby="add-student-title"
                 >
-                    <DialogTitle id="add-student-title">
-                        {"Add a student to your group"}
-                    </DialogTitle>
+                    <DialogTitle id="add-student-title">{'Add a student to your group'}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
                             To add a student to your group, please enter their UTORid below.
@@ -176,62 +187,78 @@ export const Group = () => {
                     </DialogContent>
                     <DialogActions
                         sx={{
-                            margin: "1em",
+                            margin: '1em',
                         }}
                     >
-                        <Button onClick={() => { setOpen(false); }}>Cancel</Button>
-                        <Button onClick={() => { setOpen(false); addPerson(inviteUtorid); setInviteUtorid('') }} variant="contained">Add</Button>
+                        <Button
+                            onClick={() => {
+                                setOpen(false);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                setOpen(false);
+                                addPerson(inviteUtorid);
+                                setInviteUtorid('');
+                            }}
+                            variant="contained"
+                        >
+                            Add
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </Box>
 
             {/* list of people in the group */}
-            {
-                group.members.map((person) => (
-                    <Card key={person.utorid}>
-                        <CardContent
-                            sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                gap: "1em",
-                            }}>
-                            <Box>
-                                <InitialsAvatar name={person.name} />
-                            </Box>
-                            <Box>
-                                <Typography variant="h5">{person.name} <Typography sx={{ color: "grey", display: "inline" }}>({person.utorid})</Typography></Typography>
-                                {isManager(person) ? <Typography color="success">Group manager</Typography> : null}
-                                <Typography variant="body1">{person.email}</Typography>
-                            </Box>
-                        </CardContent>
-                        {userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
-                            <CardActions>
+            {group.members.map((person) => (
+                <Card key={person.utorid}>
+                    <CardContent
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: '1em',
+                        }}
+                    >
+                        <Box>
+                            <InitialsAvatar name={person.name} />
+                        </Box>
+                        <Box>
+                            <Typography variant="h5">
+                                {person.name}{' '}
+                                <Typography sx={{ color: 'grey', display: 'inline' }}>({person.utorid})</Typography>
+                            </Typography>
+                            {isManager(person) ? <Typography color="success">Group manager</Typography> : null}
+                            <Typography variant="body1">{person.email}</Typography>
+                        </Box>
+                    </CardContent>
+                    {userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
+                        <CardActions>
+                            <Button
+                                onClick={() => {
+                                    changeRole(person.utorid);
+                                }}
+                            >
+                                {isManager(person) ? 'Demote to Member' : 'Make Admin'}
+                            </Button>
 
-                                <Button
-                                    onClick={() => {
-                                        changeRole(person.utorid);
-                                    }}
-                                >
-                                    {isManager(person) ? 'Demote to Member' : 'Make Admin'}
-                                </Button>
-
-                                <Button
-                                    color="error"
-                                    onClick={() => {
-                                        removePerson(person.utorid);
-                                        if (userInfo.utorid === person.utorid) {
-                                            navigate('/group', { replace: true });
-                                        }
-                                    }}
-                                >
-                                    Remove Student
-                                </Button>
-                            </CardActions>
-                        )}
-                    </Card>
-                ))
-            }
+                            <Button
+                                color="error"
+                                onClick={() => {
+                                    removePerson(person.utorid);
+                                    if (userInfo.utorid === person.utorid) {
+                                        navigate('/group', { replace: true });
+                                    }
+                                }}
+                            >
+                                Remove Student
+                            </Button>
+                        </CardActions>
+                    )}
+                </Card>
+            ))}
             <ConfirmationDialog
                 open={openDelete}
                 setOpen={setOpenDelete}

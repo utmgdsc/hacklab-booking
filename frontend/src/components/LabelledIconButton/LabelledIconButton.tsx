@@ -20,28 +20,28 @@ export const LabelledIconButton = ({ icon, label, color, ...props }: LabelledIco
             <ButtonBase
                 aria-label={label}
                 sx={{
-                    color: "white",
-                    borderRadius: "25%",
-                    margin: "0.5em",
+                    color: 'white',
+                    borderRadius: '25%',
+                    margin: '0.5em',
                     background: color,
-                    width: "7em",
-                    height: "7em",
+                    width: '7em',
+                    height: '7em',
                 }}
                 {...props}
             >
                 {icon}
-            </ButtonBase >
+            </ButtonBase>
             <Typography
                 sx={{
                     color: theme.palette.text.primary,
-                    display: "block",
-                    overflowWrap: "anywhere",
-                    textAlign: "center",
-                    width: "6.5em",
+                    display: 'block',
+                    overflowWrap: 'anywhere',
+                    textAlign: 'center',
+                    width: '6.5em',
                 }}
             >
-                    {label}
+                {label}
             </Typography>
         </>
     );
-}
+};

@@ -1,13 +1,11 @@
-import {
-    Box
-} from "@mui/material";
-import dayjs from "dayjs";
-import { useState, useEffect } from "react";
+import { Box } from '@mui/material';
+import dayjs from 'dayjs';
+import { useState, useEffect } from 'react';
 
 import { CustomScheduleSelector } from './CustomScheduleSelector';
 import { PrevNextWeek } from './PrevNextWeek';
 import { GetMonday } from '../GetMonday/GetMonday';
-import axios from "../../axios";
+import axios from '../../axios';
 
 /**
  * A Google Calendar and When2meet style date and time picker
@@ -16,7 +14,17 @@ import axios from "../../axios";
  * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
-export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates,room }: {room: string, handleScheduleDate : (dates: Date[]) => void, scheduleDates: Date[], setScheduleDates: (dates: string[]) => void }) => {
+export const DateTimePicker = ({
+    handleScheduleDate,
+    scheduleDates,
+    setScheduleDates,
+    room,
+}: {
+    room: string;
+    handleScheduleDate: (dates: Date[]) => void;
+    scheduleDates: Date[];
+    setScheduleDates: (dates: string[]) => void;
+}) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
     const [pendingDates, setPendingDates] = useState([]);
@@ -28,23 +36,25 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
      *
      * @param {date} startDate the start date of the week to get blocked dates for
      */
-    const handleBlockedDates = async (startDate:Date) => {
+    const handleBlockedDates = async (startDate: Date) => {
         // the end date is 7 days after the start date
-        const startMonday = dayjs(startDate).startOf("week");
-        const endDate = dayjs(startMonday).add(7, "day").toDate();
+        const startMonday = dayjs(startDate).startOf('week');
+        const endDate = dayjs(startMonday).add(7, 'day').toDate();
 
-        const {data} = await axios.get<{bookedRange:string[],status: BookingStatus }[]>(`/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`);
-        const blocked: Date[] = []
-        const pending: Date[] = []
+        const { data } = await axios.get<{ bookedRange: string[]; status: BookingStatus }[]>(
+            `/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`,
+        );
+        const blocked: Date[] = [];
+        const pending: Date[] = [];
         data.forEach((booking) => {
-            const {bookedRange: range, status} = booking;
-            let start = dayjs(range[0]).startOf("hour");
-            const end = dayjs(range[1]).endOf("hour");
+            const { bookedRange: range, status } = booking;
+            let start = dayjs(range[0]).startOf('hour');
+            const end = dayjs(range[1]).endOf('hour');
             while (start.isBefore(end)) {
-                (status === "pending" ? pending : blocked).push(start.toDate());
-                start = start.add(1, "hour");
+                (status === 'pending' ? pending : blocked).push(start.toDate());
+                start = start.add(1, 'hour');
             }
-        })
+        });
         setBlockedDates(blocked);
         setPendingDates(pending);
     };
@@ -56,29 +66,28 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
     return (
         <>
             <PrevNextWeek
-                    calendarDate={calendarDate}
-                    setDate={setDate}
-                    setScheduleDates={setScheduleDates}
-                    handleBlockedDates={handleBlockedDates}
+                calendarDate={calendarDate}
+                setDate={setDate}
+                setScheduleDates={setScheduleDates}
+                handleBlockedDates={handleBlockedDates}
             />
             <Box
                 onMouseDown={() => {
                     setScheduleDates([]);
                 }}
-
                 sx={{
-                    marginBottom: "1em",
-                    width: "100%",
+                    marginBottom: '1em',
+                    width: '100%',
                 }}
             >
                 <CustomScheduleSelector
-                        scheduleDates={scheduleDates}
-                        handleScheduleDate={handleScheduleDate}
-                        calendarDate={calendarDate.toDate()}
-                        blockedDates={blockedDates}
-                        pendingDates={pendingDates}
+                    scheduleDates={scheduleDates}
+                    handleScheduleDate={handleScheduleDate}
+                    calendarDate={calendarDate.toDate()}
+                    blockedDates={blockedDates}
+                    pendingDates={pendingDates}
                 />
             </Box>
         </>
     );
-}
+};

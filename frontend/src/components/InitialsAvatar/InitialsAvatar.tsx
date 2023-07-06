@@ -1,4 +1,4 @@
-import { Avatar } from "@mui/material";
+import { Avatar } from '@mui/material';
 
 interface ColorHashProps {
     /** the name to get the hash of */
@@ -11,7 +11,7 @@ interface ColorHashProps {
  * get a hash of a string that is also a color code
  * @returns {string} the color code in hsl format
  */
-const colorHash = ({ name = "", lightness = 50 }: ColorHashProps): string => {
+const colorHash = ({ name = '', lightness = 50 }: ColorHashProps): string => {
     let hash = 95;
 
     // use djb2 algorithm to get a hash of the name
@@ -36,10 +36,16 @@ interface InitialsAvatarProps {
  * @param {string} name the name to get the initials of
  * @returns {JSX.Element} the avatar with the initials
  */
-export const InitialsAvatar = ({ name = "", ...props }: InitialsAvatarProps): JSX.Element => {
+export const InitialsAvatar = ({ name = '', ...props }: InitialsAvatarProps): JSX.Element => {
     return (
-        <Avatar alt={name} style={{ backgroundColor: colorHash({ name }), color: "white" }} {...props}>
-            { name.match(/(^\S\S?|\s\S)?/g).map(v => v.trim()).join("").match(/(^\S|\S$)?/g).join("").toLocaleUpperCase()}
+        <Avatar alt={name} style={{ backgroundColor: colorHash({ name }), color: 'white' }} {...props}>
+            {name
+                .match(/(^\S\S?|\s\S)?/g)
+                .map((v) => v.trim())
+                .join('')
+                .match(/(^\S|\S$)?/g)
+                .join('')
+                .toLocaleUpperCase()}
         </Avatar>
     );
 };

@@ -1,11 +1,6 @@
-import {
-    CheckCircle as CheckCircleIcon
-} from "@mui/icons-material";
-import {
-    Container,
-    Typography
-} from "@mui/material";
-import dayjs from "dayjs";
+import { CheckCircle as CheckCircleIcon } from '@mui/icons-material';
+import { Container, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
@@ -14,11 +9,11 @@ import dayjs from "dayjs";
  */
 const getDateString = (scheduleDate: Date | string): string => {
     var d = new Date(scheduleDate);
-    return d.toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
+    return d.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
     });
 };
 
@@ -58,23 +53,28 @@ interface BookingSubmittedProps {
  * @param {string} title the title of the page
  * @returns the page that is displayed after a booking is submitted
  */
-export const BookingSubmitted = ({groupName, details, scheduleDates, title = "Booking Submitted"}: BookingSubmittedProps) => {
+export const BookingSubmitted = ({
+    groupName,
+    details,
+    scheduleDates,
+    title = 'Booking Submitted',
+}: BookingSubmittedProps) => {
     return (
         <Container
             sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-around",
-                alignItems: "center",
-                flexWrap: "nowrap",
-                marginBottom: "2em",
-                gap: "1em",
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                flexWrap: 'nowrap',
+                marginBottom: '2em',
+                gap: '1em',
             }}
         >
             <CheckCircleIcon
                 sx={{
-                    fontSize: "10em",
-                    color: "green",
+                    fontSize: '10em',
+                    color: 'green',
                 }}
             />
 
@@ -94,5 +94,5 @@ export const BookingSubmitted = ({groupName, details, scheduleDates, title = "Bo
                 Time: {getTimeString(scheduleDates)}
             </Typography>
         </Container>
-    )
-}
+    );
+};

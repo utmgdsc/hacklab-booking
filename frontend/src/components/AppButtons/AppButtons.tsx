@@ -1,6 +1,6 @@
-import { LabelledIconButton } from "..";
-import { Link } from "react-router-dom";
-import { Box, Tooltip } from "@mui/material";
+import { LabelledIconButton } from '..';
+import { Link } from 'react-router-dom';
+import { Box, Tooltip } from '@mui/material';
 
 /**
  * An object that contains the information needed to render a
@@ -34,26 +34,26 @@ interface AppButtonsProps {
  * @returns {JSX.Element} - the rendered list of LabelledIconButtons
  */
 export const AppButtons = ({ ButtonsToRender }: AppButtonsProps): JSX.Element => (
-    <Box sx={{
-        display: "flex",
-        flexDirection: "row",
-        flexGrow: 1,
-        flexWrap: "no-wrap",
-        height: "auto",
-        marginBottom: "2em",
-        marginTop: "2em",
-        overflowX: "auto",
-    }}>
-        {ButtonsToRender.map((button: AppButton) => button.hidden ? null : (
-            <Tooltip title={button.title} arrow placement="top" key={button.href}>
-                <Link to={button.href} style={{ textDecoration: "none" }}>
-                    <LabelledIconButton
-                        icon={button.icon}
-                        color={button.color}
-                        label={button.label}
-                    />
-                </Link>
-            </Tooltip>
-        ))}
+    <Box
+        sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexGrow: 1,
+            flexWrap: 'no-wrap',
+            height: 'auto',
+            marginBottom: '2em',
+            marginTop: '2em',
+            overflowX: 'auto',
+        }}
+    >
+        {ButtonsToRender.map((button: AppButton) =>
+            button.hidden ? null : (
+                <Tooltip title={button.title} arrow placement="top" key={button.href}>
+                    <Link to={button.href} style={{ textDecoration: 'none' }}>
+                        <LabelledIconButton icon={button.icon} color={button.color} label={button.label} />
+                    </Link>
+                </Tooltip>
+            ),
+        )}
     </Box>
 );

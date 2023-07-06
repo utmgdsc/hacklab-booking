@@ -1,11 +1,7 @@
-import {
-    Box,
-    Typography,
-    useTheme
-} from "@mui/material";
-import React from "react";
-import ScheduleSelector from "react-schedule-selector";
-import { GetMonday } from "../../components";
+import { Box, Typography, useTheme } from '@mui/material';
+import React from 'react';
+import ScheduleSelector from 'react-schedule-selector';
+import { GetMonday } from '../../components';
 
 /**
  * A custom schedule selector in the format
@@ -18,17 +14,17 @@ const RenderDateLabel = (date: Date) => {
     return (
         <Box
             sx={{
-                textAlign: "center",
-                marginBottom: "0.5em",
+                textAlign: 'center',
+                marginBottom: '0.5em',
             }}
         >
-            {date.toLocaleDateString("en-US", {
-                weekday: "short",
+            {date.toLocaleDateString('en-US', {
+                weekday: 'short',
             })}
             <Typography component="p" variant="h5">
-                {date.toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "long",
+                {date.toLocaleDateString('en-US', {
+                    day: 'numeric',
+                    month: 'long',
                 })}
             </Typography>
         </Box>
@@ -47,17 +43,17 @@ const RenderTimeLabel = (time: Date) => {
             component="p"
             variant="subtitle2"
             color="gray"
-            sx={{ textAlign: "right", marginRight: "0.5em" }}
+            sx={{ textAlign: 'right', marginRight: '0.5em' }}
             fontSize="small"
         >
             {time
-                .toLocaleTimeString("en-US", {
-                    hour: "numeric",
-                    minute: "numeric",
+                .toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
                     hour12: true,
                 })
-                .replace(":00", "")
-                .replace(" ", "")
+                .replace(':00', '')
+                .replace(' ', '')
                 .toLowerCase()}
         </Typography>
     );
@@ -73,29 +69,41 @@ const RenderTimeLabel = (time: Date) => {
  * @param {Date[]} pendingDates the dates that are pending approval
  * @returns a when2meet-like schedule selector
  */
-export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, calendarDate, blockedDates, pendingDates }: {
-    scheduleDates: Date[],
-    handleScheduleDate: (dates: Date[]) => void,
-    calendarDate: Date,
-    blockedDates: Date[],
-    pendingDates: Date[],
+export const CustomScheduleSelector = ({
+    scheduleDates,
+    handleScheduleDate,
+    calendarDate,
+    blockedDates,
+    pendingDates,
+}: {
+    scheduleDates: Date[];
+    handleScheduleDate: (dates: Date[]) => void;
+    calendarDate: Date;
+    blockedDates: Date[];
+    pendingDates: Date[];
 }) => {
     const theme = useTheme();
 
     const customDateCellRenderer = (date: Date, selected: boolean, refSetter: React.Ref<unknown>) => {
-        const blocked = (blockedDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
-        const pending = (pendingDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
-        const inPast = (date.getTime() < new Date().getTime());
+        const blocked =
+            blockedDates.filter((blockedDate) => {
+                return blockedDate.getTime() === date.getTime();
+            }).length > 0;
+        const pending =
+            pendingDates.filter((blockedDate) => {
+                return blockedDate.getTime() === date.getTime();
+            }).length > 0;
+        const inPast = date.getTime() < new Date().getTime();
         var backgroundColor;
 
         if (blocked) {
-            backgroundColor = theme.palette.error.main + "!important";
+            backgroundColor = theme.palette.error.main + '!important';
         } else if (pending) {
-            backgroundColor = theme.palette.warning.main + "!important";
+            backgroundColor = theme.palette.warning.main + '!important';
         } else if (inPast) {
-            backgroundColor = theme.palette.action.disabled + "!important";
+            backgroundColor = theme.palette.action.disabled + '!important';
         } else if (selected) {
-            backgroundColor = theme.palette.action.active + "!important";
+            backgroundColor = theme.palette.action.active + '!important';
         } else {
             backgroundColor = theme.palette.action.hover;
         }
@@ -106,15 +114,15 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
                 ref={refSetter}
                 sx={{
                     backgroundColor: backgroundColor,
-                    height: "25px",
-                    width: "100%",
-                    placeSelf: "stretch",
-                    touchAction: "none",
-                    "&:hover": {
+                    height: '25px',
+                    width: '100%',
+                    placeSelf: 'stretch',
+                    touchAction: 'none',
+                    '&:hover': {
                         backgroundColor: theme.palette.action.disabled,
                     },
-                }} />
-
+                }}
+            />
         );
     };
 
@@ -126,11 +134,9 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
             maxTime={22}
             hourlyChunks={1}
             startDate={GetMonday(calendarDate)}
-            onChange={
-                (scheduleDates) => {
-                    handleScheduleDate(scheduleDates);
-                }
-            }
+            onChange={(scheduleDates) => {
+                handleScheduleDate(scheduleDates);
+            }}
             selectionScheme="linear"
             renderDateLabel={(date) => RenderDateLabel(date)}
             renderTimeLabel={(time) => RenderTimeLabel(time)}

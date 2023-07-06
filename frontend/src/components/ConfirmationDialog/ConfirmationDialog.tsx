@@ -5,8 +5,8 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Typography
-} from "@mui/material";
+    Typography,
+} from '@mui/material';
 
 interface ConfirmationDialogProps {
     /** react useState hook if the dialog is open or not */
@@ -34,37 +34,40 @@ interface ConfirmationDialogProps {
  * @param {Function} onConfirm the function to call when the user confirms (clicks yes)
  * @param {string} yesText the text to display on the yes button
  */
-export const ConfirmationDialog = ({ open, setOpen, title, description, onConfirm, yesText }: ConfirmationDialogProps) => {
+export const ConfirmationDialog = ({
+    open,
+    setOpen,
+    title,
+    description,
+    onConfirm,
+    yesText,
+}: ConfirmationDialogProps) => {
     const dialogID: string = Math.random().toString();
 
     return (
-        <Dialog
-            open={open}
-            aria-labelledby={dialogID}
-        >
-            <DialogTitle id={dialogID}>
-                {title}
-            </DialogTitle>
-            <DialogContent sx={{ paddingBottom: "0" }}>
+        <Dialog open={open} aria-labelledby={dialogID}>
+            <DialogTitle id={dialogID}>{title}</DialogTitle>
+            <DialogContent sx={{ paddingBottom: '0' }}>
                 <DialogContentText component={Typography} gutterBottom>
                     {description}
                 </DialogContentText>
             </DialogContent>
             <DialogActions
                 sx={{
-                    margin: "1em",
+                    margin: '1em',
                 }}
             >
-                <Button onClick={() => setOpen(false)}>
-                    Cancel
-                </Button>
+                <Button onClick={() => setOpen(false)}>Cancel</Button>
                 <Button
-                    onClick={() => { setOpen(false); onConfirm() }}
+                    onClick={() => {
+                        setOpen(false);
+                        onConfirm();
+                    }}
                     variant="contained"
                 >
-                    {yesText || "Yes"}
+                    {yesText || 'Yes'}
                 </Button>
             </DialogActions>
         </Dialog>
-    )
-}
+    );
+};

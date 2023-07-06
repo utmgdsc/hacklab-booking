@@ -1,20 +1,11 @@
-import {
-    ArrowBackIos as ArrowBackIcon,
-    ArrowForwardIos as ArrowForwardIcon
-} from "@mui/icons-material";
-import {
-    Box,
-    Button,
-    IconButton,
-    Tooltip,
-    Typography
-} from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, {Dayjs} from "dayjs";
-import React from "react";
-import { GetMonday } from "../../components";
+import { ArrowBackIos as ArrowBackIcon, ArrowForwardIos as ArrowForwardIcon } from '@mui/icons-material';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers-pro';
+import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
+import React from 'react';
+import { GetMonday } from '../../components';
 
 /**
  * controls the previous and next week buttons, and the date picker.
@@ -27,34 +18,38 @@ import { GetMonday } from "../../components";
  *
  * @returns the previous and next week buttons, and the date picker
  */
-export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates, handleBlockedDates } : {
-    calendarDate: Dayjs,
-    setDate: (date: Dayjs) => void,
-    setScheduleDates: (dates?: string[]) => void,
-    handleBlockedDates: (date: Date | Dayjs) => void,
+export const PrevNextWeek = ({
+    calendarDate = dayjs(),
+    setDate,
+    setScheduleDates,
+    handleBlockedDates,
+}: {
+    calendarDate: Dayjs;
+    setDate: (date: Dayjs) => void;
+    setScheduleDates: (dates?: string[]) => void;
+    handleBlockedDates: (date: Date | Dayjs) => void;
 }) => {
-
     return (
         <>
             <Box
                 sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexWrap: "nowrap",
-                    marginBottom: "1em",
-                    gap: "1em",
-                    width: "100%",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    marginBottom: '1em',
+                    gap: '1em',
+                    width: '100%',
                 }}
             >
                 <Box
                     sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "start",
-                        alignItems: "center",
-                        gap: "1em",
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'start',
+                        alignItems: 'center',
+                        gap: '1em',
                     }}
                 >
                     <Box>
@@ -65,7 +60,7 @@ export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates
                                 handleBlockedDates(calendarDate);
                             }}
                             sx={{
-                                textTransform: "none",
+                                textTransform: 'none',
                             }}
                         >
                             Today
@@ -76,10 +71,10 @@ export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates
                             <span>
                                 <IconButton
                                     onClick={() => {
-                                        setDate(calendarDate.subtract(7, "day"));
+                                        setDate(calendarDate.subtract(7, 'day'));
                                         handleBlockedDates(calendarDate);
                                     }}
-                                    disabled={calendarDate.subtract(7, "day").isBefore(dayjs(), "day")}
+                                    disabled={calendarDate.subtract(7, 'day').isBefore(dayjs(), 'day')}
                                 >
                                     <ArrowBackIcon />
                                 </IconButton>
@@ -89,7 +84,7 @@ export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates
                             <span>
                                 <IconButton
                                     onClick={() => {
-                                        setDate(calendarDate.add(7, "day"));
+                                        setDate(calendarDate.add(7, 'day'));
                                         handleBlockedDates(calendarDate);
                                     }}
                                 >
@@ -99,9 +94,9 @@ export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates
                         </Tooltip>
                     </Box>
                     <Typography component="p" variant="h5">
-                        {GetMonday(calendarDate).toLocaleDateString("en-US", {
-                            month: "long",
-                            year: "numeric",
+                        {GetMonday(calendarDate).toLocaleDateString('en-US', {
+                            month: 'long',
+                            year: 'numeric',
                         })}
                     </Typography>
                 </Box>
@@ -119,7 +114,7 @@ export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates
                         />
                     </LocalizationProvider>
                 </Box>
-            </Box >
+            </Box>
         </>
     );
 };
