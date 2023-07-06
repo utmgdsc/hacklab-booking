@@ -17,7 +17,7 @@ import { ConvertDate } from ".."
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
-import { instance } from "../../axios";
+import axios from "../../axios";
 
 interface PendingRequestCardProps {
     /** the request to display as a pending request card */
@@ -27,42 +27,61 @@ interface PendingRequestCardProps {
 }
 
 /**
- * A card that displays a pending request
+ * A card that displays a pending request. A pending request is a request
+ * that was created by a student and is now being shown to an approver
+ * for review.
+ *
  * @param {FetchedBookingRequest} booking the request to display as a pending request card
  * @param {Function} onUpdate a function that will be called when a user wants to edit a request
  */
-// export const PendingRequestCard = ({ name, ownerID, groupID, locationID, title, date, end, description, reqID }) => {
 export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProps) => {
+    /** the open/closed state of the dialog box for inputting the reason */
     const [open, setOpen] = useState<boolean>(false);
+    /** the material ui theme object */
     const theme = useTheme();
+    /** whether or not the dialog box should be in full screen mode */
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    /** the reason for approving or denying the request */
+    const [reason, setReason] = useState<string>("");
+    /** whether or not the request has been approved */
+    const [approved, setApproved] = useState(false);
+
+    /**
+     * Handles clicking of the "TCard access was granted" / Approve button
+     */
     const handleClickOpen = async () => {
         if (approved && booking.status === "needTCard") {
-            const res = await instance.put('/rooms/' + booking.roomName + '/grantaccess', {utorid: booking.authorUtorid})
+            const res = await axios.put('/rooms/' + booking.roomName + '/grantaccess', { utorid: booking.authorUtorid })
             if (res.status === 200) {
                 onUpdate();
             }
             return;
+        } else {
+            setOpen(true);
         }
-        setOpen(true);
     };
-    const handleClose = () => { setOpen(false); };
-    const [reason, setReason] = useState<string>("");
 
-    const getTime = () => {
+    /**
+     * @return {string} A formatted string of the time range of the booking
+     */
+    const getTime = (): string => {
         let startHour: number = (new Date(booking.startDate)).getHours();
         let endHour: number = (new Date(booking.endDate)).getHours() + 1;
         return `${startHour}:00 - ${endHour}:00`;
     };
 
-    const [approved, setApproved] = useState(false);
 
+    /**
+     * Handles changing booking status in the backend
+     * @param {string} reason the reason for approving or denying the request
+     * @param {'approve' | 'deny'} status whether the request should be approved or denied
+     */
     const handleChangeStatus = (reason: string, status: 'approve' | 'deny') => {
-        instance.put(`/requests/${booking.id}/${status}`, {
+        axios.put(`/requests/${booking.id}/${status}`, {
             reason: reason
         })
             .then(res => {
-                if(res.status === 200){
+                if (res.status === 200) {
                     onUpdate();
                 }
             })
@@ -110,16 +129,17 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                     </Button>
                 </CardActions>
             </Card>
+
             <Dialog
                 fullScreen={fullScreen}
                 open={open}
-                onClose={handleClose}
+                onClose={() => { setOpen(false) }}
                 aria-labelledby="add-student-title"
             >
                 <DialogTitle id="add-student-title">
-                    { approved ? "Approve " : "Deny " } {booking.title}
+                    {approved ? "Approve " : "Deny "} {booking.title}
                 </DialogTitle>
-                <DialogContent sx={{paddingBottom: "0"}}>
+                <DialogContent sx={{ paddingBottom: "0" }}>
                     <DialogContentText component={Typography} gutterBottom>
                         To {approved ? "approve " : "deny "} this request, please enter a reason for your decision.
                     </DialogContentText>
@@ -141,13 +161,13 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                     }}
                 >
                     <Button
-                        onClick={handleClose}
+                        onClick={() => { setOpen(false) }}
                         color={approved ? "success" : "error"}>
                         Cancel
                     </Button>
                     <Button
                         onClick={() => {
-                            handleClose();
+                            setOpen(false);
                             if (approved) {
                                 handleChangeStatus(reason, "approve");
                             } else {
