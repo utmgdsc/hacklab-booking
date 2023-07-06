@@ -14,7 +14,7 @@ import { GetMonday } from "../../components";
  * @param {Date} date the date to render
  * @returns a label for the date on the schedule selector
  */
-const RenderDateLabel = (date : Date) => {
+const RenderDateLabel = (date: Date) => {
     return (
         <Box
             sx={{
@@ -41,7 +41,7 @@ const RenderDateLabel = (date : Date) => {
  * @param {Date} time the time to render
  * @returns a label for the time on the schedule selector
  */
-const RenderTimeLabel = (time : Date) => {
+const RenderTimeLabel = (time: Date) => {
     return (
         <Typography
             component="p"
@@ -66,12 +66,14 @@ const RenderTimeLabel = (time : Date) => {
 /**
  * A when2meet-like schedule selector that supports dark mode
  *
- * @param {Date[]} scheduleDates a react hook
- * @param {Function} handleScheduleDate a react hook
+ * @param {Date[]} scheduleDates the dates that are selected
+ * @param {(dates: Date[]) => void} handleScheduleDate a react usestate function that is called when a date is selected
  * @param {Date} calendarDate the current date of the week to show
+ * @param {Date[]} blockedDates the dates that are blocked off as they are already booked
+ * @param {Date[]} pendingDates the dates that are pending approval
  * @returns a when2meet-like schedule selector
  */
-export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, calendarDate, blockedDates, pendingDates } :{
+export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, calendarDate, blockedDates, pendingDates }: {
     scheduleDates: Date[],
     handleScheduleDate: (dates: Date[]) => void,
     calendarDate: Date,
@@ -80,20 +82,20 @@ export const CustomScheduleSelector = ({ scheduleDates, handleScheduleDate, cale
 }) => {
     const theme = useTheme();
 
-    const customDateCellRenderer = (date : Date, selected : boolean, refSetter: React.Ref<unknown>) => {
+    const customDateCellRenderer = (date: Date, selected: boolean, refSetter: React.Ref<unknown>) => {
         const blocked = (blockedDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
         const pending = (pendingDates.filter(blockedDate => { return blockedDate.getTime() === date.getTime(); }).length > 0);
         const inPast = (date.getTime() < new Date().getTime());
         var backgroundColor;
 
         if (blocked) {
-            backgroundColor = theme.palette.error.main + " !important";
-        } else if (selected) {
-            backgroundColor = theme.palette.action.active + " !important";
+            backgroundColor = theme.palette.error.main + "!important";
         } else if (pending) {
-            backgroundColor = theme.palette.warning.main + " !important";
+            backgroundColor = theme.palette.warning.main + "!important";
         } else if (inPast) {
-            backgroundColor = theme.palette.action.disabled;
+            backgroundColor = theme.palette.action.disabled + "!important";
+        } else if (selected) {
+            backgroundColor = theme.palette.action.active + "!important";
         } else {
             backgroundColor = theme.palette.action.hover;
         }

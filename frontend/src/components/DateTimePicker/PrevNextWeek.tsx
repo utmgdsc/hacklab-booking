@@ -60,7 +60,6 @@ export const PrevNextWeek = ({ calendarDate = dayjs(), setDate, setScheduleDates
                     <Box>
                         <Button
                             variant="outlined"
-                            color="secondary"
                             onClick={() => {
                                 setDate(dayjs());
                                 handleBlockedDates(calendarDate);
