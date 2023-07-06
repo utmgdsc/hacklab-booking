@@ -41,9 +41,9 @@ export const Group = () => {
   const [inviteUtorid, setInviteUtorid] = React.useState('');
   const navigate = useNavigate();
   const { userInfo } = useContext(UserContext);
-  const isManager= (user : User | string) : boolean => {
+  const isManager = (user: User | string): boolean => {
     const userUtorid = typeof user === 'string' ? user : user.utorid;
-    return !!group.managers.find(x=>x.utorid === userUtorid);
+    return !!group.managers.find(x => x.utorid === userUtorid);
   }
   const getGroup = async () => {
     const { data, status } = await axios.get<FetchedGroup>('/groups/' + groupID);
@@ -58,90 +58,63 @@ export const Group = () => {
     getGroup();
   }, []);
 
-  const addPerson = async (utorid : string) => {
-    console.log('adding', utorid)
-    const {status} = await axios.post(`/groups/${groupID}/invite/`, {
-        utorid
+  /**
+   * Void function to invite someone to a group
+   * @param utorid The utorid of the person to add
+   */
+  const addPerson = async (utorid: string) => {
+    const { status } = await axios.post(`/groups/${groupID}/invite/`, {
+      utorid
     });
-    if (status !== 200) {
-        // TODO error handling
-        return;
+    if (status === 200) {
+      showSnackSev("Person added", "success");
+    } else {
+      showSnackSev("Could not add person", "error");
+      return;
     }
     await getGroup();
-      // TODO INTEGRATE
-
-    // fetch(process.env.REACT_APP_API_URL + '/groups/invite/', {
-    //   method: 'POST',
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     id: groupID,
-    //     utorid: utorid
-    //   })
-    // }).then(res => {
-    //   return res.json();
-    // }).then(data => {
-    //   console.log(data);
-    //   getGroups();
-    // })
   }
 
-  const removePerson = (utorid : string) => {
-    console.log('deleting', utorid);
-      // TODO INTEGRATE
+  /**
+   * Void function to remove  someone from a group
+   * @param utorid The utorid of the person to remove
+   */
+  const removePerson = async (utorid: string) => {
+    const { status } = await axios.post(`/groups/${groupID}/remove/`, {
+      utorid
+    });
 
-    // fetch(process.env.REACT_APP_API_URL + '/groups/remove/', {
-    //   method: 'POST',
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     id: groupID,
-    //     utorid: utorid
-    //   })
-    // }).then(res => {
-    //   return res.json();
-    // }).then(data => {
-    //   console.log(data);
-    //   getGroups();
-    // })
+    if (status === 200) {
+      showSnackSev("Person removed", "success");
+    } else {
+      showSnackSev("Could not remove person", "error");
+      return;
+    }
+    await getGroup();
   }
 
   const delGroup = async () => {
-    console.log('deleting', groupID);
-  // TODO INTEGRATE
-    const {data, status} =await axios.delete(`/groups/${groupID}/`)
-    if (status !== 200) {
+    const { data, status } = await axios.delete(`/groups/${groupID}/`)
+    if (status === 200) {
+      showSnackSev("Group deleted", "success")
+    } else {
       showSnackSev(data.message, "error");
       return;
     }
-    showSnackSev("Group deleted", "success")
-    navigate('/group', { replace: true });
+    navigate('/group', { replace: true }); // group doesnt exist, so go back
   }
 
   const changeRole = async (utorid: string) => {
     console.log('promoting', utorid);
-    const {status} = await axios.post(`/groups/${groupID}/changerole/`, {
-        utorid,
-        role: isManager(utorid) ? 'member' : 'manager'
+    const { status } = await axios.post(`/groups/${groupID}/changerole/`, {
+      utorid,
+      role: isManager(utorid) ? 'member' : 'manager'
     });
     if (status !== 200) {
-        showSnackSev("Could not change role", "error");
-        return;
+      showSnackSev("Could not change role", "error");
+      return;
     }
     await getGroup();
-      // TODO INTEGRATE
-
-    // fetch(process.env.REACT_APP_API_URL + '/groups/makeAdmin/', {
-    //   method: 'POST',
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({
-    //     id: groupID,
-    //     utorid: utorid
-    //   })
-    // }).then(res => {
-    //   return res.json();
-    // }).then(data => {
-    //   console.log(data);
-    //   getGroups();
-    // })
   }
 
   const handleClickOpen = () => {
@@ -226,13 +199,13 @@ export const Group = () => {
             {userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
               <CardActions>
 
-                  <Button
-                      onClick={() => {
-                          changeRole(person.utorid);
-                      }}
-                  >
-                      {isManager(person) ? 'Demote to Member'  : 'Make Admin'}
-                  </Button>
+                <Button
+                  onClick={() => {
+                    changeRole(person.utorid);
+                  }}
+                >
+                  {isManager(person) ? 'Demote to Member' : 'Make Admin'}
+                </Button>
 
                 <Button
                   color="error"

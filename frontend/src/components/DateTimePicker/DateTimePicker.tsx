@@ -47,20 +47,6 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
         })
         setBlockedDates(blocked);
         setPendingDates(pending);
-          // TODO INTEGRATE
-        // await fetch(process.env.REACT_APP_API_URL + "/requests/getBlockedDates/" + startMonday.toISOString() + "/" + endDate.toISOString()  + "/" + reqID)
-        //     .then((res) => {
-        //         return res.json();
-        //     })
-        //     .then((data) => {
-        //         // convert dates into date objects
-        //         let blocked = [];
-        //         data.forEach((date) => {
-        //             blocked.push(new Date(date));
-        //         }
-        //         );
-        //         setBlockedDates(blocked);
-        //     });
     };
 
     useEffect(() => {
