@@ -1,20 +1,16 @@
 import {
+    Button,
     Card,
-    CardContent,
     CardActions,
-    Typography,
-    Stack,
+    CardContent,
     Chip,
+    Stack,
     Tooltip,
-    Button
+    Typography
 } from "@mui/material";
 
-import { InitialsAvatar, Link } from "..";
-import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
-import { defaultUser } from "../../contexts/UserContext";
+import { InitialsAvatar, Link } from "..";
 import { SnackbarContext } from "../../contexts/SnackbarContext";
 
 interface GroupCardProps {
@@ -27,6 +23,7 @@ interface GroupCardProps {
  * @param {FetchedGroup} groupObj - group object
  */
 export const GroupCard = ({groupObj, ...props}: GroupCardProps) => {
+    const { showSnackSev } = useContext(SnackbarContext);
     return (
         <Card sx={{ mt: 2, mb: 2 }} {...props}>
             <CardContent>
@@ -47,7 +44,7 @@ export const GroupCard = ({groupObj, ...props}: GroupCardProps) => {
                                         onClick={() => {
                                             // copy email to clipboard
                                             navigator.clipboard.writeText(member.email);
-                                            console.log("Copied " + member.email + " to clipboard");
+                                            showSnackSev("Email copied to clipboard", "success");
                                         }}
                                     />
                                 </Tooltip>

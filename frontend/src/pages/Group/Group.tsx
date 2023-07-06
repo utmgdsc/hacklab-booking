@@ -123,7 +123,6 @@ export const Group = () => {
      * @param utorid The utorid of the person to change
      */
     const changeRole = async (utorid: string) => {
-        console.log('promoting', utorid);
         const { status } = await axios.post(`/groups/${groupID}/changerole/`, {
             utorid,
             role: isManager(utorid) ? 'member' : 'manager'

@@ -96,7 +96,6 @@ export const Dashboard = () => {
   }, [userInfo.groups, userInfo.utorid, userInfo.role]);
 
   const editThisRequest = (reqID: string) => {
-    // console.log(reqID, "edit this request");
     setEditRequestID(reqID);
     setOpenEditRequest(true);
   };

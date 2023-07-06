@@ -63,7 +63,6 @@ export const CreateBooking = () => {
         }
       })
         .then((res) => {
-          console.log(res);
           if (res.status === 200) {
             if (res.data.length > 0) {
               setValidDate(false);
@@ -133,8 +132,6 @@ export const CreateBooking = () => {
       approvers,
     };
 
-    console.log(booking);
-
     const { status } = await axios.post("/requests/create", booking);
     if (status === 200) {
       setSubmitted(true);
@@ -161,7 +158,6 @@ export const CreateBooking = () => {
         setScheduleDates([]);
         return;
       }
-      // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
       currDate = d.getDate();
     }
 

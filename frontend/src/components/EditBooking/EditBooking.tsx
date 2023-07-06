@@ -192,7 +192,6 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest } : {
         setScheduleDates([]);
         return;
       }
-      // console.log(`Day: ${d.getDate()}, Hour: ${d.getHours()}`);
       currDate = d.getDate();
     }
     if (dates.length > 0) {
@@ -209,7 +208,6 @@ export const EditBooking = ({ isOpen, reqID, setOpenEditRequest } : {
           headers: { "Content-Type": "application/json" },
         }
       ).then((res) => {
-        console.log(res);
         if (res.status === 200) {
           setValidDate(true);
           setDateError("");

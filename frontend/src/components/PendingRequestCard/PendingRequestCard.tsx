@@ -86,9 +86,8 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                 }
             })
             .catch(err => {
-                console.log(err);
+                console.error(err);
             });
-        console.log(status + " request with reason " + reason);
     }
 
     return (

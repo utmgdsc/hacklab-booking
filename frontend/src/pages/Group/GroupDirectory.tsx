@@ -47,7 +47,7 @@ export const GroupDirectory = () => {
                 setMyGroups(res.data as FetchedGroup[]);
             })
             .catch(err => {
-                console.log(err);
+                console.error(err);
                 showSnackSev("Failed to fetch groups", "error");
             })
     }, []);
