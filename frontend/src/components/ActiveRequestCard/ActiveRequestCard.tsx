@@ -35,7 +35,9 @@ interface ActiveRequestCardProps {
 
 
 /**
- * A card that displays a active request
+ * A card that displays a active request. An active request is a request
+ * that has been created by a student and is either pending approval, has been
+ * approved, or has been denied. The student can edit or cancel the request.
  *
  * @param {string} name the name of the user who sent the request
  * @param {string} utorid the utorid of the user who sent the request

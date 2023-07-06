@@ -16,21 +16,16 @@ import { GroupCard } from "../../components";
 import { SnackbarContext } from "../../contexts/SnackbarContext";
 import { SubPage } from "../../layouts/SubPage";
 
-
 export const GroupDirectory = () => {
+    /** context to show snackbars */
     const { showSnackSev } = useContext(SnackbarContext);
+    /** create group dialog open state */
     const [open, setOpen] = React.useState(false);
+    /** mui theme object */
     const theme = useTheme();
+    /** whether the dialog should be full screen */
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
+    /** the groups that the user is a member of */
     let [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
 
     const sendAddGroup = async () => {
@@ -39,7 +34,7 @@ export const GroupDirectory = () => {
         });
 
         if (status === 200) {
-            setMyGroups((array) => [...array, data]);
+            setMyGroups((array) => [...array, data]); // add to local list of groups
             showSnackSev("Group created successfully", "success");
         } else {
             showSnackSev("Failed to create group", "error");
@@ -69,13 +64,13 @@ export const GroupDirectory = () => {
                         justifyContent: "flex-end",
                     }}>
 
-                    <Button variant="contained" onClick={handleClickOpen}>
+                    <Button variant="contained" onClick={() => {setOpen(true);}}>
                         Create Group
                     </Button>
                     <Dialog
                         fullScreen={fullScreen}
                         open={open}
-                        onClose={handleClose}
+                        onClose={() => setOpen(false)}
                         aria-labelledby="add-student-title"
                     >
                         <DialogTitle id="add-student-title">
@@ -99,9 +94,9 @@ export const GroupDirectory = () => {
                                 margin: "1em",
                             }}
                         >
-                            <Button onClick={handleClose}>Cancel</Button>
+                            <Button onClick={() => {setOpen(false);}}>Cancel</Button>
                             {/* todo pressing enter should press this */}
-                            <Button onClick={() => { handleClose(); sendAddGroup(); }} variant="contained">Add</Button>
+                            <Button onClick={() => { setOpen(false); sendAddGroup(); }} variant="contained">Add</Button>
                         </DialogActions>
                     </Dialog>
                 </Box>
