@@ -12,7 +12,7 @@
 
     After that, it starts the dev environment again and reconfigures postgres.
 
-    Precondition: 
+    Precondition:
     - Docker is running. The script will fail otherwise.
     - The script's cwd in the repo's root directory.
 #>
@@ -22,9 +22,9 @@ docker compose -f docker-compose.dev.yml down -v --rmi all --remove-orphans
 Remove-Item "./backend/logs" -Recurse
 Remove-Item "./db_data" -Recurse
 Remove-Item "./backend/node_modules" -Recurse
-cd backend
+Set-Location backend
 npm ci
-cd ..
+Set-Location ..
 docker compose -f docker-compose.dev.yml up -d
 
 timeout 30

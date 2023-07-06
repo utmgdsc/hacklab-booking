@@ -7,12 +7,12 @@ import {
 } from "@mui/icons-material";
 
 import {
-  Box,
   Container,
   Typography,
   useTheme
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
+import axios from '../../axios';
 import {
   ActiveRequestCard,
   AppButtons,
@@ -22,7 +22,6 @@ import {
   PendingRequestCard
 } from "../../components";
 import { UserContext } from "../../contexts/UserContext";
-import axios from '../../axios';
 /**
  * all active requests cards given a list of active requests
  * @param {*} active_requests a list of requests received from the backend

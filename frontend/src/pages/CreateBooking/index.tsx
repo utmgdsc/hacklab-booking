@@ -135,7 +135,7 @@ export const CreateBooking = () => {
 
     console.log(booking);
 
-    const { status, data } = await axios.post("/requests/create", booking);
+    const { status } = await axios.post("/requests/create", booking);
     if (status === 200) {
       setSubmitted(true);
       return;
