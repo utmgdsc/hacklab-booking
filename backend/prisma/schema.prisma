@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["windows", "native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  email      String      @unique
+  utorid     String      @id
+  name       String
+  role       AccountRole @default(student)
+  groups     Group[]     @relation(name: "Members")
+  invited    Group[]     @relation(name: "Invited")
+  manager    Group[]     @relation(name: "Managers")
+  requests   Request[]   @relation(name: "Author")
+  approved   Request[]   @relation(name: "Approvers")
+  theme      Theme       @default(system)
+  roomAccess Room[]      @relation(name: "RoomAccess")
+}
+
+enum Theme {
+  system
+  light
+  dark
+}
+
+enum AccountRole {
+  student
+  admin
+  approver
+  tcard
+}
+
+model Request {
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status       RequestStatus @default(pending) // the status of the request defined by the Request status enum
+  group        Group         @relation(fields: [groupId], references: [id], onDelete: Cascade) // the group making the request
+  groupId      String        @db.Uuid
+  author       User          @relation(name: "Author", fields: [authorUtorid], references: [utorid]) // the author of the request
+  authorUtorid String
+  approvers    User[]        @relation(name: "Approvers") // requested approvers for the request
+  startDate    DateTime // the starting date and time of the request in ISO 8601 format
+  endDate      DateTime // the ending date and time of the request in ISO 8601 format
+  description  String // a summary of the event provided to the approvers for review
+  title        String // the name of the event
+  room         Room          @relation(fields: [roomName], references: [roomName]) // the room booked
+  roomName     String
+  reason       String? // the reason for the denial/approval of a request
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum RequestStatus {
+  pending // the request is awaiting approver's approval
+  denied // the request has been denied by approver
+  cancelled // the request has been cancelled by the author or group manager
+  needTCard // the request has been approved by an approver but still needs TCard approval
+  completed // the request is approved and author has TCard access
+}
+
+model Group {
+  id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name     String    @unique // the name of the group
+  members  User[]    @relation(name: "Members") // all members of the group, including managers, excluding any invited users
+  invited  User[]    @relation(name: "Invited") // users that have been invited to the group and have yet to accept
+  managers User[]    @relation(name: "Managers") // the managers of the group
+  requests Request[]
+}
+
+model Room {
+  roomName     String    @id // the room number, eg. DH2014
+  friendlyName String // friendly name, eg. Hacklab
+  capacity     Int? // (optional) occupancy limit
+  requests     Request[] // all requests made for this room
+  userAccess   User[]    @relation("RoomAccess") // all users with access to this room
+}

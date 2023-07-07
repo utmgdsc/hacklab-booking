@@ -1,20 +1,47 @@
 {
   "name": "hacklab-booking-backend",
-  "version": "0.1.0",
-  "private": true,
+  "version": "2.0.0",
+  "description": "The backend for the hacklab booking system",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "google-test": "node google/test.js",
-    "create-token": "node google/create_token.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run prisma && tsc",
+    "eslint": "eslint .",
+    "start": "npm run dev",
+    "prisma": "prisma generate",
+    "dev": "npm run prisma && nodemon --legacy-watch ./src/index.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/utmgdsc/hacklab-booking.git"
+  },
+  "author": "GDSC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/utmgdsc/hacklab-booking/issues"
+  },
+  "homepage": "https://github.com/utmgdsc/hacklab-booking#readme",
   "dependencies": {
-    "@google-cloud/local-auth": "^2.1.1",
-    "bcrypt": "^5.1.0",
+    "@prisma/client": "^4.15.0",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "googleapis": "^118.0.0",
-    "mongodb": "^5.3.0",
-    "mongoose": "^7.2.0",
-    "process": "^0.11.10"
+    "winston": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.2",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.2.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "nodemon": "^2.0.22",
+    "prisma": "^4.15.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
   }
 }
