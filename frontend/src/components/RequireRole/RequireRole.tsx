@@ -19,13 +19,13 @@ export const RequireRole = (props: { role: UserRoles[]; children: React.ReactNod
             <ErrorPage
                 name="Sawwy >~<"
                 message={
-                    <Typography>
+                    <>
                         konna ooki na diamondo mita koto naideshou? ageru neeeeeeeeeeee -{' '}
                         <Link internal href="/">
                             Time to twirl to the dashboard
                         </Link>
                         .
-                    </Typography>
+                    </>
                 }
             />
         );
