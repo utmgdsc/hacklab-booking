@@ -9,6 +9,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Input,
     TextField,
     Typography,
     useMediaQuery,
@@ -16,7 +17,7 @@ import {
 } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { InitialsAvatar, ConfirmationDialog } from '../../components';
+import { InitialsAvatar, ConfirmationDialog, InputDialog } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
 import axios from '../../axios';
@@ -161,54 +162,14 @@ export const Group = () => {
                 >
                     Delete Group
                 </Button>
-                <Dialog
-                    fullScreen={fullScreen}
+                <InputDialog
                     open={open}
-                    onClose={() => {
-                        setOpen(false);
-                    }}
-                    aria-labelledby="add-student-title"
-                >
-                    <DialogTitle id="add-student-title">{'Add a student to your group'}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            To add a student to your group, please enter their UTORid below.
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="utorid"
-                            label="UTORid"
-                            type="text"
-                            fullWidth
-                            value={inviteUtorid}
-                            onChange={(e) => setInviteUtorid(e.target.value)}
-                        />
-                    </DialogContent>
-                    <DialogActions
-                        sx={{
-                            margin: '1em',
-                        }}
-                    >
-                        <Button
-                            onClick={() => {
-                                setOpen(false);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                setOpen(false);
-                                addPerson(inviteUtorid);
-                                setInviteUtorid('');
-                            }}
-                            variant="contained"
-                        >
-                            Add
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    setOpen={setOpen}
+                    title="Add a student to your group"
+                    description="To add a student to your group, please enter their UTORid below."
+                    label="UTORid"
+                    onSubmit={addPerson}
+                />
             </Box>
 
             {/* list of people in the group */}

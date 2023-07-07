@@ -14,6 +14,7 @@ export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 export { GetMonday } from './GetMonday/GetMonday';
 export { GroupCard } from './GroupCard/GroupCard';
 export { InitialsAvatar } from './InitialsAvatar/InitialsAvatar';
+export { InputDialog } from './InputDialog/InputDialog';
 export { LabelledIconButton } from './LabelledIconButton/LabelledIconButton';
 export { Link } from './Link/Link';
 export { NoRequestsPlaceholder } from './NoRequestsPlaceholder/NoRequestsPlaceholder';
