@@ -2,7 +2,22 @@ import { SubPage } from '../../../layouts/SubPage';
 import { instance } from '../../../axios';
 import { useContext, useEffect, useState } from 'react';
 import { SnackbarContext } from '../../../contexts/SnackbarContext';
-import { Button, Card, Alert, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, useTheme, useMediaQuery, CardContent, Typography, CardActions } from '@mui/material';
+import {
+    Button,
+    Card,
+    Alert,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    TextField,
+    DialogActions,
+    useTheme,
+    useMediaQuery,
+    CardContent,
+    Typography,
+    CardActions,
+} from '@mui/material';
 import { UserContext } from '../../../contexts/UserContext';
 
 export const RoomManager = () => {
@@ -22,7 +37,9 @@ export const RoomManager = () => {
     return (
         <SubPage name="Room Manager" maxWidth="xl">
             <Button
-                onClick={() => { setCreateRoomOpen(true); }}
+                onClick={() => {
+                    setCreateRoomOpen(true);
+                }}
             >
                 Create Room
             </Button>
@@ -54,19 +71,21 @@ const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
                 <Button size="small">Learn More</Button>
             </CardActions>
         </Card>
-    )
-}
+    );
+};
 
 /**
  * Dialog to create a room
  * @param open whether the dialog is open
  * @param setOpen function to set the open state
  */
-const CreateRoomDialog = ({ open, setOpen }:
-    {
-        open: boolean,
-        setOpen: React.Dispatch<React.SetStateAction<boolean>>
-    }) => {
+const CreateRoomDialog = ({
+    open,
+    setOpen,
+}: {
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
     /** value of the input */
     const [friendlyName, setFriendlyName] = useState('');
     const [room, setRoomName] = useState('');
@@ -95,7 +114,7 @@ const CreateRoomDialog = ({ open, setOpen }:
             const { status } = await instance.post('/rooms/create', {
                 friendlyName,
                 room,
-                capacity
+                capacity,
             });
             if (status === 200) {
                 showSnackSev('Room created successfully', 'success');
@@ -124,9 +143,7 @@ const CreateRoomDialog = ({ open, setOpen }:
         >
             <DialogTitle id="add-room-title">Add a room</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    Enter the details of the room you want to add.
-                </DialogContentText>
+                <DialogContentText>Enter the details of the room you want to add.</DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
@@ -180,5 +197,5 @@ const CreateRoomDialog = ({ open, setOpen }:
                 </Button>
             </DialogActions>
         </Dialog>
-    )
-}
+    );
+};

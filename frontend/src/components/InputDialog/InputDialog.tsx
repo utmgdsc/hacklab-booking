@@ -1,5 +1,15 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, useMediaQuery, useTheme } from "@mui/material";
-import { useState } from "react";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material';
+import { useState } from 'react';
 
 interface InputDialogProps {
     /** the current state of the dialog box */
@@ -45,9 +55,7 @@ export const InputDialog = ({ open, setOpen, title, label, description, onSubmit
         >
             <DialogTitle id="add-student-title">{title}</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    {description}
-                </DialogContentText>
+                <DialogContentText>{description}</DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
@@ -83,5 +91,5 @@ export const InputDialog = ({ open, setOpen, title, label, description, onSubmit
                 </Button>
             </DialogActions>
         </Dialog>
-    )
-}
+    );
+};
