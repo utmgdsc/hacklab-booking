@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
-import { GroupCard } from '../../components';
+import { GroupCard, InputDialog } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { SubPage } from '../../layouts/SubPage';
 
@@ -73,51 +73,14 @@ export const GroupDirectory = () => {
                     >
                         Create Group
                     </Button>
-                    <Dialog
-                        fullScreen={fullScreen}
+                    <InputDialog
+                        title="Create Group"
+                        label="Group Name"
                         open={open}
-                        onClose={() => setOpen(false)}
-                        aria-labelledby="add-student-title"
-                    >
-                        <DialogTitle id="add-student-title">{'Create a new group'}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                To create a new group, please enter the group name below. You will be the group
-                                administrator.
-                            </DialogContentText>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="group-name"
-                                label="Group Name"
-                                type="text"
-                                fullWidth
-                            />
-                        </DialogContent>
-                        <DialogActions
-                            sx={{
-                                margin: '1em',
-                            }}
-                        >
-                            <Button
-                                onClick={() => {
-                                    setOpen(false);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            {/* todo pressing enter should press this */}
-                            <Button
-                                onClick={() => {
-                                    setOpen(false);
-                                    sendAddGroup();
-                                }}
-                                variant="contained"
-                            >
-                                Add
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                        setOpen={setOpen}
+                        onSubmit={sendAddGroup}
+                        description="To create a new group, please enter the group name below. You will be the group administrator."
+                    />
                 </Box>
 
                 {myGroups.map((group) => {
