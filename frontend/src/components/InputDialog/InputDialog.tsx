@@ -83,6 +83,5 @@ export const InputDialog = ({ open, setOpen, title, label, description, onSubmit
                 </Button>
             </DialogActions>
         </Dialog>
-
     )
 }
