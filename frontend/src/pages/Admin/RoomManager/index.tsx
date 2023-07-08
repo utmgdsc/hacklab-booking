@@ -26,12 +26,16 @@ export const RoomManager = () => {
 
     const { showSnack } = useContext(SnackbarContext);
 
-    useEffect(() => {
+    const getRooms = async () => {
         instance.get('/rooms').then((res) => {
             if (res.status === 200) {
                 setRooms(res.data);
             }
         });
+    };
+
+    useEffect(() => {
+        getRooms();
     }, []);
 
     return (
@@ -40,6 +44,7 @@ export const RoomManager = () => {
                 onClick={() => {
                     setCreateRoomOpen(true);
                 }}
+                sx={{ marginLeft: "1em" }}
             >
                 Create Room
             </Button>
@@ -48,7 +53,7 @@ export const RoomManager = () => {
                     <RoomCard {...room} />
                 ))}
             </div>
-            <CreateRoomDialog open={createRoomOpen} setOpen={setCreateRoomOpen} />
+            <CreateRoomDialog open={createRoomOpen} setOpen={setCreateRoomOpen} getRooms={getRooms} />
         </SubPage>
     );
 };
@@ -58,7 +63,7 @@ export const RoomManager = () => {
  */
 const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
     return (
-        <Card sx={{ maxWidth: 275 }}>
+        <Card sx={{ maxWidth: 275, display: "inline-block", mx: "1em" }}>
             <CardContent>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     {roomName} - {capacity} people capacity
@@ -78,13 +83,16 @@ const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
  * Dialog to create a room
  * @param open whether the dialog is open
  * @param setOpen function to set the open state
+ * @param getRooms function to get the rooms which will be called after a room is created
  */
 const CreateRoomDialog = ({
     open,
     setOpen,
+    getRooms,
 }: {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    getRooms: () => void;
 }) => {
     /** value of the input */
     const [friendlyName, setFriendlyName] = useState('');
@@ -130,6 +138,7 @@ const CreateRoomDialog = ({
         setFriendlyName('');
         setRoomName('');
         setCapacity(0);
+        getRooms();
     };
 
     return (
