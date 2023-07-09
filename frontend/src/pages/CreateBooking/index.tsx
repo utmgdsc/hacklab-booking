@@ -12,20 +12,20 @@ export const CreateBooking = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     /** user info */
     const { userInfo } = useContext(UserContext);
-    /** currently selected room name */
-    const [roomName, setRoomName] = useState<string>('');
-    /** booking details */
-    const [details, setDetails] = useState('');
     /** currently selected group name */
     const [group, setGroup] = useState<string>('');
-    /** currently selected list of dates */
-    const [scheduleDates, setScheduleDates] = useState([]);
-    /** whether the request was submitted */
-    const [submitted, setSubmitted] = useState(false);
-    /** whether the date is valid */
-    const [validDate, setValidDate] = useState(false);
+    /** currently selected room name */
+    const [roomName, setRoomName] = useState<string>('');
+    /** booking details / explanation */
+    const [details, setDetails] = useState('');
     /** list of approvers */
     const [approvers, setApprovers] = useState([]);
+    /** currently selected list of dates */
+    const [scheduleDates, setScheduleDates] = useState([]);
+    /** whether the date is valid */
+    const [validDate, setValidDate] = useState(false);
+    /** whether the request was submitted */
+    const [submitted, setSubmitted] = useState(false);
 
     /**
      * Checks if the date is not blocked
@@ -121,24 +121,29 @@ export const CreateBooking = () => {
         }
     };
 
+    /**
+     * Validate the date in the DateTimePicker and clears ScheduleDates if invalid
+     * @param dates list of dates
+     */
     const handleScheduleDate = (dates: Date[]) => {
+        /** used to check if all dates are on the same day */
         let currDate = 0;
+
         for (let i = 0; i < dates.length; i++) {
-            const d = dates[i];
             // if in the past
-            if (d < new Date()) {
+            if (dates[i] < new Date()) {
                 showSnackSev('Please select a date in the future', 'error');
                 setScheduleDates([]);
                 return;
             }
 
             // if not the same day
-            if (d.getDate() !== currDate && i > 0) {
+            if (dates[i].getDate() !== currDate && i > 0) {
                 showSnackSev('Please only select one day', 'error');
                 setScheduleDates([]);
                 return;
             }
-            currDate = d.getDate();
+            currDate = dates[i].getDate();
         }
 
         setValidDate(true);

@@ -1,6 +1,6 @@
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import axios from "../../axios";
-import { useState, useEffect } from "react";
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import axios from '../../axios';
+import { useState, useEffect } from 'react';
 
 interface RoomPickerProps {
     /** the name of the room */
@@ -14,7 +14,7 @@ interface RoomPickerProps {
  * @param roomName the name of the room
  * @param setRoomName a react useState hook that sets the room name
  */
-export const RoomPicker = ({roomName, setRoomName}: RoomPickerProps) => {
+export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
     /** list of rooms */
     const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -47,5 +47,5 @@ export const RoomPicker = ({roomName, setRoomName}: RoomPickerProps) => {
                 })}
             </Select>
         </FormControl>
-    )
-}
+    );
+};

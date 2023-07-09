@@ -1,6 +1,6 @@
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { UserContext } from "../../contexts/UserContext";
-import { useContext } from "react";
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { UserContext } from '../../contexts/UserContext';
+import { useContext } from 'react';
 
 interface GroupPickerProps {
     /** a JSON stringify'd group object */
@@ -40,5 +40,5 @@ export const GroupPicker = ({ group, setGroup }: GroupPickerProps) => {
                 })}
             </Select>
         </FormControl>
-    )
-}
+    );
+};
