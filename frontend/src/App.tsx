@@ -7,6 +7,7 @@ import './App.css';
 
 import { Admin } from './pages/Admin';
 import { AllRequests } from './pages/Admin/AllRequests';
+import { AccessControlManager } from './pages/Admin/RoomManager/AccessControlManager';
 import { RoomManager } from './pages/Admin/RoomManager';
 import { Calendar } from './pages/Calendar';
 import { CreateBooking } from './pages/CreateBooking';
@@ -140,6 +141,14 @@ function App() {
                                     element={
                                         <RequireRole role={['admin']}>
                                             <RoomManager />
+                                        </RequireRole>
+                                    }
+                                />
+                                <Route
+                                    path="/admin/room-manager/:room"
+                                    element={
+                                        <RequireRole role={['admin']}>
+                                            <AccessControlManager />
                                         </RequireRole>
                                     }
                                 />

@@ -1,5 +1,4 @@
 import { Link } from '../../components';
-import { Typography } from '@mui/material';
 import { ErrorPage } from '../../layouts/ErrorPage';
 
 export const NotFound = () => {

@@ -59,15 +59,13 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} children={undefined} />;
 });
 
-export const EditBooking = ({
-    isOpen,
-    reqID,
-    setOpenEditRequest,
-}: {
+interface EditBookingProps {
     isOpen: boolean;
     reqID: string;
     setOpenEditRequest: (isOpen: boolean) => void;
-}) => {
+}
+
+export const EditBooking = ({ isOpen, reqID, setOpenEditRequest }: EditBookingProps) => {
     const [userGroups, setUserGroups] = useState([]);
     // TODO INTEGRATE
     // useEffect(() => {

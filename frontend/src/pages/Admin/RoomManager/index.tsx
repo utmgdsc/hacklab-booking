@@ -19,6 +19,7 @@ import {
     CardActions,
 } from '@mui/material';
 import { UserContext } from '../../../contexts/UserContext';
+import { Link } from '../../../components';
 
 export const RoomManager = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -76,7 +77,9 @@ const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small">Learn More</Button>
+                <Link internal href={`./${roomName}`}>
+                    <Button size="small">Control Access</Button>
+                </Link>
             </CardActions>
         </Card>
     );
