@@ -1,7 +1,4 @@
-import {
-    Box,
-    Button
-} from '@mui/material';
+import { Box, Button } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import { GroupCard, InputDialog } from '../../components';

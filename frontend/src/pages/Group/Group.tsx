@@ -1,11 +1,4 @@
-import {
-    Box,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    Typography
-} from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../../axios';

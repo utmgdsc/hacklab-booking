@@ -44,7 +44,7 @@ export const RoomManager = () => {
                 onClick={() => {
                     setCreateRoomOpen(true);
                 }}
-                sx={{ marginLeft: "1em" }}
+                sx={{ marginLeft: '1em' }}
             >
                 Create Room
             </Button>
@@ -66,7 +66,7 @@ export const RoomManager = () => {
  */
 const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
     return (
-        <Card sx={{ maxWidth: 275, display: "inline-block", mx: "1em" }}>
+        <Card sx={{ maxWidth: 275, display: 'inline-block', mx: '1em' }}>
             <CardContent>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     {roomName} - {capacity} people capacity

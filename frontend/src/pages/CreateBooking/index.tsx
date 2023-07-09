@@ -113,7 +113,7 @@ export const CreateBooking = () => {
         const booking = {
             roomName,
             owner: userInfo['utorid'],
-            groupId: JSON.parse(group).id,
+            groupId: (JSON.parse(group) as FetchedGroup).id,
             description: details,
             title: details,
             startDate: scheduleDates[0],
@@ -184,7 +184,11 @@ export const CreateBooking = () => {
     } else if (submitted) {
         return (
             <SubPage name="Create a booking">
-                <BookingSubmitted details={details} scheduleDates={scheduleDates} groupName={JSON.parse(group).name} />
+                <BookingSubmitted
+                    details={details}
+                    scheduleDates={scheduleDates}
+                    groupName={(JSON.parse(group) as FetchedGroup).name}
+                />
             </SubPage>
         );
     }
