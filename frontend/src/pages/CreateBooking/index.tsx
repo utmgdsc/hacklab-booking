@@ -113,7 +113,7 @@ export const CreateBooking = () => {
         const booking = {
             roomName,
             owner: userInfo['utorid'],
-            groupId: group,
+            groupId: JSON.parse(group).id,
             description: details,
             title: details,
             startDate: scheduleDates[0],
@@ -184,7 +184,7 @@ export const CreateBooking = () => {
     } else if (submitted) {
         return (
             <SubPage name="Create a booking">
-                <BookingSubmitted details={details} scheduleDates={scheduleDates} groupName={group} />
+                <BookingSubmitted details={details} scheduleDates={scheduleDates} groupName={JSON.parse(group).name} />
             </SubPage>
         );
     }
@@ -226,7 +226,7 @@ export const CreateBooking = () => {
                             >
                                 {userInfo.groups.map((group) => {
                                     return (
-                                        <MenuItem value={group.id} key={group.id}>
+                                        <MenuItem value={JSON.stringify(group)} key={group.id}>
                                             {group.name}
                                         </MenuItem>
                                     );
