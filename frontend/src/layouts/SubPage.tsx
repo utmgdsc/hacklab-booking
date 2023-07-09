@@ -38,7 +38,7 @@ export const SubPage: React.FC<SubPageProps> = ({
             return '/';
         }
         return path;
-    }
+    };
 
     return (
         <Container sx={{ py: py }} maxWidth={maxWidth} component="main" {...props}>
@@ -54,7 +54,7 @@ export const SubPage: React.FC<SubPageProps> = ({
                     },
                 }}
             >
-                <Link href={ previousPath() } internal>
+                <Link href={previousPath()} internal>
                     <Button onClick={() => fetchUserInfo()}>
                         <ArrowBackIos /> Back
                     </Button>

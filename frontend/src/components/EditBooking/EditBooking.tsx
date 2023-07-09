@@ -60,8 +60,11 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 interface EditBookingProps {
+    /** whether the dialog is open */
     isOpen: boolean;
+    /** the request ID to edit */
     reqID: string;
+    /** function to close the dialog */
     setOpenEditRequest: (isOpen: boolean) => void;
 }
 
