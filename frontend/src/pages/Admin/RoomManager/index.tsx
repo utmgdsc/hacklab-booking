@@ -59,7 +59,10 @@ export const RoomManager = () => {
 };
 
 /**
- * Room Card
+ * Room Card component. Prop names align with the Room type in the backend
+ * @param roomName name of the room
+ * @param friendlyName friendly name of the room
+ * @param capacity capacity of the room
  */
 const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
     return (

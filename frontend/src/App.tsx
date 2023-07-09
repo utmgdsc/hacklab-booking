@@ -151,7 +151,7 @@ function App() {
                                 key={item._id}
                                 open={item.open}
                                 autoHideDuration={3000}
-                                onClose={(event: React.SyntheticEvent | Event, reason?: string) => {
+                                onClose={(_event: React.SyntheticEvent | Event, reason?: string) => {
                                     if (reason === 'clickaway') {
                                         return;
                                     }

@@ -4,31 +4,20 @@ import {
     Card,
     CardActions,
     CardContent,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Input,
-    TextField,
-    Typography,
-    useMediaQuery,
-    useTheme,
+    Typography
 } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { InitialsAvatar, ConfirmationDialog, InputDialog } from '../../components';
+import axios from '../../axios';
+import { ConfirmationDialog, InitialsAvatar, InputDialog } from '../../components';
+import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
-import axios from '../../axios';
-import { SnackbarContext } from '../../contexts/SnackbarContext';
 
 export const Group = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const [open, setOpen] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { id: groupID } = useParams();
 
     const [group, setGroup] = React.useState<FetchedGroup>({

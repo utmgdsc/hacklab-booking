@@ -1,14 +1,6 @@
 import {
     Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    TextField,
-    useMediaQuery,
-    useTheme,
+    Button
 } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
@@ -21,10 +13,6 @@ export const GroupDirectory = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     /** create group dialog open state */
     const [open, setOpen] = React.useState(false);
-    /** mui theme object */
-    const theme = useTheme();
-    /** whether the dialog should be full screen */
-    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     /** the groups that the user is a member of */
     let [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
 
