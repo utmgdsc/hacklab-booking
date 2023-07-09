@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react';
 import { forwardRef } from 'react';
-import { DateTimePicker, ApproverSelect } from '../../components';
+import { DateTimePicker, ApproverPicker } from '../../components';
 import { Close as CloseIcon, CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import { TransitionProps } from '@mui/material/transitions';
@@ -369,7 +369,7 @@ export const EditBooking = ({
                                         alignItems: 'center',
                                     }}
                                 >
-                                    <ApproverSelect setApprovers={setApprovers} />
+                                    <ApproverPicker setApprovers={setApprovers} />
                                     {approversError && (
                                         <Typography component="p" color="error" sx={{ marginTop: '1em' }}>
                                             * please select an approver

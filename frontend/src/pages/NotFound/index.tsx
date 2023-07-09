@@ -7,13 +7,13 @@ export const NotFound = () => {
         <ErrorPage
             name="Page not found"
             message={
-                <Typography>
+                <>
                     The page you are looking for does not exist. Please{' '}
                     <Link internal href="/">
                         return to the dashboard
                     </Link>
                     .
-                </Typography>
+                </>
             }
         />
     );

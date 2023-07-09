@@ -1,11 +1,11 @@
-import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
-import { DateTimePicker, BookingSubmitted, ApproverSelect, Link } from '../../components';
-import { UserContext } from '../../contexts/UserContext';
-import { SubPage } from '../../layouts/SubPage';
-import { ErrorPage } from '../../layouts/ErrorPage';
+import { Box, Button, Divider, TextField } from '@mui/material';
+import { useContext, useState } from 'react';
 import axios from '../../axios';
+import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
+import { UserContext } from '../../contexts/UserContext';
+import { ErrorPage } from '../../layouts/ErrorPage';
+import { SubPage } from '../../layouts/SubPage';
 
 export const CreateBooking = () => {
     /** context to show snackbars */
@@ -14,8 +14,6 @@ export const CreateBooking = () => {
     const { userInfo } = useContext(UserContext);
     /** currently selected room name */
     const [roomName, setRoomName] = useState<string>('');
-    /** list of rooms */
-    const [rooms, setRooms] = useState<Room[]>([]);
     /** booking details */
     const [details, setDetails] = useState('');
     /** currently selected group name */
@@ -28,13 +26,6 @@ export const CreateBooking = () => {
     const [validDate, setValidDate] = useState(false);
     /** list of approvers */
     const [approvers, setApprovers] = useState([]);
-
-    // get list of rooms
-    useEffect(() => {
-        axios.get<Room[]>('/rooms').then((res) => {
-            setRooms(res.data);
-        });
-    }, []);
 
     /**
      * Checks if the date is not blocked
@@ -171,13 +162,13 @@ export const CreateBooking = () => {
             <ErrorPage
                 name="Cannot create booking"
                 message={
-                    <Typography>
+                    <>
                         Please{' '}
                         <Link internal href="/group">
                             create a group
                         </Link>{' '}
                         before making a booking request.
-                    </Typography>
+                    </>
                 }
             />
         );
@@ -198,152 +189,100 @@ export const CreateBooking = () => {
      */
     return (
         <SubPage name="Create a booking">
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                    flexWrap: 'nowrap',
-                }}
-            >
-                {userInfo.groups.length > 0 && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
+            {userInfo.groups.length > 0 && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider>Select the group to book under</Divider>
+
+                    <GroupPicker setGroup={setGroup} group={group} />
+                </Box>
+            )}
+
+            {group && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider>Select the room to book</Divider>
+
+                    <RoomPicker setRoomName={setRoomName} roomName={roomName} />
+                </Box>
+            )}
+
+            {group && roomName && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider>Provide an explanation</Divider>
+
+                    <TextField
+                        fullWidth
+                        id="explanation-field"
+                        label="Please provide an explanation"
+                        minRows={4}
+                        multiline
+                        required
+                        value={details}
+                        onChange={(e) => {
+                            setDetails(e.target.value);
                         }}
-                    >
-                        <Divider>Select the group to book under</Divider>
+                        sx={{ marginTop: '1em' }}
+                    />
+                </Box>
+            )}
 
-                        <FormControl fullWidth sx={{ marginTop: '1em' }}>
-                            <InputLabel id="group-label">Group</InputLabel>
-                            <Select
-                                labelId="group-label"
-                                id="group-select"
-                                value={group}
-                                fullWidth
-                                label="Group"
-                                onChange={(e) => {
-                                    setGroup(e.target.value);
-                                }}
-                            >
-                                {userInfo.groups.map((group) => {
-                                    return (
-                                        <MenuItem value={JSON.stringify(group)} key={group.id}>
-                                            {group.name}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                )}
-                {group && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
-                        }}
-                    >
-                        <Divider>Select the room to book</Divider>
+            {group && roomName && details !== '' && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                        <FormControl fullWidth sx={{ marginTop: '1em' }}>
-                            <InputLabel id="room-label">Room</InputLabel>
-                            <Select
-                                labelId="room-label"
-                                id="room-select"
-                                value={roomName}
-                                fullWidth
-                                label="Room"
-                                onChange={(e) => {
-                                    setRoomName(e.target.value);
-                                }}
-                            >
-                                {rooms.map((room) => {
-                                    return (
-                                        <MenuItem value={room.roomName} key={room.roomName}>
-                                            {room.roomName} - {room.friendlyName}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                )}
+                    <ApproverPicker setApprovers={setApprovers} />
+                </Box>
+            )}
 
-                {group && roomName && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
-                        }}
-                    >
-                        <Divider>Provide an explanation</Divider>
+            {group && roomName && details !== '' && approvers.length > 0 && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
 
-                        <TextField
-                            fullWidth
-                            id="explanation-field"
-                            label="Please provide an explanation"
-                            minRows={4}
-                            multiline
-                            required
-                            value={details}
-                            onChange={(e) => {
-                                setDetails(e.target.value);
-                            }}
-                            sx={{ marginTop: '1em' }}
-                        />
-                    </Box>
-                )}
-                {group && roomName && details !== '' && (
-                    <>
-                        <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
+                    <DateTimePicker
+                        handleScheduleDate={handleScheduleDate}
+                        scheduleDates={scheduleDates}
+                        setScheduleDates={setScheduleDates}
+                        room={roomName}
+                    />
+                </Box>
+            )}
 
-                        <Box
-                            sx={{
-                                marginBottom: '4em',
-                                width: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <ApproverSelect setApprovers={setApprovers} />
-                        </Box>
-                    </>
-                )}
-                {group && roomName && details !== '' && approvers.length > 0 && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
-                        }}
-                    >
-                        <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
-
-                        <DateTimePicker
-                            handleScheduleDate={handleScheduleDate}
-                            scheduleDates={scheduleDates}
-                            setScheduleDates={setScheduleDates}
-                            room={roomName}
-                        />
-                    </Box>
-                )}
-
-                {group && roomName && details !== '' && approvers.length > 0 && (
-                    <Button
-                        variant="contained"
-                        size="large"
-                        onClick={() => {
-                            handleFinish();
-                        }}
-                        disabled={!validDate || scheduleDates.length <= 0}
-                    >
-                        Finish
-                    </Button>
-                )}
-            </Box>
+            {group && roomName && details !== '' && approvers.length > 0 && (
+                <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => {
+                        handleFinish();
+                    }}
+                    disabled={!validDate || scheduleDates.length <= 0}
+                >
+                    Finish
+                </Button>
+            )}
         </SubPage>
     );
 };
