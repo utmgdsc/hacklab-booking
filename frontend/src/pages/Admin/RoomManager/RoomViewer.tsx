@@ -1,27 +1,20 @@
+import { ExpandMore } from '@mui/icons-material';
 import {
-    Box,
-    Button,
-    Checkbox,
-    FormControl,
-    FormControlLabel,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
     Paper,
     TableCell,
     TableRow,
-    Typography,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Card
+    Typography
 } from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableVirtuoso } from 'react-virtuoso';
 import axios from "../../../axios";
+import { VirtuosoTableComponents } from '../../../components';
 import { SnackbarContext } from "../../../contexts/SnackbarContext";
 import { SubPage } from "../../../layouts/SubPage";
-import { RoleChanger, VirtuosoTableComponents } from '../../../components';
-import { UserContext } from '../../../contexts/UserContext';
 
 interface TableRowData {
     [key: string]: any;
@@ -147,7 +140,7 @@ export const RoomViewer = () => {
 
     return (
         <SubPage name={name} maxWidth="xl">
-            <Accordion expanded={expanded === 'access'} onChange={handleChange('access')}>
+            <Accordion expanded={expanded === 'access'} onChange={handleChange('access')} TransitionProps={{ unmountOnExit: true }}>
                 <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel1a-content"
@@ -164,7 +157,7 @@ export const RoomViewer = () => {
                     <UserAccessTable rows={room.userAccess} columns={userColumns} />
                 </AccordionDetails>
             </Accordion>
-            <Accordion expanded={expanded === 'history'} onChange={handleChange('history')}>
+            <Accordion expanded={expanded === 'history'} onChange={handleChange('history')} TransitionProps={{ unmountOnExit: true }}>
                 <AccordionSummary
                     expandIcon={<ExpandMore />}
                     aria-controls="panel2a-content"
