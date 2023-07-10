@@ -7,6 +7,71 @@ import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
 
+/**
+ * Card for a person in the group
+ * @param person The person to display
+ * @param changeRole Function to change the role of the person
+ * @param removePerson Function to remove the person from the group
+ * @param invited hides the card actions if the person is not invited
+ */
+const PersonCard = ({ person, changeRole, removePerson, isManager, invited }: {
+    person: User;
+    changeRole: (utorid: string) => void;
+    removePerson: (utorid: string) => void;
+    isManager: (person: User) => boolean;
+    invited?: boolean;
+}) => {
+    const { userInfo } = useContext(UserContext);
+    const navigate = useNavigate();
+
+    return (
+        <Card variant="outlined" sx={{marginBottom: "1em"}}>
+            <CardContent
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: '1em',
+                }}
+            >
+                <Box>
+                    <InitialsAvatar name={person.name} />
+                </Box>
+                <Box>
+                    <Typography variant="h5">
+                        {person.name}{' '}
+                        <Typography sx={{ color: 'grey', display: 'inline' }}>({person.utorid})</Typography>
+                    </Typography>
+                    {isManager(person) ? <Typography color="success">Group manager</Typography> : null}
+                    <Typography variant="body1">{person.email}</Typography>
+                </Box>
+            </CardContent>
+            {invited || userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
+                <CardActions>
+                    <Button
+                        onClick={() => {
+                            changeRole(person.utorid);
+                        }}
+                    >
+                        {isManager(person) ? 'Demote to Member' : 'Make Admin'}
+                    </Button>
+
+                    <Button
+                        color="error"
+                        onClick={() => {
+                            removePerson(person.utorid);
+                            if (userInfo.utorid === person.utorid) {
+                                navigate('/group', { replace: true });
+                            }
+                        }}
+                    >
+                        Remove Student
+                    </Button>
+                </CardActions>
+            )}
+        </Card>
+    );
+}
 export const Group = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const [open, setOpen] = React.useState(false);
@@ -21,9 +86,7 @@ export const Group = () => {
         name: '',
         requests: [],
     });
-    const [inviteUtorid, setInviteUtorid] = React.useState('');
     const navigate = useNavigate();
-    const { userInfo } = useContext(UserContext);
 
     /**
      * Boolean function to check if the user is a manager of the group
@@ -45,6 +108,7 @@ export const Group = () => {
             return;
         }
         setGroup(data);
+        console.log(data);
     };
 
     useEffect(() => {
@@ -126,6 +190,7 @@ export const Group = () => {
                     flexDirection: 'row',
                     gap: '1em',
                     justifyContent: 'flex-end',
+                    marginBottom: '1em',
                 }}
             >
                 <Button
@@ -156,52 +221,26 @@ export const Group = () => {
 
             {/* list of people in the group */}
             {group.members.map((person) => (
-                <Card variant="outlined" key={person.utorid}>
-                    <CardContent
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            gap: '1em',
-                        }}
-                    >
-                        <Box>
-                            <InitialsAvatar name={person.name} />
-                        </Box>
-                        <Box>
-                            <Typography variant="h5">
-                                {person.name}{' '}
-                                <Typography sx={{ color: 'grey', display: 'inline' }}>({person.utorid})</Typography>
-                            </Typography>
-                            {isManager(person) ? <Typography color="success">Group manager</Typography> : null}
-                            <Typography variant="body1">{person.email}</Typography>
-                        </Box>
-                    </CardContent>
-                    {userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
-                        <CardActions>
-                            <Button
-                                onClick={() => {
-                                    changeRole(person.utorid);
-                                }}
-                            >
-                                {isManager(person) ? 'Demote to Member' : 'Make Admin'}
-                            </Button>
-
-                            <Button
-                                color="error"
-                                onClick={() => {
-                                    removePerson(person.utorid);
-                                    if (userInfo.utorid === person.utorid) {
-                                        navigate('/group', { replace: true });
-                                    }
-                                }}
-                            >
-                                Remove Student
-                            </Button>
-                        </CardActions>
-                    )}
-                </Card>
+                <PersonCard
+                    changeRole={changeRole}
+                    isManager={isManager}
+                    key={person.utorid}
+                    person={person}
+                    removePerson={removePerson}
+                />
             ))}
+            <Typography variant="h2" sx={{margin: "2em 0 0.5em 0"}}>Pending Invites</Typography>
+            {group.invited.map((person) => (
+                <PersonCard
+                    changeRole={changeRole}
+                    isManager={isManager}
+                    key={person.utorid}
+                    person={person}
+                    removePerson={removePerson}
+                    invited
+                />
+            ))}
+
             <ConfirmationDialog
                 open={openDelete}
                 setOpen={setOpenDelete}

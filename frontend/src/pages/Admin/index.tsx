@@ -38,7 +38,7 @@ export const Admin = () => {
             color: theme.palette.app_colors.red,
         },
         {
-            title: 'Create, edit, and delete rooms',
+            title: 'Create and view information on rooms',
             href: '/admin/room-manager',
             icon: <MeetingRoom />,
             label: 'Manage Rooms',

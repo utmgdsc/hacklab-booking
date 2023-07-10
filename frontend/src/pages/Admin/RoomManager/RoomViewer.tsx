@@ -177,7 +177,7 @@ export const RoomViewer = () => {
 
     return (
         <SubPage name={name} maxWidth="xl">
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{marginBottom: '1em',}}>
                 <Grid item xs={12} sm={6} md={3}>
                     <Card variant="outlined">
                         <CardContent>
