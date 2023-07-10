@@ -15,7 +15,7 @@ interface ApproverPickerProps {
  *
  * @param setApprovers a function that takes in an array of approvers and sets the approvers for the form
  */
-export const ApproverPicker = ({ setApprovers, selectedApprovers = [] } : ApproverPickerProps) => {
+export const ApproverPicker = ({ setApprovers, selectedApprovers = [] }: ApproverPickerProps) => {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(selectedApprovers);
     const [approvers, setApproversBackend] = useState([]);
