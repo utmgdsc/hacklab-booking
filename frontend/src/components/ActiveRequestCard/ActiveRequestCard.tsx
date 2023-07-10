@@ -102,7 +102,7 @@ export const ActiveRequestCard = ({
 
     return (
         <>
-            <Card variant="outlined">
+            <Card variant="outlined" sx={{ marginBottom: '1em' }}>
                 <CardContent>
                     <Box
                         sx={{

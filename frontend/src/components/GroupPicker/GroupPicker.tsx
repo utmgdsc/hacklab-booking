@@ -33,7 +33,13 @@ export const GroupPicker = ({ group, setGroup }: GroupPickerProps) => {
             >
                 {userInfo.groups.map((group) => {
                     return (
-                        <MenuItem value={JSON.stringify(group)} key={group.id}>
+                        <MenuItem
+                            value={JSON.stringify({
+                                id: group.id,
+                                name: group.name,
+                            } as Group)}
+                            key={group.id}
+                        >
                             {group.name}
                         </MenuItem>
                     );

@@ -143,7 +143,7 @@ export const UserViewer = () => {
                                             {ConvertDate(request.endDate)}
                                         </Typography>
                                     </Tooltip>
-                                    <Divider sx={{ my: "0.5em" }} />
+                                    <Divider sx={{ my: '0.5em' }} />
                                     <Tooltip title="Request Approval Reason">
                                         <Typography variant="body1">{request.reason}</Typography>
                                     </Tooltip>
@@ -181,13 +181,11 @@ export const UserViewer = () => {
                                     <Tooltip title="Group Name">
                                         <Typography variant="h3">{group.name}</Typography>
                                     </Tooltip>
-                                    {
-                                        user.manager.filter((manager) => manager.id === group.id).length === 0 ? (
-                                            <Typography variant="body1">User is not a manager</Typography>
-                                        ) : (
-                                            <Typography variant="body1">User is a manager</Typography>
-                                        )
-                                    }
+                                    {user.manager.filter((manager) => manager.id === group.id).length === 0 ? (
+                                        <Typography variant="body1">User is not a manager</Typography>
+                                    ) : (
+                                        <Typography variant="body1">User is a manager</Typography>
+                                    )}
                                     <Typography variant="body1">{group.members.length} member(s)</Typography>
                                 </CardContent>
                             </Card>

@@ -3,15 +3,23 @@ import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import axios from '../../axios';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 
+interface ApproverPickerProps {
+    /** a function that takes in an array of approvers and sets the approvers for the form */
+    setApprovers: (approvers: string[]) => void;
+    /** the approvers that have already been selected */
+    selectedApprovers?: string[];
+}
+
 /**
  * A control that allows the user to select approvers from a list of all approvers.
  *
  * @param setApprovers a function that takes in an array of approvers and sets the approvers for the form
  */
-export const ApproverPicker = ({ setApprovers }: { setApprovers: (approvers: string[]) => void }) => {
+export const ApproverPicker = ({ setApprovers, selectedApprovers = [] } : ApproverPickerProps) => {
     const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState([]);
+    const [selected, setSelected] = useState(selectedApprovers);
     const [approvers, setApproversBackend] = useState([]);
+
     useEffect(() => {
         axios.get('/accounts/approvers').then(({ data }) => {
             setApproversBackend(data);

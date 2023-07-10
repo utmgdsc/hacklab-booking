@@ -1,5 +1,5 @@
 import { Box, Button, Divider, TextField } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
@@ -7,7 +7,7 @@ import { UserContext } from '../../contexts/UserContext';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { SubPage } from '../../layouts/SubPage';
 
-export const CreateBooking = () => {
+export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** context to show snackbars */
     const { showSnackSev } = useContext(SnackbarContext);
     /** user info */
@@ -26,6 +26,26 @@ export const CreateBooking = () => {
     const [validDate, setValidDate] = useState(false);
     /** whether the request was submitted */
     const [submitted, setSubmitted] = useState(false);
+
+    useEffect(() => {
+        /* set fill info if there is already an editID */
+        if (editID) {
+            axios.get(`/requests/${editID}`).then((res) => {
+                console.log(res.data);
+                if (res.status === 200) {
+                    setGroup(
+                        JSON.stringify({
+                            id: res.data.group.id,
+                            name: res.data.group.name,
+                        } as Group),
+                    );
+                    setRoomName(res.data.roomName);
+                    setDetails(res.data.description);
+                    setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                }
+            });
+        }
+    }, [editID]);
 
     /**
      * Checks if the date is not blocked
@@ -104,7 +124,7 @@ export const CreateBooking = () => {
         const booking = {
             roomName,
             owner: userInfo['utorid'],
-            groupId: (JSON.parse(group) as FetchedGroup).id,
+            groupId: (JSON.parse(group) as Group).id,
             description: details,
             title: details,
             startDate: scheduleDates[0],
@@ -112,12 +132,22 @@ export const CreateBooking = () => {
             approvers,
         };
 
-        const { status } = await axios.post('/requests/create', booking);
-        if (status === 200) {
-            setSubmitted(true);
-            return;
+        if (editID) {
+            const { status } = await axios.put(`/requests/${editID}`, booking);
+            if (status === 200) {
+                setSubmitted(true);
+                return;
+            } else {
+                showSnackSev('Could not edit booking request', 'error');
+            }
         } else {
-            showSnackSev('Could not create booking request', 'error');
+            const { status } = await axios.post('/requests/create', booking);
+            if (status === 200) {
+                setSubmitted(true);
+                return;
+            } else {
+                showSnackSev('Could not create booking request', 'error');
+            }
         }
     };
 
@@ -183,7 +213,7 @@ export const CreateBooking = () => {
                 <BookingSubmitted
                     details={details}
                     scheduleDates={scheduleDates}
-                    groupName={(JSON.parse(group) as FetchedGroup).name}
+                    groupName={(JSON.parse(group) as Group).name}
                 />
             </SubPage>
         );
@@ -193,7 +223,7 @@ export const CreateBooking = () => {
      * case where user can create a booking
      */
     return (
-        <SubPage name="Create a booking">
+        <>
             {userInfo.groups.length > 0 && (
                 <Box
                     sx={{
@@ -254,7 +284,7 @@ export const CreateBooking = () => {
                 >
                     <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                    <ApproverPicker setApprovers={setApprovers} />
+                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} />
                 </Box>
             )}
 
@@ -288,6 +318,14 @@ export const CreateBooking = () => {
                     Finish
                 </Button>
             )}
+        </>
+    );
+};
+
+export const CreateBooking = () => {
+    return (
+        <SubPage name="Create a booking">
+            <CreateModifyBooking />
         </SubPage>
     );
 };
