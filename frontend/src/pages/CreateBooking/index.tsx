@@ -7,6 +7,9 @@ import { UserContext } from '../../contexts/UserContext';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { SubPage } from '../../layouts/SubPage';
 
+/**
+ * Edit a booking given a UUID or create a new booking if no UUID is given
+ */
 export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** context to show snackbars */
     const { showSnackSev } = useContext(SnackbarContext);
@@ -27,8 +30,8 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** whether the request was submitted */
     const [submitted, setSubmitted] = useState(false);
 
+    /* set fill info if there is already an editID */
     useEffect(() => {
-        /* set fill info if there is already an editID */
         if (editID) {
             axios.get(`/requests/${editID}`).then((res) => {
                 console.log(res.data);
@@ -190,32 +193,15 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     };
 
     /*
-     * cases where user cannot create a booking or booking was successful
+     * case where booking was successful
      */
-    if (userInfo.groups.length <= 0) {
+    if (submitted) {
         return (
-            <ErrorPage
-                name="Cannot create booking"
-                message={
-                    <>
-                        Please{' '}
-                        <Link internal href="/group">
-                            create a group
-                        </Link>{' '}
-                        before making a booking request.
-                    </>
-                }
+            <BookingSubmitted
+                details={details}
+                scheduleDates={scheduleDates}
+                groupName={(JSON.parse(group) as Group).name}
             />
-        );
-    } else if (submitted) {
-        return (
-            <SubPage name="Create a booking">
-                <BookingSubmitted
-                    details={details}
-                    scheduleDates={scheduleDates}
-                    groupName={(JSON.parse(group) as Group).name}
-                />
-            </SubPage>
         );
     }
 
@@ -323,6 +309,25 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
 };
 
 export const CreateBooking = () => {
+    const { userInfo } = useContext(UserContext);
+
+    if (userInfo.groups.length <= 0) {
+        return (
+            <ErrorPage
+                name="Cannot create booking"
+                message={
+                    <>
+                        Please{' '}
+                        <Link internal href="/group">
+                            create a group
+                        </Link>{' '}
+                        before making a booking request.
+                    </>
+                }
+            />
+        );
+    }
+
     return (
         <SubPage name="Create a booking">
             <CreateModifyBooking />

@@ -4,9 +4,9 @@ import axios from '../../axios';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 
 interface ApproverPickerProps {
-    /** a function that takes in an array of approvers and sets the approvers for the form */
+    /** a function that takes in an array of approvers as utorids and sets the approvers for the form */
     setApprovers: (approvers: string[]) => void;
-    /** the approvers that have already been selected */
+    /** the approvers that have already been selected as an array of utorids */
     selectedApprovers?: string[];
 }
 
