@@ -94,7 +94,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
 
     return (
         <>
-            <Card>
+            <Card variant="outlined">
                 <CardContent
                     sx={{
                         padding: '1.25em 1.25em 0',

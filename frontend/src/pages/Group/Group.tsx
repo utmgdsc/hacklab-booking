@@ -156,7 +156,7 @@ export const Group = () => {
 
             {/* list of people in the group */}
             {group.members.map((person) => (
-                <Card key={person.utorid}>
+                <Card variant="outlined" key={person.utorid}>
                     <CardContent
                         sx={{
                             display: 'flex',

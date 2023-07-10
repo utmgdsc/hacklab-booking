@@ -22,7 +22,7 @@ export const Settings = () => {
 
     return (
         <SubPage name="Settings">
-            <Card>
+            <Card variant="outlined">
                 <CardContent
                     sx={{
                         display: 'flex',
@@ -70,7 +70,7 @@ export const Settings = () => {
                 </CardContent>
             </Card>
 
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h2" gutterBottom>
                         Webhooks
@@ -84,7 +84,7 @@ export const Settings = () => {
                 </CardActions>
             </Card>
 
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h2" gutterBottom>
                         Appearance

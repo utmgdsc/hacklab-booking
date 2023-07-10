@@ -137,10 +137,10 @@ function App() {
                                     }
                                 />
                                 <Route
-                                    path="/admin/room-manager"
+                                    path="/admin/room-manager/"
                                     element={
                                         <RequireRole role={['admin']}>
-                                            <RoomViewer />
+                                            <RoomManager />
                                         </RequireRole>
                                     }
                                 />

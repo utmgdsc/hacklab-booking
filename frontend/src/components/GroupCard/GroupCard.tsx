@@ -16,7 +16,7 @@ interface GroupCardProps {
 export const GroupCard = ({ groupObj, ...props }: GroupCardProps) => {
     const { showSnackSev } = useContext(SnackbarContext);
     return (
-        <Card sx={{ mt: 2, mb: 2 }} {...props}>
+        <Card variant="outlined" sx={{ mt: 2, mb: 2 }} {...props}>
             <CardContent>
                 <Typography variant="h3" gutterBottom>
                     {groupObj.name}

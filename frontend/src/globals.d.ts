@@ -81,7 +81,7 @@ interface Room {
 interface FetchedRoom {
     capacity: number;
     friendlyName: string;
-    requests: Request[];
+    requests: BookingRequest[];
     roomName: string;
     userAccess: User[];
 }

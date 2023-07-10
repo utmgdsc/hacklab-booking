@@ -102,7 +102,7 @@ export const ActiveRequestCard = ({
 
     return (
         <>
-            <Card>
+            <Card variant="outlined">
                 <CardContent>
                     <Box
                         sx={{

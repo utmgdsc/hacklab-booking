@@ -67,7 +67,7 @@ export const RoomManager = () => {
  */
 const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
     return (
-        <Card sx={{ maxWidth: 275, display: 'inline-block', mx: '1em' }}>
+        <Card variant="outlined" sx={{ maxWidth: 275, display: 'inline-block', mx: '1em' }}>
             <CardContent>
                 <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
                     {roomName} - {capacity} people capacity

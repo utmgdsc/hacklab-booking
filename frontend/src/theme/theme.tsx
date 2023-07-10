@@ -163,11 +163,8 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
             MuiCard: {
                 styleOverrides: {
                     root: {
-                        width: '100%',
                         margin: '1em 0',
                         borderRadius: '1em',
-                        boxShadow: 'unset',
-                        border: '1px solid',
                         borderColor: mode === THEME.LIGHT ? '#e8eaed' : '#0a0a0a',
                     },
                 },
