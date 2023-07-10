@@ -90,7 +90,7 @@ export default {
   revokeAccess: async (roomName: string, utorid: string) => {
     try {
       await db.room.update({ where: { roomName }, data:{ userAccess: { disconnect: { utorid } } } });
-      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.completed }, data:{ status: RequestStatus.needTCard } });
+      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.completed, endDate: { gte: new Date() } }, data:{ status: RequestStatus.needTCard } });
       return { status: 200, data:{} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
