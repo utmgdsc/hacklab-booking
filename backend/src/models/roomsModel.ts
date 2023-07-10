@@ -31,6 +31,7 @@ export default {
         include: {
           requests: {
             where: { OR: [{ author: { utorid: user.utorid } }, { group: { members: { some: { utorid: user.utorid } } } }] },
+            include: { group: true },
           },
           userAccess: { where: { OR: [{ utorid: user.utorid }, { groups: { some: { members: { some: { utorid: user.utorid } } } } }] } },
         },
@@ -46,7 +47,7 @@ export default {
       room = await db.room.findUnique({
         where: { roomName },
         include: {
-          requests: true,
+          requests: { include: { group:true } },
           userAccess: true,
         },
       });
