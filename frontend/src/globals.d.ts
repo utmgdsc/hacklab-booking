@@ -22,10 +22,10 @@ interface RoomsUser extends User {
 }
 
 interface FetchedUser extends RoomsUser {
-    groups: Group[];
+    groups: FetchedGroup[];
     invited: FetchedGroup[];
-    manager: Group[];
-    requests: Request[];
+    manager: FetchedGroup[];
+    requests: FetchedRequest[];
 }
 
 type BookingStatus = 'pending' | 'denied' | 'cancelled' | 'needTCard' | 'completed';

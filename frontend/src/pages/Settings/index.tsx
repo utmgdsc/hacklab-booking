@@ -1,22 +1,21 @@
-import React from 'react';
 import {
-    Typography,
+    Box,
     Button,
     Card,
-    CardContent,
     CardActions,
-    Box,
-    Radio,
-    RadioGroup,
+    CardContent,
     FormControlLabel,
     Grid,
+    Radio,
+    RadioGroup,
+    Typography,
 } from '@mui/material';
-import { SubPage } from '../../layouts/SubPage';
-import { InitialsAvatar } from '../../components';
-import { THEME } from '../../theme/theme';
-import { UserContext } from '../../contexts/UserContext';
 import { useContext } from 'react';
 import { instance } from '../../axios';
+import { UserCard } from '../../components';
+import { UserContext } from '../../contexts/UserContext';
+import { SubPage } from '../../layouts/SubPage';
+import { THEME } from '../../theme/theme';
 
 export const Settings = () => {
     const { userInfo, fetchUserInfo } = useContext(UserContext);
@@ -25,53 +24,7 @@ export const Settings = () => {
         <SubPage name="Settings">
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Card variant="outlined">
-                        <CardContent
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'space-between',
-                                gap: '1em',
-                            }}
-                        >
-                            <Box>
-                                <Typography variant="h2" gutterBottom>
-                                    Profile
-                                </Typography>
-                                <Typography variant="gray">Some information will be visible to other users.</Typography>
-                            </Box>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    gap: '1em',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <InitialsAvatar name={userInfo['name']} />
-                                <Box>
-                                    <Typography title="Your Name">
-                                        <strong>{userInfo.name}</strong>
-                                    </Typography>
-                                    <Typography variant="gray" title="Your Email">
-                                        {userInfo.email}
-                                    </Typography>
-                                    <br></br>
-                                    <Typography variant="gray" title="Your UTORid">
-                                        {userInfo.utorid}
-                                    </Typography>
-                                    <Typography variant="gray" title="Your Email">
-                                        {userInfo.roomAccess && (
-                                            <>
-                                                <br></br>Hacklab Keycard Haver
-                                            </>
-                                        )}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </CardContent>
-                    </Card>
+                    <UserCard userInfo={userInfo} />
                 </Grid>
                 <Grid item xs={12}>
                     <Card variant="outlined">

@@ -5,6 +5,61 @@ import { GroupCard, InputDialog } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { SubPage } from '../../layouts/SubPage';
 import { UserContext } from '../../contexts/UserContext';
+import { Done as DoneIcon, Close as CloseIcon } from '@mui/icons-material';
+
+/**
+ * Shows a group card with accept and decline buttons
+ * @param group The group to display
+ */
+const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
+    const { fetchUserInfo } = useContext(UserContext);
+    const { showSnackSev } = useContext(SnackbarContext);
+
+    return (
+        <Card variant="outlined" sx={{ margin: '1em 0' }}>
+            <CardContent>
+                <Typography variant="h3">{group.name}</Typography>
+                <Typography variant="body1">
+                    {group.members.length} member{group.members.length === 1 ? '' : 's'}
+                </Typography>
+            </CardContent>
+            <CardActions>
+                <Button
+                    color="success"
+                    startIcon={<DoneIcon />}
+                    onClick={() => {
+                        axios
+                            .post(`/groups/${group.id}/invite/accept`)
+                            .then(() => {
+                                showSnackSev('You have joined the group', 'success');
+                            })
+                            .finally(() => {
+                                fetchUserInfo();
+                            });
+                    }}
+                >
+                    Accept
+                </Button>
+                <Button
+                    color="error"
+                    startIcon={<CloseIcon />}
+                    onClick={() => {
+                        axios
+                            .post(`/groups/${group.id}/invite/reject`)
+                            .then(() => {
+                                showSnackSev('You have declined the invitation', 'success');
+                            })
+                            .finally(() => {
+                                fetchUserInfo();
+                            });
+                    }}
+                >
+                    Decline
+                </Button>
+            </CardActions>
+        </Card>
+    );
+};
 
 export const GroupDirectory = () => {
     /** context to show snackbars */
@@ -14,7 +69,7 @@ export const GroupDirectory = () => {
     /** the groups that the user is a member of */
     let [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
     /** user info object */
-    const { userInfo, fetchUserInfo } = useContext(UserContext);
+    const { userInfo } = useContext(UserContext);
 
     const sendAddGroup = async () => {
         const { data, status } = await axios.post('/groups/create', {
@@ -83,47 +138,7 @@ export const GroupDirectory = () => {
                         {userInfo.invited.map((group) => {
                             return (
                                 <Grid item xs={12} sm={6} md={3} key={group.id}>
-                                    {' '}
-                                    <Card variant="outlined" sx={{ margin: '1em 0' }}>
-                                        <CardContent>
-                                            <Typography variant="h3">{group.name}</Typography>
-                                            <Typography variant="body1">
-                                                {group.members.length} member{group.members.length === 1 ? '' : 's'}
-                                            </Typography>
-                                        </CardContent>
-                                        <CardActions>
-                                            <Button
-                                                color="success"
-                                                onClick={() => {
-                                                    axios
-                                                        .post(`/groups/${group.id}/invite/accept`)
-                                                        .then(() => {
-                                                            showSnackSev('You have joined the group', 'success');
-                                                        })
-                                                        .finally(() => {
-                                                            fetchUserInfo();
-                                                        });
-                                                }}
-                                            >
-                                                Accept
-                                            </Button>
-                                            <Button
-                                                color="error"
-                                                onClick={() => {
-                                                    axios
-                                                        .post(`/groups/${group.id}/invite/reject`)
-                                                        .then(() => {
-                                                            showSnackSev('You have declined the invitation', 'success');
-                                                        })
-                                                        .finally(() => {
-                                                            fetchUserInfo();
-                                                        });
-                                                }}
-                                            >
-                                                Decline
-                                            </Button>
-                                        </CardActions>
-                                    </Card>
+                                    <InvitedGroupCard group={group} />
                                 </Grid>
                             );
                         })}

@@ -6,7 +6,7 @@ import '@fontsource/roboto/700.css';
 import './App.css';
 
 import { Admin } from './pages/Admin';
-import { AllRequests } from './pages/Admin/AllRequests';
+import { UserViewer } from './pages/Admin/UserManager/UserViewer';
 import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
 import { RoomManager } from './pages/Admin/RoomManager';
 import { Calendar } from './pages/Calendar';
@@ -129,10 +129,10 @@ function App() {
                                     }
                                 />
                                 <Route
-                                    path="/admin/all-requests"
+                                    path="/admin/:id"
                                     element={
                                         <RequireRole role={['admin']}>
-                                            <AllRequests />
+                                            <UserViewer />
                                         </RequireRole>
                                     }
                                 />

@@ -23,4 +23,5 @@ export { PendingRequestCard } from './PendingRequestCard/PendingRequestCard';
 export { RequireRole } from './RequireRole/RequireRole';
 export { RoleChanger } from './RoleChanger/RoleChanger';
 export { RoomPicker } from './RoomPicker/RoomPicker';
+export { UserCard } from './UserCard/UserCard';
 export { VirtuosoTableComponents } from './Admin/VirtuosoTableComponents';
