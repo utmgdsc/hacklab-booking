@@ -11,7 +11,7 @@ import {
     TableCell,
     TableRow,
     Tooltip,
-    Typography
+    Typography,
 } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -177,7 +177,7 @@ export const RoomViewer = () => {
 
     return (
         <SubPage name={name} maxWidth="xl">
-            <Grid container spacing={2} sx={{marginBottom: '1em',}}>
+            <Grid container spacing={2} sx={{ marginBottom: '1em' }}>
                 <Grid item xs={12} sm={6} md={3}>
                     <Card variant="outlined">
                         <CardContent>
@@ -213,9 +213,11 @@ export const RoomViewer = () => {
                         <CardContent>
                             Unique people who have requested access
                             <Typography variant="h2" component="div">
-                                {room.requests
-                                    .map((request) => request.authorUtorid)
-                                    .filter((value, index, self) => self.indexOf(value) === index).length}
+                                {
+                                    room.requests
+                                        .map((request) => request.authorUtorid)
+                                        .filter((value, index, self) => self.indexOf(value) === index).length
+                                }
                             </Typography>
                         </CardContent>
                     </Card>

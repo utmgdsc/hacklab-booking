@@ -23,7 +23,7 @@ interface RoomsUser extends User {
 
 interface FetchedUser extends RoomsUser {
     groups: Group[];
-    invited: Group[];
+    invited: FetchedGroup[];
     manager: Group[];
     requests: Request[];
 }

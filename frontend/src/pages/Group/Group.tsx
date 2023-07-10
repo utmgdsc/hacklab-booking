@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Divider, Typography } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../../axios';
@@ -14,7 +14,13 @@ import { SubPage } from '../../layouts/SubPage';
  * @param removePerson Function to remove the person from the group
  * @param invited hides the card actions if the person is not invited
  */
-const PersonCard = ({ person, changeRole, removePerson, isManager, invited }: {
+const PersonCard = ({
+    person,
+    changeRole,
+    removePerson,
+    isManager,
+    invited,
+}: {
     person: User;
     changeRole: (utorid: string) => void;
     removePerson: (utorid: string) => void;
@@ -25,7 +31,7 @@ const PersonCard = ({ person, changeRole, removePerson, isManager, invited }: {
     const navigate = useNavigate();
 
     return (
-        <Card variant="outlined" sx={{marginBottom: "1em"}}>
+        <Card variant="outlined" sx={{ marginBottom: '1em' }}>
             <CardContent
                 sx={{
                     display: 'flex',
@@ -71,7 +77,7 @@ const PersonCard = ({ person, changeRole, removePerson, isManager, invited }: {
             )}
         </Card>
     );
-}
+};
 export const Group = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const [open, setOpen] = React.useState(false);
@@ -108,7 +114,6 @@ export const Group = () => {
             return;
         }
         setGroup(data);
-        console.log(data);
     };
 
     useEffect(() => {
@@ -229,17 +234,24 @@ export const Group = () => {
                     removePerson={removePerson}
                 />
             ))}
-            <Typography variant="h2" sx={{margin: "2em 0 0.5em 0"}}>Pending Invites</Typography>
-            {group.invited.map((person) => (
-                <PersonCard
-                    changeRole={changeRole}
-                    isManager={isManager}
-                    key={person.utorid}
-                    person={person}
-                    removePerson={removePerson}
-                    invited
-                />
-            ))}
+
+            {group.invited.length === 0 ? null : (
+                <>
+                    <Typography variant="h2" sx={{ margin: '2em 0 0.5em 0' }}>
+                        Pending Invites
+                    </Typography>
+                    {group.invited.map((person) => (
+                        <PersonCard
+                            changeRole={changeRole}
+                            isManager={isManager}
+                            key={person.utorid}
+                            person={person}
+                            removePerson={removePerson}
+                            invited
+                        />
+                    ))}
+                </>
+            )}
 
             <ConfirmationDialog
                 open={openDelete}

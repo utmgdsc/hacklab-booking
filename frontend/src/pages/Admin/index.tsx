@@ -18,8 +18,6 @@ import { AppButtons, VirtuosoTableComponents, RoleChanger } from '../../componen
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
 
-
-
 export const Admin = () => {
     const { userInfo } = useContext(UserContext);
     const [filterApproval, setFilterApproval] = useState(false);
