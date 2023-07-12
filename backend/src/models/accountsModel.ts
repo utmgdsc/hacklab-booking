@@ -29,7 +29,7 @@ export default {
             },
           },
         },
-        create: <User>user,
+        create: <User & { webhooks: object }>user,
       })),
     };
   },
