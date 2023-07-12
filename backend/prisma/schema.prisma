@@ -12,17 +12,24 @@ datasource db {
 }
 
 model User {
-  email      String      @unique
-  utorid     String      @id
-  name       String
-  role       AccountRole @default(student)
-  groups     Group[]     @relation(name: "Members")
-  invited    Group[]     @relation(name: "Invited")
-  manager    Group[]     @relation(name: "Managers")
-  requests   Request[]   @relation(name: "Author")
-  approved   Request[]   @relation(name: "Approvers")
-  theme      Theme       @default(system)
-  roomAccess Room[]      @relation(name: "RoomAccess")
+  // ---user info---
+  email          String      @unique
+  utorid         String      @id
+  name           String
+  role           AccountRole @default(student)
+  // ---relationships---
+  groups         Group[]     @relation(name: "Members")
+  invited        Group[]     @relation(name: "Invited")
+  manager        Group[]     @relation(name: "Managers")
+  requests       Request[]   @relation(name: "Author")
+  approved       Request[]   @relation(name: "Approvers")
+  roomAccess     Room[]      @relation(name: "RoomAccess")
+  // ---settings---
+  // dictionary {[event: string]: string[]} //
+  webhooks       Json
+  discordWebhook String?
+  slackWebhook   String?
+  theme          Theme       @default(system)
 }
 
 enum Theme {
