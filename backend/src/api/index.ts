@@ -49,6 +49,9 @@ app.use(async (req, res, next) => {
     utorid: req.headers.utorid as string,
     email: req.headers.http_mail as string,
     name: req.headers.http_cn as string,
+    webhooks: {},
+    slackWebhook: null,
+    discordWebhook: null,
   }));
   if (data.status !== 200) {
     sendResponse(res, data);
