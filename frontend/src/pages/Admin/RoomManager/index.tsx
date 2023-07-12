@@ -134,6 +134,8 @@ const CreateRoomDialog = ({
                 showSnackSev('Room created successfully', 'success');
                 setOpen(false);
                 fetchUserInfo();
+            } else if (status === 400) {
+                showSnackSev('Room already exists', 'warning');
             } else {
                 showSnackSev('Error creating room', 'error');
                 setOpen(false);
