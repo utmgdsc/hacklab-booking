@@ -140,7 +140,6 @@ const CreateRoomDialog = ({
             }
         }
         setOpen(false);
-        createRoom();
         setFriendlyName('');
         setRoomName('');
         setCapacity(0);
