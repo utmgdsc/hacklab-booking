@@ -15,8 +15,8 @@ templates[EventTypes.BOOKING_CREATED] = {
             <li>Booking ID: {{booking_id}}</li>
             <li>Title: {{title}}</li>
             <li>Description: {{description}}</li>
-            <li>Start time: {{start_time}}</li>
-            <li>End time: {{end_time}}</li>
+            <li>Start time: {{start_date}}</li>
+            <li>End time: {{end_date}}</li>
         </ul>
         <p><a href="{{frontend_url}}/approve/{{booking_id}}">Approve</a> or <a href="{{frontend_url}}/deny/{{booking_id}}">Deny</a> the booking.</p>
         <br>
@@ -38,8 +38,8 @@ templates[EventTypes.BOOKING_APPROVAL_REQUESTED] = {
                 <li>Booking ID: {{booking_id}}</li>
                 <li>Title: {{title}}</li>
                 <li>Description: {{description}}</li>
-                <li>Start time: {{start_time}}</li>
-                <li>End time: {{end_time}}</li>
+                <li>Start time: {{start_date}}</li>
+                <li>End time: {{end_date}}</li>
             </ul>
             <p><a href="{{frontend_url}}/approve/{{booking_id}}">Approve</a> or <a href="{{frontend_url}}/deny/{{booking_id}}">Deny</a> the booking.</p>
             <br>
@@ -61,8 +61,8 @@ templates[EventTypes.BOOKING_UPDATED] = {
                 <li>Booking ID: {{booking_id}}</li>
                 <li>Title: {{title}}</li>
                 <li>Description: {{description}}</li>
-                <li>Start time: {{start_time}}</li>
-                <li>End time: {{end_time}}</li>
+                <li>Start time: {{start_date}}</li>
+                <li>End time: {{end_date}}</li>
             </ul>
             <p>Click <a href="{{frontend_url}}/bookings/{{booking_id}}">here</a> to view the booking.</p>
             <br>
@@ -84,8 +84,8 @@ templates[EventTypes.BOOKING_DELETED] = {
                 <li>Booking ID: {{booking_id}}</li>
                 <li>Title: {{title}}</li>
                 <li>Description: {{description}}</li>
-                <li>Start time: {{start_time}}</li>
-                <li>End time: {{end_time}}</li>
+                <li>Start time: {{start_date}}</li>
+                <li>End time: {{end_date}}</li>
             </ul>
             <br>
             <p>Thanks,</p>
@@ -106,8 +106,8 @@ templates[EventTypes.BOOKING_APPROVED] = {
                 <li>Booking ID: {{booking_id}}</li>
                 <li>Title: {{title}}</li>
                 <li>Description: {{description}}</li>
-                <li>Start time: {{start_time}}</li>
-                <li>End time: {{end_time}}</li>
+                <li>Start time: {{start_date}}</li>
+                <li>End time: {{end_date}}</li>
             </ul>
             <br>
             
@@ -129,8 +129,8 @@ templates[EventTypes.BOOKING_REJECTED] = {
                 <li>Booking ID: {{booking_id}}</li>
                 <li>Title: {{title}}</li>
                 <li>Description: {{description}}</li>
-                <li>Start time: {{start_time}}</li>
-                <li>End time: {{end_time}}</li>
+                <li>Start time: {{start_date}}</li>
+                <li>End time: {{end_date}}</li>
             </ul>
             <br>
             
@@ -152,8 +152,8 @@ templates[EventTypes.BOOKING_CANCELLED] = {
                 <li>Booking ID: {{booking_id}}</li>
                 <li>Title: {{title}}</li>
                 <li>Description: {{description}}</li>
-                <li>Start time: {{start_time}}</li>
-                <li>End time: {{end_time}}</li>
+                <li>Start time: {{start_date}}</li>
+                <li>End time: {{end_date}}</li>
             </ul>
             <br>
             <p>Thanks,</p>
