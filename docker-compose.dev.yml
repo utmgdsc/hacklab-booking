@@ -19,6 +19,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=development
+      - FRONTEND_URL=http://localhost:3555
     volumes:
       - ./backend:/app
 
