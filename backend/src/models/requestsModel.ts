@@ -1,11 +1,12 @@
 import Model from '../types/Model';
 import db from '../common/db';
-import { AccountRole, Request, RequestStatus, User } from '@prisma/client';
+import { AccountRole, RequestStatus, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { CreateRequest } from '../types/CreateRequest';
 import { ModelResponseError } from '../types/ModelResponse';
-import requests from '../api/routes/requests';
 import logger from '../common/logger';
+import { triggerMassNotification } from '../notifications';
+import EventTypes from '../types/EventTypes';
 
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {
@@ -150,23 +151,43 @@ export default {
         message: 'User does not have access to this group.',
       };
     }
-    request.approvers = request.approvers || [];
+    request.approvers = request.approvers ?? [];
     try {
+      const madeRequest = await db.request.create({
+        data: {
+          approvers: { connect: request.approvers.map(utorid => ({ utorid })) },
+          status: RequestStatus.pending,
+          author: { connect: { utorid: user.utorid } },
+          group: { connect: { id: request.groupId } },
+          room: { connect: { roomName: request.roomName } },
+          startDate: new Date(request.startDate),
+          endDate: new Date(request.endDate),
+          title: request.title,
+          description: request.description,
+        },
+        include: {
+          group: true,
+          room: true,
+          approvers: true,
+
+        },
+      });
+      await triggerMassNotification(EventTypes.BOOKING_APPROVAL_REQUESTED, request.approvers, {
+        full_name: userFetched.name,
+        utorid: userFetched.utorid,
+        start_date: madeRequest.startDate.toISOString(),
+        end_date: madeRequest.endDate.toISOString(),
+        room: madeRequest.roomName,
+        room_friendly: madeRequest.room.friendlyName,
+        group_name: madeRequest.group.name,
+        title: madeRequest.title,
+        description: madeRequest.description,
+        booking_id: madeRequest.id,
+      });
+      // TODO remove unnecessary fields (shouldn't send approver data like webhooks)
       return {
         status: 200,
-        data: <Request>(await db.request.create({
-          data: {
-            approvers: { connect: request.approvers.map(utorid => ({ utorid })) },
-            status: RequestStatus.pending,
-            author: { connect: { utorid: user.utorid } },
-            group: { connect: { id: request.groupId } },
-            room: { connect: { roomName: request.roomName } },
-            startDate: new Date(request.startDate),
-            endDate: new Date(request.endDate),
-            title: request.title,
-            description: request.description,
-          },
-        })),
+        data: newRequest,
       };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
