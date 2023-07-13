@@ -1,13 +1,13 @@
 interface ModelResponseBase {
-  status: number;
+    status: number;
 }
 
 export interface ModelResponseSuccess<T> extends ModelResponseBase {
-  data: NonNullable<T>;
+    data: NonNullable<T>;
 }
 
 export interface ModelResponseError extends ModelResponseBase {
-  message: string;
+    message: string;
 }
 type ModelResponse<T> = ModelResponseSuccess<T> | ModelResponseError;
 export default ModelResponse;
