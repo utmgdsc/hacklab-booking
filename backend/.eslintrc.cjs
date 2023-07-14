@@ -1,9 +1,6 @@
 module.exports = {
     root: true,
     plugins: ['@typescript-eslint', 'import'],
-    rules: {
-        indent: ['error', 4],
-    },
     extends: [
         'airbnb-typescript/base',
         'plugin:@typescript-eslint/recommended',
