@@ -21,7 +21,7 @@ export const LabelledIconButton = ({ icon, label, color, ...props }: LabelledIco
             <ButtonBase
                 aria-label={label}
                 sx={{
-                    color: theme.palette.mode === THEME.LIGHT ? "white" : theme.palette.text.primary,
+                    color: theme.palette.mode === THEME.LIGHT ? 'white' : theme.palette.text.primary,
                     borderRadius: '25%',
                     margin: '0.5em',
                     background: color,

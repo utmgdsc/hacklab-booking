@@ -1,6 +1,6 @@
 import { Logout, KeyboardArrowDown } from '@mui/icons-material';
 
-import { Box, Button, IconButton, Menu, MenuItem, Theme, Typography, useTheme } from '@mui/material';
+import { Box, Button, Menu, MenuItem, Theme, Typography, useTheme } from '@mui/material';
 import React, { SyntheticEvent, useContext } from 'react';
 import { InitialsAvatar, Link } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
@@ -69,7 +69,12 @@ const RightHeader = ({ userInfo, theme }: { userInfo: User; theme: Theme }) => {
 
     return (
         <Box sx={{ flexGrow: 0 }}>
-            <Button onClick={handleOpenUserMenu} sx={{ p: 0, borderRadius: "99em"}} endIcon={<KeyboardArrowDown />} color="inherit">
+            <Button
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0, borderRadius: '99em' }}
+                endIcon={<KeyboardArrowDown />}
+                color="inherit"
+            >
                 <InitialsAvatar name={userInfo.name} />
             </Button>
             <Menu
