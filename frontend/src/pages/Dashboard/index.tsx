@@ -18,6 +18,7 @@ import {
     PendingRequestCard,
 } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
+import { AppButton } from '../../components/AppButtons/AppButtons';
 /**
  * all active requests cards given a list of active requests
  * @param {*} active_requests a list of requests received from the backend
@@ -127,13 +128,14 @@ export const Dashboard = () => {
     };
     const theme = useTheme();
 
-    const homeButtons = [
+    const homeButtons: AppButton[] = [
         {
             title: 'View the Hacklab Calendar',
             href: '/calendar',
             icon: <InventoryIcon />,
             label: 'View Events',
             color: theme.palette.app_colors.red,
+            hover: theme.palette.app_colors.hover.red,
         },
         {
             title: 'Create a booking for Professors to review',
@@ -141,6 +143,7 @@ export const Dashboard = () => {
             icon: <CalendarTodayIcon />,
             label: 'Book',
             color: theme.palette.app_colors.green,
+            hover: theme.palette.app_colors.hover.green,
         },
         {
             title: "View the student group(s) you're in",
@@ -148,6 +151,7 @@ export const Dashboard = () => {
             icon: <PeopleIcon />,
             label: 'Groups',
             color: theme.palette.app_colors.blue,
+            hover: theme.palette.app_colors.hover.blue,
         },
         {
             title: 'View and edit your profile',
@@ -155,6 +159,7 @@ export const Dashboard = () => {
             icon: <SettingsIcon />,
             label: 'Settings',
             color: theme.palette.app_colors.yellow,
+            hover: theme.palette.app_colors.hover.yellow,
         },
         {
             title: 'Admin dashboard',
@@ -162,9 +167,12 @@ export const Dashboard = () => {
             icon: <AdminPanelSettingsIcon />,
             label: 'Admin',
             color: theme.palette.app_colors.purple,
+            hover: theme.palette.app_colors.hover.purple,
             hidden: userInfo.role !== 'admin' && userInfo.role !== 'tcard',
         },
     ];
+
+    console.log(homeButtons);
 
     return (
         <Container sx={{ py: 8 }} maxWidth="md" component="main">

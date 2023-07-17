@@ -41,6 +41,13 @@ declare module '@mui/material/styles' {
             green?: string;
             yellow?: string;
             purple?: string;
+            hover?: {
+                red?: string;
+                blue?: string;
+                green?: string;
+                yellow?: string;
+                purple?: string;
+            };
         };
         gray?: {
             main?: string;
@@ -54,6 +61,13 @@ declare module '@mui/material/styles' {
             green?: string;
             yellow?: string;
             purple?: string;
+            hover?: {
+                red?: string;
+                blue?: string;
+                green?: string;
+                yellow?: string;
+                purple?: string;
+            };
         };
         gray?: {
             main?: string;
@@ -111,6 +125,13 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
                 green: mode === THEME.DARK ? '#313933' : '#81bc06',
                 yellow: mode === THEME.DARK ? '#393931' : '#ffb900',
                 purple: mode === THEME.DARK ? '#363139' : '#7b00ff',
+                hover: {
+                    red: mode === THEME.DARK ? '#4d3f3f' : '#cc451f',
+                    blue: mode === THEME.DARK ? '#3f454d' : '#0389c7',
+                    green: mode === THEME.DARK ? '#3f4d3f' : '#6c9c03',
+                    yellow: mode === THEME.DARK ? '#4d4d3f' : '#ce9803',
+                    purple: mode === THEME.DARK ? '#4d3f4d' : '#6000c7',
+                }
             },
             // Used by `getContrastText()` to maximize the contrast between
             // the background and the text.
