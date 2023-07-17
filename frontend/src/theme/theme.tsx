@@ -94,8 +94,8 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
             //     }
             // },
             background: {
-                default: mode === THEME.DARK ? '#1f1f1f' : '#fff',
-                paper: mode === THEME.DARK ? '#1f1f1f' : '#fff',
+                default: mode === THEME.DARK ? '#222' : '#fff',
+                paper: mode === THEME.DARK ? '#222' : '#fff',
             },
             gray: {
                 main: mode === THEME.DARK ? '#c5d3e3' : '#5f6368',
