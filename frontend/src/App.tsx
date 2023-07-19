@@ -6,7 +6,8 @@ import '@fontsource/roboto/700.css';
 import './App.css';
 
 import { Admin } from './pages/Admin';
-import { AllRequests } from './pages/Admin/AllRequests';
+import { UserViewer } from './pages/Admin/UserManager/UserViewer';
+import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
 import { RoomManager } from './pages/Admin/RoomManager';
 import { Calendar } from './pages/Calendar';
 import { CreateBooking } from './pages/CreateBooking';
@@ -128,18 +129,26 @@ function App() {
                                     }
                                 />
                                 <Route
-                                    path="/admin/all-requests"
+                                    path="/admin/:id"
                                     element={
                                         <RequireRole role={['admin']}>
-                                            <AllRequests />
+                                            <UserViewer />
                                         </RequireRole>
                                     }
                                 />
                                 <Route
-                                    path="/admin/room-manager"
+                                    path="/admin/room-manager/"
                                     element={
                                         <RequireRole role={['admin']}>
                                             <RoomManager />
+                                        </RequireRole>
+                                    }
+                                />
+                                <Route
+                                    path="/admin/room-manager/:id"
+                                    element={
+                                        <RequireRole role={['admin']}>
+                                            <RoomViewer />
                                         </RequireRole>
                                     }
                                 />
@@ -151,7 +160,7 @@ function App() {
                                 key={item._id}
                                 open={item.open}
                                 autoHideDuration={3000}
-                                onClose={(event: React.SyntheticEvent | Event, reason?: string) => {
+                                onClose={(_event: React.SyntheticEvent | Event, reason?: string) => {
                                     if (reason === 'clickaway') {
                                         return;
                                     }

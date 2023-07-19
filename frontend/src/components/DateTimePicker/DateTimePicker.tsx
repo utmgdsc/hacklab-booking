@@ -1,11 +1,20 @@
 import { Box } from '@mui/material';
 import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
+import axios from '../../axios';
 import { CustomScheduleSelector } from './CustomScheduleSelector';
 import { PrevNextWeek } from './PrevNextWeek';
-import { GetMonday } from '../GetMonday/GetMonday';
-import axios from '../../axios';
+
+interface DateTimePickerProps {
+    /** a function that takes a list of dates, and will validate them */
+    handleScheduleDate: (dates: Date[]) => void;
+    /** a list of dates that are currently selected */
+    scheduleDates: Date[];
+    /** a react hook that is a function that takes a list of dates, and will set the scheduleDates state */
+    setScheduleDates: (dates: string[]) => void;
+    /** the room that the user is booking */
+    room: string;
+}
 
 /**
  * A Google Calendar and When2meet style date and time picker
@@ -14,17 +23,7 @@ import axios from '../../axios';
  * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
-export const DateTimePicker = ({
-    handleScheduleDate,
-    scheduleDates,
-    setScheduleDates,
-    room,
-}: {
-    room: string;
-    handleScheduleDate: (dates: Date[]) => void;
-    scheduleDates: Date[];
-    setScheduleDates: (dates: string[]) => void;
-}) => {
+export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates, room }: DateTimePickerProps) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState([]);
     const [pendingDates, setPendingDates] = useState([]);

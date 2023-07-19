@@ -3,7 +3,7 @@
  */
 export { ActiveRequestCard } from './ActiveRequestCard/ActiveRequestCard';
 export { AppButtons } from './AppButtons/AppButtons';
-export { ApproverSelect } from './ApproverSelect/ApproverSelect';
+export { ApproverPicker } from './ApproverPicker/ApproverPicker';
 export { BookingSubmitted } from './BookingSubmitted/BookingSubmitted';
 export { ConfirmationDialog } from './ConfirmationDialog/ConfirmationDialog';
 export { ConvertDate } from './ConvertDate/ConvertDate';
@@ -13,11 +13,15 @@ export { EditBooking } from './EditBooking/EditBooking';
 export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
 export { GetMonday } from './GetMonday/GetMonday';
 export { GroupCard } from './GroupCard/GroupCard';
+export { GroupPicker } from './GroupPicker/GroupPicker';
 export { InitialsAvatar } from './InitialsAvatar/InitialsAvatar';
+export { InputDialog } from './InputDialog/InputDialog';
 export { LabelledIconButton } from './LabelledIconButton/LabelledIconButton';
 export { Link } from './Link/Link';
 export { NoRequestsPlaceholder } from './NoRequestsPlaceholder/NoRequestsPlaceholder';
 export { PendingRequestCard } from './PendingRequestCard/PendingRequestCard';
 export { RequireRole } from './RequireRole/RequireRole';
 export { RoleChanger } from './RoleChanger/RoleChanger';
+export { RoomPicker } from './RoomPicker/RoomPicker';
+export { UserCard } from './UserCard/UserCard';
 export { VirtuosoTableComponents } from './Admin/VirtuosoTableComponents';

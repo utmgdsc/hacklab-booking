@@ -41,6 +41,13 @@ declare module '@mui/material/styles' {
             green?: string;
             yellow?: string;
             purple?: string;
+            hover?: {
+                red?: string;
+                blue?: string;
+                green?: string;
+                yellow?: string;
+                purple?: string;
+            };
         };
         gray?: {
             main?: string;
@@ -54,6 +61,13 @@ declare module '@mui/material/styles' {
             green?: string;
             yellow?: string;
             purple?: string;
+            hover?: {
+                red?: string;
+                blue?: string;
+                green?: string;
+                yellow?: string;
+                purple?: string;
+            };
         };
         gray?: {
             main?: string;
@@ -93,6 +107,10 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
             //         disabled: "#5f6368",
             //     }
             // },
+            background: {
+                default: mode === THEME.DARK ? '#222' : '#fff',
+                paper: mode === THEME.DARK ? '#222' : '#fff',
+            },
             gray: {
                 main: mode === THEME.DARK ? '#c5d3e3' : '#5f6368',
             },
@@ -102,11 +120,18 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
                 disabled: mode === THEME.DARK ? 'rgba(255,255,255,.38)' : '#5f6368',
             },
             app_colors: {
-                red: mode === THEME.DARK ? '#ea4335' : '#f35325',
-                blue: mode === THEME.DARK ? '#4285f4' : '#05a6f0',
-                green: mode === THEME.DARK ? '#34a853' : '#81bc06',
-                yellow: mode === THEME.DARK ? '#fbbc04' : '#ffb900',
-                purple: mode === THEME.DARK ? '#a142f4' : '#7b00ff',
+                red: mode === THEME.DARK ? '#393131' : '#f35325',
+                blue: mode === THEME.DARK ? '#313739' : '#05a6f0',
+                green: mode === THEME.DARK ? '#313933' : '#81bc06',
+                yellow: mode === THEME.DARK ? '#393931' : '#ffb900',
+                purple: mode === THEME.DARK ? '#363139' : '#7b00ff',
+                hover: {
+                    red: mode === THEME.DARK ? '#4d3f3f' : '#cc451f',
+                    blue: mode === THEME.DARK ? '#3f454d' : '#0389c7',
+                    green: mode === THEME.DARK ? '#3f4d3f' : '#6c9c03',
+                    yellow: mode === THEME.DARK ? '#4d4d3f' : '#ce9803',
+                    purple: mode === THEME.DARK ? '#4d3f4d' : '#6000c7',
+                }
             },
             // Used by `getContrastText()` to maximize the contrast between
             // the background and the text.
@@ -163,12 +188,8 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
             MuiCard: {
                 styleOverrides: {
                     root: {
-                        width: '100%',
-                        margin: '1em 0',
                         borderRadius: '1em',
-                        boxShadow: 'unset',
-                        border: '1px solid',
-                        borderColor: mode === THEME.LIGHT ? '#e8eaed' : '#0a0a0a',
+                        borderColor: mode === THEME.LIGHT ? '#e8eaed' : '#404040',
                     },
                 },
             },
@@ -184,7 +205,7 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
                     root: {
                         padding: '1.25em',
                         borderTop: '1px solid',
-                        borderColor: mode === THEME.LIGHT ? '#e8eaed' : '#0a0a0a',
+                        borderColor: mode === THEME.LIGHT ? '#e8eaed' : '#404040',
                         marginTop: '1.25em',
                         gap: '2em',
                     },

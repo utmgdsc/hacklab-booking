@@ -15,16 +15,6 @@ import {
 import { useState } from 'react';
 import { ConvertDate, ConfirmationDialog } from '..';
 
-const data = {
-    title: 'Machine Learning Workshop',
-    date: new Date(),
-    location: 'DH 2014 (Hacklab)',
-    status: 0,
-    hasTCardAccess: true,
-    approver: 'Michael Liut',
-    t_card_gatekeeper: 'Andrew Wang',
-};
-
 interface ActiveRequestCardProps {
     booking: FetchedBookingRequest;
     edit: (reqID: string) => void;
@@ -112,7 +102,7 @@ export const ActiveRequestCard = ({
 
     return (
         <>
-            <Card>
+            <Card variant="outlined" sx={{ marginBottom: '1em' }}>
                 <CardContent>
                     <Box
                         sx={{

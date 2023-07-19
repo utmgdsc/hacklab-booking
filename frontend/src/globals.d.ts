@@ -7,10 +7,10 @@ declare module '*.svg';
  */
 interface User {
     email: string;
-    utorid: string;
     name: string;
     role: UserRoles;
     theme: ThemeOptions;
+    utorid: string;
 }
 
 type UserRoles = 'student' | 'admin' | 'approver' | 'tcard';
@@ -22,10 +22,10 @@ interface RoomsUser extends User {
 }
 
 interface FetchedUser extends RoomsUser {
-    groups: Group[];
-    invited: Group[];
-    requests: Request[];
-    manager: Group[];
+    groups: FetchedGroup[];
+    invited: FetchedGroup[];
+    manager: FetchedGroup[];
+    requests: FetchedRequest[];
 }
 
 type BookingStatus = 'pending' | 'denied' | 'cancelled' | 'needTCard' | 'completed';
@@ -33,24 +33,24 @@ type BookingStatus = 'pending' | 'denied' | 'cancelled' | 'needTCard' | 'complet
 /** Model Request  */
 interface BookingRequest {
     id: string;
-    status: BookingStatus;
-    groupId: string;
     authorUtorid: string;
-    startDate: Date;
-    endDate: Date;
-    description: string;
-    title: string;
-    roomName: string;
-    reason: string | null;
     createdAt: Date;
+    description: string;
+    endDate: Date;
+    groupId: string;
+    reason: string | null;
+    roomName: string;
+    startDate: Date;
+    status: BookingStatus;
+    title: string;
     updatedAt: Date;
 }
 
 interface FetchedBookingRequest extends BookingRequest {
-    group: Group;
-    author: RoomsUser;
-    room: Room;
     approvers: User[];
+    author: RoomsUser;
+    group: Group;
+    room: Room;
 }
 
 /** Model Group  */
@@ -64,15 +64,24 @@ interface MembersGroup extends Group {
 }
 
 interface FetchedGroup extends MembersGroup {
+    invited: User[];
     managers: User[];
     members: User[];
-    invited: User[];
     requests: Request[];
 }
 
 /** Model Room */
 interface Room {
-    roomName: string;
-    friendlyName: string;
     capacity: number | null;
+    friendlyName: string;
+    roomName: string;
+}
+
+/** Admin only fetched room when ~/api/rooms/:id is called */
+interface FetchedRoom {
+    capacity: number;
+    friendlyName: string;
+    requests: BookingRequest[];
+    roomName: string;
+    userAccess: User[];
 }

@@ -31,6 +31,7 @@ export default {
         include: {
           requests: {
             where: { OR: [{ author: { utorid: user.utorid } }, { group: { members: { some: { utorid: user.utorid } } } }] },
+            include: { group: true },
           },
           userAccess: { where: { OR: [{ utorid: user.utorid }, { groups: { some: { members: { some: { utorid: user.utorid } } } } }] } },
         },
@@ -46,7 +47,7 @@ export default {
       room = await db.room.findUnique({
         where: { roomName },
         include: {
-          requests: true,
+          requests: { include: { group:true } },
           userAccess: true,
         },
       });
@@ -89,7 +90,7 @@ export default {
   revokeAccess: async (roomName: string, utorid: string) => {
     try {
       await db.room.update({ where: { roomName }, data:{ userAccess: { disconnect: { utorid } } } });
-      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.completed }, data:{ status: RequestStatus.needTCard } });
+      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.completed, endDate: { gte: new Date() } }, data:{ status: RequestStatus.needTCard } });
       return { status: 200, data:{} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {

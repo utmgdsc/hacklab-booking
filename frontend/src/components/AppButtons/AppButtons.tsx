@@ -11,6 +11,8 @@ export interface AppButton {
     icon: JSX.Element;
     /** the color of the icon */
     color: string;
+    /** the hover color of the icon */
+    hover?: string;
     /** the label to render */
     label: string;
     /** the href to link to */
@@ -50,7 +52,7 @@ export const AppButtons = ({ ButtonsToRender }: AppButtonsProps): JSX.Element =>
             button.hidden ? null : (
                 <Tooltip title={button.title} arrow placement="top" key={button.href}>
                     <Link to={button.href} style={{ textDecoration: 'none' }}>
-                        <LabelledIconButton icon={button.icon} color={button.color} label={button.label} />
+                        <LabelledIconButton icon={button.icon} color={button.color} label={button.label} hover={button.hover} />
                     </Link>
                 </Tooltip>
             ),

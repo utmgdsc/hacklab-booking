@@ -1,40 +1,54 @@
-import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, TextField } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import { DateTimePicker, BookingSubmitted, ApproverSelect, Link } from '../../components';
-import { UserContext } from '../../contexts/UserContext';
-import { SubPage } from '../../layouts/SubPage';
-import { ErrorPage } from '../../layouts/ErrorPage';
 import axios from '../../axios';
+import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
+import { UserContext } from '../../contexts/UserContext';
+import { ErrorPage } from '../../layouts/ErrorPage';
+import { SubPage } from '../../layouts/SubPage';
 
-export const CreateBooking = () => {
+/**
+ * Edit a booking given a UUID or create a new booking if no UUID is given
+ */
+export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** context to show snackbars */
     const { showSnackSev } = useContext(SnackbarContext);
     /** user info */
     const { userInfo } = useContext(UserContext);
-    /** currently selected room name */
-    const [roomName, setRoomName] = useState<string>('');
-    /** list of rooms */
-    const [rooms, setRooms] = useState<Room[]>([]);
-    /** booking details */
-    const [details, setDetails] = useState('');
     /** currently selected group name */
     const [group, setGroup] = useState<string>('');
-    /** currently selected list of dates */
-    const [scheduleDates, setScheduleDates] = useState([]);
-    /** whether the request was submitted */
-    const [submitted, setSubmitted] = useState(false);
-    /** whether the date is valid */
-    const [validDate, setValidDate] = useState(false);
+    /** currently selected room name */
+    const [roomName, setRoomName] = useState<string>('');
+    /** booking details / explanation */
+    const [details, setDetails] = useState('');
     /** list of approvers */
     const [approvers, setApprovers] = useState([]);
+    /** currently selected list of dates */
+    const [scheduleDates, setScheduleDates] = useState([]);
+    /** whether the date is valid */
+    const [validDate, setValidDate] = useState(false);
+    /** whether the request was submitted */
+    const [submitted, setSubmitted] = useState(false);
 
-    // get list of rooms
+    /* set fill info if there is already an editID */
     useEffect(() => {
-        axios.get<Room[]>('/rooms').then((res) => {
-            setRooms(res.data);
-        });
-    }, []);
+        if (editID) {
+            axios.get(`/requests/${editID}`).then((res) => {
+                console.log(res.data);
+                if (res.status === 200) {
+                    setGroup(
+                        JSON.stringify({
+                            id: res.data.group.id,
+                            name: res.data.group.name,
+                        } as Group),
+                    );
+                    setRoomName(res.data.roomName);
+                    setDetails(res.data.description);
+                    setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                }
+            });
+        }
+    }, [editID]);
 
     /**
      * Checks if the date is not blocked
@@ -113,7 +127,7 @@ export const CreateBooking = () => {
         const booking = {
             roomName,
             owner: userInfo['utorid'],
-            groupId: group,
+            groupId: (JSON.parse(group) as Group).id,
             description: details,
             title: details,
             startDate: scheduleDates[0],
@@ -121,33 +135,48 @@ export const CreateBooking = () => {
             approvers,
         };
 
-        const { status } = await axios.post('/requests/create', booking);
-        if (status === 200) {
-            setSubmitted(true);
-            return;
+        if (editID) {
+            const { status } = await axios.put(`/requests/${editID}`, booking);
+            if (status === 200) {
+                setSubmitted(true);
+                return;
+            } else {
+                showSnackSev('Could not edit booking request', 'error');
+            }
         } else {
-            showSnackSev('Could not create booking request', 'error');
+            const { status } = await axios.post('/requests/create', booking);
+            if (status === 200) {
+                setSubmitted(true);
+                return;
+            } else {
+                showSnackSev('Could not create booking request', 'error');
+            }
         }
     };
 
+    /**
+     * Validate the date in the DateTimePicker and clears ScheduleDates if invalid
+     * @param dates list of dates
+     */
     const handleScheduleDate = (dates: Date[]) => {
+        /** used to check if all dates are on the same day */
         let currDate = 0;
+
         for (let i = 0; i < dates.length; i++) {
-            const d = dates[i];
             // if in the past
-            if (d < new Date()) {
+            if (dates[i] < new Date()) {
                 showSnackSev('Please select a date in the future', 'error');
                 setScheduleDates([]);
                 return;
             }
 
             // if not the same day
-            if (d.getDate() !== currDate && i > 0) {
+            if (dates[i].getDate() !== currDate && i > 0) {
                 showSnackSev('Please only select one day', 'error');
                 setScheduleDates([]);
                 return;
             }
-            currDate = d.getDate();
+            currDate = dates[i].getDate();
         }
 
         setValidDate(true);
@@ -164,28 +193,15 @@ export const CreateBooking = () => {
     };
 
     /*
-     * cases where user cannot create a booking or booking was successful
+     * case where booking was successful
      */
-    if (userInfo.groups.length <= 0) {
+    if (submitted) {
         return (
-            <ErrorPage
-                name="Cannot create booking"
-                message={
-                    <Typography>
-                        Please{' '}
-                        <Link internal href="/group">
-                            create a group
-                        </Link>{' '}
-                        before making a booking request.
-                    </Typography>
-                }
+            <BookingSubmitted
+                details={details}
+                scheduleDates={scheduleDates}
+                groupName={(JSON.parse(group) as Group).name}
             />
-        );
-    } else if (submitted) {
-        return (
-            <SubPage name="Create a booking">
-                <BookingSubmitted details={details} scheduleDates={scheduleDates} groupName={group} />
-            </SubPage>
         );
     }
 
@@ -193,153 +209,128 @@ export const CreateBooking = () => {
      * case where user can create a booking
      */
     return (
-        <SubPage name="Create a booking">
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                    flexWrap: 'nowrap',
-                }}
-            >
-                {userInfo.groups.length > 0 && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
+        <>
+            {userInfo.groups.length > 0 && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider>Select the group to book under</Divider>
+
+                    <GroupPicker setGroup={setGroup} group={group} />
+                </Box>
+            )}
+
+            {group && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider>Select the room to book</Divider>
+
+                    <RoomPicker setRoomName={setRoomName} roomName={roomName} />
+                </Box>
+            )}
+
+            {group && roomName && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider>Provide an explanation</Divider>
+
+                    <TextField
+                        fullWidth
+                        id="explanation-field"
+                        label="Please provide an explanation"
+                        minRows={4}
+                        multiline
+                        required
+                        value={details}
+                        onChange={(e) => {
+                            setDetails(e.target.value);
                         }}
-                    >
-                        <Divider>Select the group to book under</Divider>
+                        sx={{ marginTop: '1em' }}
+                    />
+                </Box>
+            )}
 
-                        <FormControl fullWidth sx={{ marginTop: '1em' }}>
-                            <InputLabel id="group-label">Group</InputLabel>
-                            <Select
-                                labelId="group-label"
-                                id="group-select"
-                                value={group}
-                                fullWidth
-                                label="Group"
-                                onChange={(e) => {
-                                    setGroup(e.target.value);
-                                }}
-                            >
-                                {userInfo.groups.map((group) => {
-                                    return (
-                                        <MenuItem value={group.id} key={group.id}>
-                                            {group.name}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                )}
-                {group && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
-                        }}
-                    >
-                        <Divider>Select the room to book</Divider>
+            {group && roomName && details !== '' && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                        <FormControl fullWidth sx={{ marginTop: '1em' }}>
-                            <InputLabel id="room-label">Room</InputLabel>
-                            <Select
-                                labelId="room-label"
-                                id="room-select"
-                                value={roomName}
-                                fullWidth
-                                label="Room"
-                                onChange={(e) => {
-                                    setRoomName(e.target.value);
-                                }}
-                            >
-                                {rooms.map((room) => {
-                                    return (
-                                        <MenuItem value={room.roomName} key={room.roomName}>
-                                            {room.roomName} - {room.friendlyName}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Box>
-                )}
+                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} />
+                </Box>
+            )}
 
-                {group && roomName && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
-                        }}
-                    >
-                        <Divider>Provide an explanation</Divider>
+            {group && roomName && details !== '' && approvers.length > 0 && (
+                <Box
+                    sx={{
+                        marginBottom: '4em',
+                        width: '100%',
+                    }}
+                >
+                    <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
 
-                        <TextField
-                            fullWidth
-                            id="explanation-field"
-                            label="Please provide an explanation"
-                            minRows={4}
-                            multiline
-                            required
-                            value={details}
-                            onChange={(e) => {
-                                setDetails(e.target.value);
-                            }}
-                            sx={{ marginTop: '1em' }}
-                        />
-                    </Box>
-                )}
-                {group && roomName && details !== '' && (
+                    <DateTimePicker
+                        handleScheduleDate={handleScheduleDate}
+                        scheduleDates={scheduleDates}
+                        setScheduleDates={setScheduleDates}
+                        room={roomName}
+                    />
+                </Box>
+            )}
+
+            {group && roomName && details !== '' && approvers.length > 0 && (
+                <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => {
+                        handleFinish();
+                    }}
+                    disabled={!validDate || scheduleDates.length <= 0}
+                >
+                    Finish
+                </Button>
+            )}
+        </>
+    );
+};
+
+export const CreateBooking = () => {
+    const { userInfo } = useContext(UserContext);
+
+    if (userInfo.groups.length <= 0) {
+        return (
+            <ErrorPage
+                name="Cannot create booking"
+                message={
                     <>
-                        <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
-
-                        <Box
-                            sx={{
-                                marginBottom: '4em',
-                                width: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <ApproverSelect setApprovers={setApprovers} />
-                        </Box>
+                        Please{' '}
+                        <Link internal href="/group">
+                            create a group
+                        </Link>{' '}
+                        before making a booking request.
                     </>
-                )}
-                {group && roomName && details !== '' && approvers.length > 0 && (
-                    <Box
-                        sx={{
-                            marginBottom: '4em',
-                            width: '100%',
-                        }}
-                    >
-                        <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
+                }
+            />
+        );
+    }
 
-                        <DateTimePicker
-                            handleScheduleDate={handleScheduleDate}
-                            scheduleDates={scheduleDates}
-                            setScheduleDates={setScheduleDates}
-                            room={roomName}
-                        />
-                    </Box>
-                )}
-
-                {group && roomName && details !== '' && approvers.length > 0 && (
-                    <Button
-                        variant="contained"
-                        size="large"
-                        onClick={() => {
-                            handleFinish();
-                        }}
-                        disabled={!validDate || scheduleDates.length <= 0}
-                    >
-                        Finish
-                    </Button>
-                )}
-            </Box>
+    return (
+        <SubPage name="Create a booking">
+            <CreateModifyBooking />
         </SubPage>
     );
 };
