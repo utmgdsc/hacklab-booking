@@ -1,13 +1,52 @@
 import Model from '../types/Model';
 import db from '../common/db';
-import { AccountRole, RequestStatus, User } from '@prisma/client';
+import { AccountRole, RequestStatus, User, Request } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { CreateRequest } from '../types/CreateRequest';
 import { ModelResponseError } from '../types/ModelResponse';
 import logger from '../common/logger';
-import { triggerMassNotification } from '../notifications';
+import {
+  triggerAdminNotification,
+  triggerMassNotification,
+} from '../notifications';
 import EventTypes from '../types/EventTypes';
 
+import {
+  BaseBookingContext,
+} from '../types/NotificationContext';
+
+const fetchRequestData = async (request: Request) => {
+  if (['room', 'author', 'group'].every((key) => request.hasOwnProperty(key) && typeof (<Record<string, any>>request)[key] === 'object')) {
+    return request as NonNullable<typeof requestFetched>;
+  }
+  const requestFetched = await db.request.findUnique({
+    where: { id: request.id },
+    include: {
+      room: true,
+      author: true,
+      group: true,
+    },
+  });
+  if (!requestFetched) {
+    throw new Error(`Request ${request.id} not found.`);
+  }
+  return requestFetched;
+};
+const generateBaseNotificationContext = async (request: Request): Promise<BaseBookingContext> => {
+  const requestFetched = await fetchRequestData(request);
+  return {
+    full_name: requestFetched.author.name,
+    utorid: requestFetched.author.utorid,
+    title: requestFetched.title,
+    description: requestFetched.description,
+    room: requestFetched.roomName,
+    room_friendly: requestFetched.room.friendlyName,
+    start_date: requestFetched.startDate.toISOString(),
+    end_date: requestFetched.endDate.toISOString(),
+    booking_id: requestFetched.id,
+    group_name: requestFetched.group.name,
+  };
+};
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {
     return { status: 400, message: 'Missing required fields.' };
@@ -173,25 +212,19 @@ export default {
         include: {
           group: true,
           room: true,
+          author: true,
           approvers: true,
         },
       });
-      await triggerMassNotification(EventTypes.BOOKING_APPROVAL_REQUESTED, request.approvers, {
-        full_name: userFetched.name,
-        utorid: userFetched.utorid,
-        start_date: madeRequest.startDate.toISOString(),
-        end_date: madeRequest.endDate.toISOString(),
-        room: madeRequest.roomName,
-        room_friendly: madeRequest.room.friendlyName,
-        group_name: madeRequest.group.name,
-        title: madeRequest.title,
-        description: madeRequest.description,
-        booking_id: madeRequest.id,
-      });
-      // TODO remove unnecessary fields (shouldn't send approver data like webhooks)
+      const context = await generateBaseNotificationContext(madeRequest);
+      await triggerMassNotification(EventTypes.BOOKING_APPROVAL_REQUESTED, request.approvers, context);
+      await triggerAdminNotification(EventTypes.BOOKING_CREATED, context);
+      // Delete approver data from response
+      const tempRequest: WithOptional<typeof madeRequest, 'approvers'> = madeRequest;
+      delete tempRequest.approvers;
       return {
         status: 200,
-        data: newRequest,
+        data: tempRequest as Omit<typeof madeRequest, 'approvers'>,
       };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
@@ -257,10 +290,18 @@ export default {
         message: 'User does not have permission to deny this request.',
       };
     }
-    await db.request.update({
+    const requestFetched = await db.request.update({
       where: { id },
       data: { status: status, reason },
+      include: {
+        group: true,
+        room: true,
+        author: true,
+      },
     });
+    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: user.utorid, changer_name: user.name, status, reason };
+    await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
+    await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     return { status: 200, data: {} };
   },
   approveRequest: async (id: string, reason?: string) => {
@@ -281,11 +322,16 @@ export default {
     if (request.room.userAccess.some((user) => user.utorid === request.author.utorid)) {
       status = RequestStatus.completed;
     }
-    await db.request.update({
+    const requestFetched = await db.request.update({
       where: { id },
       data: {
         reason,
         status: status,
+      },
+      include: {
+        group: true,
+        room: true,
+        author: true,
       },
     });
     const { startDate, endDate, roomName } = request;
@@ -307,9 +353,14 @@ export default {
         status: RequestStatus.denied,
       },
     });
+    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: requestFetched.author.utorid, changer_name: requestFetched.author.name, status, reason };
+    await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
+    await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     return { status: 200, data: {} };
   },
-  updateRequest: async (request: CreateRequest & { id: string }, user: User) => {
+  updateRequest: async (request: CreateRequest & {
+    id: string
+  }, user: User) => {
     const error = await validateRequest(request);
     if (error) {
       return error;
