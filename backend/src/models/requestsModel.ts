@@ -1,11 +1,10 @@
-import Model from '../types/Model';
-import db from '../common/db';
 import { AccountRole, Request, RequestStatus, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
-import { CreateRequest } from '../types/CreateRequest';
-import { ModelResponseError } from '../types/ModelResponse';
-import requests from '../api/routes/requests';
+import db from '../common/db';
 import logger from '../common/logger';
+import { CreateRequest } from '../types/CreateRequest';
+import Model from '../types/Model';
+import { ModelResponseError } from '../types/ModelResponse';
 
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {

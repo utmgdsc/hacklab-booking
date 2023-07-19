@@ -1,12 +1,12 @@
+import { RequestStatus } from '@prisma/client';
 import { Router } from 'express';
+import requestsModel from '../../models/requestsModel';
 import {
   checkRequiredFields, checkUuidMiddleware,
   PermissionLevel,
   permissionMiddleware,
   sendResponse,
 } from '../utils';
-import requestsModel from '../../models/requestsModel';
-import { RequestStatus } from '@prisma/client';
 
 const router = Router();
 

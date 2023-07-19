@@ -1,8 +1,8 @@
 import express from 'express';
 import accounts from './accounts';
 import groups from './groups';
-import rooms from './rooms';
 import requests from './requests';
+import rooms from './rooms';
 
 const router = express.Router();
 

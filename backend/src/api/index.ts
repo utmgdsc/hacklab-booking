@@ -48,7 +48,7 @@ app.use(async (req, res, next) => {
   const data = (await accountsModel.upsertUser({
     utorid: req.headers.utorid as string,
     email: req.headers.http_mail as string,
-    name: (req.headers.http_mail as string).split("@")[0],
+    name: (req.headers.http_mail as string).split('@')[0],
   }));
   if (data.status !== 200) {
     sendResponse(res, data);
