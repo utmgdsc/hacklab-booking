@@ -50,12 +50,12 @@ templates[EventTypes.BOOKING_APPROVAL_REQUESTED] = {
 };
 
 templates[EventTypes.BOOKING_UPDATED] = {
-  template: 'A booking has been updated by {{full_name}} for {{room_friendly}}.',
+  template: 'Your booking {{title}} for {{room_friendly}} has been updated by {{changer_utorid}}.',
   email: {
-    subject: '{{full_name}} from {{group_name}} updated a booking',
+    subject: 'Your booking {{title}} for {{room_friendly}} has been updated by {{changer_utorid}}.',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{full_name}} from {{group_name}} has updated a booking for {{room_friendly}} ({{room}}).</p>
+            <p>Your booking {{title}} for {{room_friendly}} has been updated by {{changer_utorid}}.</p>
             <p>New Booking details:</p>
             <ul>
                 <li>Booking ID: {{booking_id}}</li>
@@ -72,21 +72,14 @@ templates[EventTypes.BOOKING_UPDATED] = {
   },
 };
 
-templates[EventTypes.BOOKING_DELETED] = {
-  template: 'A booking has been deleted by {{full_name}} for {{room_friendly}}.',
+templates[EventTypes.BOOKING_STATUS_CHANGED] = {
+  template: 'Your booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.',
   email: {
-    subject: '{{full_name}} from {{group_name}} deleted a booking',
+    subject: 'Your booking\'s status has been changed to: {{status}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{full_name}} from {{group_name}} has deleted a booking for {{room_friendly}} ({{room}}).</p>
-            <p>Booking details:</p>
-            <ul>
-                <li>Booking ID: {{booking_id}}</li>
-                <li>Title: {{title}}</li>
-                <li>Description: {{description}}</li>
-                <li>Start time: {{start_date}}</li>
-                <li>End time: {{end_date}}</li>
-            </ul>
+            <p>Your booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.</p>
+            <p>Click <a href="{{frontend_url}}/bookings/{{booking_id}}">here</a> to view the booking.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -94,67 +87,74 @@ templates[EventTypes.BOOKING_DELETED] = {
   },
 };
 
-templates[EventTypes.BOOKING_APPROVED] = {
-  template: 'A booking has been approved by {{approver_full_name}} for {{room_friendly}}.',
+templates[EventTypes.ADMIN_BOOKING_STATUS_CHANGED] = {
+  template: 'The booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.',
   email: {
-    subject: '{{approver_full_name}} approved a booking.',
+    subject: 'The booking\'s status has been changed to: {{status}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{approver_full_name}} has approved a booking for {{room_friendly}} ({{room}}).</p>
-            <p>Booking details:</p>
-            <ul>
-                <li>Booking ID: {{booking_id}}</li>
-                <li>Title: {{title}}</li>
-                <li>Description: {{description}}</li>
-                <li>Start time: {{start_date}}</li>
-                <li>End time: {{end_date}}</li>
-            </ul>
+            <p>The booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.</p>
+            <p>Click <a href="{{frontend_url}}/bookings/{{booking_id}}">here</a> to view the booking.</p>
             <br>
-            
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
-             `,
+        `,
   },
 };
 
-templates[EventTypes.BOOKING_REJECTED] = {
-  template: 'A booking has been rejected by {{approver_full_name}} for {{room_friendly}}',
+templates[EventTypes.ROOM_ACCESS_GRANTED] = {
+  template: 'You have been granted access to {{room_friendly}} by {{changer_utorid}}.',
   email: {
-    subject: '{{approver_full_name}} rejected a booking.',
+    subject: 'You have been granted access to {{room_friendly}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{approver_full_name}} has rejected a booking for {{room_friendly}} ({{room}}).</p>
-            <p>Booking details:</p>
-            <ul>
-                <li>Booking ID: {{booking_id}}</li>
-                <li>Title: {{title}}</li>
-                <li>Description: {{description}}</li>
-                <li>Start time: {{start_date}}</li>
-                <li>End time: {{end_date}}</li>
-            </ul>
+            <p>You have been granted access to {{room_friendly}} by {{changer_utorid}}.</p>
+            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
             <br>
-            
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
-                `,
+        `,
   },
 };
 
-templates[EventTypes.BOOKING_CANCELLED] = {
-  template: 'A booking has been cancelled by {{full_name}} for {{room_friendly}}.',
+templates[EventTypes.ROOM_ACCESS_REVOKED] = {
+  template: 'Your access to {{room_friendly}} has been revoked by {{changer_utorid}}.',
   email: {
-    subject: '{{full_name}} from {{group_name}} cancelled a booking',
+    subject: 'Your access to {{room_friendly}} has been revoked',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{full_name}} from {{group_name}} has cancelled a booking for {{room_friendly}} ({{room}}).</p>
-            <p>Booking details:</p>
-            <ul>
-                <li>Booking ID: {{booking_id}}</li>
-                <li>Title: {{title}}</li>
-                <li>Description: {{description}}</li>
-                <li>Start time: {{start_date}}</li>
-                <li>End time: {{end_date}}</li>
-            </ul>
+            <p>Your access to {{room_friendly}} has been revoked by {{changer_utorid}}.</p>
+            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.ADMIN_ROOM_ACCESS_GRANTED] = {
+  template: '{{full_name}} has been granted access to {{room_friendly}} by {{changer_utorid}}.',
+  email: {
+    subject: '{{full_name}} has been granted access to {{room_friendly}}',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{full_name}} has been granted access to {{room_friendly}} by {{changer_utorid}}.</p>
+            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.ADMIN_ROOM_ACCESS_REVOKED] = {
+  template: '{{full_name}}\'s access to {{room_friendly}} has been revoked by {{changer_utorid}}.',
+  email: {
+    subject: '{{full_name}}\'s access to {{room_friendly}} has been revoked',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{full_name}}'s access to {{room_friendly}} has been revoked by {{changer_utorid}}.</p>
+            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>

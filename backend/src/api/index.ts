@@ -6,6 +6,8 @@ import { sendResponse } from './utils';
 import accountsModel from '../models/accountsModel';
 import cors from 'cors';
 import { User } from '@prisma/client';
+import defaultWebhooksSetttings
+  from '../notifications/defaultWebhooksSetttings';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -48,7 +50,7 @@ app.use(async (req, res, next) => {
     utorid: req.headers.utorid as string,
     email: req.headers.http_mail as string,
     name: req.headers.http_cn as string,
-    webhooks: {},
+    webhooks: defaultWebhooksSetttings,
     slackWebhook: null,
     discordWebhook: null,
   });
