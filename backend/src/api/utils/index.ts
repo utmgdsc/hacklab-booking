@@ -1,14 +1,13 @@
+import { AccountRole } from '@prisma/client';
 import {
-  Request,
-  Response,
-  RequestHandler,
   NextFunction,
+  Request,
+  RequestHandler,
+  Response,
 } from 'express';
 import ModelResponse, {
-  ModelResponseError,
   ModelResponseSuccess,
 } from '../../types/ModelResponse';
-import { AccountRole } from '@prisma/client';
 
 export const routeNotImplemented: RequestHandler = (req: Request, res: Response) => {
   res.statusCode = 501;

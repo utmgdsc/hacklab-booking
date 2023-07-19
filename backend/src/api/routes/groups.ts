@@ -3,7 +3,7 @@ import groupsModel from '../../models/groupsModel';
 import {
   checkRequiredFields,
   checkUuidMiddleware,
-  sendResponse
+  sendResponse,
 } from '../utils';
 
 const router = Router();

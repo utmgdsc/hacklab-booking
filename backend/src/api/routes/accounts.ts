@@ -4,7 +4,7 @@ import {
   checkRequiredFields,
   PermissionLevel,
   permissionMiddleware,
-  sendResponse
+  sendResponse,
 } from '../utils';
 
 const router = Router();
