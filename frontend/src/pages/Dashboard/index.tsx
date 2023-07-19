@@ -123,6 +123,9 @@ export const Dashboard = () => {
                             (x.status === 'needTCard' && ['admin', 'tcard'].includes(userInfo.role)),
                     ),
                 );
+            })
+            .catch((error) => {
+                console.error(error);
             });
     };
     const theme = useTheme();
