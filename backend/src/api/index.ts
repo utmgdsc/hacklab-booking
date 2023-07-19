@@ -38,7 +38,7 @@ app.use(bodyParser.json());
 app.use(async (req, res, next) => {
   logger.debug('Shibboleth headers:');
   logger.debug(JSON.stringify(req.headers));
-  if (!req.headers.utorid || !req.headers.http_mail || !req.headers.http_cn) {
+  if (!req.headers.utorid || !req.headers.http_mail) {
     sendResponse(res, {
       status: 401,
       message: 'Missing Shibboleth headers.',
@@ -48,7 +48,7 @@ app.use(async (req, res, next) => {
   const data = (await accountsModel.upsertUser({
     utorid: req.headers.utorid as string,
     email: req.headers.http_mail as string,
-    name: req.headers.http_cn as string,
+    name: req.headers.utorid as string,
   }));
   if (data.status !== 200) {
     sendResponse(res, data);
