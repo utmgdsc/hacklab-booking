@@ -26,6 +26,7 @@ export const triggerNotification = async (
   const template = templates[notification];
   if (!template) {
     logger.warn(`No template found for ${notification}`);
+    return;
   }
   let body: string;
   switch (destination.type) {
@@ -126,7 +127,15 @@ export const triggerMassNotification = async (
 export const triggerStaffNotification = async (notification: EventTypes, context: AllContexts) => {
   const staff = await db.user.findMany({
     where: {
-      role: { in: [AccountRole.approver, AccountRole.admin] },
+      role: { in: [AccountRole.approver, AccountRole.admin, AccountRole.tcard] },
+    },
+  });
+  await triggerMassNotification(notification, staff, context);
+};
+export const triggerAdminNotification = async (notification: EventTypes, context: AllContexts) => {
+  const staff = await db.user.findMany({
+    where: {
+      role: { in: [AccountRole.admin] },
     },
   });
   await triggerMassNotification(notification, staff, context);
