@@ -34,6 +34,7 @@ import { ErrorBoundary, RequireRole } from './components';
 import { UserContext, defaultUser } from './contexts/UserContext';
 import { SnackbarContext, SnackbarQueueItem } from './contexts/SnackbarContext';
 import { GoogleTheme, THEME } from './theme/theme';
+import {ApprovedRequestPage} from './pages/ApprovedRequestPage';
 
 import axios from './axios';
 
@@ -149,6 +150,22 @@ function App() {
                                     element={
                                         <RequireRole role={['admin']}>
                                             <RoomViewer />
+                                        </RequireRole>
+                                    }
+                                />
+                                <Route
+                                    path="/approve/:id"
+                                    element={
+                                        <RequireRole role={['approver', 'admin']}>
+                                            <ApprovedRequestPage approved={true} />
+                                        </RequireRole>
+                                    }
+                                />
+                                <Route
+                                    path="/deny/:id"
+                                    element={
+                                        <RequireRole role={['approver', 'admin']}>
+                                            <ApprovedRequestPage approved={false} />
                                         </RequireRole>
                                     }
                                 />
