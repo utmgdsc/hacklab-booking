@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run prisma && tsc",
+    "build": "prisma generate && tsc",
     "eslint": "eslint .",
     "start": "npm run dev",
+    "start:prod": "prisma migrate deploy && node /out/index.js",
     "prisma": "prisma generate",
     "dev": "npm run prisma && nodemon --legacy-watch ./src/index.ts"
   },

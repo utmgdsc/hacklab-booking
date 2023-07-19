@@ -1,8 +1,13 @@
 FROM node
+
+RUN npm install -g typescript
+
 COPY package.json ./
 
 RUN npm install
 
 COPY . .
 
-CMD ["node", "app.js"]
+RUN npm run build
+
+CMD ["npm", "run", "start:prod"]

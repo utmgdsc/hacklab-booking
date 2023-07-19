@@ -18,7 +18,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      - DB_URI=mongodb://root:password@mongo:27017
+      - DATABASE_URL=postgres://postgres:example@db:5432/postgres
 
   frontend:
     restart: always
@@ -26,16 +26,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
 
-  mongo:
+  db:
+    image: postgres
     restart: always
-    image: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - db_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: password
+      POSTGRES_PASSWORD: example
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
 volumes:
   db_data:
