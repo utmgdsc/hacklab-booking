@@ -1,8 +1,6 @@
 import { AccountRole, Theme, User } from '@prisma/client';
 import db from '../common/db';
 import Model from '../types/Model';
-import ModelResponse from '../types/ModelResponse';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export default {
   upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string; theme?: Theme }) => {

@@ -1,8 +1,8 @@
-import Model from '../types/Model';
 import { AccountRole, Group, User } from '@prisma/client';
-import db from '../common/db';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import db from '../common/db';
 import logger from '../common/logger';
+import Model from '../types/Model';
 
 export default {
   getGroups: async (user: User) => {

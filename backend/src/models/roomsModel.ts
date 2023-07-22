@@ -1,7 +1,7 @@
-import Model from '../types/Model';
-import db from '../common/db';
 import { AccountRole, RequestStatus, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import db from '../common/db';
+import Model from '../types/Model';
 
 export default {
   getRooms: async () => {
