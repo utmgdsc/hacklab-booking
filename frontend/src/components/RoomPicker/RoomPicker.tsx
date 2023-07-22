@@ -22,8 +22,11 @@ export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
     useEffect(() => {
         axios.get<Room[]>('/rooms').then((res) => {
             setRooms(res.data);
+            if (res.data.length === 1) {
+                setRoomName(res.data[0].roomName);
+            }
         });
-    }, []);
+    }, [setRoomName]);
 
     return (
         <FormControl fullWidth sx={{ marginTop: '1em' }}>
