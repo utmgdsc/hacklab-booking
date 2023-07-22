@@ -269,7 +269,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 >
                     <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} />
+                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} roomName={roomName} />
                 </Box>
             )}
 

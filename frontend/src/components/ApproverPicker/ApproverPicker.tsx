@@ -8,6 +8,8 @@ interface ApproverPickerProps {
     setApprovers: (approvers: string[]) => void;
     /** the approvers that have already been selected as an array of utorids */
     selectedApprovers?: string[];
+    /** the room that the user is booking */
+    roomName: string;
 }
 
 /**
@@ -15,16 +17,16 @@ interface ApproverPickerProps {
  *
  * @param setApprovers a function that takes in an array of approvers and sets the approvers for the form
  */
-export const ApproverPicker = ({ setApprovers, selectedApprovers = [] }: ApproverPickerProps) => {
+export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName }: ApproverPickerProps) => {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(selectedApprovers);
     const [approvers, setApproversBackend] = useState([]);
 
     useEffect(() => {
-        axios.get('/accounts/approvers').then(({ data }) => {
-            setApproversBackend(data);
+        axios.get('/rooms/' + roomName).then(({ data }) => {
+            setApproversBackend(data.approvers);
         });
-    }, []);
+    }, [roomName]);
 
     const handleOpen = () => {
         setOpen(true);
