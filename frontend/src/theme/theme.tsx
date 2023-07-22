@@ -131,7 +131,7 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
                     green: mode === THEME.DARK ? '#3f4d3f' : '#6c9c03',
                     yellow: mode === THEME.DARK ? '#4d4d3f' : '#ce9803',
                     purple: mode === THEME.DARK ? '#4d3f4d' : '#6000c7',
-                }
+                },
             },
             // Used by `getContrastText()` to maximize the contrast between
             // the background and the text.

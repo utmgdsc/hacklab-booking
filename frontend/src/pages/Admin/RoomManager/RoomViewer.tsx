@@ -3,9 +3,11 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Alert,
     Button,
     Card,
     CardContent,
+    Checkbox,
     Grid,
     Paper,
     TableCell,
@@ -46,6 +48,13 @@ const requestColumns: TableRowData[] = [
     { label: 'Start Time', dataKey: 'startDate' },
     { label: 'End Time', dataKey: 'endDate' },
     { label: 'Approval Reason', dataKey: 'reason' },
+];
+
+const approverColumns: TableRowData[] = [
+    { label: 'UTORid', dataKey: 'utorid' },
+    { label: 'Email', dataKey: 'email' },
+    { label: 'Role', dataKey: 'role' },
+    { label: "Can Approve this Room's Requests", dataKey: 'canApprove' },
 ];
 
 /**
@@ -108,7 +117,15 @@ const RevokeButton = ({ utorid }: { utorid: string }) => {
  * A table that shoes a list of users given a list of users
  * @param rows a list of users
  */
-const UserAccessTable = ({ rows, columns }: { rows: any[]; columns: TableRowData[] }) => {
+const UserAccessTable = ({
+    rows,
+    columns,
+    CellContent,
+}: {
+    rows: any[];
+    columns: TableRowData[];
+    CellContent?: ({ row, column }: { row: TableRowData; column: any }) => JSX.Element;
+}) => {
     return (
         <Paper style={{ height: '90vh', width: '100%' }} elevation={0}>
             <TableVirtuoso
@@ -120,10 +137,10 @@ const UserAccessTable = ({ rows, columns }: { rows: any[]; columns: TableRowData
                 itemContent={(_index, row: TableRowData) => (
                     <>
                         {columns.map((column, index) => {
-                            if (column.dataKey === 'revoke') {
+                            if (CellContent) {
                                 return (
                                     <TableCell key={index}>
-                                        <RevokeButton utorid={row['utorid']} />
+                                        <CellContent row={row} column={column} />
                                     </TableCell>
                                 );
                             } else {
@@ -142,6 +159,7 @@ export const RoomViewer = () => {
     const { id: roomId } = useParams();
     const [name, setName] = useState<string>(roomId);
     const [room, setRoomData] = useState<FetchedRoom>({
+        approvers: [],
         capacity: -1,
         friendlyName: 'Loading...',
         requests: [],
@@ -149,6 +167,13 @@ export const RoomViewer = () => {
         userAccess: [],
     });
     const [expanded, setExpanded] = useState<string | false>('history');
+    const [approvers, setApproversBackend] = useState([]);
+
+    useEffect(() => {
+        axios.get('/accounts/approvers').then(({ data }) => {
+            setApproversBackend(data);
+        });
+    }, []);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
@@ -224,6 +249,64 @@ export const RoomViewer = () => {
                 </Grid>
             </Grid>
 
+            {room.approvers.length === 0 && (
+                <Alert severity="warning" sx={{ my: '2em' }}>
+                    This room has no approvers. This means that no one can approve requests for this room. To make this
+                    room bookable, add approvers to this room.
+                </Alert>
+            )}
+
+            <Accordion
+                expanded={expanded === 'approvers'}
+                onChange={handleChange('approvers')}
+                TransitionProps={{ unmountOnExit: true }}
+            >
+                <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1a-content" id="panel1a-header">
+                    <Typography sx={{ width: '33%', flexShrink: 0 }}>Approvers for this room</Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>{room.approvers.length} approver(s) total</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <UserAccessTable
+                        rows={approvers}
+                        columns={approverColumns}
+                        CellContent={({ row, column }: { row: TableRowData; column: any }) => {
+                            if (column.dataKey === 'canApprove') {
+                                return (
+                                    <Checkbox
+                                        checked={room.approvers
+                                            .map((approver) => approver.utorid)
+                                            .includes(row['utorid'])}
+                                        onChange={async (e) => {
+                                            const apiRoute = (e.target as HTMLInputElement).checked
+                                                ? 'addapprover'
+                                                : 'removeapprover';
+                                            await axios
+                                                .put(`/rooms/${roomId}/${apiRoute}`, {
+                                                    utorid: row['utorid'],
+                                                })
+                                                .then(() => {
+                                                    showSnackSev(
+                                                        `Approver ${row['utorid']} ${
+                                                            apiRoute === 'addapprover' ? 'added' : 'removed'
+                                                        }`,
+                                                        'success',
+                                                    );
+                                                })
+                                                .catch((err) => {
+                                                    showSnackSev(`Unable to ${apiRoute} ${row['utorid']}`, 'error');
+                                                    console.error(err);
+                                                });
+                                        }}
+                                    />
+                                );
+                            } else {
+                                return <>{row[column.dataKey]}</>;
+                            }
+                        }}
+                    />
+                </AccordionDetails>
+            </Accordion>
+
             <Accordion
                 expanded={expanded === 'access'}
                 onChange={handleChange('access')}
@@ -236,9 +319,20 @@ export const RoomViewer = () => {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <UserAccessTable rows={room.userAccess} columns={userColumns} />
+                    <UserAccessTable
+                        rows={room.userAccess}
+                        columns={userColumns}
+                        CellContent={({ row, column }: { row: TableRowData; column: any }) => {
+                            if (column.dataKey === 'revoke') {
+                                return <RevokeButton utorid={row['utorid']} />;
+                            } else {
+                                return <>{row[column.dataKey]}</>;
+                            }
+                        }}
+                    />
                 </AccordionDetails>
             </Accordion>
+
             <Accordion
                 expanded={expanded === 'history'}
                 onChange={handleChange('history')}
