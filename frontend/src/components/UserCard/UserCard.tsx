@@ -43,13 +43,13 @@ export const UserCard = ({ userInfo }: { userInfo: FetchedUser }) => {
                         <Typography variant="gray" title="Your UTORid">
                             {userInfo.utorid}
                         </Typography>
-                        <Typography variant="gray" title="Your Email">
+                        {/* <Typography variant="gray" title="Your Email">
                             {userInfo.roomAccess && (
                                 <>
                                     <br></br>Hacklab Keycard Haver
                                 </>
                             )}
-                        </Typography>
+                        </Typography> */}
                     </Box>
                 </Box>
             </CardContent>
