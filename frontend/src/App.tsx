@@ -16,6 +16,7 @@ import { Group } from './pages/Group/Group';
 import { GroupDirectory } from './pages/Group/GroupDirectory';
 import { NotFound } from './pages/NotFound';
 import { Settings } from './pages/Settings';
+import { Joan6 } from './pages/Room/joan6';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
@@ -120,6 +121,7 @@ function App() {
                                 <Route path="/book/" element={<CreateBooking />} />
                                 <Route path="/group/" element={<GroupDirectory />} />
                                 <Route path="/group/:id" element={<Group />} />
+                                <Route path="/room/joan6/:id" element={<Joan6 />} />
                                 <Route
                                     path="/admin"
                                     element={
