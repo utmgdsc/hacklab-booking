@@ -7,15 +7,17 @@ export default {
   getRooms: async () => {
     return { status: 200, data: await db.room.findMany() };
   },
-  createRoom: async (friendlyName:string, capacity: number | undefined, roomName: string) => {
+  createRoom: async (friendlyName: string, capacity: number | undefined, roomName: string) => {
     try {
-      return { status:200, data:await db.room.create({
-        data: {
-          friendlyName,
-          capacity,
-          roomName,
-        },
-      }) };
+      return {
+        status: 200, data: await db.room.create({
+          data: {
+            friendlyName,
+            capacity,
+            roomName,
+          },
+        })
+      };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code == 'P2002') {
         return { status: 400, message: 'Room name already exists.' };
@@ -34,6 +36,7 @@ export default {
             include: { group: true },
           },
           userAccess: { where: { OR: [{ utorid: user.utorid }, { groups: { some: { members: { some: { utorid: user.utorid } } } } }] } },
+          approvers: true,
         },
       });
     } else if (user.role == AccountRole.approver) {
@@ -41,14 +44,16 @@ export default {
         where: { roomName },
         include: {
           requests: true,
+          approvers: true
         },
       });
-    } else {
+    } else { // admin
       room = await db.room.findUnique({
         where: { roomName },
         include: {
-          requests: { include: { group:true } },
+          requests: { include: { group: true } },
           userAccess: true,
+          approvers: true
         },
       });
     }
@@ -73,13 +78,13 @@ export default {
     if (!room) {
       return { status: 404, message: 'Room not found' };
     }
-    return { status: 200, data: room.requests.map(x=>({ status: x.status, bookedRange:[x.startDate, x.endDate] })) };
+    return { status: 200, data: room.requests.map(x => ({ status: x.status, bookedRange: [x.startDate, x.endDate] })) };
   },
   grantAccess: async (roomName: string, utorid: string) => {
     try {
-      await db.room.update({ where: { roomName }, data:{ userAccess: { connect: { utorid } } } });
-      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.needTCard }, data:{ status: RequestStatus.completed } });
-      return { status: 200, data:{} };
+      await db.room.update({ where: { roomName }, data: { userAccess: { connect: { utorid } } } });
+      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.needTCard }, data: { status: RequestStatus.completed } });
+      return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
         return { status: 404, message: 'Invalid user or room' };
@@ -89,9 +94,31 @@ export default {
   },
   revokeAccess: async (roomName: string, utorid: string) => {
     try {
-      await db.room.update({ where: { roomName }, data:{ userAccess: { disconnect: { utorid } } } });
-      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.completed, endDate: { gte: new Date() } }, data:{ status: RequestStatus.needTCard } });
-      return { status: 200, data:{} };
+      await db.room.update({ where: { roomName }, data: { userAccess: { disconnect: { utorid } } } });
+      await db.request.updateMany({ where: { authorUtorid: utorid, status: RequestStatus.completed, endDate: { gte: new Date() } }, data: { status: RequestStatus.needTCard } });
+      return { status: 200, data: {} };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
+        return { status: 404, message: 'Invalid user or room' };
+      }
+      throw e;
+    }
+  },
+  addApprover: async (roomName: string, utorid: string) => {
+    try {
+      await db.room.update({ where: { roomName }, data: { approvers: { connect: { utorid } } } });
+      return { status: 200, data: {} };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
+        return { status: 404, message: 'Invalid user or room' };
+      }
+      throw e;
+    }
+  },
+  removeApprover: async (roomName: string, utorid: string) => {
+    try {
+      await db.room.update({ where: { roomName }, data: { approvers: { disconnect: { utorid } } } });
+      return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
         return { status: 404, message: 'Invalid user or room' };

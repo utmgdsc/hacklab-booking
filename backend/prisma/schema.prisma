@@ -23,6 +23,7 @@ model User {
   approved   Request[]   @relation(name: "Approvers")
   theme      Theme       @default(system)
   roomAccess Room[]      @relation(name: "RoomAccess")
+  roomApprover Room[]    @relation(name: "RoomApprover")
 }
 
 enum Theme {
@@ -80,4 +81,5 @@ model Room {
   capacity     Int? // (optional) occupancy limit
   requests     Request[] // all requests made for this room
   userAccess   User[]    @relation("RoomAccess") // all users with access to this room
+  approvers    User[]    @relation("RoomApprover") // all users with approver access to this room
 }
