@@ -34,7 +34,6 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     useEffect(() => {
         if (editID) {
             axios.get(`/requests/${editID}`).then((res) => {
-                console.log(res.data);
                 if (res.status === 200) {
                     setGroup(
                         JSON.stringify({

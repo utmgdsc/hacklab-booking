@@ -16,7 +16,7 @@ export default {
             capacity,
             roomName,
           },
-        })
+        }),
       };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code == 'P2002') {
@@ -44,7 +44,7 @@ export default {
         where: { roomName },
         include: {
           requests: true,
-          approvers: true
+          approvers: true,
         },
       });
     } else { // admin
@@ -53,7 +53,7 @@ export default {
         include: {
           requests: { include: { group: true } },
           userAccess: true,
-          approvers: true
+          approvers: true,
         },
       });
     }

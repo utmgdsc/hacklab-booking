@@ -18,7 +18,6 @@ export const UserViewer = () => {
             .then((res) => {
                 if (res.status === 200) {
                     setUser(res.data);
-                    console.log(res.data);
                 }
             })
             .catch((err) => {

@@ -191,7 +191,6 @@ export const RoomViewer = () => {
                     } else {
                         showSnackSev('Room name not found', 'error');
                     }
-                    console.log(res.data);
                 }
             })
             .catch((err) => {

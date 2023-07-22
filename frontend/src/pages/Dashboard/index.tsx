@@ -175,8 +175,6 @@ export const Dashboard = () => {
         },
     ];
 
-    console.log(homeButtons);
-
     return (
         <Container sx={{ py: 8 }} maxWidth="md" component="main">
             <DashboardHeader active_requests={my_requests} pending_requests={pending_requests} />
