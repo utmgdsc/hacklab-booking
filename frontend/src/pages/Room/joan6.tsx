@@ -44,7 +44,7 @@ export const Joan6 = () => {
                 </Box>
             </Grid>
             <Grid item xs={5}>
-                <Box sx={{ background: "#f5f5f5", height: "100vh" }}>
+                <Box sx={{ background: 'rgba(0,0,0,0.041)', height: '100vh' }}>
                     <Typography variant="h2">Joan6</Typography>
                 </Box>
             </Grid>
