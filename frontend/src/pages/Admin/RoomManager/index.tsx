@@ -44,7 +44,9 @@ export const RoomManager = () => {
         getRooms();
     }, [updateValue, showSnackSev]);
 
-    const getRooms = () => { setUpdateValue(Math.random); }
+    const getRooms = () => {
+        setUpdateValue(Math.random);
+    };
 
     return (
         <SubPage name="Room Manager" maxWidth="xl">

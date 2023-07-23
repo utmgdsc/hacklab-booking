@@ -113,7 +113,8 @@ export const Dashboard = () => {
                 .then((data) => {
                     setMyRequests(
                         data.filter(
-                            (x) => x.authorUtorid === userInfo.utorid && userInfo.groups.find((y) => y.id === x.groupId),
+                            (x) =>
+                                x.authorUtorid === userInfo.utorid && userInfo.groups.find((y) => y.id === x.groupId),
                         ),
                     );
                     setPendingRequests(
@@ -134,7 +135,7 @@ export const Dashboard = () => {
 
     const update = () => {
         setUpdateValue(Math.random);
-    }
+    };
 
     const theme = useTheme();
 

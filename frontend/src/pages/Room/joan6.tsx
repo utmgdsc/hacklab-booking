@@ -77,7 +77,19 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             })`,
                         }}
                     >
-                        <Typography variant="h4" component="p" sx={{ fontWeight: 400, opacity: 0.5 }}>
+                        <Typography
+                            variant="h4"
+                            component="p"
+                            sx={{
+                                fontSize: `${
+                                    new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
+                                        ? 2
+                                        : 1
+                                }em`,
+                                fontWeight: 400,
+                                opacity: 0.5,
+                            }}
+                        >
                             {event.group.name} •{' '}
                             {new Date(event.startDate).toLocaleTimeString(undefined, {
                                 hour: 'numeric',

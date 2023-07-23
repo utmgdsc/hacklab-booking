@@ -127,7 +127,9 @@ export const Group = () => {
         getGroup();
     }, [updateValue, groupID, showSnackSev]);
 
-    const getGroup = () => { setUpdateValue(Math.random) }
+    const getGroup = () => {
+        setUpdateValue(Math.random);
+    };
 
     /**
      * Void function to invite someone to a group
