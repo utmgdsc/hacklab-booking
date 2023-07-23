@@ -38,8 +38,9 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                 ))}
                 <Box
                     sx={{
-                        top: `calc((100vh - 2em) / 14 * ${new Date().getHours() - 7})`,
-                        borderTop: `${theme.palette.app_colors.red} 4px solid`,
+                        top: `calc(((100vh - 5.25em) / 14) * ${new Date().getHours() - 7}${(new Date().getMinutes() / 60).toString().slice(1)})`,
+                        borderTop: `${theme.palette.app_colors.red} 2px solid`,
+                        borderBottom: `${theme.palette.app_colors.red} 2px solid`,
                         position: 'fixed',
                         width: '100%',
                         zIndex: 69,
@@ -52,8 +53,8 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             display: 'block',
                             fontSize: '0',
                             height: '1rem',
-                            marginLeft: '-1rem',
-                            marginTop: '-0.6rem',
+                            marginLeft: '-0.75rem',
+                            marginTop: '-0.5rem',
                             position: 'absolute',
                             width: '1rem',
                         },
