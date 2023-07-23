@@ -94,7 +94,7 @@ export const GroupDirectory = () => {
                 console.error(err);
                 showSnackSev('Failed to fetch groups', 'error');
             });
-    }, []);
+    }, [userInfo.groups]);
 
     return (
         <SubPage name="Your Groups">
@@ -125,9 +125,39 @@ export const GroupDirectory = () => {
                 />
             </Box>
 
-            {myGroups.map((group) => {
+            {userInfo.role === "student" && myGroups.map((group) => {
                 return <GroupCard key={group.id} groupObj={group} />;
             })}
+
+            {
+                userInfo.role !== "student" && (
+                    <>
+                        {
+                            myGroups.filter((group) => {
+                                const isMember = group.members.find((member) => member.utorid === userInfo.utorid);
+                                const isManager = group.managers.find((manager) => manager.utorid === userInfo.utorid);
+
+                                return isMember || isManager;
+                            }).map((group) => {
+                                return <GroupCard key={group.id} groupObj={group} />;
+                            })
+                        }
+                        <Typography variant="h2" sx={{ margin: '2em 0 0.5em 0' }}>
+                            All Groups
+                        </Typography>
+                        <Grid container spacing={2} sx={{ marginBottom: '1em' }}>
+                            {myGroups.map((group) => {
+                                return (
+                                    <Grid item xs={12} md={6} key={group.id}>
+                                        <GroupCard groupObj={group} />
+                                    </Grid>
+                                );
+                            }
+                            )}
+                        </Grid>
+                    </>
+                )
+            }
 
             {userInfo.invited.length > 0 && (
                 <>
