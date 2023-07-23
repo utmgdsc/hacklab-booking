@@ -17,6 +17,7 @@ model User {
   utorid         String      @id
   name           String
   role           AccountRole @default(student)
+  theme          Theme       @default(system)
   // ---relationships---
   groups         Group[]     @relation(name: "Members")
   invited        Group[]     @relation(name: "Invited")
