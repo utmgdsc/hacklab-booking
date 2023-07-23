@@ -33,24 +33,26 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /* set fill info if there is already an editID */
     useEffect(() => {
         if (editID) {
-            axios
-                .get(`/requests/${editID}`)
-                .then((res) => {
-                    if (res.status === 200) {
-                        setGroup(
-                            JSON.stringify({
-                                id: res.data.group.id,
-                                name: res.data.group.name,
-                            } as Group),
-                        );
-                        setRoomName(res.data.roomName);
-                        setDetails(res.data.description);
-                        setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
-                    }
-                })
-                .catch((err) => {
-                    showSnackSev(`Could not fetch booking request: ${err.message}`, 'error');
-                });
+            (async () => {
+                await axios
+                    .get(`/requests/${editID}`)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            setGroup(
+                                JSON.stringify({
+                                    id: res.data.group.id,
+                                    name: res.data.group.name,
+                                } as Group),
+                            );
+                            setRoomName(res.data.roomName);
+                            setDetails(res.data.description);
+                            setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                        }
+                    })
+                    .catch((err) => {
+                        showSnackSev(`Could not fetch booking request: ${err.message}`, 'error');
+                    });
+            })();
         }
     }, [editID, showSnackSev]);
 

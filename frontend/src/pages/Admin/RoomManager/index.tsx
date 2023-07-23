@@ -50,7 +50,7 @@ export const RoomManager = () => {
                 onClick={() => {
                     setCreateRoomOpen(true);
                 }}
-                sx={{ marginLeft: '1em', marginBottom: "1em" }}
+                sx={{ marginLeft: '1em', marginBottom: '1em' }}
             >
                 Create Room
             </Button>

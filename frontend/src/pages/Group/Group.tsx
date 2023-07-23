@@ -247,10 +247,12 @@ export const Group = () => {
                     Leave Group
                 </Button>
                 {isManager(userInfo.utorid) ? (
-                    <Box sx={{
-                        display: 'flex',
-                        gap: '1em',
-                    }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: '1em',
+                        }}
+                    >
                         <Button
                             variant="contained"
                             startIcon={<Add />}

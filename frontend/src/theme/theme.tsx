@@ -214,10 +214,10 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
             MuiButton: {
                 styleOverrides: {
                     root: {
-                        borderRadius: "1.25em"
-                    }
-                }
-            }
+                        borderRadius: '1.25em',
+                    },
+                },
+            },
         },
     };
 };

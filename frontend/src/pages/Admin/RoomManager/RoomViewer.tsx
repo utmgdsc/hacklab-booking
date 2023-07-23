@@ -173,15 +173,17 @@ export const RoomViewer = () => {
     const [approvers, setApproversBackend] = useState([]);
 
     useEffect(() => {
-        axios
-            .get('/accounts/approvers')
-            .then(({ data }) => {
-                setApproversBackend(data);
-            })
-            .catch((err) => {
-                showSnackSev(`Unable to get approvers: ${err.message}`, 'error');
-                console.error(err);
-            });
+        (async () => {
+            await axios
+                .get('/accounts/approvers')
+                .then(({ data }) => {
+                    setApproversBackend(data);
+                })
+                .catch((err) => {
+                    showSnackSev(`Unable to get approvers: ${err.message}`, 'error');
+                    console.error(err);
+                });
+        })();
     }, [showSnackSev]);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -190,22 +192,24 @@ export const RoomViewer = () => {
 
     // get room data
     useEffect(() => {
-        axios
-            .get(`/rooms/${roomId}`)
-            .then((res) => {
-                if (res.status === 200) {
-                    setRoomData(res.data);
-                    if (res.data.friendlyName && res.data.roomName) {
-                        setName(`${res.data.friendlyName} (${res.data.roomName})`);
-                    } else {
-                        showSnackSev('Room name not found', 'error');
+        (async () => {
+            await axios
+                .get(`/rooms/${roomId}`)
+                .then((res) => {
+                    if (res.status === 200) {
+                        setRoomData(res.data);
+                        if (res.data.friendlyName && res.data.roomName) {
+                            setName(`${res.data.friendlyName} (${res.data.roomName})`);
+                        } else {
+                            showSnackSev('Room name not found', 'error');
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                showSnackSev(`Room not found: ${err.message}`, 'error');
-                console.error(err);
-            });
+                })
+                .catch((err) => {
+                    showSnackSev(`Room not found: ${err.message}`, 'error');
+                    console.error(err);
+                });
+        })();
     }, [roomId, showSnackSev]);
 
     return (

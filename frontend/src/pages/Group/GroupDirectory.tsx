@@ -100,15 +100,17 @@ export const GroupDirectory = () => {
     };
 
     useEffect(() => {
-        axios
-            .get('/groups')
-            .then((res) => {
-                setMyGroups(res.data as FetchedGroup[]);
-            })
-            .catch((err) => {
-                console.error(err);
-                showSnackSev(`Failed to fetch groups: ${err.message}`, 'error');
-            });
+        (async () => {
+            await axios
+                .get('/groups')
+                .then((res) => {
+                    setMyGroups(res.data as FetchedGroup[]);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showSnackSev(`Failed to fetch groups: ${err.message}`, 'error');
+                });
+        })();
     }, [showSnackSev]);
 
     return (
@@ -143,13 +145,10 @@ export const GroupDirectory = () => {
 
             {/* group cards */}
 
-            {myGroups.length === 0 && (
-                <Typography variant="h1">
-                    You're not in a group yet 😔
-                </Typography>
-            )}
+            {myGroups.length === 0 && <Typography variant="h1">You're not in a group yet 😔</Typography>}
 
-            {userInfo.role === 'student' && myGroups.length > 0 &&
+            {userInfo.role === 'student' &&
+                myGroups.length > 0 &&
                 myGroups.map((group) => {
                     return <GroupCard key={group.id} groupObj={group} />;
                 })}

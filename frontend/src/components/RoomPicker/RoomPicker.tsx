@@ -20,17 +20,19 @@ export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
 
     // get list of rooms
     useEffect(() => {
-        axios
-            .get<Room[]>('/rooms')
-            .then((res) => {
-                setRooms(res.data);
-                if (res.data.length === 1) {
-                    setRoomName(res.data[0].roomName);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        (async () => {
+            await axios
+                .get<Room[]>('/rooms')
+                .then((res) => {
+                    setRooms(res.data);
+                    if (res.data.length === 1) {
+                        setRoomName(res.data[0].roomName);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        })();
     }, [setRoomName]);
 
     return (
