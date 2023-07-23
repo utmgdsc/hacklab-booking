@@ -1,38 +1,43 @@
-import { SubPage } from '../../../layouts/SubPage';
-import { instance } from '../../../axios';
-import { useContext, useEffect, useState } from 'react';
-import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import {
     Button,
     Card,
-    Alert,
+    CardActions,
+    CardContent,
     Dialog,
-    DialogTitle,
+    DialogActions,
     DialogContent,
     DialogContentText,
+    DialogTitle,
     TextField,
-    DialogActions,
-    useTheme,
-    useMediaQuery,
-    CardContent,
     Typography,
-    CardActions,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
-import { UserContext } from '../../../contexts/UserContext';
+import { useContext, useEffect, useState } from 'react';
+import axios from '../../../axios';
 import { Link } from '../../../components';
+import { SnackbarContext } from '../../../contexts/SnackbarContext';
+import { UserContext } from '../../../contexts/UserContext';
+import { SubPage } from '../../../layouts/SubPage';
 
 export const RoomManager = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [createRoomOpen, setCreateRoomOpen] = useState(false);
 
-    const { showSnack } = useContext(SnackbarContext);
+    const { showSnackSev } = useContext(SnackbarContext);
 
     const getRooms = async () => {
-        instance.get('/rooms').then((res) => {
-            if (res.status === 200) {
-                setRooms(res.data);
-            }
-        });
+        axios
+            .get('/rooms')
+            .then((res) => {
+                if (res.status === 200) {
+                    setRooms(res.data);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                showSnackSev(`Failed to fetch rooms: ${err.message}`, 'error');
+            });
     };
 
     useEffect(() => {
@@ -125,7 +130,7 @@ const CreateRoomDialog = ({
             showSnackSev('Capacity must be an integer', 'warning');
             return;
         } else {
-            await instance
+            await axios
                 .post('/rooms/create', {
                     friendlyName,
                     room,

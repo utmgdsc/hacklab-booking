@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { Typography } from '@mui/material';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { Link } from '../Link/Link';
 

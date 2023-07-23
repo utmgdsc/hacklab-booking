@@ -24,7 +24,8 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
 
     useEffect(() => {
         axios
-            .get('/rooms/' + roomName).then(({ data }) => {
+            .get('/rooms/' + roomName)
+            .then(({ data }) => {
                 setApproversBackend(data.approvers);
             })
             .catch((err) => {

@@ -173,9 +173,11 @@ export const RoomViewer = () => {
     const [approvers, setApproversBackend] = useState([]);
 
     useEffect(() => {
-        axios.get('/accounts/approvers').then(({ data }) => {
-            setApproversBackend(data);
-        })
+        axios
+            .get('/accounts/approvers')
+            .then(({ data }) => {
+                setApproversBackend(data);
+            })
             .catch((err) => {
                 showSnackSev(`Unable to get approvers: ${err.message}`, 'error');
                 console.error(err);
@@ -292,13 +294,17 @@ export const RoomViewer = () => {
                                                 })
                                                 .then(() => {
                                                     showSnackSev(
-                                                        `Approver ${row['utorid']} ${apiRoute === 'addapprover' ? 'added' : 'removed'
+                                                        `Approver ${row['utorid']} ${
+                                                            apiRoute === 'addapprover' ? 'added' : 'removed'
                                                         }`,
                                                         'success',
                                                     );
                                                 })
                                                 .catch((err) => {
-                                                    showSnackSev(`Unable to ${apiRoute} ${row['utorid']}: ${err.message}`, 'error');
+                                                    showSnackSev(
+                                                        `Unable to ${apiRoute} ${row['utorid']}: ${err.message}`,
+                                                        'error',
+                                                    );
                                                     console.error(err);
                                                 });
                                         }}
