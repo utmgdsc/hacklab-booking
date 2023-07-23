@@ -15,6 +15,10 @@ router.get('/', async (req, res) => {
 router.post('/changetheme', checkRequiredFields(['theme']), async (req, res) => {
   sendResponse(res, await accountsModel.changeTheme(req.user, req.body.theme));
 });
+
+router.put('/webhooks', checkRequiredFields(['webhooks']), async (req, res) => {
+  sendResponse(res, await accountsModel.updateWebhooks(req.user, req.body.webhooks));
+});
 router.get('/approvers', async (req, res) => {
   sendResponse(res, await accountsModel.getApprovers());
 });

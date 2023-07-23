@@ -1,8 +1,36 @@
 import { AccountRole, Theme, User } from '@prisma/client';
 import db from '../common/db';
 import Model from '../types/Model';
+import { UserWebhooks, WebhookTypes } from '../types/webhooksTypes';
+import EventTypes from '../types/EventTypes';
 
 export default {
+  updateWebhooks: async (user: User, webhooks: unknown) => {
+    if (typeof webhooks !== 'object') {
+      return { status: 400, message: 'Invalid webhooks object.' };
+    }
+    if (webhooks === null) {
+      return { status: 400, message: 'Invalid webhooks object.' };
+    }
+    for (const key in webhooks) {
+      if (!Object.keys(EventTypes).includes(key)) {
+        return { status: 400, message: 'Invalid event type.' };
+      }
+      if (webhooks.hasOwnProperty(key) || !Array.isArray((webhooks as  Record<string, unknown>)[key])) {
+        return { status: 400, message: 'Invalid webhook array.' };
+      }
+      for (const webhook of (webhooks as Record<string, unknown[]>)[key]) {
+        if (!(Object.values(WebhookTypes) as string[]).includes(webhook as string)) {
+          return { status: 400, message: 'Invalid webhook.' };
+        }
+      }
+    }
+    await db.user.update({
+      where: { utorid: user.utorid },
+      data: { webhooks: webhooks as UserWebhooks },
+    });
+    return { status: 200, data:{} };
+  },
   upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string; theme?: Theme }) => {
     if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
