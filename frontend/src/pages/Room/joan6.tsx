@@ -3,7 +3,9 @@ import { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import SparkleMascot from '../../assets/img/sparkle-mascot.png';
+import SparkleMascotDark from '../../assets/img/sparkle-mascot_dark.png';
 import axios from '../../axios';
+import { THEME } from '../../theme/theme';
 
 const EventsRow = ({ events }: { events: BookingRequest[] }) => {
     /** mui theme object */
@@ -135,6 +137,8 @@ export const Joan6 = () => {
     const { id: roomId } = useParams();
     const [currentBooking, setCurrentBooking] = useState<BookingRequest | null>(null);
     const [nextFree, setNextFree] = useState<String | null>(null);
+    const theme = useTheme();
+
 
     const update = useCallback(async () => {
         await axios
@@ -256,7 +260,7 @@ export const Joan6 = () => {
                         {!currentBooking && (
                             <Box>
                                 <img
-                                    src={SparkleMascot}
+                                    src={ theme.palette.mode === THEME.DARK ? SparkleMascotDark : SparkleMascot }
                                     alt="The room is free at the moment"
                                     style={{
                                         maxWidth: '40vw',

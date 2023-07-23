@@ -38,7 +38,8 @@ export const ErrorPage = ({ name, message }: ErrorPageProps) => {
                 <img
                     width="300"
                     src={theme.palette.mode === THEME.DARK ? SadMascotDark : SadMascot}
-                    alt={'Sparkle Mascot'}
+                    alt=""
+                    aria-hidden="true"
                 />
 
                 <Typography variant="h1" gutterBottom sx={{ marginTop: '1em' }}>
