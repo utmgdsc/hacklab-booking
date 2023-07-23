@@ -125,6 +125,7 @@ export const Group = () => {
 
     useEffect(() => {
         getGroup();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     /**

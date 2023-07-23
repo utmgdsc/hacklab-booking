@@ -71,6 +71,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
 
     useEffect(() => {
         handleBlockedDates(calendarDate.toDate());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [calendarDate, room]);
 
     return (

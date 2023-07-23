@@ -26,6 +26,7 @@ export const UserViewer = () => {
 
     useEffect(() => {
         fetchUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [utorid]);
 
     if (user === undefined) {

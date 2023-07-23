@@ -129,6 +129,7 @@ export const Dashboard = () => {
 
     useEffect(() => {
         update();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userInfo.groups, userInfo.utorid, userInfo.role]);
 
     const theme = useTheme();
