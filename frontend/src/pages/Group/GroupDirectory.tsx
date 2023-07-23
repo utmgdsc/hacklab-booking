@@ -72,16 +72,22 @@ export const GroupDirectory = () => {
     const { userInfo } = useContext(UserContext);
 
     const sendAddGroup = async () => {
-        const { data, status } = await axios.post('/groups/create', {
-            name: (document.getElementById('group-name') as HTMLInputElement).value,
-        });
-
-        if (status === 200) {
-            setMyGroups((array) => [...array, data]); // add to local list of groups
-            showSnackSev('Group created successfully', 'success');
-        } else {
-            showSnackSev('Failed to create group', 'error');
-        }
+        await axios
+            .post('/groups/create', {
+                name: (document.getElementById('group-name') as HTMLInputElement).value,
+            })
+            .then(({ data, status }) => {
+                if (status === 200) {
+                    setMyGroups((array) => [...array, data]); // add to local list of groups
+                    showSnackSev('Group created successfully', 'success');
+                } else {
+                    showSnackSev('Failed to create group', 'error');
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                showSnackSev('Failed to create group', 'error');
+            });
     };
 
     useEffect(() => {
@@ -125,9 +131,37 @@ export const GroupDirectory = () => {
                 />
             </Box>
 
-            {myGroups.map((group) => {
-                return <GroupCard key={group.id} groupObj={group} />;
-            })}
+            {userInfo.role === 'student' &&
+                myGroups.map((group) => {
+                    return <GroupCard key={group.id} groupObj={group} />;
+                })}
+
+            {userInfo.role !== 'student' && (
+                <>
+                    {myGroups
+                        .filter((group) => {
+                            const isMember = group.members.find((member) => member.utorid === userInfo.utorid);
+                            const isManager = group.managers.find((manager) => manager.utorid === userInfo.utorid);
+
+                            return isMember || isManager;
+                        })
+                        .map((group) => {
+                            return <GroupCard key={group.id} groupObj={group} />;
+                        })}
+                    <Typography variant="h2" sx={{ margin: '2em 0 0.5em 0' }}>
+                        All Groups
+                    </Typography>
+                    <Grid container spacing={2} sx={{ marginBottom: '1em' }}>
+                        {myGroups.map((group) => {
+                            return (
+                                <Grid item xs={12} md={6} key={group.id}>
+                                    <GroupCard groupObj={group} />
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
+                </>
+            )}
 
             {userInfo.invited.length > 0 && (
                 <>

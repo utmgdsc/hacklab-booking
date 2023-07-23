@@ -125,21 +125,29 @@ const CreateRoomDialog = ({
             showSnackSev('Capacity must be an integer', 'warning');
             return;
         } else {
-            const { status } = await instance.post('/rooms/create', {
-                friendlyName,
-                room,
-                capacity,
-            });
-            if (status === 200) {
-                showSnackSev('Room created successfully', 'success');
-                setOpen(false);
-                fetchUserInfo();
-            } else if (status === 400) {
-                showSnackSev('Room already exists', 'warning');
-            } else {
-                showSnackSev('Error creating room', 'error');
-                setOpen(false);
-            }
+            await instance
+                .post('/rooms/create', {
+                    friendlyName,
+                    room,
+                    capacity,
+                })
+                .then((res) => {
+                    if (res.status === 200) {
+                        showSnackSev('Room created successfully', 'success');
+                        setOpen(false);
+                        fetchUserInfo();
+                    } else if (res.status === 400) {
+                        showSnackSev('Room already exists', 'warning');
+                    } else {
+                        showSnackSev('Error creating room', 'error');
+                        setOpen(false);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showSnackSev('Error creating room', 'error');
+                    setOpen(false);
+                });
         }
         setOpen(false);
         setFriendlyName('');

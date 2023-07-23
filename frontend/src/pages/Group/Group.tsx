@@ -108,12 +108,16 @@ export const Group = () => {
      * Void function to get the group information
      */
     const getGroup = async () => {
-        const { data, status } = await axios.get<FetchedGroup>('/groups/' + groupID);
-        if (status !== 200) {
-            showSnackSev('Could not fetch group', 'error');
-            return;
-        }
-        setGroup(data);
+        await axios
+            .get<FetchedGroup>('/groups/' + groupID)
+            .then((res) => res.data)
+            .then((data) => {
+                setGroup(data);
+            })
+            .catch((err) => {
+                showSnackSev('Could not fetch group', 'error');
+                console.error(err);
+            });
     };
 
     useEffect(() => {
@@ -125,16 +129,24 @@ export const Group = () => {
      * @param utorid The utorid of the person to add
      */
     const addPerson = async (utorid: string) => {
-        const { status } = await axios.post(`/groups/${groupID}/invite/`, {
-            utorid,
-        });
-        if (status === 200) {
-            showSnackSev('Person added', 'success');
-        } else {
-            showSnackSev('Could not add person', 'error');
-            return;
-        }
-        await getGroup();
+        axios
+            .post(`/groups/${groupID}/invite/`, {
+                utorid,
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Person added', 'success');
+                } else {
+                    showSnackSev('Could not add person', 'error');
+                }
+            })
+            .catch((err) => {
+                showSnackSev('Could not add person', 'error');
+                console.error(err);
+            })
+            .finally(async () => {
+                await getGroup();
+            });
     };
 
     /**
@@ -142,32 +154,47 @@ export const Group = () => {
      * @param utorid The utorid of the person to remove
      */
     const removePerson = async (utorid: string) => {
-        const { status } = await axios.post(`/groups/${groupID}/remove/`, {
-            utorid,
-        });
-
-        if (status === 200) {
-            showSnackSev('Person removed', 'success');
-        } else {
-            showSnackSev('Could not remove person', 'error');
-            return;
-        }
-        await getGroup();
+        await axios
+            .post(`/groups/${groupID}/remove/`, {
+                utorid,
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Person removed', 'success');
+                } else {
+                    showSnackSev('Could not remove person', 'error');
+                }
+            })
+            .catch((err) => {
+                showSnackSev('Could not remove person', 'error');
+                console.error(err);
+            })
+            .finally(async () => {
+                await getGroup();
+            });
     };
 
     /**
      * Void function to delete a group
      */
     const delGroup = async () => {
-        const { status } = await axios.delete(`/groups/${groupID}`);
-
-        if (status === 200) {
-            showSnackSev('Group deleted', 'success');
-            navigate('/group', { replace: true }); // group doesnt exist, so go back
-        } else {
-            showSnackSev('Could not delete group', 'error');
-            return;
-        }
+        await axios
+            .delete(`/groups/${groupID}`)
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Group deleted', 'success');
+                    navigate('/group', { replace: true }); // group doesnt exist, so go back
+                } else {
+                    showSnackSev('Could not delete group', 'error');
+                }
+            })
+            .catch((err) => {
+                showSnackSev('Could not delete group', 'error');
+                console.error(err);
+            })
+            .finally(async () => {
+                await getGroup();
+            });
     };
 
     /**
@@ -175,15 +202,21 @@ export const Group = () => {
      * @param utorid The utorid of the person to change
      */
     const changeRole = async (utorid: string) => {
-        const { status } = await axios.post(`/groups/${groupID}/changerole/`, {
-            utorid,
-            role: isManager(utorid) ? 'member' : 'manager',
-        });
-        if (status !== 200) {
-            showSnackSev('Could not change role', 'error');
-            return;
-        }
-        await getGroup();
+        await axios
+            .post(`/groups/${groupID}/changerole/`, {
+                utorid,
+                role: isManager(utorid) ? 'member' : 'manager',
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Role changed', 'success');
+                } else {
+                    showSnackSev('Could not change role', 'error');
+                }
+            })
+            .finally(async () => {
+                await getGroup();
+            });
     };
 
     return (

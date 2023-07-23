@@ -45,9 +45,17 @@ function App() {
     let [userInfo, setUserInfo] = useState<FetchedUser>(defaultUser);
 
     const fetchUserInfo = async () => {
-        const { data } = await axios('/accounts');
-        setUserInfo(data);
+        await axios('/accounts')
+            .then(({ data }) => {
+                setUserInfo(data);
+            })
+            .catch((err) => {
+                console.error(err);
+                showSnackSev('Failed to fetch user info', 'error');
+                return Promise.reject(err);
+            });
     };
+
     useEffect(() => {
         fetchUserInfo();
     }, []);

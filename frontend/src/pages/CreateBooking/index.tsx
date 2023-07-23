@@ -135,21 +135,23 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
         };
 
         if (editID) {
-            const { status } = await axios.put(`/requests/${editID}`, booking);
-            if (status === 200) {
-                setSubmitted(true);
-                return;
-            } else {
-                showSnackSev('Could not edit booking request', 'error');
-            }
+            await axios
+                .put(`/requests/${editID}`, booking)
+                .then((res) => {
+                    setSubmitted(true);
+                })
+                .catch((err) => {
+                    showSnackSev('Could not edit booking request', 'error');
+                });
         } else {
-            const { status } = await axios.post('/requests/create', booking);
-            if (status === 200) {
-                setSubmitted(true);
-                return;
-            } else {
-                showSnackSev('Could not create booking request', 'error');
-            }
+            await axios
+                .post('/requests/create', booking)
+                .then((res) => {
+                    setSubmitted(true);
+                })
+                .catch((err) => {
+                    showSnackSev('Could not create booking request', 'error');
+                });
         }
     };
 
