@@ -59,7 +59,7 @@ export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): 
                 setUpdate(Math.random());
             })
             .catch((err) => {
-                showSnackSev(`Failed to change ${utorid}'s role`, 'error');
+                showSnackSev(`Failed to change ${utorid}'s role: ${err.message}`, 'error');
             })
             .finally(() => {
                 setOpen(false);

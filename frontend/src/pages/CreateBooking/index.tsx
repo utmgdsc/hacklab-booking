@@ -33,19 +33,24 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /* set fill info if there is already an editID */
     useEffect(() => {
         if (editID) {
-            axios.get(`/requests/${editID}`).then((res) => {
-                if (res.status === 200) {
-                    setGroup(
-                        JSON.stringify({
-                            id: res.data.group.id,
-                            name: res.data.group.name,
-                        } as Group),
-                    );
-                    setRoomName(res.data.roomName);
-                    setDetails(res.data.description);
-                    setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
-                }
-            });
+            axios
+                .get(`/requests/${editID}`)
+                .then((res) => {
+                    if (res.status === 200) {
+                        setGroup(
+                            JSON.stringify({
+                                id: res.data.group.id,
+                                name: res.data.group.name,
+                            } as Group),
+                        );
+                        setRoomName(res.data.roomName);
+                        setDetails(res.data.description);
+                        setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                    }
+                })
+                .catch((err) => {
+                    showSnackSev(`Could not fetch booking request: ${err.message}`, 'error');
+                });
         }
     }, [editID]);
 
@@ -78,6 +83,11 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     showSnackSev('An error occurred while checking the date, please try again', 'error');
                     setScheduleDates([]);
                 }
+            })
+            .catch((err) => {
+                setValidDate(false);
+                showSnackSev(`An error occurred while checking the date: ${err.message}`, 'error');
+                setScheduleDates([]);
             });
     };
 
@@ -141,7 +151,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     setSubmitted(true);
                 })
                 .catch((err) => {
-                    showSnackSev('Could not edit booking request', 'error');
+                    showSnackSev(`Could not edit booking request: ${err.message}`, 'error');
                 });
         } else {
             await axios
@@ -150,7 +160,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     setSubmitted(true);
                 })
                 .catch((err) => {
-                    showSnackSev('Could not create booking request', 'error');
+                    showSnackSev(`Could not create booking request: ${err.message}`, 'error');
                 });
         }
     };

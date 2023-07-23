@@ -51,8 +51,7 @@ function App() {
             })
             .catch((err) => {
                 console.error(err);
-                showSnackSev('Failed to fetch user info', 'error');
-                return Promise.reject(err);
+                showSnackSev(`Failed to fetch user info: ${err.message}`, 'error');
             });
     };
 

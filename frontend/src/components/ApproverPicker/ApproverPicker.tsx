@@ -23,9 +23,13 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
     const [approvers, setApproversBackend] = useState([]);
 
     useEffect(() => {
-        axios.get('/rooms/' + roomName).then(({ data }) => {
-            setApproversBackend(data.approvers);
-        });
+        axios
+            .get('/rooms/' + roomName).then(({ data }) => {
+                setApproversBackend(data.approvers);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }, [roomName]);
 
     const handleOpen = () => {

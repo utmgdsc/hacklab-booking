@@ -60,6 +60,9 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
                     }
                 });
             })
+            .catch((err) => {
+                console.log(err);
+            })
             .finally(() => {
                 setBlockedDates(blocked);
                 setPendingDates(pending);

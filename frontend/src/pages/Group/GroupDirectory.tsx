@@ -33,6 +33,10 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                             .then(() => {
                                 showSnackSev('You have joined the group', 'success');
                             })
+                            .catch((err) => {
+                                console.error(err);
+                                showSnackSev(`Failed to join group: ${err.message}`, 'error');
+                            })
                             .finally(() => {
                                 fetchUserInfo();
                             });
@@ -48,6 +52,10 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                             .post(`/groups/${group.id}/invite/reject`)
                             .then(() => {
                                 showSnackSev('You have declined the invitation', 'success');
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                                showSnackSev(`Failed to decline invitation: ${err.message}`, 'error');
                             })
                             .finally(() => {
                                 fetchUserInfo();
@@ -86,7 +94,7 @@ export const GroupDirectory = () => {
             })
             .catch((err) => {
                 console.error(err);
-                showSnackSev('Failed to create group', 'error');
+                showSnackSev(`Failed to create group: ${err.message}`, 'error');
             });
     };
 
@@ -98,7 +106,7 @@ export const GroupDirectory = () => {
             })
             .catch((err) => {
                 console.error(err);
-                showSnackSev('Failed to fetch groups', 'error');
+                showSnackSev(`Failed to fetch groups: ${err.message}`, 'error');
             });
     }, []);
 

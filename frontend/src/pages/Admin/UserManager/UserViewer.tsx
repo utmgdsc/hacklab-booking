@@ -1,12 +1,11 @@
-import { Card, Divider, CardContent, Grid, Typography, Tooltip } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { Inventory, People } from '@mui/icons-material';
+import { Card, CardContent, Divider, Grid, Tooltip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../../../axios';
-import { ConvertDate, UserCard, RoleChanger } from '../../../components';
-import { SnackbarContext } from '../../../contexts/SnackbarContext';
+import { ConvertDate, RoleChanger, UserCard } from '../../../components';
 import { ErrorPage } from '../../../layouts/ErrorPage';
 import { SubPage } from '../../../layouts/SubPage';
-import { People, Inventory } from '@mui/icons-material';
 
 export const UserViewer = () => {
     const { id: utorid } = useParams();

@@ -115,7 +115,7 @@ export const Group = () => {
                 setGroup(data);
             })
             .catch((err) => {
-                showSnackSev('Could not fetch group', 'error');
+                showSnackSev(`Could not fetch group: ${err.message}`, 'error');
                 console.error(err);
             });
     };
@@ -141,7 +141,7 @@ export const Group = () => {
                 }
             })
             .catch((err) => {
-                showSnackSev('Could not add person', 'error');
+                showSnackSev(`Could not add person: ${err.message}`, 'error');
                 console.error(err);
             })
             .finally(async () => {
@@ -166,7 +166,7 @@ export const Group = () => {
                 }
             })
             .catch((err) => {
-                showSnackSev('Could not remove person', 'error');
+                showSnackSev(`Could not remove person: ${err.message}`, 'error');
                 console.error(err);
             })
             .finally(async () => {
@@ -189,7 +189,7 @@ export const Group = () => {
                 }
             })
             .catch((err) => {
-                showSnackSev('Could not delete group', 'error');
+                showSnackSev(`Could not delete group: ${err.message}`, 'error');
                 console.error(err);
             })
             .finally(async () => {
@@ -213,6 +213,10 @@ export const Group = () => {
                 } else {
                     showSnackSev('Could not change role', 'error');
                 }
+            })
+            .catch((err) => {
+                showSnackSev(`Could not change role: ${err.message}`, 'error');
+                console.error(err);
             })
             .finally(async () => {
                 await getGroup();

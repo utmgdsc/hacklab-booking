@@ -89,17 +89,20 @@ const RevokeButton = ({ utorid }: { utorid: string }) => {
 
     const revokeAccess = async () => {
         setLoading(true);
-        try {
-            await axios.put(`/rooms/${roomId}/revokeaccess`, {
+        await axios
+            .put(`/rooms/${roomId}/revokeaccess`, {
                 utorid,
+            })
+            .then(() => {
+                showSnackSev(`${utorid} marked as having no access`, 'success');
+            })
+            .catch((err) => {
+                showSnackSev(`Unable to revoke access from ${utorid}: ${err.message}`, 'error');
+                console.error(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-            showSnackSev(`${utorid} marked as having no access`, 'success');
-        } catch (e) {
-            showSnackSev('Unable to modify access', 'error');
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
     };
 
     return (
@@ -172,7 +175,11 @@ export const RoomViewer = () => {
     useEffect(() => {
         axios.get('/accounts/approvers').then(({ data }) => {
             setApproversBackend(data);
-        });
+        })
+            .catch((err) => {
+                showSnackSev(`Unable to get approvers: ${err.message}`, 'error');
+                console.error(err);
+            });
     }, []);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -194,7 +201,7 @@ export const RoomViewer = () => {
                 }
             })
             .catch((err) => {
-                showSnackSev('Room not found', 'error');
+                showSnackSev(`Room not found: ${err.message}`, 'error');
                 console.error(err);
             });
     }, [roomId, showSnackSev]);
@@ -285,14 +292,13 @@ export const RoomViewer = () => {
                                                 })
                                                 .then(() => {
                                                     showSnackSev(
-                                                        `Approver ${row['utorid']} ${
-                                                            apiRoute === 'addapprover' ? 'added' : 'removed'
+                                                        `Approver ${row['utorid']} ${apiRoute === 'addapprover' ? 'added' : 'removed'
                                                         }`,
                                                         'success',
                                                     );
                                                 })
                                                 .catch((err) => {
-                                                    showSnackSev(`Unable to ${apiRoute} ${row['utorid']}`, 'error');
+                                                    showSnackSev(`Unable to ${apiRoute} ${row['utorid']}: ${err.message}`, 'error');
                                                     console.error(err);
                                                 });
                                         }}

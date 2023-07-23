@@ -145,7 +145,7 @@ const CreateRoomDialog = ({
                 })
                 .catch((err) => {
                     console.error(err);
-                    showSnackSev('Error creating room', 'error');
+                    showSnackSev(`Error creating room: ${err.message}`, 'error');
                     setOpen(false);
                 });
         }
