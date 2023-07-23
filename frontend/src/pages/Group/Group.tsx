@@ -84,6 +84,7 @@ export const Group = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const [open, setOpen] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
+    const [updateValue, setUpdateValue] = React.useState<Number>();
     const { id: groupID } = useParams();
     const { userInfo } = useContext(UserContext);
 
@@ -110,23 +111,23 @@ export const Group = () => {
     /**
      * Void function to get the group information
      */
-    const getGroup = async () => {
-        await axios
-            .get<FetchedGroup>('/groups/' + groupID)
-            .then((res) => res.data)
-            .then((data) => {
-                setGroup(data);
-            })
-            .catch((err) => {
-                showSnackSev(`Could not fetch group: ${err.message}`, 'error');
-                console.error(err);
-            });
-    };
-
     useEffect(() => {
+        const getGroup = async () => {
+            await axios
+                .get<FetchedGroup>('/groups/' + groupID)
+                .then((res) => res.data)
+                .then((data) => {
+                    setGroup(data);
+                })
+                .catch((err) => {
+                    showSnackSev(`Could not fetch group: ${err.message}`, 'error');
+                    console.error(err);
+                });
+        };
         getGroup();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [updateValue, groupID, showSnackSev]);
+
+    const getGroup = () => { setUpdateValue(Math.random) }
 
     /**
      * Void function to invite someone to a group
@@ -173,8 +174,8 @@ export const Group = () => {
                 showSnackSev(`Could not remove person: ${err.message}`, 'error');
                 console.error(err);
             })
-            .finally(async () => {
-                await getGroup();
+            .finally(() => {
+                getGroup();
             });
     };
 
@@ -196,8 +197,8 @@ export const Group = () => {
                 showSnackSev(`Could not delete group: ${err.message}`, 'error');
                 console.error(err);
             })
-            .finally(async () => {
-                await getGroup();
+            .finally(() => {
+                getGroup();
             });
     };
 
@@ -222,8 +223,8 @@ export const Group = () => {
                 showSnackSev(`Could not change role: ${err.message}`, 'error');
                 console.error(err);
             })
-            .finally(async () => {
-                await getGroup();
+            .finally(() => {
+                getGroup();
             });
     };
 

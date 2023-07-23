@@ -17,8 +17,8 @@ import {
     NoRequestsPlaceholder,
     PendingRequestCard,
 } from '../../components';
-import { UserContext } from '../../contexts/UserContext';
 import { AppButton } from '../../components/AppButtons/AppButtons';
+import { UserContext } from '../../contexts/UserContext';
 /**
  * all active requests cards given a list of active requests
  * @param {*} active_requests a list of requests received from the backend
@@ -87,6 +87,7 @@ export const Dashboard = () => {
     const [my_requests, setMyRequests] = useState<FetchedBookingRequest[]>([]);
     const [editRequestID, setEditRequestID] = useState<string | null>(null);
     const [openEditRequest, setOpenEditRequest] = useState(false);
+    const [updateValue, setUpdateValue] = useState<Number>();
 
     React.useEffect(() => {
         document.title = 'Hacklab Booking System';
@@ -104,33 +105,36 @@ export const Dashboard = () => {
         fetchUserInfo();
     };
 
-    const update = async () => {
-        await axios
-            .get<FetchedBookingRequest[]>('/requests')
-            .then((res) => res.data)
-            .then((data) => {
-                setMyRequests(
-                    data.filter(
-                        (x) => x.authorUtorid === userInfo.utorid && userInfo.groups.find((y) => y.id === x.groupId),
-                    ),
-                );
-                setPendingRequests(
-                    data.filter(
-                        (x) =>
-                            x.status === 'pending' ||
-                            (x.status === 'needTCard' && ['admin', 'tcard'].includes(userInfo.role)),
-                    ),
-                );
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
-
     useEffect(() => {
+        const update = async () => {
+            await axios
+                .get<FetchedBookingRequest[]>('/requests')
+                .then((res) => res.data)
+                .then((data) => {
+                    setMyRequests(
+                        data.filter(
+                            (x) => x.authorUtorid === userInfo.utorid && userInfo.groups.find((y) => y.id === x.groupId),
+                        ),
+                    );
+                    setPendingRequests(
+                        data.filter(
+                            (x) =>
+                                x.status === 'pending' ||
+                                (x.status === 'needTCard' && ['admin', 'tcard'].includes(userInfo.role)),
+                        ),
+                    );
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        };
+
         update();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userInfo.groups, userInfo.utorid, userInfo.role]);
+    }, [userInfo.groups, userInfo.utorid, userInfo.role, updateValue]);
+
+    const update = () => {
+        setUpdateValue(Math.random);
+    }
 
     const theme = useTheme();
 

@@ -23,27 +23,28 @@ import { SubPage } from '../../../layouts/SubPage';
 export const RoomManager = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [createRoomOpen, setCreateRoomOpen] = useState(false);
-
+    const [updateValue, setUpdateValue] = useState<Number>();
     const { showSnackSev } = useContext(SnackbarContext);
 
-    const getRooms = async () => {
-        await axios
-            .get('/rooms')
-            .then((res) => {
-                if (res.status === 200) {
-                    setRooms(res.data);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                showSnackSev(`Failed to fetch rooms: ${err.message}`, 'error');
-            });
-    };
-
     useEffect(() => {
+        const getRooms = async () => {
+            await axios
+                .get('/rooms')
+                .then((res) => {
+                    if (res.status === 200) {
+                        setRooms(res.data);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showSnackSev(`Failed to fetch rooms: ${err.message}`, 'error');
+                });
+        };
+
         getRooms();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [updateValue, showSnackSev]);
+
+    const getRooms = () => { setUpdateValue(Math.random); }
 
     return (
         <SubPage name="Room Manager" maxWidth="xl">
