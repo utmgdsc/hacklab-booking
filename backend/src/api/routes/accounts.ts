@@ -19,6 +19,14 @@ router.post('/changetheme', checkRequiredFields(['theme']), async (req, res) => 
 router.put('/webhooks', checkRequiredFields(['webhooks']), async (req, res) => {
   sendResponse(res, await accountsModel.updateWebhooks(req.user, req.body.webhooks));
 });
+
+router.put('/webhooks/discord', checkRequiredFields(['webhook']), async (req, res) => {
+  sendResponse(res, await accountsModel.updateDiscordWebhook(req.user, req.body.webhook));
+});
+
+router.put('/webhooks/slack', checkRequiredFields(['webhook']), async (req, res) => {
+  sendResponse(res, await accountsModel.updateSlackWebhook(req.user, req.body.webhook));
+});
 router.get('/approvers', async (req, res) => {
   sendResponse(res, await accountsModel.getApprovers());
 });

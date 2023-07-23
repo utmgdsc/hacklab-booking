@@ -31,6 +31,26 @@ export default {
     });
     return { status: 200, data:{} };
   },
+  updateDiscordWebhook: async (user: User, webhook: unknown) => {
+    if (!webhook || typeof webhook !== 'string') {
+      return { status: 400, message: 'Invalid webhook.' };
+    }
+    await db.user.update({
+      where: { utorid: user.utorid },
+      data: { discordWebhook: webhook },
+    });
+    return { status: 200, data:{} };
+  },
+  updateSlackWebhook: async (user: User, webhook: unknown) => {
+    if (!webhook || typeof webhook !== 'string') {
+      return { status: 400, message: 'Invalid webhook.' };
+    }
+    await db.user.update({
+      where: { utorid: user.utorid },
+      data: { slackWebhook: webhook },
+    });
+    return { status: 200, data:{} };
+  },
   upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string; theme?: Theme }) => {
     if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
