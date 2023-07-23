@@ -1,11 +1,11 @@
+import { Close as CloseIcon, Done as DoneIcon, GroupAdd } from '@mui/icons-material';
 import { Box, Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import { GroupCard, InputDialog } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
-import { SubPage } from '../../layouts/SubPage';
 import { UserContext } from '../../contexts/UserContext';
-import { Done as DoneIcon, Close as CloseIcon } from '@mui/icons-material';
+import { SubPage } from '../../layouts/SubPage';
 
 /**
  * Shows a group card with accept and decline buttons
@@ -27,8 +27,8 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                 <Button
                     color="success"
                     startIcon={<DoneIcon />}
-                    onClick={() => {
-                        axios
+                    onClick={async () => {
+                        await axios
                             .post(`/groups/${group.id}/invite/accept`)
                             .then(() => {
                                 showSnackSev('You have joined the group', 'success');
@@ -47,11 +47,12 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                 <Button
                     color="error"
                     startIcon={<CloseIcon />}
-                    onClick={() => {
-                        axios
+                    onClick={async () => {
+                        await axios
                             .post(`/groups/${group.id}/invite/reject`)
                             .then(() => {
                                 showSnackSev('You have declined the invitation', 'success');
+                                fetchUserInfo();
                             })
                             .catch((err) => {
                                 console.error(err);
@@ -108,7 +109,7 @@ export const GroupDirectory = () => {
                 console.error(err);
                 showSnackSev(`Failed to fetch groups: ${err.message}`, 'error');
             });
-    }, []);
+    }, [showSnackSev]);
 
     return (
         <SubPage name="Your Groups">
@@ -126,6 +127,7 @@ export const GroupDirectory = () => {
                     onClick={() => {
                         setOpen(true);
                     }}
+                    startIcon={<GroupAdd />}
                 >
                     Create Group
                 </Button>
@@ -139,12 +141,20 @@ export const GroupDirectory = () => {
                 />
             </Box>
 
-            {userInfo.role === 'student' &&
+            {/* group cards */}
+
+            {myGroups.length === 0 && (
+                <Typography variant="h1">
+                    You're not in a group yet 😔
+                </Typography>
+            )}
+
+            {userInfo.role === 'student' && myGroups.length > 0 &&
                 myGroups.map((group) => {
                     return <GroupCard key={group.id} groupObj={group} />;
                 })}
 
-            {userInfo.role !== 'student' && (
+            {userInfo.role !== 'student' && myGroups.length > 0 && (
                 <>
                     {myGroups
                         .filter((group) => {
@@ -179,7 +189,7 @@ export const GroupDirectory = () => {
                     <Grid container spacing={2} sx={{ marginBottom: '1em' }}>
                         {userInfo.invited.map((group) => {
                             return (
-                                <Grid item xs={12} sm={6} md={3} key={group.id}>
+                                <Grid item xs={12} sm={6} key={group.id}>
                                     <InvitedGroupCard group={group} />
                                 </Grid>
                             );

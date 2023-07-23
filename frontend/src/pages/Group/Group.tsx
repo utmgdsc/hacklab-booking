@@ -6,6 +6,7 @@ import { ConfirmationDialog, InitialsAvatar, InputDialog } from '../../component
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
+import { Add, ExitToApp, SupervisorAccount, PersonRemove } from '@mui/icons-material';
 
 /**
  * Card for a person in the group
@@ -55,6 +56,7 @@ const PersonCard = ({
             {invited || userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
                 <CardActions>
                     <Button
+                        startIcon={<SupervisorAccount />}
                         onClick={() => {
                             changeRole(person.utorid);
                         }}
@@ -63,7 +65,7 @@ const PersonCard = ({
                     </Button>
 
                     <Button
-                        color="error"
+                        startIcon={<PersonRemove />}
                         onClick={() => {
                             removePerson(person.utorid);
                             if (userInfo.utorid === person.utorid) {
@@ -83,6 +85,7 @@ export const Group = () => {
     const [open, setOpen] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
     const { id: groupID } = useParams();
+    const { userInfo } = useContext(UserContext);
 
     const [group, setGroup] = React.useState<FetchedGroup>({
         id: '',
@@ -129,7 +132,7 @@ export const Group = () => {
      * @param utorid The utorid of the person to add
      */
     const addPerson = async (utorid: string) => {
-        axios
+        await axios
             .post(`/groups/${groupID}/invite/`, {
                 utorid,
             })
@@ -230,35 +233,51 @@ export const Group = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'row',
-                    gap: '1em',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'space-between',
                     marginBottom: '1em',
                 }}
             >
                 <Button
-                    variant="contained"
-                    onClick={() => {
-                        setOpen(true);
-                    }}
-                >
-                    Add Student
-                </Button>
-                <Button
                     color="error"
+                    startIcon={<ExitToApp />}
                     onClick={() => {
-                        setOpenDelete(true);
+                        // TODO: leave group
                     }}
                 >
-                    Delete Group
+                    Leave Group
                 </Button>
-                <InputDialog
-                    open={open}
-                    setOpen={setOpen}
-                    title="Add a student to your group"
-                    description="To add a student to your group, please enter their UTORid below."
-                    label="UTORid"
-                    onSubmit={addPerson}
-                />
+                {isManager(userInfo.utorid) ? (
+                    <Box sx={{
+                        display: 'flex',
+                        gap: '1em',
+                    }}>
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => {
+                                setOpen(true);
+                            }}
+                        >
+                            Add Student
+                        </Button>
+                        <Button
+                            color="error"
+                            onClick={() => {
+                                setOpenDelete(true);
+                            }}
+                        >
+                            Delete Group
+                        </Button>
+                        <InputDialog
+                            open={open}
+                            setOpen={setOpen}
+                            title="Add a student to your group"
+                            description="To add a student to your group, please enter their UTORid below."
+                            label="UTORid"
+                            onSubmit={addPerson}
+                        />
+                    </Box>
+                ) : null}
             </Box>
 
             {/* list of people in the group */}

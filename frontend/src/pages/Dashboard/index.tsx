@@ -92,10 +92,6 @@ export const Dashboard = () => {
         document.title = 'Hacklab Booking System';
     });
 
-    useEffect(() => {
-        update();
-    }, [userInfo.groups, userInfo.utorid, userInfo.role]);
-
     const editThisRequest = (reqID: string) => {
         setEditRequestID(reqID);
         setOpenEditRequest(true);
@@ -107,8 +103,9 @@ export const Dashboard = () => {
 
         fetchUserInfo();
     };
-    const update = () => {
-        axios
+
+    const update = async () => {
+        await axios
             .get<FetchedBookingRequest[]>('/requests')
             .then((res) => res.data)
             .then((data) => {
@@ -129,6 +126,11 @@ export const Dashboard = () => {
                 console.error(error);
             });
     };
+
+    useEffect(() => {
+        update();
+    }, [userInfo.groups, userInfo.utorid, userInfo.role]);
+
     const theme = useTheme();
 
     const homeButtons: AppButton[] = [

@@ -12,7 +12,7 @@ export const UserViewer = () => {
     const [user, setUser] = useState<FetchedUser | undefined>();
 
     const fetchUser = async () => {
-        axios
+        await axios
             .get(`/accounts/${utorid}`)
             .then((res) => {
                 if (res.status === 200) {

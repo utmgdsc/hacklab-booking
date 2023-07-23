@@ -52,14 +52,14 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     showSnackSev(`Could not fetch booking request: ${err.message}`, 'error');
                 });
         }
-    }, [editID]);
+    }, [editID, showSnackSev]);
 
     /**
      * Checks if the date is not blocked
      * @param dates list of dates
      */
     const checkDate = async (dates: Date[]) => {
-        axios
+        await axios
             .get(`/rooms/${roomName}/blockeddates`, {
                 params: {
                     start_date: dates[0],

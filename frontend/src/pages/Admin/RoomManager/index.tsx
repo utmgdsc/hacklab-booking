@@ -27,7 +27,7 @@ export const RoomManager = () => {
     const { showSnackSev } = useContext(SnackbarContext);
 
     const getRooms = async () => {
-        axios
+        await axios
             .get('/rooms')
             .then((res) => {
                 if (res.status === 200) {
@@ -50,13 +50,13 @@ export const RoomManager = () => {
                 onClick={() => {
                     setCreateRoomOpen(true);
                 }}
-                sx={{ marginLeft: '1em' }}
+                sx={{ marginLeft: '1em', marginBottom: "1em" }}
             >
                 Create Room
             </Button>
             <div>
-                {rooms.map((room) => (
-                    <RoomCard {...room} />
+                {rooms.map((room, index) => (
+                    <RoomCard key={index} {...room} />
                 ))}
             </div>
             <CreateRoomDialog open={createRoomOpen} setOpen={setCreateRoomOpen} getRooms={getRooms} />

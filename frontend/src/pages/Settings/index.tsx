@@ -55,8 +55,8 @@ export const Settings = () => {
                                 row
                                 aria-labelledby="appearance-radio-label"
                                 name="appearance-radio"
-                                onChange={(e) =>
-                                    axios
+                                onChange={async (e) =>
+                                    await axios
                                         .post('/accounts/changetheme', {
                                             theme: e.target.value,
                                         })

@@ -77,8 +77,8 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
      * @param {string} reason the reason for approving or denying the request
      * @param {'approve' | 'deny'} status whether the request should be approved or denied
      */
-    const handleChangeStatus = (reason: string, status: 'approve' | 'deny') => {
-        axios
+    const handleChangeStatus = async (reason: string, status: 'approve' | 'deny') => {
+        await axios
             .put(`/requests/${booking.id}/${status}`, {
                 reason: reason,
             })

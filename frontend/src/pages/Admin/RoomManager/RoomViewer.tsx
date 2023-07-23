@@ -182,7 +182,7 @@ export const RoomViewer = () => {
                 showSnackSev(`Unable to get approvers: ${err.message}`, 'error');
                 console.error(err);
             });
-    }, []);
+    }, [showSnackSev]);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
