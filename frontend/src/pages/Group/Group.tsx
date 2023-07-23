@@ -84,6 +84,7 @@ export const Group = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const [open, setOpen] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
+    const [openLeave, setOpenLeave] = React.useState(false);
     const [updateValue, setUpdateValue] = React.useState<Number>();
     const { id: groupID } = useParams();
     const { userInfo } = useContext(UserContext);
@@ -245,7 +246,7 @@ export const Group = () => {
                     color="error"
                     startIcon={<ExitToApp />}
                     onClick={() => {
-                        // TODO: leave group
+                        setOpenLeave(true)
                     }}
                 >
                     Leave Group
@@ -321,6 +322,16 @@ export const Group = () => {
                 title="Delete Group"
                 description="Are you sure you want to delete this group?"
                 onConfirm={delGroup}
+            />
+            <ConfirmationDialog
+                open={openLeave}
+                setOpen={setOpenLeave}
+                title="Leave Group"
+                description="Are you sure you want to leave this group?"
+                onConfirm={() => {
+                    removePerson(userInfo.utorid);
+                    navigate('/group', { replace: true });
+                }}
             />
         </SubPage>
     );
