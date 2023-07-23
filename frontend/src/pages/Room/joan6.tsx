@@ -16,7 +16,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
 };
 
 export const Joan6 = () => {
-    const [CurrentDateTime, setCurrentDateTime] = useState('...');
+    const [CurrentDateTime, setCurrentDateTime] = useState('Loading ...');
     const [room, setRoomData] = useState<FetchedRoom>({
         capacity: 0,
         friendlyName: '',
@@ -97,6 +97,7 @@ export const Joan6 = () => {
             }
         }
     }, [roomId, CurrentDateTime]);
+
     return (
         <Grid container>
             <Grid item xs={7}>
