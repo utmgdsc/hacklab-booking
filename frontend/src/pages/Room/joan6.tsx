@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Card, Box, Grid, Typography, useTheme } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
@@ -6,12 +6,82 @@ import SparkleMascot from '../../assets/img/sparkle-mascot.png';
 import axios from '../../axios';
 
 const EventsRow = ({ events }: { events: BookingRequest[] }) => {
+    /** mui theme object */
+    const theme = useTheme();
+
     return (
-        <>
-            {events.map((event) => {
-                return <>{JSON.stringify(event)}</>;
+        <Box
+            sx={{
+                py: '2em',
+                paddingLeft: '4em',
+            }}
+        >
+            <Box aria-hidden="true" height="0px">
+                {[...Array(14)].map((_e, i) => (
+                    <Box
+                        key={i}
+                        sx={{
+                            height: 'calc((100vh - 2em) / 14)',
+                            borderTop: `${theme.palette.text.disabled} 1px solid`,
+                            width: '100%',
+                            '&:before': {
+                                content: `"${(i + 8) % 12 ? (i + 8) % 12 : 12} ${i < 4 ? 'AM' : 'PM'}"`,
+                                display: 'block',
+                                position: 'absolute',
+                                marginLeft: '-3em',
+                                marginTop: '-0.5em',
+                            },
+                        }}
+                    ></Box>
+                ))}
+            </Box>
+            {events.map((event, index) => {
+                return (
+                    <Card
+                        key={event.id}
+                        sx={{
+                            padding: '1em',
+                            height: `calc((100vh - 2em) / 14 * ${
+                                new Date(event.endDate).getHours() - new Date(event.startDate).getHours()
+                            })`,
+                            mx: '1em',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            marginBottom: `calc((100vh - 2em) / 14 *  ${
+                                new Date(events[index + 1] ? events[index + 1].startDate : new Date()).getHours() -
+                                new Date(event.endDate).getHours()
+                            })`,
+                        }}
+                    >
+                        <Typography variant="h4" component="p" sx={{ fontWeight: 400, opacity: 0.5 }}>
+                            {event.group.name} •{' '}
+                            {new Date(event.startDate).toLocaleTimeString(undefined, {
+                                hour: 'numeric',
+                            })}{' '}
+                            -
+                            {new Date(event.endDate).toLocaleTimeString(undefined, {
+                                hour: 'numeric',
+                            })}
+                        </Typography>
+                        <Typography
+                            variant="h1"
+                            component="p"
+                            sx={{
+                                fontSize: `${
+                                    new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
+                                        ? 4
+                                        : 2
+                                }em`,
+                                fontWeight: 700,
+                            }}
+                        >
+                            {event.title}
+                        </Typography>
+                    </Card>
+                );
             })}
-        </>
+        </Box>
     );
 };
 
@@ -42,7 +112,8 @@ export const Joan6 = () => {
                     hour12: true,
                 }),
             );
-        }, 10000);
+            console.log('tick');
+        }, 1000);
         return () => clearInterval(interval);
     }, []);
 
@@ -50,18 +121,18 @@ export const Joan6 = () => {
         axios
             .get(`/rooms/${roomId}`)
             .then(({ data }) => {
-                console.log(data);
                 setRoomData(data);
                 setCurrentEvents(
                     room.requests.filter((request) => {
                         // check if request is today
-                        if (request.startDate.getDate() !== new Date().getDate()) return false;
-                        if (request.startDate.getMonth() !== new Date().getMonth()) return false;
+                        if (new Date(request.startDate).getDate() !== new Date().getDate()) return false;
+                        if (new Date(request.startDate).getMonth() !== new Date().getMonth()) return false;
 
                         // check if request is completed
                         return request.status === 'completed';
                     }),
                 );
+                console.log(currentEvents);
             })
             .catch((err) => {
                 showSnackSev('Room not found', 'error');
@@ -75,7 +146,7 @@ export const Joan6 = () => {
 
             const currentEvent = (): BookingRequest =>
                 currentEvents.find((event) => {
-                    return event.startDate < currentTime && currentTime < event.endDate;
+                    return new Date(event.startDate) < currentTime && currentTime < new Date(event.endDate);
                 });
 
             if (currentEvent) {
@@ -96,7 +167,7 @@ export const Joan6 = () => {
                 }
             }
         }
-    }, [roomId, CurrentDateTime]);
+    }, [roomId, setCurrentDateTime, showSnackSev]);
 
     return (
         <Grid container>
@@ -127,17 +198,17 @@ export const Joan6 = () => {
                         {currentBooking && (
                             <Box>
                                 <Typography variant="h3" component="p" sx={{ fontWeight: 400, opacity: 0.5 }}>
-                                    Booked by {currentBooking.groupId}
+                                    Booked by {currentBooking.group.name}
                                 </Typography>
                                 <Typography variant="h1" sx={{ fontSize: '4em', fontWeight: 700 }}>
                                     {currentBooking.title}
                                 </Typography>
                                 <Typography variant="h2" sx={{ fontWeight: 400 }}>
-                                    {currentBooking.startDate.toLocaleTimeString(undefined, {
+                                    {new Date(currentBooking.startDate).toLocaleTimeString(undefined, {
                                         hour: 'numeric',
                                     })}{' '}
                                     -
-                                    {currentBooking.endDate.toLocaleTimeString(undefined, {
+                                    {new Date(currentBooking.endDate).toLocaleTimeString(undefined, {
                                         hour: 'numeric',
                                     })}
                                 </Typography>

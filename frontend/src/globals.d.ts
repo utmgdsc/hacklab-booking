@@ -38,6 +38,10 @@ interface BookingRequest {
     description: string;
     endDate: Date;
     groupId: string;
+    group: {
+        id: string;
+        name: string;
+    };
     reason: string | null;
     roomName: string;
     startDate: Date;
