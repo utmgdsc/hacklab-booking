@@ -6,17 +6,17 @@ import '@fontsource/roboto/700.css';
 import './App.css';
 
 import { Admin } from './pages/Admin';
-import { UserViewer } from './pages/Admin/UserManager/UserViewer';
-import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
 import { RoomManager } from './pages/Admin/RoomManager';
+import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
+import { UserViewer } from './pages/Admin/UserManager/UserViewer';
 import { Calendar } from './pages/Calendar';
 import { CreateBooking } from './pages/CreateBooking';
 import { Dashboard } from './pages/Dashboard';
 import { Group } from './pages/Group/Group';
 import { GroupDirectory } from './pages/Group/GroupDirectory';
 import { NotFound } from './pages/NotFound';
-import { Settings } from './pages/Settings';
 import { Joan6 } from './pages/Room/joan6';
+import { Settings } from './pages/Settings';
 
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
@@ -32,8 +32,8 @@ import {
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary, RequireRole } from './components';
-import { UserContext, defaultUser } from './contexts/UserContext';
 import { SnackbarContext, SnackbarQueueItem } from './contexts/SnackbarContext';
+import { UserContext, defaultUser } from './contexts/UserContext';
 import { GoogleTheme, THEME } from './theme/theme';
 
 import axios from './axios';
