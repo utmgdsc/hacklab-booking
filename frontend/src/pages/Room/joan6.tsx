@@ -1,5 +1,5 @@
 import { Card, Box, Grid, Typography, useTheme } from '@mui/material';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import SparkleMascot from '../../assets/img/sparkle-mascot.png';
@@ -100,25 +100,8 @@ export const Joan6 = () => {
     const [currentBooking, setCurrentBooking] = useState<BookingRequest | null>(null);
     const [nextFree, setNextFree] = useState<String | null>(null);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentDateTime(
-                new Date().toLocaleString(undefined, {
-                    weekday: 'short',
-                    day: 'numeric',
-                    month: 'long',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: true,
-                }),
-            );
-            console.log('tick');
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        axios
+    const update = useCallback(async () => {
+        await axios
             .get(`/rooms/${roomId}`)
             .then(({ data }) => {
                 setRoomData(data);
@@ -127,6 +110,7 @@ export const Joan6 = () => {
                         // check if request is today
                         if (new Date(request.startDate).getDate() !== new Date().getDate()) return false;
                         if (new Date(request.startDate).getMonth() !== new Date().getMonth()) return false;
+                        if (new Date(request.startDate).getFullYear() !== new Date().getFullYear()) return false;
 
                         // check if request is completed
                         return request.status === 'completed';
@@ -167,7 +151,25 @@ export const Joan6 = () => {
                 }
             }
         }
-    }, [roomId, setCurrentDateTime, showSnackSev]);
+    }, [currentEvents, room.requests, roomId, showSnackSev]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentDateTime(
+                new Date().toLocaleString(undefined, {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'long',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                }),
+            );
+            console.log('tick');
+            update();
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [update]);
 
     return (
         <Grid container>
