@@ -129,7 +129,7 @@ function App() {
                                 <Route path="/book/" element={<CreateBooking />} />
                                 <Route path="/group/" element={<GroupDirectory />} />
                                 <Route path="/group/:id" element={<Group />} />
-                                <Route path="/room/joan6/:id" element={<Joan6 />} />
+                                <Route path="/admin/room-manager/:id/joan6" element={<Joan6 />} />
                                 <Route
                                     path="/admin"
                                     element={

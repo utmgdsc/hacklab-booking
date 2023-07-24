@@ -143,15 +143,36 @@ export const GroupDirectory = () => {
                 />
             </Box>
 
-            {/* group cards */}
+            {myGroups.map((group) => {
+                return <GroupCard key={group.id} groupObj={group} />;
+            })}
 
-            {myGroups.length === 0 && <Typography variant="h1">You're not in a group yet 😔</Typography>}
+            {userInfo.role !== 'student' && myGroups.length > 0 && (
+                <>
+                    {myGroups
+                        .filter((group) => {
+                            const isMember = group.members.find((member) => member.utorid === userInfo.utorid);
+                            const isManager = group.managers.find((manager) => manager.utorid === userInfo.utorid);
 
-            {userInfo.role === 'student' &&
-                myGroups.length > 0 &&
-                myGroups.map((group) => {
-                    return <GroupCard key={group.id} groupObj={group} />;
-                })}
+                            return isMember || isManager;
+                        })
+                        .map((group) => {
+                            return <GroupCard key={group.id} groupObj={group} />;
+                        })}
+                    <Typography variant="h2" sx={{ margin: '2em 0 0.5em 0' }}>
+                        All Groups
+                    </Typography>
+                    <Grid container spacing={2} sx={{ marginBottom: '1em' }}>
+                        {myGroups.map((group) => {
+                            return (
+                                <Grid item xs={12} md={6} key={group.id}>
+                                    <GroupCard groupObj={group} />
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
+                </>
+            )}
 
             {userInfo.role !== 'student' && myGroups.length > 0 && (
                 <>
