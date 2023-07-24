@@ -11,7 +11,7 @@ export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
     let dayjsObj = dayjs(d);
     const day = dayjsObj.day();
     switch (day) {
-        case 0: // sunday - get the next monday
+        case 0: // sunday - one day until monday
             dayjsObj = dayjsObj.add(1, 'day');
             break;
         case 1: // monday
@@ -22,8 +22,8 @@ export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
         case 5: // tuesday - friday: get current monday
             dayjsObj = dayjsObj.subtract(day - 1, 'day');
             break;
-        case 6: // saturday - get the next monday
-            dayjsObj = dayjsObj.add(1, 'day');
+        case 6: // saturday - two days until monday
+            dayjsObj = dayjsObj.add(2, 'day');
             break;
         default:
             throw new Error('Invalid day');
