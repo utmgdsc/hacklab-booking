@@ -111,6 +111,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
 export const Joan6 = () => {
     const [CurrentDateTime, setCurrentDateTime] = useState('Loading ...');
     const [room, setRoomData] = useState<FetchedRoom>({
+        approvers: [],
         capacity: 0,
         friendlyName: '',
         requests: [],
