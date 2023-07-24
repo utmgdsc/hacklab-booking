@@ -139,7 +139,6 @@ export const Joan6 = () => {
                         return request.status === 'completed';
                     }),
                 );
-                console.log(currentEvents);
             })
             .catch((err) => {
                 showSnackSev('Room not found', 'error');
@@ -188,7 +187,6 @@ export const Joan6 = () => {
                     hour12: true,
                 }),
             );
-            console.log('tick');
             update();
         }, 1000);
         return () => clearInterval(interval);
