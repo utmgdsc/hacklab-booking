@@ -34,6 +34,29 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                         }}
                     ></Box>
                 ))}
+                <Box
+                    sx={{
+                        top: `calc((100vh - 2em) / 14 * ${new Date().getHours() - 7})`,
+                        borderTop: `${theme.palette.app_colors.red} 4px solid`,
+                        position: 'fixed',
+                        width: '100%',
+                        zIndex: 69,
+                        ':before': {
+                            content: `"${new Date().toLocaleTimeString(undefined, {
+                                hour: 'numeric',
+                            })}"`,
+                            background: theme.palette.app_colors.red,
+                            borderRadius: '50%',
+                            display: 'block',
+                            fontSize: '0',
+                            height: '1rem',
+                            marginLeft: '-1rem',
+                            marginTop: '-0.6rem',
+                            position: 'absolute',
+                            width: '1rem',
+                        },
+                    }}
+                ></Box>
             </Box>
             {events.map((event, index) => {
                 return (
