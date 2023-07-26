@@ -61,7 +61,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
                 });
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             })
             .finally(() => {
                 setBlockedDates(blocked);

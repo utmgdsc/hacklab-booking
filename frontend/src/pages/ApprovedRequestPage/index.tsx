@@ -1,12 +1,14 @@
 import { CheckCircle as CheckCircleIcon, Error } from '@mui/icons-material';
-import { Container, Typography, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../../axios';
+import { ErrorPage } from '../../layouts/ErrorPage';
 
 /**
- * Edit a booking given a UUID or create a new booking if no UUID is given
+ * Approve or deny a booking request
+ * @param {boolean} approved Whether to approve or deny the request.
  */
 export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
     const { id } = useParams();
@@ -33,63 +35,43 @@ export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
     };
 
     useEffect(() => {
-        console.log('using effect');
         if (!id) {
             return;
         }
         void approve();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (error) {
         return (
-            <Container
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                    flexWrap: 'nowrap',
-                    marginBottom: '2em',
-                    gap: '1em',
-                }}
-            >
-                <Error
-                    sx={{
-                        fontSize: '10em',
-                        color: theme.palette.error.main,
-                    }}
-                />
-
-                <Typography component="p" variant="h3">
-                    {error}
-                </Typography>
-            </Container>
+            <ErrorPage
+                name="Error"
+                message={<>{error}</>}
+                graphic={
+                    <Error
+                        sx={{
+                            fontSize: '10em',
+                            color: theme.palette.error.main,
+                        }}
+                    />
+                }
+            />
         );
     }
+
     if (resolved) {
         return (
-            <Container
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                    flexWrap: 'nowrap',
-                    marginBottom: '2em',
-                    gap: '1em',
-                }}
-            >
-                <CheckCircleIcon
-                    sx={{
-                        fontSize: '10em',
-                        color: 'green',
-                    }}
-                />
-
-                <Typography component="p" variant="h3">
-                    {'Booking approved!'}
-                </Typography>
-            </Container>
+            <ErrorPage
+                name="Booking request approved!"
+                graphic={
+                    <CheckCircleIcon
+                        sx={{
+                            fontSize: '10em',
+                            color: theme.palette.success.main,
+                        }}
+                    />
+                }
+            />
         );
     }
 };

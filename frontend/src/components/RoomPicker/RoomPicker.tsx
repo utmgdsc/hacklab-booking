@@ -30,7 +30,7 @@ export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
                     }
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                 });
         })();
     }, [setRoomName]);
