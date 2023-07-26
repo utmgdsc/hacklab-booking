@@ -146,9 +146,11 @@ export const GroupDirectory = () => {
             {/* group cards */}
             {myGroups.length === 0 && <Typography variant="h1">You're not in a group yet 😔</Typography>}
 
-            {userInfo.role === 'student' && myGroups.length > 0 && myGroups.map((group) => {
-                return <GroupCard key={group.id} groupObj={group} />;
-            })}
+            {userInfo.role === 'student' &&
+                myGroups.length > 0 &&
+                myGroups.map((group) => {
+                    return <GroupCard key={group.id} groupObj={group} />;
+                })}
 
             {userInfo.role !== 'student' && myGroups.length > 0 && (
                 <>

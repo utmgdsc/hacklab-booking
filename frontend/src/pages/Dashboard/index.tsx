@@ -46,7 +46,7 @@ const ActiveRequestCards = ({
             return (
                 <ActiveRequestCard
                     booking={request}
-                    ownerHasTCard={!!request['author']['roomAccess'].find((x) => x.roomName === request.roomName)}
+                    ownerHasTCard={!!request['author']['roomAccess'].find((room) => room.roomName === request.roomName)}
                     edit={editThisRequest}
                     cancel={cancelThisRequest}
                     viewOnly={false}
@@ -113,15 +113,16 @@ export const Dashboard = () => {
                 .then((data) => {
                     setMyRequests(
                         data.filter(
-                            (x) =>
-                                x.authorUtorid === userInfo.utorid && userInfo.groups.find((y) => y.id === x.groupId),
+                            (request) =>
+                                request.authorUtorid === userInfo.utorid &&
+                                userInfo.groups.find((groupRequest) => groupRequest.id === request.groupId),
                         ),
                     );
                     setPendingRequests(
                         data.filter(
-                            (x) =>
-                                x.status === 'pending' ||
-                                (x.status === 'needTCard' && ['admin', 'tcard'].includes(userInfo.role)),
+                            (request) =>
+                                request.status === 'pending' ||
+                                (request.status === 'needTCard' && ['admin', 'tcard'].includes(userInfo.role)),
                         ),
                     );
                 })

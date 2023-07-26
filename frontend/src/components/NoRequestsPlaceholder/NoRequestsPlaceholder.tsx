@@ -12,9 +12,7 @@ interface NoRequestsPlaceholderProps {
  * Placeholder for when there are no requests
  * @returns {JSX.Element} the placeholder
  */
-export const NoRequestsPlaceholder = ({
-    text,
-}: NoRequestsPlaceholderProps): JSX.Element => {
+export const NoRequestsPlaceholder = ({ text }: NoRequestsPlaceholderProps): JSX.Element => {
     /** mui theme object */
     const theme = useTheme();
 
@@ -30,9 +28,12 @@ export const NoRequestsPlaceholder = ({
                 marginTop: '4em',
             }}
         >
-            <img width="200" src={
-                theme.palette.mode === THEME.LIGHT ? SparkleMascot : SparkleMascotDark
-            } alt="" aria-hidden="true" />
+            <img
+                width="200"
+                src={theme.palette.mode === THEME.LIGHT ? SparkleMascot : SparkleMascotDark}
+                alt=""
+                aria-hidden="true"
+            />
             <Typography variant="gray" sx={{ marginTop: '2em' }}>
                 {text}
             </Typography>

@@ -106,7 +106,7 @@ export const Group = () => {
      */
     const isManager = (user: User | string): boolean => {
         const userUtorid = typeof user === 'string' ? user : user.utorid;
-        return !!group.managers.find((x) => x.utorid === userUtorid);
+        return !!group.managers.find((manager) => manager.utorid === userUtorid);
     };
 
     /**
@@ -246,7 +246,7 @@ export const Group = () => {
                     color="error"
                     startIcon={<ExitToApp />}
                     onClick={() => {
-                        setOpenLeave(true)
+                        setOpenLeave(true);
                     }}
                 >
                     Leave Group
