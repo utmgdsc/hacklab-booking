@@ -17,7 +17,6 @@ model User {
   utorid         String      @id
   name           String
   role           AccountRole @default(student)
-  theme          Theme       @default(system)
   // ---relationships---
   groups         Group[]     @relation(name: "Members")
   invited        Group[]     @relation(name: "Invited")
@@ -30,7 +29,8 @@ model User {
   webhooks       Json
   discordWebhook String?
   slackWebhook   String?
-  roomApprover Room[]    @relation(name: "RoomApprover")
+  theme          Theme       @default(system)
+  roomApprover   Room[]    @relation(name: "RoomApprover")
 }
 
 enum Theme {
