@@ -20,7 +20,7 @@ export const RequireRole = (props: { role: UserRoles[]; children: React.ReactNod
                 message={
                     <>
                         konna ooki na diamondo mita koto naideshou? ageru neeeeeeeeeeee -{' '}
-                        <Link internal href="/">
+                        < Link href="/">
                             Time to twirl to the dashboard
                         </Link>
                         .

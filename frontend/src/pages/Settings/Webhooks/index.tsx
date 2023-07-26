@@ -89,6 +89,7 @@ const webhookEvents: Record<
         description: 'When a user leaves a group you are in',
     },
 };
+
 export const Webhooks = () => {
     const { userInfo, fetchUserInfo } = useContext(UserContext);
     const { showSnackSev } = useContext(SnackbarContext);

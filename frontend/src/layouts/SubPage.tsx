@@ -1,9 +1,9 @@
-import React from 'react';
-import { Box, Typography, Container, Button, Breakpoint } from '@mui/material';
 import { ArrowBackIos } from '@mui/icons-material';
-import { ErrorBoundary, Link } from '../components';
+import { Box, Breakpoint, Button, Container, Typography } from '@mui/material';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ErrorBoundary } from '../components';
 import { UserContext } from '../contexts/UserContext';
-import { useLocation } from 'react-router-dom';
 
 interface SubPageProps {
     name: string;
@@ -27,18 +27,7 @@ export const SubPage: React.FC<SubPageProps> = ({
     }, [name]);
 
     let { fetchUserInfo } = React.useContext(UserContext);
-    const location = useLocation();
-
-    /**
-     * @returns the previous path
-     */
-    const previousPath = () => {
-        const path = location.pathname.split('/').slice(0, -1).join('/');
-        if (path === '') {
-            return '/';
-        }
-        return path;
-    };
+    const nav = useNavigate();
 
     return (
         <Container sx={{ py: py }} maxWidth={maxWidth} component="main" {...props}>
@@ -54,11 +43,9 @@ export const SubPage: React.FC<SubPageProps> = ({
                     },
                 }}
             >
-                <Link href={previousPath()} internal>
-                    <Button onClick={() => fetchUserInfo()}>
-                        <ArrowBackIos /> Back
-                    </Button>
-                </Link>
+                <Button onClick={() => { nav(-1); fetchUserInfo(); }}>
+                    <ArrowBackIos /> Back
+                </Button>
             </Typography>
             {showHead && (
                 <Box

@@ -331,7 +331,7 @@ export const CreateBooking = () => {
                 message={
                     <>
                         Please{' '}
-                        <Link internal href="/group">
+                        < Link href="/group">
                             create a group
                         </Link>{' '}
                         before making a booking request.
