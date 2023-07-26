@@ -11,7 +11,7 @@ interface DateTimePickerProps {
     /** a list of dates that are currently selected */
     scheduleDates: Date[];
     /** a react hook that is a function that takes a list of dates, and will set the scheduleDates state */
-    setScheduleDates: (dates: string[]) => void;
+    setScheduleDates: (dates: Date[]) => void;
     /** the room that the user is booking */
     room: string;
 }

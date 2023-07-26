@@ -19,7 +19,7 @@ const validateRequest = async (request: CreateRequest): Promise<ModelResponseErr
       message: 'Invalid date format.',
     };
   }
-  if (startDate >= endDate) {
+  if (startDate > endDate) {
     return {
       status: 400,
       message: 'Start date cannot be after end date.',

@@ -24,7 +24,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** list of approvers */
     const [approvers, setApprovers] = useState([]);
     /** currently selected list of dates */
-    const [scheduleDates, setScheduleDates] = useState([]);
+    const [scheduleDates, setScheduleDates] = useState<Date[]>([]);
     /** whether the date is valid */
     const [validDate, setValidDate] = useState(false);
     /** whether the request was submitted */
