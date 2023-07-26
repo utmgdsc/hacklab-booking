@@ -46,6 +46,16 @@
         "extends": [
             "react-app",
             "react-app/jest"
+        ],
+        "overrides": [
+            {
+                "files": [
+                    "**/*.ts?(x)"
+                ],
+                "parserOptions": {
+                    "project": "./tsconfig.json"
+                }
+            }
         ]
     },
     "browserslist": {

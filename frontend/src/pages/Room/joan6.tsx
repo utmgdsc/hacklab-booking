@@ -3,46 +3,74 @@ import { useEffect, useState, useContext, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import SparkleMascot from '../../assets/img/sparkle-mascot.png';
+import SparkleMascotDark from '../../assets/img/sparkle-mascot_dark.png';
 import axios from '../../axios';
+import { THEME } from '../../theme/theme';
+
+/** set starting time starting with 0=12am */
+const startHour: number = 8;
+/** set number of hours to show */
+const hoursToShow: number = 10;
+/** set padding top and bottom */
+const padding: string = "2em";
+/** set height of 100% */
+const fullHeight: string = `calc(100vh - ${padding})`;
 
 const EventsRow = ({ events }: { events: BookingRequest[] }) => {
     /** mui theme object */
     const theme = useTheme();
+    /** current time */
+    const now: Date = new Date();
+
+    now.setHours(14);
+    now.setMinutes(0);
 
     return (
         <Box
             sx={{
-                py: '2em',
+                py: padding,
                 paddingLeft: '4em',
             }}
         >
             <Box aria-hidden="true" height="0px">
-                {[...Array(14)].map((_e, i) => (
+                {[...Array(hoursToShow)].map((_e, i) => (
                     <Box
                         key={i}
                         sx={{
-                            height: 'calc((100vh - 2em) / 14)',
+                            height: `calc(${fullHeight} / ${hoursToShow})`,
                             borderTop: `${theme.palette.text.disabled} 1px solid`,
                             width: '100%',
                             '&:before': {
-                                content: `"${(i + 8) % 12 ? (i + 8) % 12 : 12} ${i < 4 ? 'AM' : 'PM'}"`,
+                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${i < 4 ? 'AM' : 'PM'}"`,
                                 display: 'block',
                                 position: 'absolute',
-                                marginLeft: '-3em',
-                                marginTop: '-0.5em',
+                                marginLeft: '-3.1415em',
+                                marginTop: '-0.69420em',
                             },
                         }}
                     ></Box>
                 ))}
+
+                {/* current time indicator */}
                 <Box
                     sx={{
-                        top: `calc((100vh - 2em) / 14 * ${new Date().getHours() - 7})`,
-                        borderTop: `${theme.palette.app_colors.red} 4px solid`,
+                        // (height of one hour * (current time - startHour)) + padding top
+                        top: `
+                            calc(
+                                    (
+                                        calc(${fullHeight} / ${hoursToShow})
+                                        * ${now.getHours() - startHour}${(now.getMinutes() / 60).toString().slice(1)}
+                                    )
+                                + ${padding}
+                            )
+                        `,
+                        borderTop: `${theme.palette.app_colors.red} 2px solid`,
+                        borderBottom: `${theme.palette.app_colors.red} 2px solid`,
                         position: 'fixed',
                         width: '100%',
                         zIndex: 69,
                         ':before': {
-                            content: `"${new Date().toLocaleTimeString(undefined, {
+                            content: `"${now.toLocaleTimeString(undefined, {
                                 hour: 'numeric',
                             })}"`,
                             background: theme.palette.app_colors.red,
@@ -50,8 +78,8 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             display: 'block',
                             fontSize: '0',
                             height: '1rem',
-                            marginLeft: '-1rem',
-                            marginTop: '-0.6rem',
+                            marginLeft: '-0.75rem',
+                            marginTop: '-0.5rem',
                             position: 'absolute',
                             width: '1rem',
                         },
@@ -63,21 +91,30 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                     <Card
                         key={event.id}
                         sx={{
-                            padding: '1em',
-                            height: `calc((100vh - 2em) / 14 * ${
-                                new Date(event.endDate).getHours() - new Date(event.startDate).getHours()
-                            })`,
+                            padding: '1em', // internal padding
+                            height: `calc(${fullHeight} / ${hoursToShow} * ${new Date(event.endDate).getHours() - new Date(event.startDate).getHours()
+                                })`,
                             mx: '1em',
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
-                            marginBottom: `calc((100vh - 2em) / 14 *  ${
-                                new Date(events[index + 1] ? events[index + 1].startDate : new Date()).getHours() -
+                            marginBottom: `calc(${fullHeight} / ${hoursToShow} * ${new Date(events[index + 1] ? events[index + 1].startDate : now).getHours() -
                                 new Date(event.endDate).getHours()
-                            })`,
+                                })`,
                         }}
                     >
-                        <Typography variant="h4" component="p" sx={{ fontWeight: 400, opacity: 0.5 }}>
+                        <Typography
+                            variant="h4"
+                            component="p"
+                            sx={{
+                                fontSize: `${new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
+                                    ? 2
+                                    : 1
+                                    }em`,
+                                fontWeight: 400,
+                                opacity: 0.5,
+                            }}
+                        >
                             {event.group.name} •{' '}
                             {new Date(event.startDate).toLocaleTimeString(undefined, {
                                 hour: 'numeric',
@@ -91,11 +128,10 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             variant="h1"
                             component="p"
                             sx={{
-                                fontSize: `${
-                                    new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
-                                        ? 4
-                                        : 2
-                                }em`,
+                                fontSize: `${new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
+                                    ? 4
+                                    : 2
+                                    }em`,
                                 fontWeight: 700,
                             }}
                         >
@@ -111,6 +147,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
 export const Joan6 = () => {
     const [CurrentDateTime, setCurrentDateTime] = useState('Loading ...');
     const [room, setRoomData] = useState<FetchedRoom>({
+        approvers: [],
         capacity: 0,
         friendlyName: '',
         requests: [],
@@ -122,6 +159,7 @@ export const Joan6 = () => {
     const { id: roomId } = useParams();
     const [currentBooking, setCurrentBooking] = useState<BookingRequest | null>(null);
     const [nextFree, setNextFree] = useState<String | null>(null);
+    const theme = useTheme();
 
     const update = useCallback(async () => {
         await axios
@@ -202,7 +240,7 @@ export const Joan6 = () => {
                             flexDirection: 'column',
                             justifyContent: 'space-between',
                             height: '100%',
-                            padding: '2em',
+                            padding: padding,
                         }}
                     >
                         <Box
@@ -243,7 +281,7 @@ export const Joan6 = () => {
                         {!currentBooking && (
                             <Box>
                                 <img
-                                    src={SparkleMascot}
+                                    src={theme.palette.mode === THEME.DARK ? SparkleMascotDark : SparkleMascot}
                                     alt="The room is free at the moment"
                                     style={{
                                         maxWidth: '40vw',

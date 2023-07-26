@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     Card,
     CardActions,
@@ -11,7 +10,7 @@ import {
     Typography,
 } from '@mui/material';
 import { useContext } from 'react';
-import { instance } from '../../axios';
+import axios from '../../axios';
 import { UserCard } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
@@ -56,13 +55,16 @@ export const Settings = () => {
                                 row
                                 aria-labelledby="appearance-radio-label"
                                 name="appearance-radio"
-                                onChange={(e) =>
-                                    instance
+                                onChange={async (e) =>
+                                    await axios
                                         .post('/accounts/changetheme', {
                                             theme: e.target.value,
                                         })
                                         .then(() => {
                                             fetchUserInfo();
+                                        })
+                                        .catch((err) => {
+                                            console.error(err);
                                         })
                                 }
                                 value={userInfo.theme}

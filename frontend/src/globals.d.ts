@@ -83,6 +83,7 @@ interface Room {
 
 /** Admin only fetched room when ~/api/rooms/:id is called */
 interface FetchedRoom {
+    approvers: User[];
     capacity: number;
     friendlyName: string;
     requests: BookingRequest[];

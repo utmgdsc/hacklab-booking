@@ -51,15 +51,15 @@ export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): 
         setOpen(false);
     };
 
-    const handleSave = () => {
-        axios
+    const handleSave = async () => {
+        await axios
             .put(`/accounts/${utorid}/changerole`, { role: role })
             .then((res) => {
                 showSnack(`Changed ${utorid}'s role to ${role}`);
                 setUpdate(Math.random());
             })
             .catch((err) => {
-                showSnackSev(`Failed to change ${utorid}'s role`, 'error');
+                showSnackSev(`Failed to change ${utorid}'s role: ${err.message}`, 'error');
             })
             .finally(() => {
                 setOpen(false);

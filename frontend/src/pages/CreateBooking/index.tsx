@@ -33,29 +33,35 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /* set fill info if there is already an editID */
     useEffect(() => {
         if (editID) {
-            axios.get(`/requests/${editID}`).then((res) => {
-                console.log(res.data);
-                if (res.status === 200) {
-                    setGroup(
-                        JSON.stringify({
-                            id: res.data.group.id,
-                            name: res.data.group.name,
-                        } as Group),
-                    );
-                    setRoomName(res.data.roomName);
-                    setDetails(res.data.description);
-                    setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
-                }
-            });
+            (async () => {
+                await axios
+                    .get(`/requests/${editID}`)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            setGroup(
+                                JSON.stringify({
+                                    id: res.data.group.id,
+                                    name: res.data.group.name,
+                                } as Group),
+                            );
+                            setRoomName(res.data.roomName);
+                            setDetails(res.data.description);
+                            setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                        }
+                    })
+                    .catch((err) => {
+                        showSnackSev(`Could not fetch booking request: ${err.message}`, 'error');
+                    });
+            })();
         }
-    }, [editID]);
+    }, [editID, showSnackSev]);
 
     /**
      * Checks if the date is not blocked
      * @param dates list of dates
      */
     const checkDate = async (dates: Date[]) => {
-        axios
+        await axios
             .get(`/rooms/${roomName}/blockeddates`, {
                 params: {
                     start_date: dates[0],
@@ -79,6 +85,11 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     showSnackSev('An error occurred while checking the date, please try again', 'error');
                     setScheduleDates([]);
                 }
+            })
+            .catch((err) => {
+                setValidDate(false);
+                showSnackSev(`An error occurred while checking the date: ${err.message}`, 'error');
+                setScheduleDates([]);
             });
     };
 
@@ -136,21 +147,23 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
         };
 
         if (editID) {
-            const { status } = await axios.put(`/requests/${editID}`, booking);
-            if (status === 200) {
-                setSubmitted(true);
-                return;
-            } else {
-                showSnackSev('Could not edit booking request', 'error');
-            }
+            await axios
+                .put(`/requests/${editID}`, booking)
+                .then((res) => {
+                    setSubmitted(true);
+                })
+                .catch((err) => {
+                    showSnackSev(`Could not edit booking request: ${err.message}`, 'error');
+                });
         } else {
-            const { status } = await axios.post('/requests/create', booking);
-            if (status === 200) {
-                setSubmitted(true);
-                return;
-            } else {
-                showSnackSev('Could not create booking request', 'error');
-            }
+            await axios
+                .post('/requests/create', booking)
+                .then((res) => {
+                    setSubmitted(true);
+                })
+                .catch((err) => {
+                    showSnackSev(`Could not create booking request: ${err.message}`, 'error');
+                });
         }
     };
 
@@ -270,7 +283,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 >
                     <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} />
+                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} roomName={roomName} />
                 </Box>
             )}
 

@@ -8,21 +8,23 @@ export default {
   getGroups: async (user: User) => {
     let groups: Group[];
     if (user.role === AccountRole.student) {
-      groups = await db.user.findUnique({ where: { utorid: user.utorid } }).groups({
+      groups = (await db.user.findUnique({ where: { utorid: user.utorid } }).groups({
         include: {
           members: true,
           invited: true,
           managers: true,
           requests: true,
         },
-      }) as Group[];
+      })) as Group[];
     } else {
-      groups = await db.group.findMany({ include:{
-        members: true,
-        invited: true,
-        managers: true,
-        requests: true,
-      } });
+      groups = await db.group.findMany({
+        include: {
+          members: true,
+          invited: true,
+          managers: true,
+          requests: true,
+        },
+      });
     }
     return { status: 200, data: groups };
   },
@@ -39,10 +41,10 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (user.role === AccountRole.student && !group.members.some(x => x.utorid === user.utorid)) {
+    if (user.role === AccountRole.student && !group.members.some((x) => x.utorid === user.utorid)) {
       return {
         status: 403,
-        message: 'You are not allowed to access this group\'s information.',
+        message: "You are not allowed to access this group's information.",
       };
     }
     return { status: 200, data: group };
@@ -56,7 +58,7 @@ export default {
           managers: { connect: { utorid: user.utorid } },
           members: { connect: { utorid: user.utorid } },
         },
-        include:{
+        include: {
           members: true,
           managers: true,
           invited: true,
@@ -83,17 +85,17 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (!group.members.some(x => x.utorid === targetUtorid)) {
+    if (!group.members.some((x) => x.utorid === targetUtorid)) {
       return { status: 400, message: 'User is not a member of this group.' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
     if (role === 'manager') {
-      if (group.managers.some(x => x.utorid === targetUtorid)) {
+      if (group.managers.some((x) => x.utorid === targetUtorid)) {
         return { status: 400, message: 'User is already a manager.' };
       }
       await db.group.update({
@@ -103,7 +105,7 @@ export default {
       return { status: 200, data: {} };
     }
     if (role === 'member') {
-      if (!group.managers.some(x => x.utorid === targetUtorid)) {
+      if (!group.managers.some((x) => x.utorid === targetUtorid)) {
         return { status: 400, message: 'User is already a member.' };
       }
       await db.group.update({
@@ -126,17 +128,17 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
     try {
-      if (group.invited.some(x => x.utorid === utorid)) {
+      if (group.invited.some((x) => x.utorid === utorid)) {
         return { status: 400, message: 'User is already invited.' };
       }
-      if (group.members.some(x => x.utorid === utorid)) {
+      if (group.members.some((x) => x.utorid === utorid)) {
         return { status: 400, message: 'User is already a member.' };
       }
       await db.group.update({
@@ -162,7 +164,7 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (!group.invited.some(x => x.utorid === user.utorid)) {
+    if (!group.invited.some((x) => x.utorid === user.utorid)) {
       return { status: 400, message: 'You are not invited to this group.' };
     }
     await db.group.update({
@@ -185,7 +187,7 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (!group.invited.some(x => x.utorid === user.utorid)) {
+    if (!group.invited.some((x) => x.utorid === user.utorid)) {
       return { status: 400, message: 'You are not invited to this group.' };
     }
     await db.group.update({
@@ -205,13 +207,14 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    // user must be either admin, a group manager. or trying to remove themselves
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid) && manager.utorid !== utorid) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
-    if (!group.members.some(x => x.utorid === utorid)) {
+    if (!group.members.some((x) => x.utorid === utorid)) {
       return {
         status: 400,
         message: 'User is not a member of this group.',
@@ -237,7 +240,7 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
