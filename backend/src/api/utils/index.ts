@@ -57,7 +57,7 @@ export const permissionMiddleware = (level: PermissionLevel) => (req: Request, r
 
 export const checkRequiredFields = (requiredFields: string[]) => (req: Request, res: Response, next: NextFunction) => {
   for (const field of requiredFields) {
-    if (!req.body[field]) {
+    if (!req.body.hasOwnProperty(field)) {
       res.statusCode = 400;
       res.json({ message: `Missing required field: ${field}` });
       return;
