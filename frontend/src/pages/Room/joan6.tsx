@@ -50,6 +50,8 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                         }}
                     ></Box>
                 ))}
+
+                {/* current time indicator */}
                 <Box
                     sx={{
                         // (height of one hour * (current time - startHour)) + padding top
