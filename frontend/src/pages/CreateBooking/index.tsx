@@ -1,4 +1,4 @@
-import { Box, Button, Divider, TextField } from '@mui/material';
+import { Box, Button, Divider, TextField, CircularProgress } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
@@ -29,6 +29,8 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     const [validDate, setValidDate] = useState(false);
     /** whether the request was submitted */
     const [submitted, setSubmitted] = useState(false);
+    /** whether the request is being submitted */
+    const [submittedLoading, setSubmittedLoading] = useState(false);
 
     /* set fill info if there is already an editID */
     useEffect(() => {
@@ -97,42 +99,43 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
      * Validate the booking request and submit if valid
      */
     const handleFinish = async () => {
-        let finish = true;
+        setSubmittedLoading(true);
 
         if (details === '') {
             showSnackSev('An explanation is required to submit', 'error');
-            finish = false;
-        }
-
-        if (scheduleDates.length === 0) {
-            showSnackSev('Please select a time', 'error');
-            finish = false;
-        }
-
-        if (approvers.length === 0) {
-            showSnackSev('Please select an approver', 'error');
-            finish = false;
-        }
-
-        if (group === '') {
-            showSnackSev('Please select a group', 'error');
-            finish = false;
-        }
-
-        if (roomName === '') {
-            showSnackSev('Please select a room', 'error');
-            finish = false;
-        }
-
-        await checkDate(scheduleDates).then(() => {
-            if (!validDate) {
-                finish = false;
-            }
-        });
-
-        if (!finish) {
+            setSubmittedLoading(false);
             return;
         }
+
+        else if (scheduleDates.length === 0) {
+            showSnackSev('Please select a time', 'error');
+            setSubmittedLoading(false);
+            return;
+        }
+
+        else if (approvers.length === 0) {
+            showSnackSev('Please select an approver', 'error');
+            setSubmittedLoading(false);
+            return;
+        }
+
+        else if (group === '') {
+            showSnackSev('Please select a group', 'error');
+            setSubmittedLoading(false);
+            return;
+        }
+
+        else if (roomName === '') {
+            showSnackSev('Please select a room', 'error');
+            setSubmittedLoading(false);
+            return;
+        }
+
+        // await checkDate(scheduleDates).then(() => {
+        //     if (!validDate) {
+        //         setSubmittedLoading(false);
+        //     }
+        // });
 
         // compile into json object
         const booking = {
@@ -149,20 +152,26 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
         if (editID) {
             await axios
                 .put(`/requests/${editID}`, booking)
-                .then((res) => {
+                .then(() => {
                     setSubmitted(true);
                 })
                 .catch((err) => {
                     showSnackSev(`Could not edit booking request: ${err.message}`, 'error');
+                })
+                .finally(() => {
+                    setSubmittedLoading(false);
                 });
         } else {
             await axios
                 .post('/requests/create', booking)
-                .then((res) => {
+                .then(() => {
                     setSubmitted(true);
                 })
                 .catch((err) => {
                     showSnackSev(`Could not create booking request: ${err.message}`, 'error');
+                })
+                .finally(() => {
+                    setSubmittedLoading(false);
                 });
         }
     };
@@ -309,10 +318,11 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 <Button
                     variant="contained"
                     size="large"
-                    onClick={() => {
-                        handleFinish();
+                    onClick={async () => {
+                        await handleFinish();
                     }}
-                    disabled={!validDate || scheduleDates.length <= 0}
+                    disabled={!validDate || scheduleDates.length <= 0 || submittedLoading}
+                    endIcon={submittedLoading && <CircularProgress size={20} />}
                 >
                     Finish
                 </Button>
@@ -330,11 +340,7 @@ export const CreateBooking = () => {
                 name="Cannot create booking"
                 message={
                     <>
-                        Please{' '}
-                        <Link internal href="/group">
-                            create a group
-                        </Link>{' '}
-                        before making a booking request.
+                        Please <Link href="/group">create a group</Link> before making a booking request.
                     </>
                 }
             />

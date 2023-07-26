@@ -30,7 +30,7 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
                     setApproversBackend(data.approvers);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                 });
         })();
     }, [roomName]);

@@ -14,7 +14,6 @@ export const routeNotImplemented: RequestHandler = (req: Request, res: Response)
   res.json({ message: 'Not implemented' });
 };
 
-
 export const sendResponse = <T extends object>(res: Response, model: ModelResponse<T>) => {
   res.statusCode = model.status;
   if ((<ModelResponseSuccess<T>>model).data) {
@@ -44,7 +43,11 @@ export const permissionMiddleware = (level: PermissionLevel) => (req: Request, r
     res.json({ message: 'Insufficient permissions.' });
     return;
   }
-  if (level == PermissionLevel.staff || (req.user.role === AccountRole.approver && level === PermissionLevel.approver) || (level === PermissionLevel.tcard && req.user.role === AccountRole.tcard)) {
+  if (
+    level == PermissionLevel.staff ||
+        (req.user.role === AccountRole.approver && level === PermissionLevel.approver) ||
+        (level === PermissionLevel.tcard && req.user.role === AccountRole.tcard)
+  ) {
     next();
     return;
   }
@@ -54,7 +57,7 @@ export const permissionMiddleware = (level: PermissionLevel) => (req: Request, r
 
 export const checkRequiredFields = (requiredFields: string[]) => (req: Request, res: Response, next: NextFunction) => {
   for (const field of requiredFields) {
-    if (!req.body[field]) {
+    if (!req.body.hasOwnProperty(field)) {
       res.statusCode = 400;
       res.json({ message: `Missing required field: ${field}` });
       return;
@@ -66,7 +69,7 @@ export const checkRequiredFields = (requiredFields: string[]) => (req: Request, 
 export const checkUuidMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (!/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i.test(req.params.id)) {
     res.statusCode = 400;
-    res.json({ status:400, message: 'Invalid id.' });
+    res.json({ status: 400, message: 'Invalid id.' });
     return;
   }
   next();

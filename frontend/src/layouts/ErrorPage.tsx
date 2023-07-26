@@ -10,16 +10,19 @@ interface ErrorPageProps {
     name?: string;
     /** The message to display. */
     message?: JSX.Element;
+    /** The graphic to display. */
+    graphic?: JSX.Element;
 }
 
 /**
  * Shown when a user is trying to create a booking but is not in a group.
  * @param {string} name The name of the page.
  * @param {JSX.Element} message The message to display.
+ * @param {JSX.Element} graphic The graphic to display.
  *
  * @returns {JSX.Element}
  */
-export const ErrorPage = ({ name, message }: ErrorPageProps) => {
+export const ErrorPage = ({ name, message, graphic }: ErrorPageProps) => {
     const theme = useTheme();
 
     return (
@@ -35,12 +38,15 @@ export const ErrorPage = ({ name, message }: ErrorPageProps) => {
                     gap: '1em',
                 }}
             >
-                <img
-                    width="300"
-                    src={theme.palette.mode === THEME.DARK ? SadMascotDark : SadMascot}
-                    alt=""
-                    aria-hidden="true"
-                />
+                {!graphic && (
+                    <img
+                        width="300"
+                        src={theme.palette.mode === THEME.DARK ? SadMascotDark : SadMascot}
+                        alt=""
+                        aria-hidden="true"
+                    />
+                )}
+                {graphic}
 
                 <Typography variant="h1" gutterBottom sx={{ marginTop: '1em' }}>
                     {name}

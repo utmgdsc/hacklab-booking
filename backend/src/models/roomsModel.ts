@@ -116,7 +116,8 @@ export default {
       await db.request.updateMany({
         where: { authorUtorid: utorid, status: RequestStatus.completed, endDate: { gte: new Date() } },
         data:  { status: RequestStatus.needTCard },
-      });      return { status: 200, data: {} };
+      });
+      return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
         return { status: 404, message: 'Invalid user or room' };

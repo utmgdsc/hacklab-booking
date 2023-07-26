@@ -1,10 +1,5 @@
 import { Router } from 'express';
-import groupsModel from '../../models/groupsModel';
-import {
-  checkRequiredFields,
-  checkUuidMiddleware,
-  sendResponse,
-} from '../utils';
+import groupsModel from '../../models/groupsModel';import { checkRequiredFields, checkUuidMiddleware,  sendResponse } from '../utils';
 
 const router = Router();
 
@@ -15,7 +10,7 @@ router.post('/create', checkRequiredFields(['name']), async (req, res) => {
   sendResponse(res, await groupsModel.createGroup(req.body.name, req.user));
 });
 router.use('/:id', checkUuidMiddleware);
-router.get('/:id',  async (req, res) => {
+router.get('/:id', async (req, res) => {
   sendResponse(res, await groupsModel.getGroup(req.params.id, req.user));
 });
 router.post('/:id/changerole', checkRequiredFields(['role', 'utorid']), async (req, res) => {

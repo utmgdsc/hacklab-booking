@@ -31,7 +31,7 @@ export const Admin = () => {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Link internal href="/admin/room-manager">
+                            <Link href="/admin/room-manager">
                                 <Button>Manage Rooms</Button>
                             </Link>
                         </CardActions>

@@ -35,6 +35,8 @@ import { ErrorBoundary, RequireRole } from './components';
 import { SnackbarContext, SnackbarQueueItem } from './contexts/SnackbarContext';
 import { UserContext, defaultUser } from './contexts/UserContext';
 import { GoogleTheme, THEME } from './theme/theme';
+import { ApprovedRequestPage } from './pages/ApprovedRequestPage';
+import { Webhooks } from './pages/Settings/Webhooks';
 
 import axios from './axios';
 
@@ -125,6 +127,7 @@ function App() {
                             <Routes>
                                 <Route path="/" element={<Dashboard />} />
                                 <Route path="/settings" element={<Settings />} />
+                                <Route path="/settings/webhooks" element={<Webhooks />} />
                                 <Route path="/calendar/" element={<Calendar />} />
                                 <Route path="/book/" element={<CreateBooking />} />
                                 <Route path="/group/" element={<GroupDirectory />} />
@@ -159,6 +162,22 @@ function App() {
                                     element={
                                         <RequireRole role={['admin']}>
                                             <RoomViewer />
+                                        </RequireRole>
+                                    }
+                                />
+                                <Route
+                                    path="/approve/:id"
+                                    element={
+                                        <RequireRole role={['approver', 'admin']}>
+                                            <ApprovedRequestPage approved={true} />
+                                        </RequireRole>
+                                    }
+                                />
+                                <Route
+                                    path="/deny/:id"
+                                    element={
+                                        <RequireRole role={['approver', 'admin']}>
+                                            <ApprovedRequestPage approved={false} />
                                         </RequireRole>
                                     }
                                 />

@@ -11,7 +11,16 @@ interface User {
     role: UserRoles;
     theme: ThemeOptions;
     utorid: string;
+    discordWebhook: string | null;
+    slackWebhook: string | null;
+    webhooks: UserWebhooks;
 }
+enum WebhookTypes {
+    discord = 'discord',
+    slack = 'slack',
+    email = 'email',
+}
+type UserWebhooks = { [key: string]: WebhookTypes[] };
 
 type UserRoles = 'student' | 'admin' | 'approver' | 'tcard';
 

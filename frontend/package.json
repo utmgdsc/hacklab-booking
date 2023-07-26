@@ -1,7 +1,17 @@
 {
     "name": "hacklab-booking-frontend",
-    "version": "0.1.0",
+    "description": "The frontend for the Hacklab booking system",
+    "version": "2.0.0",
     "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/utmgdsc/hacklab-booking.git"
+    },
+    "author": "GDSC",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/utmgdsc/hacklab-booking/issues"
+    },
     "dependencies": {
         "@emotion/react": "^11.11.0",
         "@emotion/styled": "^11.11.0",

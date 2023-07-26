@@ -10,12 +10,17 @@ import { THEME } from '../../theme/theme';
 /** set starting time starting with 0=12am */
 const startHour: number = 8;
 /** set number of hours to show */
-const hoursToShow: number = 10;
+const hoursToShow: number = 14;
 /** set padding top and bottom */
-const padding: string = "2em";
+const padding: string = '2em';
 /** set height of 100% */
 const fullHeight: string = `calc(100vh - ${padding})`;
 
+/**
+ * Displays a row of events for one day.
+ * Precondition: events is sorted by start date starting with the earliest event
+ * @param {BookingRequest[]} events a list of events to display
+ */
 const EventsRow = ({ events }: { events: BookingRequest[] }) => {
     /** mui theme object */
     const theme = useTheme();
@@ -38,7 +43,9 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             borderTop: `${theme.palette.text.disabled} 1px solid`,
                             width: '100%',
                             '&:before': {
-                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${i < (12 - startHour) ? 'AM' : 'PM'}"`,
+                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${
+                                    i < 12 - startHour ? 'AM' : 'PM'
+                                }"`,
                                 display: 'block',
                                 position: 'absolute',
                                 marginLeft: '-3.1415em',
@@ -84,30 +91,33 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                 ></Box>
             </Box>
             {events.map((event, index) => {
+                const eventDuration = new Date(event.endDate).getHours() - new Date(event.startDate).getHours() + 1;
+                const timeSinceLast = () => {
+                    if (index === 0) return Math.abs(new Date(event.startDate).getHours() - startHour);
+                    return Math.abs(
+                        new Date(events[index - 1].endDate).getHours() + 1
+                        - new Date(event.startDate).getHours()
+                    );
+                }
+
                 return (
                     <Card
                         key={event.id}
                         sx={{
                             padding: '1em', // internal padding
-                            height: `calc(${fullHeight} / ${hoursToShow} * ${new Date(event.endDate).getHours() - new Date(event.startDate).getHours()
-                                })`,
+                            height: `calc((${fullHeight} / ${hoursToShow}) * ${eventDuration})`,
                             mx: '1em',
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
-                            marginBottom: `calc(${fullHeight} / ${hoursToShow} * ${new Date(events[index + 1] ? events[index + 1].startDate : now).getHours() -
-                                new Date(event.endDate).getHours()
-                                })`,
+                            marginTop: `calc(${fullHeight} / ${hoursToShow} * ${timeSinceLast()})`,
                         }}
                     >
                         <Typography
                             variant="h4"
                             component="p"
                             sx={{
-                                fontSize: `${new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
-                                    ? 2
-                                    : 1
-                                    }em`,
+                                fontSize: `${eventDuration > 2 ? 2 : 1}em`,
                                 fontWeight: 400,
                                 opacity: 0.5,
                             }}
@@ -116,7 +126,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             {new Date(event.startDate).toLocaleTimeString(undefined, {
                                 hour: 'numeric',
                             })}{' '}
-                            -
+                            -{' '}
                             {new Date(event.endDate).toLocaleTimeString(undefined, {
                                 hour: 'numeric',
                             })}
@@ -125,10 +135,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             variant="h1"
                             component="p"
                             sx={{
-                                fontSize: `${new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
-                                    ? 4
-                                    : 2
-                                    }em`,
+                                fontSize: `${eventDuration > 2 ? 4 : 2}em`,
                                 fontWeight: 700,
                             }}
                         >
@@ -172,6 +179,8 @@ export const Joan6 = () => {
 
                         // check if request is completed
                         return request.status === 'completed';
+                    }).sort((a, b) => {
+                        return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
                     }),
                 );
             })
@@ -265,7 +274,7 @@ export const Joan6 = () => {
                                     {new Date(currentBooking.startDate).toLocaleTimeString(undefined, {
                                         hour: 'numeric',
                                     })}{' '}
-                                    -
+                                    -{' '}
                                     {new Date(currentBooking.endDate).toLocaleTimeString(undefined, {
                                         hour: 'numeric',
                                     })}
