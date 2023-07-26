@@ -207,7 +207,8 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
+    // user must be either admin, a group manager. or trying to remove themselves
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid) && manager.utorid !== utorid) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',

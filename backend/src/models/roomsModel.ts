@@ -56,14 +56,16 @@ export default {
         where: { roomName },
         include: {
           requests: true,
+          approvers: true,
         },
       });
-    } else {
+    } else { // admin
       room = await db.room.findUnique({
         where: { roomName },
         include: {
           requests: { include: { group: true } },
           userAccess: true,
+          approvers: true,
         },
       });
     }
@@ -113,8 +115,30 @@ export default {
       await db.room.update({ where: { roomName }, data: { userAccess: { disconnect: { utorid } } } });
       await db.request.updateMany({
         where: { authorUtorid: utorid, status: RequestStatus.completed, endDate: { gte: new Date() } },
-        data: { status: RequestStatus.needTCard },
+        data:  { status: RequestStatus.needTCard },
       });
+      return { status: 200, data: {} };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
+        return { status: 404, message: 'Invalid user or room' };
+      }
+      throw e;
+    }
+  },
+  addApprover: async (roomName: string, utorid: string) => {
+    try {
+      await db.room.update({ where: { roomName }, data: { approvers: { connect: { utorid } } } });
+      return { status: 200, data: {} };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
+        return { status: 404, message: 'Invalid user or room' };
+      }
+      throw e;
+    }
+  },
+  removeApprover: async (roomName: string, utorid: string) => {
+    try {
+      await db.room.update({ where: { roomName }, data: { approvers: { disconnect: { utorid } } } });
       return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {

@@ -47,6 +47,10 @@ interface BookingRequest {
     description: string;
     endDate: Date;
     groupId: string;
+    group: {
+        id: string;
+        name: string;
+    };
     reason: string | null;
     roomName: string;
     startDate: Date;
@@ -88,6 +92,7 @@ interface Room {
 
 /** Admin only fetched room when ~/api/rooms/:id is called */
 interface FetchedRoom {
+    approvers: User[];
     capacity: number;
     friendlyName: string;
     requests: BookingRequest[];

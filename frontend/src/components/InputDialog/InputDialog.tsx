@@ -55,7 +55,7 @@ export const InputDialog = ({ open, setOpen, title, label, description, onSubmit
         >
             <DialogTitle id="add-student-title">{title}</DialogTitle>
             <DialogContent>
-                <DialogContentText>{description}</DialogContentText>
+                <DialogContentText gutterBottom>{description}</DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"

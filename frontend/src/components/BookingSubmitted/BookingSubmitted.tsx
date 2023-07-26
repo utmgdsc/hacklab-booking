@@ -27,11 +27,16 @@ const getDateString = (scheduleDate: Date | string): string => {
  * @return {string} the formatted time string
  */
 const getTimeString = (scheduleDates: Array<Date>) => {
+    /** converts 24 hour time to an AM/PM string */
+    const MilToAmPm = (hour: number): string => {
+        return `${(hour) % 12 ? (hour) % 12 : 12} ${hour < 12 ? 'AM' : 'PM'}`
+    }
+
     var dStart = new Date(scheduleDates[0]);
     let endDate = new Date(scheduleDates[scheduleDates.length - 1]);
     endDate = dayjs(endDate).add(1, 'hour').toDate();
     var dEnd = new Date(endDate);
-    return `from ${dStart.getHours()}:00 to ${dEnd.getHours()}:00`;
+    return `from ${MilToAmPm(dStart.getHours())} to ${MilToAmPm(dEnd.getHours())}`;
 };
 
 interface BookingSubmittedProps {

@@ -45,6 +45,7 @@ router.get('/:room/blockeddates', async (req, res) => {
   }
   sendResponse(res, await roomsModel.getBlockedDates(req.params.room, startDate, endDate));
 });
+
 router.put(
   '/:rooms/grantaccess',
   permissionMiddleware(PermissionLevel.tcard),
@@ -61,4 +62,23 @@ router.put(
     sendResponse(res, await roomsModel.revokeAccess(req.params.rooms, req.body.utorid));
   },
 );
+
+router.put(
+  '/:rooms/addapprover',
+  permissionMiddleware(PermissionLevel.admin),
+  checkRequiredFields(['utorid']),
+  async (req, res) => {
+    sendResponse(res, await roomsModel.addApprover(req.params.rooms, req.body.utorid));
+  },
+);
+
+router.put(
+  '/:rooms/removeapprover',
+  permissionMiddleware(PermissionLevel.admin),
+  checkRequiredFields(['utorid']),
+  async (req, res) => {
+    sendResponse(res, await roomsModel.removeApprover(req.params.rooms, req.body.utorid));
+  },
+);
+
 export default router;

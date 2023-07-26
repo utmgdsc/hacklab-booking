@@ -70,6 +70,7 @@ export const ActiveRequestCard = ({
             description: 'Your request has been completed',
         },
     ];
+
     if (booking.status === 'cancelled') {
         steps.splice(1, 0, {
             id: 'cancelled',
@@ -156,7 +157,7 @@ export const ActiveRequestCard = ({
                         activeStep={
                             booking.status === 'completed'
                                 ? steps.length
-                                : steps.findIndex((x) => x.id === booking.status)
+                                : steps.findIndex((step) => step.id === booking.status)
                         }
                         orientation="vertical"
                     >
