@@ -149,8 +149,6 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             approvers,
         };
 
-        console.log(booking);
-
         if (editID) {
             await axios
                 .put(`/requests/${editID}`, booking)
