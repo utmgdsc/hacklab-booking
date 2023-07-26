@@ -106,22 +106,22 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             setSubmittedLoading(false);
         }
 
-        if (scheduleDates.length === 0) {
+        else if (scheduleDates.length === 0) {
             showSnackSev('Please select a time', 'error');
             setSubmittedLoading(false);
         }
 
-        if (approvers.length === 0) {
+        else if (approvers.length === 0) {
             showSnackSev('Please select an approver', 'error');
             setSubmittedLoading(false);
         }
 
-        if (group === '') {
+        else if (group === '') {
             showSnackSev('Please select a group', 'error');
             setSubmittedLoading(false);
         }
 
-        if (roomName === '') {
+        else if (roomName === '') {
             showSnackSev('Please select a room', 'error');
             setSubmittedLoading(false);
         }
