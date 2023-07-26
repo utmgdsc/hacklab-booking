@@ -22,9 +22,6 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
     /** current time */
     const now: Date = new Date();
 
-    now.setHours(14);
-    now.setMinutes(0);
-
     return (
         <Box
             sx={{
