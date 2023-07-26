@@ -17,6 +17,16 @@ const padding: string = '2em';
 const fullHeight: string = `calc(100vh - ${padding})`;
 
 /**
+ * adds `number` hours to `date`
+ * @param date number of hours to date to add
+ */
+const addHoursToDate = (date: Date, hours: number): Date => {
+    let newDate = new Date(date.getTime());
+    newDate.setTime(newDate.getTime() + (hours * 60 * 60 * 1000));
+    return newDate;
+}
+
+/**
  * Displays a row of events for one day.
  * Precondition: events is sorted by start date starting with the earliest event
  * @param {BookingRequest[]} events a list of events to display
@@ -95,10 +105,9 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                 const timeSinceLast = () => {
                     if (index === 0) return Math.abs(new Date(event.startDate).getHours() - startHour);
                     return Math.abs(
-                        new Date(events[index - 1].endDate).getHours() + 1
-                        - new Date(event.startDate).getHours()
+                        new Date(events[index - 1].endDate).getHours() + 1 - new Date(event.startDate).getHours(),
                     );
-                }
+                };
 
                 return (
                     <Card
@@ -127,7 +136,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                                 hour: 'numeric',
                             })}{' '}
                             -{' '}
-                            {new Date(event.endDate).toLocaleTimeString(undefined, {
+                            {addHoursToDate(new Date(event.endDate), 1).toLocaleTimeString(undefined, {
                                 hour: 'numeric',
                             })}
                         </Typography>
@@ -171,17 +180,19 @@ export const Joan6 = () => {
             .then(({ data }) => {
                 setRoomData(data);
                 setCurrentEvents(
-                    room.requests.filter((request) => {
-                        // check if request is today
-                        if (new Date(request.startDate).getDate() !== new Date().getDate()) return false;
-                        if (new Date(request.startDate).getMonth() !== new Date().getMonth()) return false;
-                        if (new Date(request.startDate).getFullYear() !== new Date().getFullYear()) return false;
+                    room.requests
+                        .filter((request) => {
+                            // check if request is today
+                            if (new Date(request.startDate).getDate() !== new Date().getDate()) return false;
+                            if (new Date(request.startDate).getMonth() !== new Date().getMonth()) return false;
+                            if (new Date(request.startDate).getFullYear() !== new Date().getFullYear()) return false;
 
-                        // check if request is completed
-                        return request.status === 'completed';
-                    }).sort((a, b) => {
-                        return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
-                    }),
+                            // check if request is completed
+                            return request.status === 'completed';
+                        })
+                        .sort((a, b) => {
+                            return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+                        }),
                 );
             })
             .catch((err) => {
@@ -237,7 +248,9 @@ export const Joan6 = () => {
     }, [update]);
 
     return (
-        <Grid container>
+        <Grid container sx={{
+            overflow: 'hidden',
+        }}>
             <Grid item xs={7}>
                 <Box sx={{ height: '100vh' }}>
                     <Box

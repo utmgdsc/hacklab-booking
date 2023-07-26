@@ -16,8 +16,10 @@ import {
 import { ConvertDate } from '..';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axios from '../../axios';
+import { UserContext } from '../../contexts/UserContext';
+import { SnackbarContext } from '../../contexts/SnackbarContext';
 
 interface PendingRequestCardProps {
     /** the request to display as a pending request card */
@@ -45,18 +47,32 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
     const [reason, setReason] = useState<string>('');
     /** whether or not the request has been approved */
     const [approved, setApproved] = useState(false);
+    /** the user context */
+    const { fetchUserInfo } = useContext(UserContext);
+    /** the snackbar context */
+    const { showSnackSev } = useContext(SnackbarContext);
 
     /**
      * Handles clicking of the "TCard access was granted" / Approve button
      */
     const handleClickOpen = async () => {
         if (approved && booking.status === 'needTCard') {
-            const res = await axios.put('/rooms/' + booking.roomName + '/grantaccess', {
-                utorid: booking.authorUtorid,
-            });
-            if (res.status === 200) {
-                onUpdate();
-            }
+            axios
+                .put('/rooms/' + booking.roomName + '/grantaccess', {
+                    utorid: booking.authorUtorid,
+                })
+                .then((res) => {
+                    if (res.status === 200) {
+                        onUpdate();
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showSnackSev(`Failed to grant TCard access: ${err.message}`, 'error');
+                })
+                .finally(() => {
+                    fetchUserInfo();
+                });
             return;
         } else {
             setOpen(true);
@@ -89,6 +105,10 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
             })
             .catch((err) => {
                 console.error(err);
+                showSnackSev(`Failed to ${status} request: ${err.message}`, 'error');
+            })
+            .finally(() => {
+                fetchUserInfo();
             });
     };
 

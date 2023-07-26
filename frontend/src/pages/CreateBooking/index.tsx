@@ -105,27 +105,19 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             showSnackSev('An explanation is required to submit', 'error');
             setSubmittedLoading(false);
             return;
-        }
-
-        else if (scheduleDates.length === 0) {
+        } else if (scheduleDates.length === 0) {
             showSnackSev('Please select a time', 'error');
             setSubmittedLoading(false);
             return;
-        }
-
-        else if (approvers.length === 0) {
+        } else if (approvers.length === 0) {
             showSnackSev('Please select an approver', 'error');
             setSubmittedLoading(false);
             return;
-        }
-
-        else if (group === '') {
+        } else if (group === '') {
             showSnackSev('Please select a group', 'error');
             setSubmittedLoading(false);
             return;
-        }
-
-        else if (roomName === '') {
+        } else if (roomName === '') {
             showSnackSev('Please select a room', 'error');
             setSubmittedLoading(false);
             return;
