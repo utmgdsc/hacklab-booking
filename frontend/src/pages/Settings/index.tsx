@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useContext } from 'react';
 import { instance } from '../../axios';
-import { UserCard } from '../../components';
+import { Link, UserCard } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
 import { THEME } from '../../theme/theme';
@@ -37,7 +37,9 @@ export const Settings = () => {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button disabled>Manage</Button>
+                            <Link internal href="/settings/webhooks">
+                                <Button>Manage</Button>
+                            </Link>
                         </CardActions>
                     </Card>
                 </Grid>
