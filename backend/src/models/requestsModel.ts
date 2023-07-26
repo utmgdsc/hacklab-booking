@@ -218,7 +218,7 @@ export default {
       });
       const context = await generateBaseNotificationContext(madeRequest);
       await triggerMassNotification(EventTypes.BOOKING_APPROVAL_REQUESTED, request.approvers, context);
-      await triggerAdminNotification(EventTypes.BOOKING_CREATED, context);
+      await triggerAdminNotification(EventTypes.ADMIN_BOOKING_CREATED, context);
       // Delete approver data from response
       const tempRequest: WithOptional<typeof madeRequest, 'approvers'> = madeRequest;
       delete tempRequest.approvers;

@@ -3,7 +3,7 @@ import EventTypes from '../types/EventTypes';
 
 const templates: { [event: string]: NotificationTemplate } = {};
 
-templates[EventTypes.BOOKING_CREATED] = {
+templates[EventTypes.ADMIN_BOOKING_CREATED] = {
   template: 'A new booking has been created by {{full_name}} for {{room_friendly}}.',
   email: {
     subject: '{{full_name}} from {{group_name}} created a new booking',
@@ -49,7 +49,7 @@ templates[EventTypes.BOOKING_APPROVAL_REQUESTED] = {
   },
 };
 
-templates[EventTypes.BOOKING_UPDATED] = {
+templates[EventTypes.ADMIN_BOOKING_UPDATED] = {
   template: 'Your booking {{title}} for {{room_friendly}} has been updated by {{changer_utorid}}.',
   email: {
     subject: 'Your booking {{title}} for {{room_friendly}} has been updated by {{changer_utorid}}.',
