@@ -86,33 +86,29 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                 ></Box>
             </Box>
             {events.map((event, index) => {
+                const eventDuration = new Date(event.endDate).getHours() - new Date(event.startDate).getHours();
+                const timeUntilNext =
+                    new Date(events[index + 1] ? events[index + 1].startDate : now).getHours() -
+                    new Date(event.endDate).getHours();
+
                 return (
                     <Card
                         key={event.id}
                         sx={{
                             padding: '1em', // internal padding
-                            height: `calc(${fullHeight} / ${hoursToShow} * ${
-                                new Date(event.endDate).getHours() - new Date(event.startDate).getHours()
-                            })`,
+                            height: `calc((${fullHeight} / ${hoursToShow}) * ${eventDuration})`,
                             mx: '1em',
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
-                            marginBottom: `calc(${fullHeight} / ${hoursToShow} * ${
-                                new Date(events[index + 1] ? events[index + 1].startDate : now).getHours() -
-                                new Date(event.endDate).getHours()
-                            })`,
+                            marginBottom: `calc(${fullHeight} / ${hoursToShow} * ${timeUntilNext})`,
                         }}
                     >
                         <Typography
                             variant="h4"
                             component="p"
                             sx={{
-                                fontSize: `${
-                                    new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
-                                        ? 2
-                                        : 1
-                                }em`,
+                                fontSize: `${eventDuration > 2 ? 2 : 1}em`,
                                 fontWeight: 400,
                                 opacity: 0.5,
                             }}
@@ -130,11 +126,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             variant="h1"
                             component="p"
                             sx={{
-                                fontSize: `${
-                                    new Date(event.endDate).getHours() - new Date(event.startDate).getHours() > 2
-                                        ? 4
-                                        : 2
-                                }em`,
+                                fontSize: `${eventDuration > 2 ? 4 : 2}em`,
                                 fontWeight: 700,
                             }}
                         >
