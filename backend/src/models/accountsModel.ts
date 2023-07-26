@@ -16,7 +16,7 @@ export default {
       if (!Object.keys(EventTypes).includes(key)) {
         return { status: 400, message: 'Invalid event type.' };
       }
-      if (webhooks.hasOwnProperty(key) || !Array.isArray((webhooks as  Record<string, unknown>)[key])) {
+      if (!webhooks.hasOwnProperty(key) || !Array.isArray((webhooks as  Record<string, unknown>)[key])) {
         return { status: 400, message: 'Invalid webhook array.' };
       }
       for (const webhook of (webhooks as Record<string, unknown[]>)[key]) {
@@ -32,7 +32,7 @@ export default {
     return { status: 200, data:{} };
   },
   updateDiscordWebhook: async (user: User, webhook: unknown) => {
-    if (!webhook || typeof webhook !== 'string') {
+    if (typeof webhook !== 'string' && webhook !== null) {
       return { status: 400, message: 'Invalid webhook.' };
     }
     await db.user.update({
@@ -42,7 +42,7 @@ export default {
     return { status: 200, data:{} };
   },
   updateSlackWebhook: async (user: User, webhook: unknown) => {
-    if (!webhook || typeof webhook !== 'string') {
+    if (typeof webhook !== 'string' && webhook !== null) {
       return { status: 400, message: 'Invalid webhook.' };
     }
     await db.user.update({
