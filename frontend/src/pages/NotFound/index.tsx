@@ -7,11 +7,7 @@ export const NotFound = () => {
             name="Page not found"
             message={
                 <>
-                    The page you are looking for does not exist. Please{' '}
-                    < Link href="/">
-                        return to the dashboard
-                    </Link>
-                    .
+                    The page you are looking for does not exist. Please <Link href="/">return to the dashboard</Link>.
                 </>
             }
         />

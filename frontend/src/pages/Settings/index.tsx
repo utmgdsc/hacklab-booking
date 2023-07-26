@@ -36,7 +36,7 @@ export const Settings = () => {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            < Link href="/settings/webhooks">
+                            <Link href="/settings/webhooks">
                                 <Button>Manage</Button>
                             </Link>
                         </CardActions>

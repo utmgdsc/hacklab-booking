@@ -330,11 +330,7 @@ export const CreateBooking = () => {
                 name="Cannot create booking"
                 message={
                     <>
-                        Please{' '}
-                        < Link href="/group">
-                            create a group
-                        </Link>{' '}
-                        before making a booking request.
+                        Please <Link href="/group">create a group</Link> before making a booking request.
                     </>
                 }
             />

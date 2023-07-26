@@ -86,7 +86,7 @@ const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                < Link href={`./${roomName}`}>
+                <Link href={`./${roomName}`}>
                     <Button size="small">Control Access</Button>
                 </Link>
             </CardActions>

@@ -43,7 +43,12 @@ export const SubPage: React.FC<SubPageProps> = ({
                     },
                 }}
             >
-                <Button onClick={() => { nav(-1); fetchUserInfo(); }}>
+                <Button
+                    onClick={() => {
+                        nav(-1);
+                        fetchUserInfo();
+                    }}
+                >
                     <ArrowBackIos /> Back
                 </Button>
             </Typography>

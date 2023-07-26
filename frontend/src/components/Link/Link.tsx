@@ -27,7 +27,7 @@ const NonForwardLink = ({
     children,
     href,
     forwardedRef,
-    external = !href.startsWith('/'),
+    external,
     openInNewTab = external,
     ...props
 }: NonForwardLinkProps) => {
@@ -38,7 +38,7 @@ const NonForwardLink = ({
             rel={openInNewTab ? 'noopener noreferrer' : ''}
             target={openInNewTab ? '_blank' : ''}
             component={external ? 'a' : RouterLink}
-            {...(external ? { href }: { to: href })}
+            {...(external ? { href } : { to: href })}
             {...props}
         >
             {children}

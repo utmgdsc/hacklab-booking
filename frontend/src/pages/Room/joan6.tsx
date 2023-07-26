@@ -10,7 +10,7 @@ import { THEME } from '../../theme/theme';
 /** set starting time starting with 0=12am */
 const startHour: number = 8;
 /** set number of hours to show */
-const hoursToShow: number = 10;
+const hoursToShow: number = 14;
 /** set padding top and bottom */
 const padding: string = '2em';
 /** set height of 100% */
