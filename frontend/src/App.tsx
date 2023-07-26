@@ -35,7 +35,7 @@ import { ErrorBoundary, RequireRole } from './components';
 import { SnackbarContext, SnackbarQueueItem } from './contexts/SnackbarContext';
 import { UserContext, defaultUser } from './contexts/UserContext';
 import { GoogleTheme, THEME } from './theme/theme';
-import {ApprovedRequestPage} from './pages/ApprovedRequestPage';
+import { ApprovedRequestPage } from './pages/ApprovedRequestPage';
 import { Webhooks } from './pages/Settings/Webhooks';
 
 import axios from './axios';

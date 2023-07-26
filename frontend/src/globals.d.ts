@@ -16,9 +16,9 @@ interface User {
     webhooks: UserWebhooks;
 }
 enum WebhookTypes {
-  discord = 'discord',
-  slack = 'slack',
-  email = 'email',
+    discord = 'discord',
+    slack = 'slack',
+    email = 'email',
 }
 type UserWebhooks = { [key: string]: WebhookTypes[] };
 
