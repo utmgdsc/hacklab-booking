@@ -104,37 +104,38 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
         if (details === '') {
             showSnackSev('An explanation is required to submit', 'error');
             setSubmittedLoading(false);
+            return;
         }
 
         else if (scheduleDates.length === 0) {
             showSnackSev('Please select a time', 'error');
             setSubmittedLoading(false);
+            return;
         }
 
         else if (approvers.length === 0) {
             showSnackSev('Please select an approver', 'error');
             setSubmittedLoading(false);
+            return;
         }
 
         else if (group === '') {
             showSnackSev('Please select a group', 'error');
             setSubmittedLoading(false);
+            return;
         }
 
         else if (roomName === '') {
             showSnackSev('Please select a room', 'error');
             setSubmittedLoading(false);
-        }
-
-        await checkDate(scheduleDates).then(() => {
-            if (!validDate) {
-                setSubmittedLoading(false);
-            }
-        });
-
-        if (!submittedLoading) {
             return;
         }
+
+        // await checkDate(scheduleDates).then(() => {
+        //     if (!validDate) {
+        //         setSubmittedLoading(false);
+        //     }
+        // });
 
         // compile into json object
         const booking = {
@@ -148,10 +149,12 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             approvers,
         };
 
+        console.log(booking);
+
         if (editID) {
             await axios
                 .put(`/requests/${editID}`, booking)
-                .then((res) => {
+                .then(() => {
                     setSubmitted(true);
                 })
                 .catch((err) => {
@@ -163,7 +166,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
         } else {
             await axios
                 .post('/requests/create', booking)
-                .then((res) => {
+                .then(() => {
                     setSubmitted(true);
                 })
                 .catch((err) => {
@@ -317,8 +320,8 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 <Button
                     variant="contained"
                     size="large"
-                    onClick={() => {
-                        handleFinish();
+                    onClick={async () => {
+                        await handleFinish();
                     }}
                     disabled={!validDate || scheduleDates.length <= 0 || submittedLoading}
                     endIcon={submittedLoading && <CircularProgress size={20} />}
