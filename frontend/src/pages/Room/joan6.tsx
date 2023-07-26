@@ -38,7 +38,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             borderTop: `${theme.palette.text.disabled} 1px solid`,
                             width: '100%',
                             '&:before': {
-                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${i < 4 ? 'AM' : 'PM'}"`,
+                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${i < (startHour - 12) ? 'AM' : 'PM'}"`,
                                 display: 'block',
                                 position: 'absolute',
                                 marginLeft: '-3.1415em',
