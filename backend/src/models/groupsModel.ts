@@ -1,5 +1,5 @@
 import { AccountRole, Group, User } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import logger from '../common/logger';
 import Model from '../types/Model';
