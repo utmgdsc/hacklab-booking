@@ -27,7 +27,7 @@ router.post(
       });
       return;
     }
-    sendResponse(res, await roomsModel.createRoom(req.body.friendlyName, req.body.capacity, req.body.room));
+    sendResponse(res, await roomsModel.createRoom(req.user, req.body.friendlyName, req.body.capacity, req.body.room));
   },
 );
 router.get('/:room/blockeddates', async (req, res) => {
@@ -50,7 +50,7 @@ router.put(
   permissionMiddleware(PermissionLevel.tcard),
   checkRequiredFields(['utorid']),
   async (req, res) => {
-    sendResponse(res, await roomsModel.grantAccess(req.params.rooms, req.body.utorid));
+    sendResponse(res, await roomsModel.grantAccess(req.user, req.params.rooms, req.body.utorid));
   },
 );
 router.put(
@@ -58,7 +58,7 @@ router.put(
   permissionMiddleware(PermissionLevel.tcard),
   checkRequiredFields(['utorid']),
   async (req, res) => {
-    sendResponse(res, await roomsModel.revokeAccess(req.params.rooms, req.body.utorid));
+    sendResponse(res, await roomsModel.revokeAccess(req.user, req.params.rooms, req.body.utorid));
   },
 );
 export default router;

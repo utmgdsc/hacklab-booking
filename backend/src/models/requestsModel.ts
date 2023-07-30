@@ -14,39 +14,8 @@ import EventTypes from '../types/EventTypes';
 import {
   BaseBookingContext,
 } from '../types/NotificationContext';
-
-const fetchRequestData = async (request: Request) => {
-  if (['room', 'author', 'group'].every((key) => request.hasOwnProperty(key) && typeof (<Record<string, any>>request)[key] === 'object')) {
-    return request as NonNullable<typeof requestFetched>;
-  }
-  const requestFetched = await db.request.findUnique({
-    where: { id: request.id },
-    include: {
-      room: true,
-      author: true,
-      group: true,
-    },
-  });
-  if (!requestFetched) {
-    throw new Error(`Request ${request.id} not found.`);
-  }
-  return requestFetched;
-};
-const generateBaseNotificationContext = async (request: Request): Promise<BaseBookingContext> => {
-  const requestFetched = await fetchRequestData(request);
-  return {
-    full_name: requestFetched.author.name,
-    utorid: requestFetched.author.utorid,
-    title: requestFetched.title,
-    description: requestFetched.description,
-    room: requestFetched.roomName,
-    room_friendly: requestFetched.room.friendlyName,
-    start_date: requestFetched.startDate.toISOString(),
-    end_date: requestFetched.endDate.toISOString(),
-    booking_id: requestFetched.id,
-    group_name: requestFetched.group.name,
-  };
-};
+import { userSelector } from './utils';
+import { generateBaseRequestNotificationContext as generateBaseNotificationContext } from '../notifications/generateContext';
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {
     return { status: 400, message: 'Missing required fields.' };
@@ -299,7 +268,7 @@ export default {
         author: true,
       },
     });
-    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: user.utorid, changer_name: user.name, status, reason };
+    const context = { ...await generateBaseNotificationContext(requestFetched), approver_utorid: user.utorid, approver_name: user.name, status, reason };
     await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     return { status: 200, data: {} };
@@ -353,7 +322,7 @@ export default {
         status: RequestStatus.denied,
       },
     });
-    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: requestFetched.author.utorid, changer_name: requestFetched.author.name, status, reason };
+    const context = { ...await generateBaseNotificationContext(requestFetched), approver_utorid: requestFetched.author.utorid, approver_name: requestFetched.author.name, status, reason };
     await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     return { status: 200, data: {} };
