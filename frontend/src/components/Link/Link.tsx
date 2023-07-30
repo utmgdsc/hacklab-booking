@@ -14,8 +14,8 @@ interface NonForwardLinkProps extends MaterialLinkProps {
     openInNewTab?: boolean;
     /** A ref to pass to the link */
     forwardedRef?: Ref<any>;
-    /** If true, the link will use the ReactRouter component */
-    internal?: boolean;
+    /** If false, the link will use the ReactRouter component */
+    external?: boolean;
 }
 
 /**
@@ -27,8 +27,8 @@ const NonForwardLink = ({
     children,
     href,
     forwardedRef,
-    internal = false,
-    openInNewTab = !internal,
+    external,
+    openInNewTab = external,
     ...props
 }: NonForwardLinkProps) => {
     return (
@@ -37,8 +37,8 @@ const NonForwardLink = ({
             ref={forwardedRef}
             rel={openInNewTab ? 'noopener noreferrer' : ''}
             target={openInNewTab ? '_blank' : ''}
-            component={internal ? RouterLink : 'a'}
-            {...(internal ? { to: href } : { href })}
+            component={external ? 'a' : RouterLink}
+            {...(external ? { href } : { to: href })}
             {...props}
         >
             {children}

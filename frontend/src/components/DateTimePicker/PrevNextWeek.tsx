@@ -26,7 +26,7 @@ export const PrevNextWeek = ({
 }: {
     calendarDate: Dayjs;
     setDate: (date: Dayjs) => void;
-    setScheduleDates: (dates?: string[]) => void;
+    setScheduleDates: (dates?: Date[]) => void;
     handleBlockedDates: (date: Date | Dayjs) => void;
 }) => {
     return (

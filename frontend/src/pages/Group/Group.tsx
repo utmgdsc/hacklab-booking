@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, CardContent, Divider, Typography } from '@mui/material';
+import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from '../../axios';
@@ -6,6 +6,7 @@ import { ConfirmationDialog, InitialsAvatar, InputDialog } from '../../component
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
+import { Add, ExitToApp, SupervisorAccount, PersonRemove } from '@mui/icons-material';
 
 /**
  * Card for a person in the group
@@ -55,6 +56,7 @@ const PersonCard = ({
             {invited || userInfo.utorid === person.utorid || !isManager(userInfo) ? null : (
                 <CardActions>
                     <Button
+                        startIcon={<SupervisorAccount />}
                         onClick={() => {
                             changeRole(person.utorid);
                         }}
@@ -63,7 +65,7 @@ const PersonCard = ({
                     </Button>
 
                     <Button
-                        color="error"
+                        startIcon={<PersonRemove />}
                         onClick={() => {
                             removePerson(person.utorid);
                             if (userInfo.utorid === person.utorid) {
@@ -82,7 +84,10 @@ export const Group = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const [open, setOpen] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
+    const [openLeave, setOpenLeave] = React.useState(false);
+    const [updateValue, setUpdateValue] = React.useState<Number>();
     const { id: groupID } = useParams();
+    const { userInfo } = useContext(UserContext);
 
     const [group, setGroup] = React.useState<FetchedGroup>({
         id: '',
@@ -101,40 +106,55 @@ export const Group = () => {
      */
     const isManager = (user: User | string): boolean => {
         const userUtorid = typeof user === 'string' ? user : user.utorid;
-        return !!group.managers.find((x) => x.utorid === userUtorid);
+        return !!group.managers.find((manager) => manager.utorid === userUtorid);
     };
 
     /**
      * Void function to get the group information
      */
-    const getGroup = async () => {
-        const { data, status } = await axios.get<FetchedGroup>('/groups/' + groupID);
-        if (status !== 200) {
-            showSnackSev('Could not fetch group', 'error');
-            return;
-        }
-        setGroup(data);
-    };
-
     useEffect(() => {
+        const getGroup = async () => {
+            await axios
+                .get<FetchedGroup>('/groups/' + groupID)
+                .then((res) => res.data)
+                .then((data) => {
+                    setGroup(data);
+                })
+                .catch((err) => {
+                    showSnackSev(`Could not fetch group: ${err.message}`, 'error');
+                    console.error(err);
+                });
+        };
         getGroup();
-    }, []);
+    }, [updateValue, groupID, showSnackSev]);
+
+    const getGroup = () => {
+        setUpdateValue(Math.random);
+    };
 
     /**
      * Void function to invite someone to a group
      * @param utorid The utorid of the person to add
      */
     const addPerson = async (utorid: string) => {
-        const { status } = await axios.post(`/groups/${groupID}/invite/`, {
-            utorid,
-        });
-        if (status === 200) {
-            showSnackSev('Person added', 'success');
-        } else {
-            showSnackSev('Could not add person', 'error');
-            return;
-        }
-        await getGroup();
+        await axios
+            .post(`/groups/${groupID}/invite/`, {
+                utorid,
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Person added', 'success');
+                } else {
+                    showSnackSev('Could not add person', 'error');
+                }
+            })
+            .catch((err) => {
+                showSnackSev(`Could not add person: ${err.message}`, 'error');
+                console.error(err);
+            })
+            .finally(async () => {
+                await getGroup();
+            });
     };
 
     /**
@@ -142,32 +162,47 @@ export const Group = () => {
      * @param utorid The utorid of the person to remove
      */
     const removePerson = async (utorid: string) => {
-        const { status } = await axios.post(`/groups/${groupID}/remove/`, {
-            utorid,
-        });
-
-        if (status === 200) {
-            showSnackSev('Person removed', 'success');
-        } else {
-            showSnackSev('Could not remove person', 'error');
-            return;
-        }
-        await getGroup();
+        await axios
+            .post(`/groups/${groupID}/remove/`, {
+                utorid,
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Person removed', 'success');
+                } else {
+                    showSnackSev('Could not remove person', 'error');
+                }
+            })
+            .catch((err) => {
+                showSnackSev(`Could not remove person: ${err.message}`, 'error');
+                console.error(err);
+            })
+            .finally(() => {
+                getGroup();
+            });
     };
 
     /**
      * Void function to delete a group
      */
     const delGroup = async () => {
-        const { status } = await axios.delete(`/groups/${groupID}`);
-
-        if (status === 200) {
-            showSnackSev('Group deleted', 'success');
-            navigate('/group', { replace: true }); // group doesnt exist, so go back
-        } else {
-            showSnackSev('Could not delete group', 'error');
-            return;
-        }
+        await axios
+            .delete(`/groups/${groupID}`)
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Group deleted', 'success');
+                    navigate('/group', { replace: true }); // group doesnt exist, so go back
+                } else {
+                    showSnackSev('Could not delete group', 'error');
+                }
+            })
+            .catch((err) => {
+                showSnackSev(`Could not delete group: ${err.message}`, 'error');
+                console.error(err);
+            })
+            .finally(() => {
+                getGroup();
+            });
     };
 
     /**
@@ -175,15 +210,25 @@ export const Group = () => {
      * @param utorid The utorid of the person to change
      */
     const changeRole = async (utorid: string) => {
-        const { status } = await axios.post(`/groups/${groupID}/changerole/`, {
-            utorid,
-            role: isManager(utorid) ? 'member' : 'manager',
-        });
-        if (status !== 200) {
-            showSnackSev('Could not change role', 'error');
-            return;
-        }
-        await getGroup();
+        await axios
+            .post(`/groups/${groupID}/changerole/`, {
+                utorid,
+                role: isManager(utorid) ? 'member' : 'manager',
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    showSnackSev('Role changed', 'success');
+                } else {
+                    showSnackSev('Could not change role', 'error');
+                }
+            })
+            .catch((err) => {
+                showSnackSev(`Could not change role: ${err.message}`, 'error');
+                console.error(err);
+            })
+            .finally(() => {
+                getGroup();
+            });
     };
 
     return (
@@ -193,35 +238,53 @@ export const Group = () => {
                 sx={{
                     display: 'flex',
                     flexDirection: 'row',
-                    gap: '1em',
-                    justifyContent: 'flex-end',
+                    justifyContent: 'space-between',
                     marginBottom: '1em',
                 }}
             >
                 <Button
-                    variant="contained"
-                    onClick={() => {
-                        setOpen(true);
-                    }}
-                >
-                    Add Student
-                </Button>
-                <Button
                     color="error"
+                    startIcon={<ExitToApp />}
                     onClick={() => {
-                        setOpenDelete(true);
+                        setOpenLeave(true);
                     }}
                 >
-                    Delete Group
+                    Leave Group
                 </Button>
-                <InputDialog
-                    open={open}
-                    setOpen={setOpen}
-                    title="Add a student to your group"
-                    description="To add a student to your group, please enter their UTORid below."
-                    label="UTORid"
-                    onSubmit={addPerson}
-                />
+                {isManager(userInfo.utorid) ? (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            gap: '1em',
+                        }}
+                    >
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => {
+                                setOpen(true);
+                            }}
+                        >
+                            Add Student
+                        </Button>
+                        <Button
+                            color="error"
+                            onClick={() => {
+                                setOpenDelete(true);
+                            }}
+                        >
+                            Delete Group
+                        </Button>
+                        <InputDialog
+                            open={open}
+                            setOpen={setOpen}
+                            title="Add a student to your group"
+                            description="To add a student to your group, please enter their UTORid below."
+                            label="UTORid"
+                            onSubmit={addPerson}
+                        />
+                    </Box>
+                ) : null}
             </Box>
 
             {/* list of people in the group */}
@@ -259,6 +322,16 @@ export const Group = () => {
                 title="Delete Group"
                 description="Are you sure you want to delete this group?"
                 onConfirm={delGroup}
+            />
+            <ConfirmationDialog
+                open={openLeave}
+                setOpen={setOpenLeave}
+                title="Leave Group"
+                description="Are you sure you want to leave this group?"
+                onConfirm={() => {
+                    removePerson(userInfo.utorid);
+                    navigate('/group', { replace: true });
+                }}
             />
         </SubPage>
     );

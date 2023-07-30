@@ -1,43 +1,52 @@
-import { SubPage } from '../../../layouts/SubPage';
-import { instance } from '../../../axios';
-import { useContext, useEffect, useState } from 'react';
-import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import {
     Button,
     Card,
-    Alert,
+    CardActions,
+    CardContent,
     Dialog,
-    DialogTitle,
+    DialogActions,
     DialogContent,
     DialogContentText,
+    DialogTitle,
     TextField,
-    DialogActions,
-    useTheme,
-    useMediaQuery,
-    CardContent,
     Typography,
-    CardActions,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
-import { UserContext } from '../../../contexts/UserContext';
+import { useContext, useEffect, useState } from 'react';
+import axios from '../../../axios';
 import { Link } from '../../../components';
+import { SnackbarContext } from '../../../contexts/SnackbarContext';
+import { UserContext } from '../../../contexts/UserContext';
+import { SubPage } from '../../../layouts/SubPage';
 
 export const RoomManager = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [createRoomOpen, setCreateRoomOpen] = useState(false);
-
-    const { showSnack } = useContext(SnackbarContext);
-
-    const getRooms = async () => {
-        instance.get('/rooms').then((res) => {
-            if (res.status === 200) {
-                setRooms(res.data);
-            }
-        });
-    };
+    const [updateValue, setUpdateValue] = useState<Number>();
+    const { showSnackSev } = useContext(SnackbarContext);
 
     useEffect(() => {
+        const getRooms = async () => {
+            await axios
+                .get('/rooms')
+                .then((res) => {
+                    if (res.status === 200) {
+                        setRooms(res.data);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showSnackSev(`Failed to fetch rooms: ${err.message}`, 'error');
+                });
+        };
+
         getRooms();
-    }, []);
+    }, [updateValue, showSnackSev]);
+
+    const getRooms = () => {
+        setUpdateValue(Math.random);
+    };
 
     return (
         <SubPage name="Room Manager" maxWidth="xl">
@@ -45,13 +54,13 @@ export const RoomManager = () => {
                 onClick={() => {
                     setCreateRoomOpen(true);
                 }}
-                sx={{ marginLeft: '1em' }}
+                sx={{ marginLeft: '1em', marginBottom: '1em' }}
             >
                 Create Room
             </Button>
             <div>
-                {rooms.map((room) => (
-                    <RoomCard {...room} />
+                {rooms.map((room, index) => (
+                    <RoomCard key={index} {...room} />
                 ))}
             </div>
             <CreateRoomDialog open={createRoomOpen} setOpen={setCreateRoomOpen} getRooms={getRooms} />
@@ -77,7 +86,7 @@ const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Link internal href={`./${roomName}`}>
+                <Link href={`./${roomName}`}>
                     <Button size="small">Control Access</Button>
                 </Link>
             </CardActions>
@@ -125,21 +134,29 @@ const CreateRoomDialog = ({
             showSnackSev('Capacity must be an integer', 'warning');
             return;
         } else {
-            const { status } = await instance.post('/rooms/create', {
-                friendlyName,
-                room,
-                capacity,
-            });
-            if (status === 200) {
-                showSnackSev('Room created successfully', 'success');
-                setOpen(false);
-                fetchUserInfo();
-            } else if (status === 400) {
-                showSnackSev('Room already exists', 'warning');
-            } else {
-                showSnackSev('Error creating room', 'error');
-                setOpen(false);
-            }
+            await axios
+                .post('/rooms/create', {
+                    friendlyName,
+                    room,
+                    capacity,
+                })
+                .then((res) => {
+                    if (res.status === 200) {
+                        showSnackSev('Room created successfully', 'success');
+                        setOpen(false);
+                        fetchUserInfo();
+                    } else if (res.status === 400) {
+                        showSnackSev('Room already exists', 'warning');
+                    } else {
+                        showSnackSev('Error creating room', 'error');
+                        setOpen(false);
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showSnackSev(`Error creating room: ${err.message}`, 'error');
+                    setOpen(false);
+                });
         }
         setOpen(false);
         setFriendlyName('');

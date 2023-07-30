@@ -1,29 +1,27 @@
 import { AccountRole, Group, User } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import logger from '../common/logger';
 import Model from '../types/Model';
+import { userSelector } from './utils';
+
+const groupInclude = () => ({
+  members: { select: userSelector() },
+  managers: { select: userSelector() },
+  invited: { select: userSelector() },
+  requests: true,
+});
 
 export default {
   getGroups: async (user: User) => {
     let groups: Group[];
     if (user.role === AccountRole.student) {
       groups = (await db.user.findUnique({ where: { utorid: user.utorid } }).groups({
-        include: {
-          members: true,
-          invited: true,
-          managers: true,
-          requests: true,
-        },
+        include: groupInclude(),
       })) as Group[];
     } else {
       groups = await db.group.findMany({
-        include: {
-          members: true,
-          invited: true,
-          managers: true,
-          requests: true,
-        },
+        include: groupInclude(),
       });
     }
     return { status: 200, data: groups };
@@ -31,12 +29,7 @@ export default {
   getGroup: async (id: string, user: User) => {
     const group = await db.group.findUnique({
       where: { id },
-      include: {
-        members: true,
-        managers: true,
-        invited: true,
-        requests: true,
-      },
+      include: groupInclude(),
     });
     if (!group) {
       return { status: 404, message: 'Group not found' };
@@ -58,12 +51,7 @@ export default {
           managers: { connect: { utorid: user.utorid } },
           members: { connect: { utorid: user.utorid } },
         },
-        include: {
-          members: true,
-          managers: true,
-          invited: true,
-          requests: true,
-        },
+        include: groupInclude(),
       });
       return { status: 200, data: group };
     } catch (e) {
@@ -207,7 +195,8 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
+    // user must be either admin, a group manager. or trying to remove themselves
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid) && manager.utorid !== utorid) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',

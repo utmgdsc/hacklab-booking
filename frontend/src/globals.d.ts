@@ -9,17 +9,15 @@ interface User {
     email: string;
     name: string;
     role: UserRoles;
-    theme: ThemeOptions;
     utorid: string;
-    discordWebhook: string | null;
-    slackWebhook: string | null;
-    webhooks: UserWebhooks;
 }
+
 enum WebhookTypes {
-  discord = 'discord',
-  slack = 'slack',
-  email = 'email',
+    discord = 'discord',
+    slack = 'slack',
+    email = 'email',
 }
+
 type UserWebhooks = { [key: string]: WebhookTypes[] };
 
 type UserRoles = 'student' | 'admin' | 'approver' | 'tcard';
@@ -35,9 +33,18 @@ interface FetchedUser extends RoomsUser {
     invited: FetchedGroup[];
     manager: FetchedGroup[];
     requests: FetchedRequest[];
+    theme: ThemeOptions;
+    discordWebhook: string | null;
+    slackWebhook: string | null;
+    webhooks: UserWebhooks;
 }
 
-type BookingStatus = 'pending' | 'denied' | 'cancelled' | 'needTCard' | 'completed';
+type BookingStatus =
+    'pending'
+    | 'denied'
+    | 'cancelled'
+    | 'needTCard'
+    | 'completed';
 
 /** Model Request  */
 interface BookingRequest {
@@ -47,6 +54,10 @@ interface BookingRequest {
     description: string;
     endDate: Date;
     groupId: string;
+    group: {
+        id: string;
+        name: string;
+    };
     reason: string | null;
     roomName: string;
     startDate: Date;
@@ -88,6 +99,7 @@ interface Room {
 
 /** Admin only fetched room when ~/api/rooms/:id is called */
 interface FetchedRoom {
+    approvers: User[];
     capacity: number;
     friendlyName: string;
     requests: BookingRequest[];

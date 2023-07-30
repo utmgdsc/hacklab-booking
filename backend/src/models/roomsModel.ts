@@ -1,5 +1,5 @@
 import { AccountRole, RequestStatus, User } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import Model from '../types/Model';
 import { userSelector } from './utils';
@@ -223,8 +223,30 @@ export default {
     try {
       await db.room.update({
         where: { roomName },
-        data: { approvers: { disconnect: { utorid } } },
+        data:  { approvers: { disconnect: { utorid } } },
       });
+      return { status: 200, data: {} };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
+        return { status: 404, message: 'Invalid user or room' };
+      }
+      throw e;
+    }
+  },
+  addApprover: async (roomName: string, utorid: string) => {
+    try {
+      await db.room.update({ where: { roomName }, data: { approvers: { connect: { utorid } } } });
+      return { status: 200, data: {} };
+    } catch (e) {
+      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
+        return { status: 404, message: 'Invalid user or room' };
+      }
+      throw e;
+    }
+  },
+  removeApprover: async (roomName: string, utorid: string) => {
+    try {
+      await db.room.update({ where: { roomName }, data: { approvers: { disconnect: { utorid } } } });
       return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {

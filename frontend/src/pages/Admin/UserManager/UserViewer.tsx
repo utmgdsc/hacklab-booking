@@ -1,24 +1,22 @@
-import { Card, Divider, CardContent, Grid, Typography, Tooltip } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
+import { Inventory, People } from '@mui/icons-material';
+import { Card, CardContent, Divider, Grid, Tooltip, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../../../axios';
-import { ConvertDate, UserCard, RoleChanger } from '../../../components';
-import { SnackbarContext } from '../../../contexts/SnackbarContext';
+import { ConvertDate, RoleChanger, UserCard } from '../../../components';
 import { ErrorPage } from '../../../layouts/ErrorPage';
 import { SubPage } from '../../../layouts/SubPage';
-import { People, Inventory } from '@mui/icons-material';
 
 export const UserViewer = () => {
     const { id: utorid } = useParams();
     const [user, setUser] = useState<FetchedUser | undefined>();
 
     const fetchUser = async () => {
-        axios
+        await axios
             .get(`/accounts/${utorid}`)
             .then((res) => {
                 if (res.status === 200) {
                     setUser(res.data);
-                    console.log(res.data);
                 }
             })
             .catch((err) => {
@@ -28,6 +26,7 @@ export const UserViewer = () => {
 
     useEffect(() => {
         fetchUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [utorid]);
 
     if (user === undefined) {
