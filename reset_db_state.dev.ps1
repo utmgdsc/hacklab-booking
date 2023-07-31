@@ -15,6 +15,7 @@
     Precondition:
     - Docker is running. The script will fail otherwise.
     - The script's cwd in the repo's root directory.
+    - The docker backend starts within 30 seconds.
 #>
 
 # completely resets the database state
