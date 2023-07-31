@@ -1,7 +1,8 @@
 import { AccountRole, RequestStatus, User } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import Model from '../types/Model';
+import { userSelector } from './utils';
 
 export default {
   getRooms: async () => {
@@ -48,6 +49,7 @@ export default {
                 { groups: { some: { members: { some: { utorid: user.utorid } } } } },
               ],
             },
+            select: userSelector(),
           },
         },
       });
@@ -56,7 +58,7 @@ export default {
         where: { roomName },
         include: {
           requests: true,
-          approvers: true,
+          approvers: { select: userSelector() },
         },
       });
     } else { // admin
@@ -64,8 +66,8 @@ export default {
         where: { roomName },
         include: {
           requests: { include: { group: true } },
-          userAccess: true,
-          approvers: true,
+          userAccess: { select: userSelector() },
+          approvers: { select: userSelector() },
         },
       });
     }

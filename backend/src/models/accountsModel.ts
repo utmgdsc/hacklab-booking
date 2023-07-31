@@ -3,6 +3,7 @@ import db from '../common/db';
 import Model from '../types/Model';
 import { UserWebhooks, WebhookTypes } from '../types/webhooksTypes';
 import EventTypes from '../types/EventTypes';
+import { userSelector } from './utils';
 
 export default {
   updateWebhooks: async (user: User, webhooks: unknown) => {
@@ -158,7 +159,7 @@ export default {
   getApprovers: async () => {
     return {
       status: 200,
-      data: await db.user.findMany({ where: { role: { in: [AccountRole.approver, AccountRole.admin] } } }),
+      data: await db.user.findMany({ where: { role: { in: [AccountRole.approver, AccountRole.admin] } }, select: userSelector() }),
     };
   },
 } satisfies Model;

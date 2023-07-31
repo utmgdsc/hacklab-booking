@@ -1,5 +1,5 @@
 import { AccountRole, RequestStatus, User, Request } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import logger from '../common/logger';
 import { CreateRequest } from '../types/CreateRequest';
@@ -14,6 +14,7 @@ import EventTypes from '../types/EventTypes';
 import {
   BaseBookingContext,
 } from '../types/NotificationContext';
+import { userSelector } from './utils';
 
 const fetchRequestData = async (request: Request) => {
   if (['room', 'author', 'group'].every((key) => request.hasOwnProperty(key) && typeof (<Record<string, any>>request)[key] === 'object')) {
@@ -135,7 +136,7 @@ export default {
         };
       }
     } else if (user.role === AccountRole.student) {
-      query.group = { members: { some: { utorid: user.utorid } } };
+      query.group = { members: { some: { utorid: user.utorid }, select: userSelector() } };
     }
     if (filters.room) {
       query.roomName = filters.room;
@@ -152,7 +153,7 @@ export default {
     }
 
     if (user.role === AccountRole.approver) {
-      query.approvers = { OR: [{ some: { utorid: user.utorid } }, { isEmpty: true }] };
+      query.approvers = { OR: [{ some: { utorid: user.utorid } }, { isEmpty: true }], select: userSelector() };
     }
     logger.debug(JSON.stringify(query));
     return {
@@ -165,9 +166,10 @@ export default {
           author: {
             include: {
               roomAccess: true,
+              ...userSelector(),
             },
           },
-          approvers: true,
+          approvers: { select: userSelector() },
         },
       }),
     };
@@ -212,7 +214,7 @@ export default {
         include: {
           group: true,
           room: true,
-          author: true,
+          author: { select: userSelector() },
           approvers: true,
         },
       });
@@ -240,10 +242,10 @@ export default {
     const request = await db.request.findUnique({
       where: { id },
       include: {
-        group: { include: { members: { select: { utorid: true } } } },
+        group: { include: { members: { select:  userSelector() } } },
         room: true,
         author: { include: { roomAccess: true } },
-        approvers: true,
+        approvers: { select: userSelector() },
       },
     });
     if (!request) {
@@ -296,7 +298,7 @@ export default {
       include: {
         group: true,
         room: true,
-        author: true,
+        author: { select: userSelector() },
       },
     });
     const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: user.utorid, changer_name: user.name, status, reason };
