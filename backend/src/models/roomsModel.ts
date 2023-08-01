@@ -10,17 +10,13 @@ import {
 import EventTypes from '../types/EventTypes';
 import {
   generateBaseRequestNotificationContext as generateBaseNotificationContext,
-  generateBaseRequestNotificationContext,
+  generateBaseRequestNotificationContext, generateUserActionContext,
 } from '../notifications/generateContext';
 import {
   AllContexts, BookingStatusChangeContext,
   RoomAccessContext,
 } from '../types/NotificationContext';
 
-const generateUserContext = (user: User) => ({
-  utorid: user.utorid,
-  full_name: user.name,
-});
 const generateApproverContext = (user: User) => ({
   approver_utorid: user.utorid,
   approver_full_name: user.name,
@@ -71,7 +67,7 @@ export default {
         },
       });
       await triggerAdminNotification(EventTypes.ADMIN_ROOM_CREATED, {
-        ...generateUserContext(user),
+        ...generateUserActionContext(user),
         room: roomName,
         room_friendly: friendlyName,
         capacity,
@@ -165,7 +161,7 @@ export default {
         include: { userAccess: { where: { utorid } } },
       });
       const context : AllContexts = {
-        ...generateUserContext(room.userAccess[0]), ...generateApproverContext(user),
+        ...generateUserActionContext(room.userAccess[0]), ...generateApproverContext(user),
         room: room.roomName,
         room_friendly: room.friendlyName,
       } satisfies RoomAccessContext;
@@ -189,7 +185,7 @@ export default {
         include: { userAccess: { where: { utorid } } },
       });
       const context : AllContexts = {
-        ...generateUserContext(room.userAccess[0]), ...generateApproverContext(user),
+        ...generateUserActionContext(room.userAccess[0]), ...generateApproverContext(user),
         room: room.roomName,
         room_friendly: room.friendlyName,
       } satisfies RoomAccessContext;
@@ -225,28 +221,6 @@ export default {
         where: { roomName },
         data:  { approvers: { disconnect: { utorid } } },
       });
-      return { status: 200, data: {} };
-    } catch (e) {
-      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
-        return { status: 404, message: 'Invalid user or room' };
-      }
-      throw e;
-    }
-  },
-  addApprover: async (roomName: string, utorid: string) => {
-    try {
-      await db.room.update({ where: { roomName }, data: { approvers: { connect: { utorid } } } });
-      return { status: 200, data: {} };
-    } catch (e) {
-      if ((e as PrismaClientKnownRequestError).code === 'P2025') {
-        return { status: 404, message: 'Invalid user or room' };
-      }
-      throw e;
-    }
-  },
-  removeApprover: async (roomName: string, utorid: string) => {
-    try {
-      await db.room.update({ where: { roomName }, data: { approvers: { disconnect: { utorid } } } });
       return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {

@@ -7,7 +7,7 @@ import Model from '../types/Model';
 import { ModelResponseError } from '../types/ModelResponse';
 import {
   triggerAdminNotification,
-  triggerMassNotification,
+  triggerMassNotification, triggerTCardNotification,
 } from '../notifications';
 import EventTypes from '../types/EventTypes';
 
@@ -15,7 +15,10 @@ import {
   BaseBookingContext,
 } from '../types/NotificationContext';
 import { userSelector } from './utils';
-import { generateBaseRequestNotificationContext as generateBaseNotificationContext } from '../notifications/generateContext';
+import {
+  generateBaseRequestNotificationContext as generateBaseNotificationContext,
+  generateUserActionContext,
+} from '../notifications/generateContext';
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {
     return { status: 400, message: 'Missing required fields.' };
@@ -326,6 +329,13 @@ export default {
     const context = { ...await generateBaseNotificationContext(requestFetched), approver_utorid: requestFetched.author.utorid, approver_name: requestFetched.author.name, status, reason };
     await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
+    if (status !== RequestStatus.completed) {
+      await triggerTCardNotification(EventTypes.ROOM_ACCESS_REQUESTED, {
+        ...generateUserActionContext(requestFetched.author),
+        room: requestFetched.room.roomName,
+        room_friendly: requestFetched.room.friendlyName,
+      });
+    }
     return { status: 200, data: {} };
   },
   updateRequest: async (request: CreateRequest & {

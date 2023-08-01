@@ -1,4 +1,4 @@
-import { Request } from '@prisma/client';
+import { Request, User, Group } from '@prisma/client';
 import db from '../common/db';
 import { BaseBookingContext } from '../types/NotificationContext';
 
@@ -32,5 +32,19 @@ export const generateBaseRequestNotificationContext = async (request: Request): 
     end_date: requestFetched.endDate.toISOString(),
     booking_id: requestFetched.id,
     group_name: requestFetched.group.name,
+  };
+};
+
+export const generateUserActionContext = (user :User) => {
+  return {
+    full_name: user.name,
+    utorid: user.utorid,
+  };
+};
+
+export const generateGroupContext = (group: Group) => {
+  return {
+    group_name: group.name,
+    group_id: group.id,
   };
 };
