@@ -17,8 +17,8 @@ import { GroupDirectory } from './pages/Group/GroupDirectory';
 import { NotFound } from './pages/NotFound';
 import { Joan6 } from './pages/Room/joan6';
 import { Settings } from './pages/Settings';
-
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 
 import {
     Alert,
@@ -124,65 +124,7 @@ function App() {
                     <SnackbarContext.Provider value={{ showSnack, showSnackSev }}>
                         <CssBaseline enableColorScheme />
                         <Router>
-                            <Routes>
-                                <Route path="/" element={<Dashboard />} />
-                                <Route path="/settings" element={<Settings />} />
-                                <Route path="/settings/webhooks" element={<Webhooks />} />
-                                <Route path="/calendar/" element={<Calendar />} />
-                                <Route path="/book/" element={<CreateBooking />} />
-                                <Route path="/group/" element={<GroupDirectory />} />
-                                <Route path="/group/:id" element={<Group />} />
-                                <Route path="/admin/room-manager/:id/joan6" element={<Joan6 />} />
-                                <Route
-                                    path="/admin"
-                                    element={
-                                        <RequireRole role={['admin']}>
-                                            <Admin />
-                                        </RequireRole>
-                                    }
-                                />
-                                <Route
-                                    path="/admin/:id"
-                                    element={
-                                        <RequireRole role={['admin']}>
-                                            <UserViewer />
-                                        </RequireRole>
-                                    }
-                                />
-                                <Route
-                                    path="/admin/room-manager/"
-                                    element={
-                                        <RequireRole role={['admin']}>
-                                            <RoomManager />
-                                        </RequireRole>
-                                    }
-                                />
-                                <Route
-                                    path="/admin/room-manager/:id"
-                                    element={
-                                        <RequireRole role={['admin']}>
-                                            <RoomViewer />
-                                        </RequireRole>
-                                    }
-                                />
-                                <Route
-                                    path="/approve/:id"
-                                    element={
-                                        <RequireRole role={['approver', 'admin']}>
-                                            <ApprovedRequestPage approved={true} />
-                                        </RequireRole>
-                                    }
-                                />
-                                <Route
-                                    path="/deny/:id"
-                                    element={
-                                        <RequireRole role={['approver', 'admin']}>
-                                            <ApprovedRequestPage approved={false} />
-                                        </RequireRole>
-                                    }
-                                />
-                                <Route path="*" element={<NotFound />} />
-                            </Routes>
+                            <AppRoutes />
                         </Router>
                         {queue.map((item, index) => (
                             <Snackbar
@@ -224,4 +166,77 @@ function App() {
     );
 }
 
+/**
+ * Routes are defined here to allow for useLocation hook, needed for transitions
+ */
+const AppRoutes = () => {
+    const location = useLocation();
+
+    return (
+        <TransitionGroup component={null}>
+            {/* This is no different than other usage of <CSSTransition>, just make sure to pass `location` to `Switch` so it can match the old location as it animates out. */}
+            <CSSTransition key={location.key} classNames="fade" timeout={300}>
+                <Routes location={location}>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/settings/webhooks" element={<Webhooks />} />
+                    <Route path="/calendar/" element={<Calendar />} />
+                    <Route path="/book/" element={<CreateBooking />} />
+                    <Route path="/group/" element={<GroupDirectory />} />
+                    <Route path="/group/:id" element={<Group />} />
+                    <Route path="/admin/room-manager/:id/joan6" element={<Joan6 />} />
+                    <Route
+                        path="/admin"
+                        element={
+                            <RequireRole role={['admin']}>
+                                <Admin />
+                            </RequireRole>
+                        }
+                    />
+                    <Route
+                        path="/admin/:id"
+                        element={
+                            <RequireRole role={['admin']}>
+                                <UserViewer />
+                            </RequireRole>
+                        }
+                    />
+                    <Route
+                        path="/admin/room-manager/"
+                        element={
+                            <RequireRole role={['admin']}>
+                                <RoomManager />
+                            </RequireRole>
+                        }
+                    />
+                    <Route
+                        path="/admin/room-manager/:id"
+                        element={
+                            <RequireRole role={['admin']}>
+                                <RoomViewer />
+                            </RequireRole>
+                        }
+                    />
+                    <Route
+                        path="/approve/:id"
+                        element={
+                            <RequireRole role={['approver', 'admin']}>
+                                <ApprovedRequestPage approved={true} />
+                            </RequireRole>
+                        }
+                    />
+                    <Route
+                        path="/deny/:id"
+                        element={
+                            <RequireRole role={['approver', 'admin']}>
+                                <ApprovedRequestPage approved={false} />
+                            </RequireRole>
+                        }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </CSSTransition>
+        </TransitionGroup>
+    );
+};
 export default App;

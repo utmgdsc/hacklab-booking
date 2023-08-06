@@ -22,9 +22,9 @@ const fullHeight: string = `calc(100vh - ${padding})`;
  */
 const addHoursToDate = (date: Date, hours: number): Date => {
     let newDate = new Date(date.getTime());
-    newDate.setTime(newDate.getTime() + (hours * 60 * 60 * 1000));
+    newDate.setTime(newDate.getTime() + hours * 60 * 60 * 1000);
     return newDate;
-}
+};
 
 /**
  * Displays a row of events for one day.
@@ -248,9 +248,12 @@ export const Joan6 = () => {
     }, [update]);
 
     return (
-        <Grid container sx={{
-            overflow: 'hidden',
-        }}>
+        <Grid
+            container
+            sx={{
+                overflow: 'hidden',
+            }}
+        >
             <Grid item xs={7}>
                 <Box sx={{ height: '100vh' }}>
                     <Box

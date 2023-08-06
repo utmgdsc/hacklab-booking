@@ -39,12 +39,7 @@ interface FetchedUser extends RoomsUser {
     webhooks: UserWebhooks;
 }
 
-type BookingStatus =
-    'pending'
-    | 'denied'
-    | 'cancelled'
-    | 'needTCard'
-    | 'completed';
+type BookingStatus = 'pending' | 'denied' | 'cancelled' | 'needTCard' | 'completed';
 
 /** Model Request  */
 interface BookingRequest {
