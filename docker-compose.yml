@@ -19,12 +19,15 @@ services:
       dockerfile: Dockerfile
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
+      - NODE_ENV=production
 
   frontend:
     restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
 
   db:
     image: postgres

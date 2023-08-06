@@ -20,8 +20,6 @@ services:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=development
       - FRONTEND_URL=http://localhost:3000
-      - EMAIL_USER=hacklabbooking@gmail.com
-      - EMAIL_PASS=hacklabDH2014!
     volumes:
       - ./backend:/app
 
