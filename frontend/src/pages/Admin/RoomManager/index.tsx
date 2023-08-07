@@ -3,6 +3,7 @@ import {
     Card,
     CardActions,
     CardContent,
+    Collapse,
     Dialog,
     DialogActions,
     DialogContent,
@@ -19,6 +20,7 @@ import { Link } from '../../../components';
 import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import { UserContext } from '../../../contexts/UserContext';
 import { SubPage } from '../../../layouts/SubPage';
+import { TransitionGroup } from 'react-transition-group';
 
 export const RoomManager = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -58,11 +60,13 @@ export const RoomManager = () => {
             >
                 Create Room
             </Button>
-            <div>
+            <TransitionGroup>
                 {rooms.map((room, index) => (
-                    <RoomCard key={index} {...room} />
+                    <Collapse key={index}>
+                        <RoomCard {...room} />
+                    </Collapse>
                 ))}
-            </div>
+            </TransitionGroup>
             <CreateRoomDialog open={createRoomOpen} setOpen={setCreateRoomOpen} getRooms={getRooms} />
         </SubPage>
     );

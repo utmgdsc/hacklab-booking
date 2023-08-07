@@ -1,4 +1,4 @@
-import { Box, Button, Divider, TextField, CircularProgress } from '@mui/material';
+import { Box, Button, Divider, TextField, CircularProgress, Collapse } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
@@ -6,6 +6,7 @@ import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { SubPage } from '../../layouts/SubPage';
+import { TransitionGroup } from 'react-transition-group';
 
 /**
  * Edit a booking given a UUID or create a new booking if no UUID is given
@@ -223,103 +224,111 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
      * case where user can create a booking
      */
     return (
-        <>
+        <TransitionGroup>
             {userInfo.groups.length > 0 && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider>Select the group to book under</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider>Select the group to book under</Divider>
 
-                    <GroupPicker setGroup={setGroup} group={group} />
-                </Box>
+                        <GroupPicker setGroup={setGroup} group={group} />
+                    </Box>
+                </Collapse>
             )}
 
             {group && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider>Select the room to book</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider>Select the room to book</Divider>
 
-                    <RoomPicker setRoomName={setRoomName} roomName={roomName} />
-                </Box>
+                        <RoomPicker setRoomName={setRoomName} roomName={roomName} />
+                    </Box>
+                </Collapse>
             )}
 
             {group && roomName && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider>Provide an explanation</Divider>
-
-                    <TextField
-                        fullWidth
-                        id="explanation-field"
-                        label="Please provide an explanation"
-                        minRows={4}
-                        multiline
-                        required
-                        value={details}
-                        onChange={(e) => {
-                            setDetails(e.target.value);
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
                         }}
-                        sx={{ marginTop: '1em' }}
-                    />
-                </Box>
+                    >
+                        <Divider>Provide an explanation</Divider>
+
+                        <TextField
+                            fullWidth
+                            id="explanation-field"
+                            label="Please provide an explanation"
+                            minRows={4}
+                            multiline
+                            required
+                            value={details}
+                            onChange={(e) => {
+                                setDetails(e.target.value);
+                            }}
+                            sx={{ marginTop: '1em' }}
+                        />
+                    </Box>
+                </Collapse>
             )}
 
             {group && roomName && details !== '' && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} roomName={roomName} />
-                </Box>
+                        <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} roomName={roomName} />
+                    </Box>
+                </Collapse>
             )}
 
             {group && roomName && details !== '' && approvers.length > 0 && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
 
-                    <DateTimePicker
-                        handleScheduleDate={handleScheduleDate}
-                        scheduleDates={scheduleDates}
-                        setScheduleDates={setScheduleDates}
-                        room={roomName}
-                    />
-                </Box>
-            )}
+                        <DateTimePicker
+                            handleScheduleDate={handleScheduleDate}
+                            scheduleDates={scheduleDates}
+                            setScheduleDates={setScheduleDates}
+                            room={roomName}
+                        />
+                    </Box>
 
-            {group && roomName && details !== '' && approvers.length > 0 && (
-                <Button
-                    variant="contained"
-                    size="large"
-                    onClick={async () => {
-                        await handleFinish();
-                    }}
-                    disabled={!validDate || scheduleDates.length <= 0 || submittedLoading}
-                    endIcon={submittedLoading && <CircularProgress size={20} />}
-                >
-                    Finish
-                </Button>
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={async () => {
+                            await handleFinish();
+                        }}
+                        disabled={!validDate || scheduleDates.length <= 0 || submittedLoading}
+                        endIcon={submittedLoading && <CircularProgress size={20} />}
+                    >
+                        Finish
+                    </Button>
+                </Collapse>
             )}
-        </>
+        </TransitionGroup>
     );
 };
 

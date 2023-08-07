@@ -8,6 +8,7 @@ import {
     Card,
     CardContent,
     Checkbox,
+    Collapse,
     Grid,
     Paper,
     TableCell,
@@ -17,6 +18,7 @@ import {
 } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { TransitionGroup } from 'react-transition-group';
 import { TableVirtuoso } from 'react-virtuoso';
 import axios from '../../../axios';
 import { VirtuosoTableComponents } from '../../../components';
@@ -261,12 +263,16 @@ export const RoomViewer = () => {
                 </Grid>
             </Grid>
 
-            {room.approvers.length === 0 && (
-                <Alert severity="warning" sx={{ my: '2em' }}>
-                    This room has no approvers. This means that no one can approve requests for this room. To make this
-                    room bookable, add approvers to this room.
-                </Alert>
-            )}
+            <TransitionGroup>
+                {room.approvers.length === 0 && (
+                    <Collapse>
+                        <Alert severity="warning" sx={{ my: '2em' }}>
+                            This room has no approvers. This means that no one can approve requests for this room. To
+                            make this room bookable, add approvers to this room.
+                        </Alert>
+                    </Collapse>
+                )}
+            </TransitionGroup>
 
             <Accordion
                 expanded={expanded === 'approvers'}
