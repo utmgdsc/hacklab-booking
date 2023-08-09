@@ -139,8 +139,12 @@ export const Dashboard = () => {
         setUpdateValue(Math.random);
     };
 
+    /** mui theme object */
     const theme = useTheme();
 
+    /**
+     * all buttons on the dashboard
+     */
     const homeButtons: AppButton[] = [
         {
             title: 'View the Hacklab Calendar',
