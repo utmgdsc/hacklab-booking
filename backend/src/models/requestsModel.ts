@@ -138,7 +138,7 @@ export default {
         };
       }
     } else if (user.role === AccountRole.student) {
-      query.group = { members: { some: { utorid: user.utorid }, select: userSelector() } };
+      query.group = { members: { some: { utorid: user.utorid } } };
     }
     if (filters.room) {
       query.roomName = filters.room;
@@ -166,7 +166,7 @@ export default {
           group: true,
           room: true,
           author: {
-            include: {
+            select: {
               roomAccess: true,
               ...userSelector(),
             },
