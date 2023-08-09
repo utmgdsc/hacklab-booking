@@ -18,7 +18,6 @@ templates[EventTypes.ADMIN_BOOKING_CREATED] = {
             <li>Start time: {{start_date}}</li>
             <li>End time: {{end_date}}</li>
         </ul>
-        <p><a href="{{frontend_url}}/approve/{{booking_id}}">Approve</a> or <a href="{{frontend_url}}/deny/{{booking_id}}">Deny</a> the booking.</p>
         <br>
         <p>Thanks,</p>
         <p>Hacklab Booking Team</p>
@@ -41,7 +40,7 @@ templates[EventTypes.BOOKING_APPROVAL_REQUESTED] = {
                 <li>Start time: {{start_date}}</li>
                 <li>End time: {{end_date}}</li>
             </ul>
-            <p><a href="{{frontend_url}}/approve/{{booking_id}}">Approve</a> or <a href="{{frontend_url}}/deny/{{booking_id}}">Deny</a> the booking.</p>
+            <p><a href='{{frontend_url}}/approve/{{booking_id}}'>Approve</a> or <a href='{{frontend_url}}/deny/{{booking_id}}'>Deny</a> the booking.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -64,7 +63,6 @@ templates[EventTypes.ADMIN_BOOKING_UPDATED] = {
                 <li>Start time: {{start_date}}</li>
                 <li>End time: {{end_date}}</li>
             </ul>
-            <p>Click <a href="{{frontend_url}}/bookings/{{booking_id}}">here</a> to view the booking.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -79,7 +77,6 @@ templates[EventTypes.BOOKING_STATUS_CHANGED] = {
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>Your booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.</p>
-            <p>Click <a href="{{frontend_url}}/bookings/{{booking_id}}">here</a> to view the booking.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -94,7 +91,20 @@ templates[EventTypes.ADMIN_BOOKING_STATUS_CHANGED] = {
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>The booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.</p>
-            <p>Click <a href="{{frontend_url}}/bookings/{{booking_id}}">here</a> to view the booking.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.ROOM_ACCESS_REQUESTED] = {
+  template: '{{full_name}} has requested access to {{room_friendly}}.',
+  email: {
+    subject: '{{full_name}} has requested access to {{room_friendly}}',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{full_name}} has requested access to {{room_friendly}} ({{room}}).</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -109,14 +119,12 @@ templates[EventTypes.ROOM_ACCESS_GRANTED] = {
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>You have been granted access to {{room_friendly}} by {{changer_utorid}}.</p>
-            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
         `,
   },
 };
-
 templates[EventTypes.ROOM_ACCESS_REVOKED] = {
   template: 'Your access to {{room_friendly}} has been revoked by {{changer_utorid}}.',
   email: {
@@ -124,7 +132,6 @@ templates[EventTypes.ROOM_ACCESS_REVOKED] = {
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>Your access to {{room_friendly}} has been revoked by {{changer_utorid}}.</p>
-            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -139,7 +146,6 @@ templates[EventTypes.ADMIN_ROOM_ACCESS_GRANTED] = {
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>{{full_name}} has been granted access to {{room_friendly}} by {{changer_utorid}}.</p>
-            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -154,7 +160,6 @@ templates[EventTypes.ADMIN_ROOM_ACCESS_REVOKED] = {
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>{{full_name}}'s access to {{room_friendly}} has been revoked by {{changer_utorid}}.</p>
-            <p>Click <a href="{{frontend_url}}/rooms/{{room}}">here</a> to view the room.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -162,4 +167,152 @@ templates[EventTypes.ADMIN_ROOM_ACCESS_REVOKED] = {
   },
 };
 
+templates[EventTypes.ADMIN_ROOM_CREATED] = {
+  template: '{{utorid}} has created a new room: {{room_friendly}} ({{room}}).',
+  email: {
+    subject: '{{utorid}} has created a new room: {{room_friendly}}',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{full_name}} has created a new room: {{room_friendly}} ({{room}}).</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.ADMIN_GROUP_CREATED] = {
+  template: '{{utorid}} has created a new group: {{group_name}} ({{group}}).',
+  email: {
+    subject: '{{utorid}} has created a new group: {{group_name}}',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{full_name}} has created a new group: {{group_name}} ({{group}}).</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.GROUP_MEMBER_INVITED] = {
+  template: '{{inviter_full_name}} has invited {{full_name}} to join {{group_name}}.',
+  email: {
+    subject: '{{inviter_full_name}} has invited {{full_name}} to join {{group_name}}.',
+    html: `
+        <p>Hi {{receiver_full_name}},</p>
+        <p>{{inviter_full_name}} has invited {{full_name}} to join {{group_name}}.</p>
+        <br>
+        <p>Thanks,</p>
+        <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+templates[EventTypes.USER_INVITED_TO_GROUP] = {
+  template: '{{inviter_full_name}} has invited you to join {{group_name}}.',
+  email: {
+    subject: '{{inviter_full_name}} has invited you to join {{group_name}}.',
+    html: `
+        <p>Hi {{receiver_full_name}},</p>
+        <p>{{inviter_full_name}} has invited you to join {{group_name}}.</p>
+        <br>
+        <p>Thanks,</p>
+        <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+templates[EventTypes.GROUP_MEMBER_JOINED] = {
+  template: '{{full_name}} has joined {{group_name}}.',
+  email: {
+    subject: '{{full_name}} has joined {{group_name}}.',
+    html: `
+        <p>Hi {{receiver_full_name}},</p>
+        <p>{{full_name}} has joined {{group_name}}.</p>
+        <br>
+        <p>Thanks,</p>
+        <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+templates[EventTypes.GROUP_MEMBER_REMOVED] = {
+  template: '{{changer_utorid}} has removed {{full_name}} from {{group_name}}.',
+  email: {
+    subject: '{{full_name}} has been removed from {{group_name}}.',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{changer_utorid}} has removed {{full_name}} from {{group_name}}.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.USER_REMOVED_FROM_GROUP] = {
+  template: 'You have been removed from {{group_name}} by {{changer_utorid}}.',
+  email: {
+    subject: 'You have been removed from {{group_name}}',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>You have been removed from {{group_name}} by {{changer_utorid}}.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.GROUP_ROLE_CHANGED] = {
+  template: '{{changer_utorid}}. has changed {{full_name}}\'s role in {{group_name}} to {{role}}.',
+  email: {
+    subject: '{{full_name}}\'s role in {{group_name}} has been changed',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{changer_utorid}}. has changed {{full_name}}'s role in {{group_name}} to {{role}}.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+templates[EventTypes.USER_GROUP_ROLE_CHANGED] = {
+  template: 'Your role in {{group_name}} has been changed to {{role}} by {{changer_full_name}}.',
+  email: {
+    subject: 'Your role in {{group_name}} has been changed',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>Your role in {{group_name}} has been changed to {{role}} by {{changer_full_name}}.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+templates[EventTypes.GROUP_DELETED] = {
+  template: '{{group_name}} has been deleted by {{changer_utorid}}.',
+  email: {
+    subject: '{{group_name}} has been deleted',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{group_name}} has been deleted by {{changer_utorid}}.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
+
+templates[EventTypes.ADMIN_GROUP_DELETED] = {
+  template: '{{group_name}} has been deleted by {{changer_utorid}}.',
+  email: {
+    subject: '{{group_name}} has been deleted',
+    html: `
+            <p>Hi {{receiver_full_name}},</p>
+            <p>{{group_name}} has been deleted by {{changer_utorid}}.</p>
+            <br>
+            <p>Thanks,</p>
+            <p>Hacklab Booking Team</p>
+        `,
+  },
+};
 export default templates as { readonly [event: string]: NotificationTemplate };

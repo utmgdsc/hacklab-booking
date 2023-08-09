@@ -41,7 +41,12 @@ export const triggerNotification = async (
           body = applyContext(template.email.html, context);
         }
       }
-      await email(destination.destination, subject, body);
+      try {
+        await email(destination.destination, subject, body);
+      } catch (e) {
+        logger.error(e);
+        logger.error(`Failed to send email to ${destination.destination}`);
+      }
       break;
     case 'slack':
     case 'discord':
@@ -52,7 +57,12 @@ export const triggerNotification = async (
       } else {
         body = applyContext(template.template, context);
       }
-      await sendWebhook(destination.destination, body);
+      try {
+        await sendWebhook(destination.destination, body);
+      } catch (e) {
+        logger.error(e);
+        logger.error(`Failed to send webhook to ${destination.destination}`);
+      }
       break;
   }
 };
@@ -136,6 +146,14 @@ export const triggerAdminNotification = async (notification: EventTypes, context
   const staff = await db.user.findMany({
     where: {
       role: { in: [AccountRole.admin] },
+    },
+  });
+  await triggerMassNotification(notification, staff, context);
+};
+export const triggerTCardNotification = async (notification: EventTypes, context: AllContexts) => {
+  const staff = await db.user.findMany({
+    where: {
+      role: { in: [AccountRole.admin, AccountRole.tcard] },
     },
   });
   await triggerMassNotification(notification, staff, context);
