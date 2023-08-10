@@ -97,9 +97,12 @@ export const ActiveRequestCard = ({
     };
 
     const getTime = () => {
-        let startHour = new Date(booking.startDate).getHours();
-        let endHour = new Date(booking.endDate).getHours() + 1;
-        return `${startHour}:00 - ${endHour}:00`;
+        let startHour = new Date(booking.startDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+        let endHour = new Date(new Date(booking.endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+        return `${startHour} - ${endHour}`;
     };
 
     return (
