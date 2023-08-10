@@ -52,7 +52,12 @@ export const AppButtons = ({ ButtonsToRender }: AppButtonsProps): JSX.Element =>
             button.hidden ? null : (
                 <Tooltip title={button.title} arrow placement="top" key={button.href}>
                     <Link to={button.href} style={{ textDecoration: 'none' }}>
-                        <LabelledIconButton icon={button.icon} color={button.color} label={button.label} hover={button.hover} />
+                        <LabelledIconButton
+                            icon={button.icon}
+                            color={button.color}
+                            label={button.label}
+                            hover={button.hover}
+                        />
                     </Link>
                 </Tooltip>
             ),

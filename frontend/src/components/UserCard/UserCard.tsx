@@ -1,4 +1,4 @@
-import { Card, CardContent, Box, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Box, Typography } from '@mui/material';
 import { InitialsAvatar } from '../InitialsAvatar/InitialsAvatar';
 
 /**
@@ -8,21 +8,17 @@ import { InitialsAvatar } from '../InitialsAvatar/InitialsAvatar';
 export const UserCard = ({ userInfo }: { userInfo: FetchedUser }) => {
     return (
         <Card variant="outlined">
-            <CardContent
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    gap: '1em',
-                }}
-            >
-                <Box>
+            {/* less spacing when grid items are stacked */}
+            <CardContent component={Grid} container spacing={[4, 4, 8, 8, 8, 8]}>
+                <Grid item md={8}>
                     <Typography variant="h2" gutterBottom>
                         Profile
                     </Typography>
                     <Typography variant="gray">Some information will be visible to other users.</Typography>
-                </Box>
-                <Box
+                </Grid>
+                <Grid
+                    item
+                    md={3}
                     sx={{
                         display: 'flex',
                         flexDirection: 'row',
@@ -43,15 +39,8 @@ export const UserCard = ({ userInfo }: { userInfo: FetchedUser }) => {
                         <Typography variant="gray" title="Your UTORid">
                             {userInfo.utorid}
                         </Typography>
-                        <Typography variant="gray" title="Your Email">
-                            {userInfo.roomAccess && (
-                                <>
-                                    <br></br>Hacklab Keycard Haver
-                                </>
-                            )}
-                        </Typography>
                     </Box>
-                </Box>
+                </Grid>
             </CardContent>
         </Card>
     );

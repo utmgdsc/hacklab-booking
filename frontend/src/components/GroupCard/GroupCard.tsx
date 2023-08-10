@@ -42,7 +42,7 @@ export const GroupCard = ({ groupObj, ...props }: GroupCardProps) => {
                 </Stack>
             </CardContent>
             <CardActions>
-                <Link internal href={'/group/' + groupObj.id}>
+                <Link href={'/group/' + groupObj.id}>
                     <Button>View</Button>
                 </Link>
             </CardActions>

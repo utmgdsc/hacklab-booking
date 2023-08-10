@@ -3,6 +3,7 @@ import { AppBar, Container, Dialog, IconButton, Slide, Toolbar, Typography } fro
 import { TransitionProps } from '@mui/material/transitions';
 import React from 'react';
 import { CreateModifyBooking } from '../../pages/CreateBooking';
+import { UserContext } from '../../contexts/UserContext';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -22,6 +23,8 @@ const DialogTemplate = ({
     setOpenEditRequest: (isOpen: boolean) => void;
     children: React.ReactNode;
 }) => {
+    const { fetchUserInfo } = React.useContext(UserContext);
+
     return (
         <Dialog
             fullScreen
@@ -41,6 +44,7 @@ const DialogTemplate = ({
                         color="inherit"
                         onClick={() => {
                             setOpenEditRequest(false);
+                            fetchUserInfo();
                         }}
                         aria-label="cancel"
                     >

@@ -1,4 +1,4 @@
-import { Box, Button, Divider, TextField } from '@mui/material';
+import { Box, Button, Divider, TextField, CircularProgress, Collapse } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
@@ -6,6 +6,7 @@ import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { SubPage } from '../../layouts/SubPage';
+import { TransitionGroup } from 'react-transition-group';
 
 /**
  * Edit a booking given a UUID or create a new booking if no UUID is given
@@ -14,7 +15,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** context to show snackbars */
     const { showSnackSev } = useContext(SnackbarContext);
     /** user info */
-    const { userInfo } = useContext(UserContext);
+    const { userInfo, fetchUserInfo } = useContext(UserContext);
     /** currently selected group name */
     const [group, setGroup] = useState<string>('');
     /** currently selected room name */
@@ -24,38 +25,68 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** list of approvers */
     const [approvers, setApprovers] = useState([]);
     /** currently selected list of dates */
-    const [scheduleDates, setScheduleDates] = useState([]);
+    const [scheduleDates, setScheduleDates] = useState<Date[]>([]);
     /** whether the date is valid */
     const [validDate, setValidDate] = useState(false);
     /** whether the request was submitted */
     const [submitted, setSubmitted] = useState(false);
+    /** whether the request is being submitted */
+    const [submittedLoading, setSubmittedLoading] = useState(false);
+    /** original edit booking object */
+    const [originalBooking, setOriginalBooking] = useState<FetchedBookingRequest>();
 
     /* set fill info if there is already an editID */
     useEffect(() => {
         if (editID) {
-            axios.get(`/requests/${editID}`).then((res) => {
-                console.log(res.data);
-                if (res.status === 200) {
-                    setGroup(
-                        JSON.stringify({
-                            id: res.data.group.id,
-                            name: res.data.group.name,
-                        } as Group),
-                    );
-                    setRoomName(res.data.roomName);
-                    setDetails(res.data.description);
-                    setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
-                }
-            });
+            (async () => {
+                await axios
+                    .get(`/requests/${editID}`)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            setGroup(
+                                JSON.stringify({
+                                    id: res.data.group.id,
+                                    name: res.data.group.name,
+                                } as Group),
+                            );
+                            if (res.data.roomName) {
+                                setRoomName(res.data.roomName);
+                            }
+                            if (res.data.description) {
+                                setDetails(res.data.description);
+                            }
+                            if (res.data.approvers) {
+                                setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                            }
+
+                            // fill scheduled dates
+                            if (res.data.startDate && res.data.endDate) {
+                                let acc: Date[] = [];
+                                const startTimeInMs = new Date(res.data.startDate).getTime();
+                                const eventDuration =
+                                    new Date(res.data.endDate).getTime() - new Date(res.data.startDate).getTime() + 1;
+                                // 1 hr = (60 min / 1 hr) * (60 sec / 1 min) * (1000 ms / 1 sec) = 3600000 ms / hr
+                                for (let i = 0; i < eventDuration; i += 3600000) {
+                                    acc.push(new Date(startTimeInMs + i));
+                                }
+                                setScheduleDates(acc);
+                            }
+                            setOriginalBooking(res.data);
+                        }
+                    })
+                    .catch((err) => {
+                        showSnackSev(`Could not fetch booking request: ${err.message}`, 'error');
+                    });
+            })();
         }
-    }, [editID]);
+    }, [editID, showSnackSev]);
 
     /**
      * Checks if the date is not blocked
      * @param dates list of dates
      */
     const checkDate = async (dates: Date[]) => {
-        axios
+        await axios
             .get(`/rooms/${roomName}/blockeddates`, {
                 params: {
                     start_date: dates[0],
@@ -64,7 +95,19 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             })
             .then((res) => {
                 if (res.status === 200) {
-                    if (res.data.length > 0) {
+                    let blockedDates: number[] = res.data.map((date: string) => new Date(date).getTime());
+
+                    // remove dates that aren't blocked
+                    if (originalBooking) {
+                        blockedDates = blockedDates.filter((date: number) => {
+                            return (
+                                date < new Date(originalBooking.startDate).getTime() ||
+                                date > new Date(originalBooking.endDate).getTime()
+                            );
+                        });
+                    }
+
+                    if (blockedDates.length > 0) {
                         setValidDate(false);
                         showSnackSev(
                             'This time overlaps with another booking, please choose a different time and/or date',
@@ -79,6 +122,11 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     showSnackSev('An error occurred while checking the date, please try again', 'error');
                     setScheduleDates([]);
                 }
+            })
+            .catch((err) => {
+                setValidDate(false);
+                showSnackSev(`An error occurred while checking the date: ${err.message}`, 'error');
+                setScheduleDates([]);
             });
     };
 
@@ -86,42 +134,35 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
      * Validate the booking request and submit if valid
      */
     const handleFinish = async () => {
-        let finish = true;
+        setSubmittedLoading(true);
 
         if (details === '') {
             showSnackSev('An explanation is required to submit', 'error');
-            finish = false;
-        }
-
-        if (scheduleDates.length === 0) {
+            setSubmittedLoading(false);
+            return;
+        } else if (scheduleDates.length === 0) {
             showSnackSev('Please select a time', 'error');
-            finish = false;
-        }
-
-        if (approvers.length === 0) {
+            setSubmittedLoading(false);
+            return;
+        } else if (approvers.length === 0) {
             showSnackSev('Please select an approver', 'error');
-            finish = false;
-        }
-
-        if (group === '') {
+            setSubmittedLoading(false);
+            return;
+        } else if (group === '') {
             showSnackSev('Please select a group', 'error');
-            finish = false;
-        }
-
-        if (roomName === '') {
+            setSubmittedLoading(false);
+            return;
+        } else if (roomName === '') {
             showSnackSev('Please select a room', 'error');
-            finish = false;
-        }
-
-        await checkDate(scheduleDates).then(() => {
-            if (!validDate) {
-                finish = false;
-            }
-        });
-
-        if (!finish) {
+            setSubmittedLoading(false);
             return;
         }
+
+        // await checkDate(scheduleDates).then(() => {
+        //     if (!validDate) {
+        //         setSubmittedLoading(false);
+        //     }
+        // });
 
         // compile into json object
         const booking = {
@@ -136,21 +177,30 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
         };
 
         if (editID) {
-            const { status } = await axios.put(`/requests/${editID}`, booking);
-            if (status === 200) {
-                setSubmitted(true);
-                return;
-            } else {
-                showSnackSev('Could not edit booking request', 'error');
-            }
+            await axios
+                .put(`/requests/${editID}`, booking)
+                .then(() => {
+                    setSubmitted(true);
+                })
+                .catch((err) => {
+                    showSnackSev(`Could not edit booking request: ${err.message}`, 'error');
+                })
+                .finally(() => {
+                    setSubmittedLoading(false);
+                });
         } else {
-            const { status } = await axios.post('/requests/create', booking);
-            if (status === 200) {
-                setSubmitted(true);
-                return;
-            } else {
-                showSnackSev('Could not create booking request', 'error');
-            }
+            await axios
+                .post('/requests/create', booking)
+                .then(() => {
+                    setSubmitted(true);
+                })
+                .catch((err) => {
+                    showSnackSev(`Could not create booking request: ${err.message}`, 'error');
+                })
+                .finally(() => {
+                    setSubmittedLoading(false);
+                    fetchUserInfo();
+                });
         }
     };
 
@@ -209,102 +259,111 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
      * case where user can create a booking
      */
     return (
-        <>
+        <TransitionGroup>
             {userInfo.groups.length > 0 && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider>Select the group to book under</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider>Select the group to book under</Divider>
 
-                    <GroupPicker setGroup={setGroup} group={group} />
-                </Box>
+                        <GroupPicker setGroup={setGroup} group={group} />
+                    </Box>
+                </Collapse>
             )}
 
             {group && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider>Select the room to book</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider>Select the room to book</Divider>
 
-                    <RoomPicker setRoomName={setRoomName} roomName={roomName} />
-                </Box>
+                        <RoomPicker setRoomName={setRoomName} roomName={roomName} />
+                    </Box>
+                </Collapse>
             )}
 
             {group && roomName && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider>Provide an explanation</Divider>
-
-                    <TextField
-                        fullWidth
-                        id="explanation-field"
-                        label="Please provide an explanation"
-                        minRows={4}
-                        multiline
-                        required
-                        value={details}
-                        onChange={(e) => {
-                            setDetails(e.target.value);
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
                         }}
-                        sx={{ marginTop: '1em' }}
-                    />
-                </Box>
+                    >
+                        <Divider>Provide an explanation</Divider>
+
+                        <TextField
+                            fullWidth
+                            id="explanation-field"
+                            label="Please provide an explanation"
+                            minRows={4}
+                            multiline
+                            required
+                            value={details}
+                            onChange={(e) => {
+                                setDetails(e.target.value);
+                            }}
+                            sx={{ marginTop: '1em' }}
+                        />
+                    </Box>
+                </Collapse>
             )}
 
             {group && roomName && details !== '' && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                    <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} />
-                </Box>
+                        <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} roomName={roomName} />
+                    </Box>
+                </Collapse>
             )}
 
             {group && roomName && details !== '' && approvers.length > 0 && (
-                <Box
-                    sx={{
-                        marginBottom: '4em',
-                        width: '100%',
-                    }}
-                >
-                    <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
+                <Collapse>
+                    <Box
+                        sx={{
+                            marginBottom: '4em',
+                            width: '100%',
+                        }}
+                    >
+                        <Divider sx={{ marginBottom: '2em' }}>Select a date</Divider>
 
-                    <DateTimePicker
-                        handleScheduleDate={handleScheduleDate}
-                        scheduleDates={scheduleDates}
-                        setScheduleDates={setScheduleDates}
-                        room={roomName}
-                    />
-                </Box>
-            )}
+                        <DateTimePicker
+                            handleScheduleDate={handleScheduleDate}
+                            scheduleDates={scheduleDates}
+                            setScheduleDates={setScheduleDates}
+                            room={roomName}
+                        />
+                    </Box>
 
-            {group && roomName && details !== '' && approvers.length > 0 && (
-                <Button
-                    variant="contained"
-                    size="large"
-                    onClick={() => {
-                        handleFinish();
-                    }}
-                    disabled={!validDate || scheduleDates.length <= 0}
-                >
-                    Finish
-                </Button>
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={async () => {
+                            await handleFinish();
+                        }}
+                        disabled={!validDate || scheduleDates.length <= 0 || submittedLoading}
+                        endIcon={submittedLoading && <CircularProgress size={20} />}
+                    >
+                        Finish
+                    </Button>
+                </Collapse>
             )}
-        </>
+        </TransitionGroup>
     );
 };
 
@@ -317,11 +376,7 @@ export const CreateBooking = () => {
                 name="Cannot create booking"
                 message={
                     <>
-                        Please{' '}
-                        <Link internal href="/group">
-                            create a group
-                        </Link>{' '}
-                        before making a booking request.
+                        Please <Link href="/group">create a group</Link> before making a booking request.
                     </>
                 }
             />

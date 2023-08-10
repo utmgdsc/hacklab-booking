@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { UserContext } from '../../contexts/UserContext';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 interface GroupPickerProps {
     /** a JSON stringify'd group object */
@@ -17,6 +17,12 @@ interface GroupPickerProps {
 export const GroupPicker = ({ group, setGroup }: GroupPickerProps) => {
     /** user info */
     const { userInfo } = useContext(UserContext);
+
+    useEffect(() => {
+        if (userInfo.groups.length === 1) {
+            setGroup(JSON.stringify({ id: userInfo.groups[0].id, name: userInfo.groups[0].name } as Group));
+        }
+    }, [userInfo.groups, setGroup]);
 
     return (
         <FormControl fullWidth sx={{ marginTop: '1em' }}>

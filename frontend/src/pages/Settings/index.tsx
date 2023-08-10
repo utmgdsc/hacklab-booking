@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     Card,
     CardActions,
@@ -11,8 +10,8 @@ import {
     Typography,
 } from '@mui/material';
 import { useContext } from 'react';
-import { instance } from '../../axios';
-import { UserCard } from '../../components';
+import axios from '../../axios';
+import { Link, UserCard } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
 import { THEME } from '../../theme/theme';
@@ -37,7 +36,9 @@ export const Settings = () => {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button disabled>Manage</Button>
+                            <Link href="/settings/webhooks">
+                                <Button>Manage</Button>
+                            </Link>
                         </CardActions>
                     </Card>
                 </Grid>
@@ -56,13 +57,16 @@ export const Settings = () => {
                                 row
                                 aria-labelledby="appearance-radio-label"
                                 name="appearance-radio"
-                                onChange={(e) =>
-                                    instance
+                                onChange={async (e) =>
+                                    await axios
                                         .post('/accounts/changetheme', {
                                             theme: e.target.value,
                                         })
                                         .then(() => {
                                             fetchUserInfo();
+                                        })
+                                        .catch((err) => {
+                                            console.error(err);
                                         })
                                 }
                                 value={userInfo.theme}

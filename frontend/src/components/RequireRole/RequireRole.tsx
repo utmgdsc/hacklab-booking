@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import { Typography } from '@mui/material';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { Link } from '../Link/Link';
 
@@ -21,10 +20,7 @@ export const RequireRole = (props: { role: UserRoles[]; children: React.ReactNod
                 message={
                     <>
                         konna ooki na diamondo mita koto naideshou? ageru neeeeeeeeeeee -{' '}
-                        <Link internal href="/">
-                            Time to twirl to the dashboard
-                        </Link>
-                        .
+                        <Link href="/">Time to twirl to the dashboard</Link>.
                     </>
                 }
             />

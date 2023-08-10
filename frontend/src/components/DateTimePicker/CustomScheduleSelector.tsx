@@ -2,6 +2,7 @@ import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import ScheduleSelector from 'react-schedule-selector';
 import { GetMonday } from '../../components';
+import { THEME } from '../../theme/theme';
 
 /**
  * A custom schedule selector in the format
@@ -98,14 +99,14 @@ export const CustomScheduleSelector = ({
 
         if (blocked) {
             backgroundColor = theme.palette.error.main + '!important';
+        } else if (selected) {
+            backgroundColor = theme.palette.action.active + '!important';
         } else if (pending) {
             backgroundColor = theme.palette.warning.main + '!important';
         } else if (inPast) {
-            backgroundColor = theme.palette.action.disabled + '!important';
-        } else if (selected) {
-            backgroundColor = theme.palette.action.active + '!important';
+            backgroundColor = theme.palette.action.hover + '!important';
         } else {
-            backgroundColor = theme.palette.action.hover;
+            backgroundColor = theme.palette.action.disabled;
         }
 
         return (

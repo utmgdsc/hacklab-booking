@@ -4,7 +4,7 @@ services:
   nginx:
     restart: always
     depends_on:
-      - frontend
+#      - frontend
       - backend
     build:
       context: ./nginx
@@ -19,15 +19,16 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=development
+      - FRONTEND_URL=http://localhost:3000
     volumes:
       - ./backend:/app
 
-  frontend:
-    image: node
-    restart: always
-    command: ["npm","run", "dev", "--prefix", "/app"]
-    volumes:
-      - ./frontend:/app
+#  frontend:
+#    image: node
+#    restart: always
+#    command: ["npm","run", "dev", "--prefix", "/app"]
+#    volumes:
+#      - ./frontend:/app
 
   db:
     image: postgres

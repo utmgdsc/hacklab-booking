@@ -1,0 +1,33 @@
+html {
+    scrollbar-gutter: stable;
+    scrollbar-gutter: stable both-edges;
+}
+
+/*
+The following class-endings: *-enter, *-enter-active, *-exit, *-exit-active,
+have very specific meanings to <CSSTransition />
+(see more: https://reactcommunity.org/react-transition-group/css-transition)
+https://codesandbox.io/s/animated-routes-demo-react-router-v6-6l1li?fontsize=14&hidenavigation=1&theme=dark
+*/
+
+.fade-enter {
+    opacity: 0;
+    transform: translate(0, 25px);
+    z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+    opacity: 1;
+    transform: translate(0, 0);
+    transition: opacity 250ms ease-out, transform 300ms ease;
+}
+
+.fade-exit {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+.fade-exit.fade-exit-active {
+    opacity: 0;
+    transition: opacity 250ms ease-out, transform 300ms ease;
+}

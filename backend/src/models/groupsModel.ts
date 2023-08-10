@@ -1,45 +1,71 @@
 import { AccountRole, Group, User } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import logger from '../common/logger';
 import Model from '../types/Model';
+import { userSelector } from './utils';
+import {
+  triggerAdminNotification, triggerMassNotification, triggerNotification,
+  triggerUserNotification,
+} from '../notifications';
+import EventTypes from '../types/EventTypes';
+import {
+  generateGroupContext,
+  generateUserActionContext,
+} from '../notifications/generateContext';
+import { AllContexts } from '../types/NotificationContext';
+
+const groupInclude = () => ({
+  members: { select: userSelector() },
+  managers: { select: userSelector() },
+  invited: { select: userSelector() },
+  requests: true,
+});
+const notifyGroupManagers = async (event: EventTypes, group: Group, context: AllContexts) => {
+  let managers: User[];
+  if (!('managers' in group) || (group.managers as User[]).some((x) => !('webhooks' in x) || !Array.isArray(x.webhooks))) {
+    const groupFetched = await db.group.findUnique({
+      where: { id: group.id },
+      include: {
+        managers: true,
+      },
+    });
+    if (!groupFetched) {
+      return;
+    }
+    managers = groupFetched.managers as User[];
+  } else {
+    managers = group.managers as User[];
+  }
+  if (managers.length === 0) {
+    return;
+  }
+  await triggerMassNotification(event, managers, context);
+};
 
 export default {
   getGroups: async (user: User) => {
     let groups: Group[];
     if (user.role === AccountRole.student) {
-      groups = await db.user.findUnique({ where: { utorid: user.utorid } }).groups({
-        include: {
-          members: true,
-          invited: true,
-          managers: true,
-          requests: true,
-        },
-      }) as Group[];
+      groups = (await db.user.findUnique({ where: { utorid: user.utorid } }).groups({
+        include: groupInclude(),
+      })) as Group[];
     } else {
-      groups = await db.group.findMany({ include:{
-        members: true,
-        invited: true,
-        managers: true,
-        requests: true,
-      } });
+      groups = await db.group.findMany({
+        include: groupInclude(),
+      });
     }
     return { status: 200, data: groups };
   },
   getGroup: async (id: string, user: User) => {
     const group = await db.group.findUnique({
       where: { id },
-      include: {
-        members: true,
-        managers: true,
-        invited: true,
-        requests: true,
-      },
+      include: groupInclude(),
     });
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (user.role === AccountRole.student && !group.members.some(x => x.utorid === user.utorid)) {
+    if (user.role === AccountRole.student && !group.members.some((x) => x.utorid === user.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to access this group\'s information.',
@@ -56,13 +82,9 @@ export default {
           managers: { connect: { utorid: user.utorid } },
           members: { connect: { utorid: user.utorid } },
         },
-        include:{
-          members: true,
-          managers: true,
-          invited: true,
-          requests: true,
-        },
+        include: groupInclude(),
       });
+      await triggerAdminNotification(EventTypes.ADMIN_GROUP_CREATED, { ...generateUserActionContext(user), ...generateGroupContext(group) });
       return { status: 200, data: group };
     } catch (e) {
       logger.debug((e as PrismaClientKnownRequestError).code);
@@ -76,43 +98,55 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        managers: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        managers: true,
+        members: true,
       },
     });
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (!group.members.some(x => x.utorid === targetUtorid)) {
-      return { status: 400, message: 'User is not a member of this group.' };
+    const user = group.members.find((x) => x.utorid === targetUtorid);
+    if (!user) {
+      return {
+        status: 400,
+        message: 'User is not a member of this group.',
+      };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
     if (role === 'manager') {
-      if (group.managers.some(x => x.utorid === targetUtorid)) {
+      if (group.managers.some((x) => x.utorid === targetUtorid)) {
         return { status: 400, message: 'User is already a manager.' };
       }
       await db.group.update({
         where: { id },
         data: { managers: { connect: { utorid: targetUtorid } } },
       });
-      return { status: 200, data: {} };
     }
     if (role === 'member') {
-      if (!group.managers.some(x => x.utorid === targetUtorid)) {
+      if (!group.managers.some((x) => x.utorid === targetUtorid)) {
         return { status: 400, message: 'User is already a member.' };
       }
       await db.group.update({
         where: { id },
         data: { managers: { disconnect: { utorid: targetUtorid } } },
       });
-      return { status: 200, data: {} };
+    } else {
+      return { status: 400, message: 'Invalid role.' };
     }
-    return { status: 400, message: 'Invalid role.' };
+    const context = {
+      ...generateUserActionContext(user), ...generateGroupContext(group),
+      role: role as 'manager' | 'member',
+      changer_utorid: manager.utorid,
+      changer_full_name: manager.name,
+    };
+    await notifyGroupManagers(EventTypes.GROUP_ROLE_CHANGED, group, context);
+    await triggerUserNotification(EventTypes.USER_GROUP_ROLE_CHANGED, user, context);
+    return { status: 200, data: {} };
   },
   invite: async (id: string, utorid: string, manager: User) => {
     const group = await db.group.findUnique({
@@ -126,23 +160,35 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
     try {
-      if (group.invited.some(x => x.utorid === utorid)) {
+      if (group.invited.some((x) => x.utorid === utorid)) {
         return { status: 400, message: 'User is already invited.' };
       }
-      if (group.members.some(x => x.utorid === utorid)) {
+      if (group.members.some((x) => x.utorid === utorid)) {
         return { status: 400, message: 'User is already a member.' };
       }
-      await db.group.update({
+      const groupFetched = await db.group.update({
         where: { id },
         data: { invited: { connect: { utorid } } },
+        include: {
+          invited: true,
+          managers: true,
+        },
       });
+      const context = {
+        ...generateUserActionContext(groupFetched.invited.find(x => x.utorid === utorid) as User),
+        ...generateGroupContext(groupFetched),
+        inviter_utorid: manager.utorid,
+        inviter_full_name: manager.name,
+      };
+      await notifyGroupManagers(EventTypes.GROUP_MEMBER_INVITED, groupFetched, context);
+      await triggerUserNotification(EventTypes.USER_INVITED_TO_GROUP, groupFetched.invited.find(x => x.utorid === utorid) as User, context);
       return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
@@ -162,8 +208,11 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (!group.invited.some(x => x.utorid === user.utorid)) {
-      return { status: 400, message: 'You are not invited to this group.' };
+    if (!group.invited.some((x) => x.utorid === user.utorid)) {
+      return {
+        status: 400,
+        message: 'You are not invited to this group.',
+      };
     }
     await db.group.update({
       where: { id },
@@ -171,6 +220,10 @@ export default {
         invited: { disconnect: { utorid: user.utorid } },
         members: { connect: { utorid: user.utorid } },
       },
+    });
+    await notifyGroupManagers(EventTypes.GROUP_MEMBER_JOINED, group, {
+      ...generateUserActionContext(user),
+      ...generateGroupContext(group),
     });
     return { status: 200, data: {} };
   },
@@ -185,8 +238,11 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (!group.invited.some(x => x.utorid === user.utorid)) {
-      return { status: 400, message: 'You are not invited to this group.' };
+    if (!group.invited.some((x) => x.utorid === user.utorid)) {
+      return {
+        status: 400,
+        message: 'You are not invited to this group.',
+      };
     }
     await db.group.update({
       where: { id },
@@ -205,13 +261,14 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    // user must be either admin, a group manager. or trying to remove themselves
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid) && manager.utorid !== utorid) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
-    if (!group.members.some(x => x.utorid === utorid)) {
+    if (!group.members.some((x) => x.utorid === utorid)) {
       return {
         status: 400,
         message: 'User is not a member of this group.',
@@ -224,6 +281,15 @@ export default {
         managers: { disconnect: { utorid } },
       },
     });
+    const user = group.members.find(x => x.utorid === utorid) as User;
+    const context = {
+      ...generateUserActionContext(user),
+      ...generateGroupContext(group),
+      remover_utorid: manager.utorid,
+      remover_full_name: manager.name,
+    };
+    await notifyGroupManagers(EventTypes.GROUP_MEMBER_REMOVED, group, context);
+    await triggerUserNotification(EventTypes.USER_REMOVED_FROM_GROUP, user, context);
     return { status: 200, data: {} };
   },
   deleteGroup: async (id: string, manager: User) => {
@@ -237,13 +303,19 @@ export default {
     if (!group) {
       return { status: 404, message: 'Group not found' };
     }
-    if (manager.role !== AccountRole.admin && !group.managers.some(x => x.utorid === manager.utorid)) {
+    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid)) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
     await db.group.delete({ where: { id } });
+    const context = {
+      ...generateUserActionContext(manager),
+      ...generateGroupContext(group),
+    };
+    await notifyGroupManagers(EventTypes.GROUP_DELETED, group, context);
+    await triggerAdminNotification(EventTypes.GROUP_DELETED, context);
     return { status: 200, data: {} };
   },
 } satisfies Model;

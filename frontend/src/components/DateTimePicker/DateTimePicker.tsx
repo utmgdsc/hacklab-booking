@@ -11,7 +11,7 @@ interface DateTimePickerProps {
     /** a list of dates that are currently selected */
     scheduleDates: Date[];
     /** a react hook that is a function that takes a list of dates, and will set the scheduleDates state */
-    setScheduleDates: (dates: string[]) => void;
+    setScheduleDates: (dates: Date[]) => void;
     /** the room that the user is booking */
     room: string;
 }
@@ -40,26 +40,38 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
         const startMonday = dayjs(startDate).startOf('week');
         const endDate = dayjs(startMonday).add(7, 'day').toDate();
 
-        const { data } = await axios.get<{ bookedRange: string[]; status: BookingStatus }[]>(
-            `/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`,
-        );
         const blocked: Date[] = [];
         const pending: Date[] = [];
-        data.forEach((booking) => {
-            const { bookedRange: range, status } = booking;
-            let start = dayjs(range[0]).startOf('hour');
-            const end = dayjs(range[1]).endOf('hour');
-            while (start.isBefore(end)) {
-                (status === 'pending' ? pending : blocked).push(start.toDate());
-                start = start.add(1, 'hour');
-            }
-        });
-        setBlockedDates(blocked);
-        setPendingDates(pending);
+
+        await axios
+            .get<{ bookedRange: string[]; status: BookingStatus }[]>(
+                `/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`,
+            )
+            .then(({ data }) => {
+                setBlockedDates(data);
+
+                data.forEach((booking) => {
+                    const { bookedRange: range, status } = booking;
+                    let start = dayjs(range[0]).startOf('hour');
+                    const end = dayjs(range[1]).endOf('hour');
+                    while (start.isBefore(end)) {
+                        (status === 'pending' ? pending : blocked).push(start.toDate());
+                        start = start.add(1, 'hour');
+                    }
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(() => {
+                setBlockedDates(blocked);
+                setPendingDates(pending);
+            });
     };
 
     useEffect(() => {
         handleBlockedDates(calendarDate.toDate());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [calendarDate, room]);
 
     return (

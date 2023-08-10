@@ -11,6 +11,9 @@ export const defaultUser: FetchedUser = {
     requests: [],
     manager: [],
     roomAccess: [],
+    discordWebhook: null,
+    slackWebhook: null,
+    webhooks: {} as UserWebhooks,
 };
 
 /**

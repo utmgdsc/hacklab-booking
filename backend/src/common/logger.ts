@@ -1,6 +1,5 @@
 import { createLogger, format, transports, Logger } from 'winston';
 
-
 const logLevels = {
   fatal: 0,
   error: 1,
@@ -10,7 +9,7 @@ const logLevels = {
   trace: 5,
 };
 
-const logger :Logger = createLogger({
+const logger: Logger = createLogger({
   levels: logLevels,
   format: format.combine(format.timestamp(), format.json()),
   transports: [
@@ -24,14 +23,12 @@ const logger :Logger = createLogger({
 });
 
 if (process.env.NODE_ENV !== 'production') {
-  logger.add(new transports.Console({
-    format: format.combine(
-      format.timestamp(),
-      format.splat(),
-      format.simple(),
-    ),
-    level: 'debug',
-  }));
+  logger.add(
+    new transports.Console({
+      format: format.combine(format.timestamp(), format.splat(), format.simple()),
+      level: 'debug',
+    }),
+  );
 }
 process.on('uncaughtException', (err) => {
   logger.error('Uncaught Exception: ', err);
@@ -39,6 +36,6 @@ process.on('uncaughtException', (err) => {
 
 process.on('unhandledRejection', (reason, p) => {
   logger.error('Unhandled Rejection: Promise: %s, Reason: %s', p, reason);
-} );
+});
 
 export default logger;

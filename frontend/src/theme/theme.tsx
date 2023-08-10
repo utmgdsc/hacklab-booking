@@ -120,18 +120,18 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
                 disabled: mode === THEME.DARK ? 'rgba(255,255,255,.38)' : '#5f6368',
             },
             app_colors: {
-                red: mode === THEME.DARK ? '#393131' : '#f35325',
-                blue: mode === THEME.DARK ? '#313739' : '#05a6f0',
-                green: mode === THEME.DARK ? '#313933' : '#81bc06',
-                yellow: mode === THEME.DARK ? '#393931' : '#ffb900',
-                purple: mode === THEME.DARK ? '#363139' : '#7b00ff',
+                red: mode === THEME.DARK ? '#4d3a3a' : '#f35325',
+                blue: mode === THEME.DARK ? '#3b4552' : '#05a6f0',
+                green: mode === THEME.DARK ? '#3f4d3f' : '#81bc06',
+                yellow: mode === THEME.DARK ? '#525238' : '#ffb900',
+                purple: mode === THEME.DARK ? '#533953' : '#7b00ff',
                 hover: {
-                    red: mode === THEME.DARK ? '#4d3f3f' : '#cc451f',
-                    blue: mode === THEME.DARK ? '#3f454d' : '#0389c7',
-                    green: mode === THEME.DARK ? '#3f4d3f' : '#6c9c03',
-                    yellow: mode === THEME.DARK ? '#4d4d3f' : '#ce9803',
-                    purple: mode === THEME.DARK ? '#4d3f4d' : '#6000c7',
-                }
+                    red: mode === THEME.DARK ? '#745e5e' : '#cc451f',
+                    blue: mode === THEME.DARK ? '#697380' : '#0389c7',
+                    green: mode === THEME.DARK ? '#6b836b' : '#6c9c03',
+                    yellow: mode === THEME.DARK ? '#86866d' : '#ce9803',
+                    purple: mode === THEME.DARK ? '#836a83' : '#6000c7',
+                },
             },
             // Used by `getContrastText()` to maximize the contrast between
             // the background and the text.
@@ -208,6 +208,13 @@ export const GoogleTheme = ({ mode }: { mode: PaletteMode }): ThemeOptions => {
                         borderColor: mode === THEME.LIGHT ? '#e8eaed' : '#404040',
                         marginTop: '1.25em',
                         gap: '2em',
+                    },
+                },
+            },
+            MuiButton: {
+                styleOverrides: {
+                    root: {
+                        borderRadius: '1.25em',
                     },
                 },
             },

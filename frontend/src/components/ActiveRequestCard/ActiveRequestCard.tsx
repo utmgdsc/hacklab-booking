@@ -5,6 +5,7 @@ import {
     Card,
     CardContent,
     IconButton,
+    Paper,
     Step,
     StepContent,
     StepLabel,
@@ -13,7 +14,7 @@ import {
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { ConvertDate, ConfirmationDialog } from '..';
+import { ConfirmationDialog, ConvertDate, formatRangedTime } from '..';
 
 interface ActiveRequestCardProps {
     booking: FetchedBookingRequest;
@@ -70,6 +71,7 @@ export const ActiveRequestCard = ({
             description: 'Your request has been completed',
         },
     ];
+
     if (booking.status === 'cancelled') {
         steps.splice(1, 0, {
             id: 'cancelled',
@@ -94,12 +96,6 @@ export const ActiveRequestCard = ({
         cancel(booking.id);
     };
 
-    const getTime = () => {
-        let startHour = new Date(booking.startDate).getHours();
-        let endHour = new Date(booking.endDate).getHours() + 1;
-        return `${startHour}:00 - ${endHour}:00`;
-    };
-
     return (
         <>
             <Card variant="outlined" sx={{ marginBottom: '1em' }}>
@@ -115,7 +111,8 @@ export const ActiveRequestCard = ({
                                 {booking.title}
                             </Typography>
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                {ConvertDate(booking.startDate)} from {getTime()} • {booking.room.friendlyName} •{' '}
+                                {ConvertDate(booking.startDate)} from{' '}
+                                {formatRangedTime(booking.startDate, booking.endDate)} • {booking.room.friendlyName} •{' '}
                                 {booking.group.name} • {booking.author.name}
                             </Typography>
                         </Box>
@@ -156,7 +153,7 @@ export const ActiveRequestCard = ({
                         activeStep={
                             booking.status === 'completed'
                                 ? steps.length
-                                : steps.findIndex((x) => x.id === booking.status)
+                                : steps.findIndex((step) => step.id === booking.status)
                         }
                         orientation="vertical"
                     >
@@ -169,14 +166,10 @@ export const ActiveRequestCard = ({
                             </Step>
                         ))}
                     </Stepper>
-                    {booking.status === 'completed' ? (
-                        <Step>
-                            <StepContent>
-                                <Typography>{steps[steps.length - 1].description}</Typography>
-                            </StepContent>
-                        </Step>
-                    ) : (
-                        ''
+                    {booking.status === 'completed' && (
+                        <Paper square elevation={0} sx={{ px: 4 }}>
+                            <Typography>{steps[steps.length - 1].description}</Typography>
+                        </Paper>
                     )}
                 </CardContent>
             </Card>

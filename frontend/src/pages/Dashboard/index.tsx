@@ -17,8 +17,9 @@ import {
     NoRequestsPlaceholder,
     PendingRequestCard,
 } from '../../components';
-import { UserContext } from '../../contexts/UserContext';
 import { AppButton } from '../../components/AppButtons/AppButtons';
+import { UserContext } from '../../contexts/UserContext';
+
 /**
  * all active requests cards given a list of active requests
  * @param {*} active_requests a list of requests received from the backend
@@ -46,7 +47,7 @@ const ActiveRequestCards = ({
             return (
                 <ActiveRequestCard
                     booking={request}
-                    ownerHasTCard={!!request['author']['roomAccess'].find((x) => x.roomName === request.roomName)}
+                    ownerHasTCard={!!request['author']['roomAccess'].find((room) => room.roomName === request.roomName)}
                     edit={editThisRequest}
                     cancel={cancelThisRequest}
                     viewOnly={false}
@@ -87,14 +88,11 @@ export const Dashboard = () => {
     const [my_requests, setMyRequests] = useState<FetchedBookingRequest[]>([]);
     const [editRequestID, setEditRequestID] = useState<string | null>(null);
     const [openEditRequest, setOpenEditRequest] = useState(false);
+    const [updateValue, setUpdateValue] = useState<Number>();
 
     React.useEffect(() => {
         document.title = 'Hacklab Booking System';
     });
-
-    useEffect(() => {
-        update();
-    }, [userInfo.groups, userInfo.utorid, userInfo.role]);
 
     const editThisRequest = (reqID: string) => {
         setEditRequestID(reqID);
@@ -102,35 +100,50 @@ export const Dashboard = () => {
     };
 
     const cancelThisRequest = (reqID: string) => {
-        // TODO: if request is completed, remove from calendar events
         axios.delete('/requests/' + reqID);
 
         fetchUserInfo();
     };
+
+    useEffect(() => {
+        const update = async () => {
+            await axios
+                .get<FetchedBookingRequest[]>('/requests')
+                .then((res) => res.data)
+                .then((data) => {
+                    setMyRequests(
+                        data.filter(
+                            (request) =>
+                                request.authorUtorid === userInfo.utorid &&
+                                userInfo.groups.find((groupRequest) => groupRequest.id === request.groupId),
+                        ),
+                    );
+                    setPendingRequests(
+                        data.filter(
+                            (request) =>
+                                request.status === 'pending' ||
+                                (request.status === 'needTCard' && ['admin', 'tcard'].includes(userInfo.role)),
+                        ),
+                    );
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        };
+
+        update();
+    }, [userInfo, updateValue]);
+
     const update = () => {
-        axios
-            .get<FetchedBookingRequest[]>('/requests')
-            .then((res) => res.data)
-            .then((data) => {
-                setMyRequests(
-                    data.filter(
-                        (x) => x.authorUtorid === userInfo.utorid && userInfo.groups.find((y) => y.id === x.groupId),
-                    ),
-                );
-                setPendingRequests(
-                    data.filter(
-                        (x) =>
-                            x.status === 'pending' ||
-                            (x.status === 'needTCard' && ['admin', 'tcard'].includes(userInfo.role)),
-                    ),
-                );
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        setUpdateValue(Math.random);
     };
+
+    /** mui theme object */
     const theme = useTheme();
 
+    /**
+     * all buttons on the dashboard
+     */
     const homeButtons: AppButton[] = [
         {
             title: 'View the Hacklab Calendar',
@@ -174,8 +187,6 @@ export const Dashboard = () => {
             hidden: userInfo.role !== 'admin' && userInfo.role !== 'tcard',
         },
     ];
-
-    console.log(homeButtons);
 
     return (
         <Container sx={{ py: 8 }} maxWidth="md" component="main">

@@ -13,11 +13,13 @@ import {
     useTheme,
     useMediaQuery,
 } from '@mui/material';
-import { ConvertDate } from '..';
+import { ConvertDate, formatRangedTime } from '..';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axios from '../../axios';
+import { UserContext } from '../../contexts/UserContext';
+import { SnackbarContext } from '../../contexts/SnackbarContext';
 
 interface PendingRequestCardProps {
     /** the request to display as a pending request card */
@@ -45,31 +47,39 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
     const [reason, setReason] = useState<string>('');
     /** whether or not the request has been approved */
     const [approved, setApproved] = useState(false);
+    /** the user context */
+    const { fetchUserInfo } = useContext(UserContext);
+    /** the snackbar context */
+    const { showSnackSev } = useContext(SnackbarContext);
 
     /**
      * Handles clicking of the "TCard access was granted" / Approve button
+     * @param {boolean} approval whether or not the "approve" button was clicked. If false, the "deny" button was clicked
      */
-    const handleClickOpen = async () => {
-        if (approved && booking.status === 'needTCard') {
-            const res = await axios.put('/rooms/' + booking.roomName + '/grantaccess', {
-                utorid: booking.authorUtorid,
-            });
-            if (res.status === 200) {
-                onUpdate();
-            }
+    const handleClickOpen = async (approval: boolean) => {
+        if (booking.status === 'needTCard' && approval) {
+            axios
+                .put('/rooms/' + booking.roomName + '/grantaccess', {
+                    utorid: booking.authorUtorid,
+                })
+                .then((res) => {
+                    if (res.status === 200) {
+                        onUpdate();
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                    showSnackSev(`Failed to grant TCard access: ${err.message}`, 'error');
+                })
+                .finally(() => {
+                    fetchUserInfo();
+                });
+                await fetchUserInfo();
             return;
         } else {
+            await fetchUserInfo();
             setOpen(true);
         }
-    };
-
-    /**
-     * @return {string} A formatted string of the time range of the booking
-     */
-    const getTime = (): string => {
-        let startHour: number = new Date(booking.startDate).getHours();
-        let endHour: number = new Date(booking.endDate).getHours() + 1;
-        return `${startHour}:00 - ${endHour}:00`;
     };
 
     /**
@@ -77,18 +87,23 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
      * @param {string} reason the reason for approving or denying the request
      * @param {'approve' | 'deny'} status whether the request should be approved or denied
      */
-    const handleChangeStatus = (reason: string, status: 'approve' | 'deny') => {
-        axios
+    const handleChangeStatus = async (reason: string, status: 'approve' | 'deny') => {
+        await axios
             .put(`/requests/${booking.id}/${status}`, {
                 reason: reason,
             })
             .then((res) => {
                 if (res.status === 200) {
                     onUpdate();
+                    fetchUserInfo();
                 }
             })
             .catch((err) => {
                 console.error(err);
+                showSnackSev(`Failed to ${status} request: ${err.message}`, 'error');
+            })
+            .finally(() => {
+                fetchUserInfo();
             });
     };
 
@@ -107,7 +122,8 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         {booking.title}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        {ConvertDate(booking.startDate)} from {getTime()} • {booking.roomName}
+                        {ConvertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} •{' '}
+                        {booking.roomName}
                     </Typography>
 
                     <Typography>{booking.description}</Typography>
@@ -119,7 +135,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         startIcon={<DoneIcon />}
                         onClick={() => {
                             setApproved(true);
-                            handleClickOpen();
+                            handleClickOpen(true);
                         }}
                     >
                         {booking.status === 'needTCard' ? 'TCard access was granted' : 'Approve'}
@@ -129,7 +145,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         startIcon={<CloseIcon />}
                         onClick={() => {
                             setApproved(false);
-                            handleClickOpen();
+                            handleClickOpen(false);
                         }}
                     >
                         Deny
