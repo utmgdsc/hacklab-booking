@@ -13,7 +13,7 @@ import {
     useTheme,
     useMediaQuery,
 } from '@mui/material';
-import { ConvertDate } from '..';
+import { ConvertDate, formatRangedTime } from '..';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { useContext, useState } from 'react';
@@ -82,18 +82,6 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
     };
 
     /**
-     * @return {string} A formatted string of the time range of the booking
-     */
-    const getTime = () => {
-        let startHour = new Date(booking.startDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-        let endHour = new Date(new Date(booking.endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, {
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-        return `${startHour} - ${endHour}`;
-    };
-
-    /**
      * Handles changing booking status in the backend
      * @param {string} reason the reason for approving or denying the request
      * @param {'approve' | 'deny'} status whether the request should be approved or denied
@@ -132,7 +120,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         {booking.title}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        {ConvertDate(booking.startDate)} from {getTime()} • {booking.roomName}
+                        {ConvertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} • {booking.roomName}
                     </Typography>
 
                     <Typography>{booking.description}</Typography>

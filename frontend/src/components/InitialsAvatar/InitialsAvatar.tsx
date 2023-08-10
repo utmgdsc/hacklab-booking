@@ -1,31 +1,5 @@
 import { Avatar } from '@mui/material';
-
-interface ColorHashProps {
-    /** the name to get the hash of */
-    name?: string;
-    /** the lightness of the color */
-    lightness?: number;
-}
-
-/**
- * get a hash of a string that is also a color code
- * @returns {string} the color code in hsl format
- */
-const colorHash = ({ name = '', lightness = 50 }: ColorHashProps): string => {
-    let hash = 95;
-
-    // use djb2 algorithm to get a hash of the name
-    for (let i = 0; i < name.length; i++) {
-        // ascii + hash * 33
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    const hue = Math.abs(hash % 120);
-    const saturation = Math.abs(hash % 100);
-
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-};
-
+import { colorHash } from '../';
 interface InitialsAvatarProps {
     /** the name to get the initials of */
     name?: string;

@@ -6,12 +6,10 @@ export { AppButtons } from './AppButtons/AppButtons';
 export { ApproverPicker } from './ApproverPicker/ApproverPicker';
 export { BookingSubmitted } from './BookingSubmitted/BookingSubmitted';
 export { ConfirmationDialog } from './ConfirmationDialog/ConfirmationDialog';
-export { ConvertDate } from './ConvertDate/ConvertDate';
 export { DashboardHeader } from './DashboardHeader/DashboardHeader';
 export { DateTimePicker } from './DateTimePicker/DateTimePicker';
 export { EditBooking } from './EditBooking/EditBooking';
 export { ErrorBoundary } from './ErrorBoundary/ErrorBoundary';
-export { GetMonday } from './GetMonday/GetMonday';
 export { GroupCard } from './GroupCard/GroupCard';
 export { GroupPicker } from './GroupPicker/GroupPicker';
 export { InitialsAvatar } from './InitialsAvatar/InitialsAvatar';
@@ -25,3 +23,5 @@ export { RoleChanger } from './RoleChanger/RoleChanger';
 export { RoomPicker } from './RoomPicker/RoomPicker';
 export { UserCard } from './UserCard/UserCard';
 export { VirtuosoTableComponents } from './Admin/VirtuosoTableComponents';
+
+export { ConvertDate, GetMonday, colorHash, formatRangedTime } from "./utils"

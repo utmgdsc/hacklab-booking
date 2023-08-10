@@ -14,7 +14,7 @@ import {
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { ConfirmationDialog, ConvertDate } from '..';
+import { ConfirmationDialog, ConvertDate, formatRangedTime } from '..';
 
 interface ActiveRequestCardProps {
     booking: FetchedBookingRequest;
@@ -96,18 +96,6 @@ export const ActiveRequestCard = ({
         cancel(booking.id);
     };
 
-    /**
-     * @return {string} A formatted string of the time range of the booking
-     */
-    const getTime = () => {
-        let startHour = new Date(booking.startDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-        let endHour = new Date(new Date(booking.endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, {
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-        return `${startHour} - ${endHour}`;
-    };
-
     return (
         <>
             <Card variant="outlined" sx={{ marginBottom: '1em' }}>
@@ -123,7 +111,7 @@ export const ActiveRequestCard = ({
                                 {booking.title}
                             </Typography>
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                {ConvertDate(booking.startDate)} from {getTime()} • {booking.room.friendlyName} •{' '}
+                                {ConvertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} • {booking.room.friendlyName} •{' '}
                                 {booking.group.name} • {booking.author.name}
                             </Typography>
                         </Box>
