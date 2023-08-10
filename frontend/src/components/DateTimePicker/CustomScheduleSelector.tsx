@@ -104,17 +104,9 @@ export const CustomScheduleSelector = ({
         } else if (pending) {
             backgroundColor = theme.palette.warning.main + '!important';
         } else if (inPast) {
-            if (theme.palette.mode === THEME.DARK) {
-                backgroundColor = theme.palette.action.hover + '!important';
-            } else {
-                backgroundColor = theme.palette.action.disabled + '!important';
-            }
+            backgroundColor = theme.palette.action.hover + '!important';
         } else {
-            if (theme.palette.mode === THEME.DARK) {
-                backgroundColor = theme.palette.action.disabled;
-            } else {
-                backgroundColor = theme.palette.action.hover;
-            }
+            backgroundColor = theme.palette.action.disabled;
         }
 
         return (

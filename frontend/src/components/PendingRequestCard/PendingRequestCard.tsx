@@ -65,7 +65,6 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                 .then((res) => {
                     if (res.status === 200) {
                         onUpdate();
-                        fetchUserInfo();
                     }
                 })
                 .catch((err) => {
@@ -75,8 +74,10 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                 .finally(() => {
                     fetchUserInfo();
                 });
+                await fetchUserInfo();
             return;
         } else {
+            await fetchUserInfo();
             setOpen(true);
         }
     };
@@ -94,6 +95,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
             .then((res) => {
                 if (res.status === 200) {
                     onUpdate();
+                    fetchUserInfo();
                 }
             })
             .catch((err) => {
