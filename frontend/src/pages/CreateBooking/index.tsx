@@ -79,16 +79,6 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
      * @param dates list of dates
      */
     const checkDate = async (dates: Date[]) => {
-        // if the date was not changed while editing then it is not overlapping
-        if (originalBooking) {
-            let startTimeEqual = dates[0].getTime() === new Date(originalBooking.startDate).getTime();
-            let endTimeEqual = dates[dates.length - 1].getTime() === new Date(originalBooking.endDate).getTime();
-            if (startTimeEqual && endTimeEqual) {
-                setValidDate(true);
-                return;
-            }
-        }
-
         await axios
             .get(`/rooms/${roomName}/blockeddates`, {
                 params: {
@@ -98,7 +88,16 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             })
             .then((res) => {
                 if (res.status === 200) {
-                    if (res.data.length > 0) {
+                    let blockedDates: number[] = res.data.map((date: string) => new Date(date).getTime());
+
+                    // remove dates that aren't blocked
+                    if (originalBooking) {
+                        blockedDates = blockedDates.filter((date: number) => {
+                            return date < new Date(originalBooking.startDate).getTime() || date > new Date(originalBooking.endDate).getTime();
+                        });
+                    }
+
+                    if (blockedDates.length > 0) {
                         setValidDate(false);
                         showSnackSev(
                             'This time overlaps with another booking, please choose a different time and/or date',
