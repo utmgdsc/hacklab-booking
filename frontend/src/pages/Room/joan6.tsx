@@ -204,10 +204,11 @@ export const Joan6 = () => {
         if (currentEvents.length !== 0) {
             const currentTime = new Date();
             // check if current time is in between any of the events
-
             const currentEvent = (): BookingRequest =>
                 currentEvents.find((event) => {
-                    return new Date(event.startDate) < currentTime && currentTime < new Date(event.endDate);
+                    // 3600000 is 1 hr * 60 min * 60 sec * 1000 ms
+                    // offset added to end date to account for the fact that the end date is not inclusive
+                    return new Date(event.startDate) < currentTime && currentTime < new Date(new Date(event.endDate).getTime() + 3600000);
                 });
 
             if (currentEvent) {
@@ -291,7 +292,8 @@ export const Joan6 = () => {
                                         hour: 'numeric',
                                     })}{' '}
                                     -{' '}
-                                    {new Date(currentBooking.endDate).toLocaleTimeString(undefined, {
+                                    {/* 1hr shift compensates for non-inclusive end-time */}
+                                    {new Date(new Date(currentBooking.endDate).getTime() + 3600000).toLocaleTimeString(undefined, {
                                         hour: 'numeric',
                                     })}
                                 </Typography>

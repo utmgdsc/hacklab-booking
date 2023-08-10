@@ -32,6 +32,8 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     const [submitted, setSubmitted] = useState(false);
     /** whether the request is being submitted */
     const [submittedLoading, setSubmittedLoading] = useState(false);
+    /** original edit booking object */
+    const [originalBooking, setOriginalBooking] = useState<FetchedBookingRequest>();
 
     /* set fill info if there is already an editID */
     useEffect(() => {
@@ -47,9 +49,22 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                                     name: res.data.group.name,
                                 } as Group),
                             );
-                            setRoomName(res.data.roomName);
-                            setDetails(res.data.description);
-                            setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                            if (res.data.roomName) { setRoomName(res.data.roomName); }
+                            if (res.data.description) { setDetails(res.data.description); }
+                            if (res.data.approvers) { setApprovers(res.data.approvers.map((approver: User) => approver.utorid)); }
+
+                            // fill scheduled dates
+                            if (res.data.startDate && res.data.endDate) {
+                                let acc: Date[] = [];
+                                const startTimeInMs = new Date(res.data.startDate).getTime();
+                                const eventDuration = new Date(res.data.endDate).getTime() - new Date(res.data.startDate).getTime() + 1;
+                                // 1 hr = (60 min / 1 hr) * (60 sec / 1 min) * (1000 ms / 1 sec) = 3600000 ms / hr
+                                for (let i = 0; i < eventDuration; i += 3600000) {
+                                    acc.push(new Date(startTimeInMs + i));
+                                }
+                                setScheduleDates(acc);
+                            }
+                            setOriginalBooking(res.data);
                         }
                     })
                     .catch((err) => {
@@ -64,6 +79,16 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
      * @param dates list of dates
      */
     const checkDate = async (dates: Date[]) => {
+        // if the date was not changed while editing then it is not overlapping
+        if (originalBooking) {
+            let startTimeEqual = dates[0].getTime() === new Date(originalBooking.startDate).getTime();
+            let endTimeEqual = dates[dates.length - 1].getTime() === new Date(originalBooking.endDate).getTime();
+            if (startTimeEqual && endTimeEqual) {
+                setValidDate(true);
+                return;
+            }
+        }
+
         await axios
             .get(`/rooms/${roomName}/blockeddates`, {
                 params: {

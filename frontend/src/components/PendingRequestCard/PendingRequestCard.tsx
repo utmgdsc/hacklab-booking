@@ -54,9 +54,10 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
 
     /**
      * Handles clicking of the "TCard access was granted" / Approve button
+     * @param {boolean} approval whether or not the "approve" button was clicked. If false, the "deny" button was clicked
      */
-    const handleClickOpen = async () => {
-        if (approved && booking.status === 'needTCard') {
+    const handleClickOpen = async (approval: boolean) => {
+        if (booking.status === 'needTCard' && approval) {
             axios
                 .put('/rooms/' + booking.roomName + '/grantaccess', {
                     utorid: booking.authorUtorid,
@@ -64,6 +65,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                 .then((res) => {
                     if (res.status === 200) {
                         onUpdate();
+                        fetchUserInfo();
                     }
                 })
                 .catch((err) => {
@@ -137,20 +139,14 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         sx={{ borderRadius: '100vw' }}
                         color="success"
                         startIcon={<DoneIcon />}
-                        onClick={() => {
-                            setApproved(true);
-                            handleClickOpen();
-                        }}
+                        onClick={() => { setApproved(true); handleClickOpen(true); }}
                     >
                         {booking.status === 'needTCard' ? 'TCard access was granted' : 'Approve'}
                     </Button>
                     <Button
                         color="error"
                         startIcon={<CloseIcon />}
-                        onClick={() => {
-                            setApproved(false);
-                            handleClickOpen();
-                        }}
+                        onClick={() => { setApproved(false); handleClickOpen(false); }}
                     >
                         Deny
                     </Button>

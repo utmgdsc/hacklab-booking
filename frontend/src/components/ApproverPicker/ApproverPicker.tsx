@@ -27,7 +27,11 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
             await axios
                 .get('/rooms/' + roomName)
                 .then(({ data }) => {
-                    setApproversBackend(data.approvers);
+                    if (data.approvers) {
+                        setApproversBackend(data.approvers);
+                    } else {
+                        console.error('No approvers found for room ' + roomName + '.', data);
+                    }
                 })
                 .catch((err) => {
                     console.error(err);

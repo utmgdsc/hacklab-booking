@@ -204,6 +204,7 @@ export const RoomViewer = () => {
                             setName(`${res.data.friendlyName} (${res.data.roomName})`);
                         } else {
                             showSnackSev('Room name not found', 'error');
+                            console.error('Room name not found', res.data);
                         }
                     }
                 })

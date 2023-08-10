@@ -104,6 +104,7 @@ export default {
             },
             select: userSelector(),
           },
+          approvers: { select: userSelector() },
         },
       });
     } else if (user.role == AccountRole.approver) {
