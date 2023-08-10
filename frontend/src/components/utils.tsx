@@ -100,10 +100,11 @@ export const colorHash = ({
  * @return {string} A formatted string of the time range of the booking
  */
 export const formatRangedTime = (startDate: Date, endDate: Date) => {
-    let startHour = new Date(startDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-    let endHour = new Date(new Date(endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, {
-        hour: '2-digit',
-        minute: '2-digit',
-    });
+    const formatDateOptions: Intl.DateTimeFormatOptions = {
+        hour: 'numeric',
+    }
+
+    let startHour = new Date(startDate).toLocaleTimeString(undefined, formatDateOptions);
+    let endHour = new Date(new Date(endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, formatDateOptions);
     return `${startHour} - ${endHour}`;
 };

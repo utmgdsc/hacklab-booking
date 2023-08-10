@@ -5,6 +5,7 @@ import { SnackbarContext } from '../../contexts/SnackbarContext';
 import SparkleMascot from '../../assets/img/sparkle-mascot.png';
 import SparkleMascotDark from '../../assets/img/sparkle-mascot_dark.png';
 import axios from '../../axios';
+import { formatRangedTime } from '../../components';
 import { THEME } from '../../theme/theme';
 
 /** set starting time starting with 0=12am */
@@ -131,14 +132,7 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                                 opacity: 0.5,
                             }}
                         >
-                            {event.group.name} •{' '}
-                            {new Date(event.startDate).toLocaleTimeString(undefined, {
-                                hour: 'numeric',
-                            })}{' '}
-                            -{' '}
-                            {addHoursToDate(new Date(event.endDate), 1).toLocaleTimeString(undefined, {
-                                hour: 'numeric',
-                            })}
+                            {event.group.name} •{' ' + formatRangedTime(event.startDate, event.endDate)}
                         </Typography>
                         <Typography
                             variant="h1"
@@ -291,16 +285,7 @@ export const Joan6 = () => {
                                     {currentBooking.title}
                                 </Typography>
                                 <Typography variant="h2" sx={{ fontWeight: 400 }}>
-                                    {new Date(currentBooking.startDate).toLocaleTimeString(undefined, {
-                                        hour: 'numeric',
-                                    })}{' '}
-                                    - {/* 1hr shift compensates for non-inclusive end-time */}
-                                    {new Date(new Date(currentBooking.endDate).getTime() + 3600000).toLocaleTimeString(
-                                        undefined,
-                                        {
-                                            hour: 'numeric',
-                                        },
-                                    )}
+                                    {formatRangedTime(currentBooking.startDate, currentBooking.endDate)}
                                 </Typography>
                                 <Typography variant="gray" sx={{ fontSize: '1.15em' }}>
                                     {currentBooking.description}
