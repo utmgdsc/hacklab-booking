@@ -111,7 +111,8 @@ export const ActiveRequestCard = ({
                                 {booking.title}
                             </Typography>
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                {ConvertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} • {booking.room.friendlyName} •{' '}
+                                {ConvertDate(booking.startDate)} from{' '}
+                                {formatRangedTime(booking.startDate, booking.endDate)} • {booking.room.friendlyName} •{' '}
                                 {booking.group.name} • {booking.author.name}
                             </Typography>
                         </Box>

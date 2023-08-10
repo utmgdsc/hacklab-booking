@@ -49,15 +49,22 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                                     name: res.data.group.name,
                                 } as Group),
                             );
-                            if (res.data.roomName) { setRoomName(res.data.roomName); }
-                            if (res.data.description) { setDetails(res.data.description); }
-                            if (res.data.approvers) { setApprovers(res.data.approvers.map((approver: User) => approver.utorid)); }
+                            if (res.data.roomName) {
+                                setRoomName(res.data.roomName);
+                            }
+                            if (res.data.description) {
+                                setDetails(res.data.description);
+                            }
+                            if (res.data.approvers) {
+                                setApprovers(res.data.approvers.map((approver: User) => approver.utorid));
+                            }
 
                             // fill scheduled dates
                             if (res.data.startDate && res.data.endDate) {
                                 let acc: Date[] = [];
                                 const startTimeInMs = new Date(res.data.startDate).getTime();
-                                const eventDuration = new Date(res.data.endDate).getTime() - new Date(res.data.startDate).getTime() + 1;
+                                const eventDuration =
+                                    new Date(res.data.endDate).getTime() - new Date(res.data.startDate).getTime() + 1;
                                 // 1 hr = (60 min / 1 hr) * (60 sec / 1 min) * (1000 ms / 1 sec) = 3600000 ms / hr
                                 for (let i = 0; i < eventDuration; i += 3600000) {
                                     acc.push(new Date(startTimeInMs + i));
@@ -93,7 +100,10 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     // remove dates that aren't blocked
                     if (originalBooking) {
                         blockedDates = blockedDates.filter((date: number) => {
-                            return date < new Date(originalBooking.startDate).getTime() || date > new Date(originalBooking.endDate).getTime();
+                            return (
+                                date < new Date(originalBooking.startDate).getTime() ||
+                                date > new Date(originalBooking.endDate).getTime()
+                            );
                         });
                     }
 

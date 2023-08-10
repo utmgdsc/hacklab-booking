@@ -120,7 +120,8 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         {booking.title}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        {ConvertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} • {booking.roomName}
+                        {ConvertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} •{' '}
+                        {booking.roomName}
                     </Typography>
 
                     <Typography>{booking.description}</Typography>
@@ -130,14 +131,20 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         sx={{ borderRadius: '100vw' }}
                         color="success"
                         startIcon={<DoneIcon />}
-                        onClick={() => { setApproved(true); handleClickOpen(true); }}
+                        onClick={() => {
+                            setApproved(true);
+                            handleClickOpen(true);
+                        }}
                     >
                         {booking.status === 'needTCard' ? 'TCard access was granted' : 'Approve'}
                     </Button>
                     <Button
                         color="error"
                         startIcon={<CloseIcon />}
-                        onClick={() => { setApproved(false); handleClickOpen(false); }}
+                        onClick={() => {
+                            setApproved(false);
+                            handleClickOpen(false);
+                        }}
                     >
                         Deny
                     </Button>

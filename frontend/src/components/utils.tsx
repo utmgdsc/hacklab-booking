@@ -65,7 +65,10 @@ export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
  * get a hash of a string that is also a color code
  * @returns {string} the color code in hsl format
  */
-export const colorHash = ({ name = '', lightness = 50 }: {
+export const colorHash = ({
+    name = '',
+    lightness = 50,
+}: {
     /** the name to get the hash of */
     name?: string;
     /** the lightness of the color */

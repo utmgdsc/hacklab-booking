@@ -105,7 +105,7 @@ export const CustomScheduleSelector = ({
             backgroundColor = theme.palette.warning.main + '!important';
         } else if (inPast) {
             if (theme.palette.mode === THEME.DARK) {
-                backgroundColor = theme.palette.action.hover + "!important";
+                backgroundColor = theme.palette.action.hover + '!important';
             } else {
                 backgroundColor = theme.palette.action.disabled + '!important';
             }

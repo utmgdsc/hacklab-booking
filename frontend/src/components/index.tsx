@@ -24,4 +24,4 @@ export { RoomPicker } from './RoomPicker/RoomPicker';
 export { UserCard } from './UserCard/UserCard';
 export { VirtuosoTableComponents } from './Admin/VirtuosoTableComponents';
 
-export { ConvertDate, GetMonday, colorHash, formatRangedTime } from "./utils"
+export { ConvertDate, GetMonday, colorHash, formatRangedTime } from './utils';
