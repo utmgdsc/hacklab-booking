@@ -96,6 +96,9 @@ export const ActiveRequestCard = ({
         cancel(booking.id);
     };
 
+    /**
+     * @return {string} A formatted string of the time range of the booking
+     */
     const getTime = () => {
         let startHour = new Date(booking.startDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
         let endHour = new Date(new Date(booking.endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, {

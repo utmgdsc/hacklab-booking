@@ -84,10 +84,13 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
     /**
      * @return {string} A formatted string of the time range of the booking
      */
-    const getTime = (): string => {
-        let startHour: number = new Date(booking.startDate).getHours();
-        let endHour: number = new Date(booking.endDate).getHours() + 1;
-        return `${startHour}:00 - ${endHour}:00`;
+    const getTime = () => {
+        let startHour = new Date(booking.startDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+        let endHour = new Date(new Date(booking.endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+        return `${startHour} - ${endHour}`;
     };
 
     /**

@@ -15,7 +15,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** context to show snackbars */
     const { showSnackSev } = useContext(SnackbarContext);
     /** user info */
-    const { userInfo } = useContext(UserContext);
+    const { userInfo, fetchUserInfo } = useContext(UserContext);
     /** currently selected group name */
     const [group, setGroup] = useState<string>('');
     /** currently selected room name */
@@ -189,6 +189,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 })
                 .finally(() => {
                     setSubmittedLoading(false);
+                    fetchUserInfo();
                 });
         }
     };

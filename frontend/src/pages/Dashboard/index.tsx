@@ -100,7 +100,6 @@ export const Dashboard = () => {
     };
 
     const cancelThisRequest = (reqID: string) => {
-        // TODO: if request is completed, remove from calendar events
         axios.delete('/requests/' + reqID);
 
         fetchUserInfo();
@@ -133,7 +132,7 @@ export const Dashboard = () => {
         };
 
         update();
-    }, [userInfo.groups, userInfo.utorid, userInfo.role, updateValue]);
+    }, [userInfo, updateValue]);
 
     const update = () => {
         setUpdateValue(Math.random);
