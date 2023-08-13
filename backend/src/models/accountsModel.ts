@@ -63,7 +63,7 @@ export default {
     });
     return { status: 200, data:{} };
   },
-  upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string; theme?: Theme }) => {
+  upsertUser: async (user:  Omit<User, 'theme' | 'role'> & { role?: string; theme?: Theme }) => {
     if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
     }
@@ -79,7 +79,7 @@ export default {
       status: 200,
       data: <User> await db.user.upsert({
         where: { utorid: user.utorid },
-        update: { email: user.email },
+        update: { email: user.email, name: user.name },
         include: {
           groups: {
             include: {
