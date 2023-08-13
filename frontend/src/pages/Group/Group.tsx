@@ -149,7 +149,12 @@ export const Group = () => {
                 }
             })
             .catch((err) => {
-                showSnackSev(`Could not add person: ${err.message}`, 'error');
+                if(err.response.status === 400) {
+                    showSnackSev(`Could not add person: ${err.data.message}`, 'error');
+                }
+                else {
+                    showSnackSev(`Could not add person: ${err.message}`, 'error');
+                }
                 console.error(err);
             })
             .finally(async () => {
