@@ -99,7 +99,7 @@ export const GroupDirectory = () => {
                 })
                 .catch(catchAxiosError('Failed to fetch groups', showSnackSev));
         })();
-    }, [showSnackSev]);
+    }, []);
 
     return (
         <SubPage name="Your Groups">

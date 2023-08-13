@@ -129,8 +129,8 @@ export const Group = () => {
                 })
                 .catch(catchAxiosError('Could not get group', showSnackSev));
         };
-        void getGroup();
-    }, [updateValue, groupID, showSnackSev]);
+        getGroup();
+    }, [groupID]);
 
     const getGroup = () => {
         setUpdateValue(Math.random);

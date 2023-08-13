@@ -77,7 +77,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     .catch(catchAxiosError('Could not fetch booking request', showSnackSev));
             })();
         }
-    }, [editID, showSnackSev]);
+    }, [editID]);
 
     /**
      * Checks if the date is not blocked

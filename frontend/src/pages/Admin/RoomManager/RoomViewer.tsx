@@ -180,7 +180,7 @@ export const RoomViewer = () => {
                 })
                 .catch(catchAxiosError('Unable to get approvers', showSnackSev));
         })();
-    }, [showSnackSev]);
+    }, []);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
@@ -204,7 +204,7 @@ export const RoomViewer = () => {
                 })
                 .catch(catchAxiosError('Unable to get room data', showSnackSev));
         })();
-    }, [roomId, showSnackSev]);
+    }, [roomId]);
 
     return (
         <SubPage name={name} maxWidth="xl">

@@ -41,7 +41,7 @@ export const RoomManager = () => {
         };
 
         void getRooms();
-    }, [updateValue, showSnackSev]);
+    }, [updateValue]);
 
     const getRooms = () => {
         setUpdateValue(Math.random);
