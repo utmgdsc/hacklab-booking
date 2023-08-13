@@ -38,7 +38,7 @@ import { GoogleTheme, THEME } from './theme/theme';
 import { ApprovedRequestPage } from './pages/ApprovedRequestPage';
 import { Webhooks } from './pages/Settings/Webhooks';
 
-import axios from './axios';
+import axios, { catchAxiosError } from './axios';
 
 function App() {
     /*
@@ -51,10 +51,7 @@ function App() {
             .then(({ data }) => {
                 setUserInfo(data);
             })
-            .catch((err) => {
-                console.error(err);
-                showSnackSev(`Failed to fetch user info: ${err.message}`, 'error');
-            });
+            .catch(catchAxiosError('Failed to fetch user info', showSnackSev));
     };
 
     useEffect(() => {

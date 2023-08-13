@@ -12,7 +12,7 @@ import React, { useState } from 'react';
 
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 
-import axios from '../../axios';
+import axios, { catchAxiosError } from '../../axios';
 
 interface RoleChangerProps {
     /** the utorid of the user whose role is being changed */
@@ -58,9 +58,7 @@ export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): 
                 showSnack(`Changed ${utorid}'s role to ${role}`);
                 setUpdate(Math.random());
             })
-            .catch((err) => {
-                showSnackSev(`Failed to change ${utorid}'s role: ${err.message}`, 'error');
-            })
+            .catch(catchAxiosError(`Failed to change ${utorid}'s role`, showSnackSev))
             .finally(() => {
                 setOpen(false);
             });
