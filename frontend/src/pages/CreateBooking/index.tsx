@@ -1,6 +1,6 @@
 import { Box, Button, Divider, TextField, CircularProgress, Collapse } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import axios from '../../axios';
+import axios, { catchAxiosError } from '../../axios';
 import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
@@ -74,9 +74,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                             setOriginalBooking(res.data);
                         }
                     })
-                    .catch((err) => {
-                        showSnackSev(`Could not fetch booking request: ${err.message}`, 'error');
-                    });
+                    .catch(catchAxiosError('Could not fetch booking request', showSnackSev));
             })();
         }
     }, [editID, showSnackSev]);
@@ -125,7 +123,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             })
             .catch((err) => {
                 setValidDate(false);
-                showSnackSev(`An error occurred while checking the date: ${err.message}`, 'error');
+                catchAxiosError('An error occurred while checking the date', showSnackSev)(err);
                 setScheduleDates([]);
             });
     };
@@ -182,9 +180,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 .then(() => {
                     setSubmitted(true);
                 })
-                .catch((err) => {
-                    showSnackSev(`Could not edit booking request: ${err.message}`, 'error');
-                })
+                .catch(catchAxiosError('Could not edit booking request', showSnackSev))
                 .finally(() => {
                     setSubmittedLoading(false);
                 });
@@ -194,9 +190,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 .then(() => {
                     setSubmitted(true);
                 })
-                .catch((err) => {
-                    showSnackSev(`Could not create booking request: ${err.message}`, 'error');
-                })
+                .catch(catchAxiosError('Could not create booking request', showSnackSev))
                 .finally(() => {
                     setSubmittedLoading(false);
                     fetchUserInfo();

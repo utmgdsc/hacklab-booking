@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from '../../axios';
+import axios, { catchAxiosError } from '../../axios';
 import { ConfirmationDialog, InitialsAvatar, InputDialog } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
@@ -47,7 +47,14 @@ const PersonCard = ({
                 <Box>
                     <Typography variant="h5">
                         {person.name}{' '}
-                        <Typography sx={{ color: 'grey', display: 'inline' }}>({person.utorid})</Typography>
+                        <Typography
+                            sx={{
+                                color: 'grey',
+                                display: 'inline',
+                            }}
+                        >
+                            ({person.utorid})
+                        </Typography>
                     </Typography>
                     {isManager(person) ? <Typography color="success">Group manager</Typography> : null}
                     <Typography variant="body1">{person.email}</Typography>
@@ -120,12 +127,9 @@ export const Group = () => {
                 .then((data) => {
                     setGroup(data);
                 })
-                .catch((err) => {
-                    showSnackSev(`Could not fetch group: ${err.message}`, 'error');
-                    console.error(err);
-                });
+                .catch(catchAxiosError('Could not get group', showSnackSev));
         };
-        getGroup();
+        void getGroup();
     }, [updateValue, groupID, showSnackSev]);
 
     const getGroup = () => {
@@ -142,21 +146,9 @@ export const Group = () => {
                 utorid,
             })
             .then((res) => {
-                if (res.status === 200) {
-                    showSnackSev('Person added', 'success');
-                } else {
-                    showSnackSev('Could not add person', 'error');
-                }
+                showSnackSev('Person added', 'success');
             })
-            .catch((err) => {
-                if(err.response.status === 400) {
-                    showSnackSev(`Could not add person: ${err.data.message}`, 'error');
-                }
-                else {
-                    showSnackSev(`Could not add person: ${err.message}`, 'error');
-                }
-                console.error(err);
-            })
+            .catch(catchAxiosError('Could not add person', showSnackSev))
             .finally(async () => {
                 await getGroup();
             });
@@ -172,16 +164,9 @@ export const Group = () => {
                 utorid,
             })
             .then((res) => {
-                if (res.status === 200) {
-                    showSnackSev('Person removed', 'success');
-                } else {
-                    showSnackSev('Could not remove person', 'error');
-                }
+                showSnackSev('Person removed', 'success');
             })
-            .catch((err) => {
-                showSnackSev(`Could not remove person: ${err.message}`, 'error');
-                console.error(err);
-            })
+            .catch(catchAxiosError('Could not remove person', showSnackSev))
             .finally(() => {
                 getGroup();
             });
@@ -201,10 +186,7 @@ export const Group = () => {
                     showSnackSev('Could not delete group', 'error');
                 }
             })
-            .catch((err) => {
-                showSnackSev(`Could not delete group: ${err.message}`, 'error');
-                console.error(err);
-            })
+            .catch(catchAxiosError('Could not delete group', showSnackSev))
             .finally(() => {
                 getGroup();
             });
@@ -227,10 +209,7 @@ export const Group = () => {
                     showSnackSev('Could not change role', 'error');
                 }
             })
-            .catch((err) => {
-                showSnackSev(`Could not change role: ${err.message}`, 'error');
-                console.error(err);
-            })
+            .catch(catchAxiosError('Could not change role', showSnackSev))
             .finally(() => {
                 getGroup();
             });
