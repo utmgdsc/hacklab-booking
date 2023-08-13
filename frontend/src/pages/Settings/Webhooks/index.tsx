@@ -28,7 +28,7 @@ const webhookEvents: Record<
     {
         name: string;
         description: string;
-        admin?: boolean;
+        permissions?: UserRoles[];
     }
 > = {
     ADMIN_BOOKING_CREATED: {
@@ -38,7 +38,7 @@ const webhookEvents: Record<
     BOOKING_APPROVAL_REQUESTED: {
         name: 'Booking Approval Requested',
         description: 'When a user requests your approval for a booking',
-        admin: true,
+        permissions: [],
     },
     ADMIN_BOOKING_UPDATED: {
         name: 'Booking Updated',
@@ -51,6 +51,11 @@ const webhookEvents: Record<
     ADMIN_BOOKING_STATUS_CHANGED: {
         name: 'Booking Status Changed (Admin)',
         description: "When a booking's status is changed",
+    },
+    ROOM_ACCESS_REQUESTED: {
+        name: 'Room Access Requested',
+        description: 'When a user requests room access',
+        permissions: ['tcard'],
     },
     ROOM_ACCESS_GRANTED: {
         name: 'Room Access Granted',
@@ -68,6 +73,10 @@ const webhookEvents: Record<
         name: 'Room Access Revoked (Admin)',
         description: "When a user's access to a room is revoked by an admin",
     },
+    ADMIN_ROOM_CREATED: {
+        name: 'Room Created (Admin)',
+        description: 'When a new room is created',
+    },
     GROUP_MEMBER_INVITED: {
         name: 'Group Member Invited',
         description: 'When a user invites another member to a group your manage',
@@ -75,6 +84,10 @@ const webhookEvents: Record<
     USER_INVITED_TO_GROUP: {
         name: 'User Invited to Group',
         description: 'When you are invited to a group',
+    },
+    ADMIN_GROUP_CREATED: {
+        name: 'Group Created (Admin)',
+        description: 'When a new group is created',
     },
     GROUP_MEMBER_JOINED: {
         name: 'Group Member Joined',
@@ -84,9 +97,25 @@ const webhookEvents: Record<
         name: 'Group Member Removed',
         description: 'When a user is removed from a group you manage',
     },
-    GROUP_MEMBER_LEFT: {
-        name: 'Group Member Left',
-        description: 'When a user leaves a group you are in',
+    USER_REMOVED_FROM_GROUP: {
+        name: 'User Removed from Group',
+        description: 'When you are removed from a group',
+    },
+    GROUP_ROLE_CHANGED: {
+        name: 'Group Role Changed',
+        description: 'When your role in a group is changed by a manager in a group you manage',
+    },
+    USER_GROUP_ROLE_CHANGED: {
+        name: 'User Group Role Changed',
+        description: 'When your role in a group is changed by a manager in a group you are in',
+    },
+    GROUP_DELETED: {
+        name: 'Group Deleted',
+        description: 'When a group you are in is deleted',
+    },
+    ADMIN_GROUP_DELETED: {
+        name: 'Group Deleted (Admin)',
+        description: 'When a group is deleted',
     },
 };
 
@@ -95,7 +124,7 @@ export const Webhooks = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const [slackWebhook, setSlackWebhook] = useState(userInfo.slackWebhook);
     const [discordWebhook, setDiscordWebhook] = useState(userInfo.discordWebhook);
-    const isAdmin = userInfo.role !== 'student';
+    const isAdmin = userInfo.role === 'admin';
     useEffect(() => {
         setSlackWebhook(userInfo.slackWebhook);
         setDiscordWebhook(userInfo.discordWebhook);
@@ -105,7 +134,9 @@ export const Webhooks = () => {
             if (e.target.value === (type === 'slack' ? userInfo.slackWebhook : userInfo.discordWebhook)) {
                 return;
             }
-            const res = await axios.put('accounts/webhooks/' + type, { webhook: e.target.value ?? null }).catch(catchAxiosError('Webhook error', showSnackSev));
+            const res = await axios
+                .put('accounts/webhooks/' + type, { webhook: e.target.value == '' ? null : e.target.value })
+                .catch(catchAxiosError('Webhook error', showSnackSev));
             if (res && res.status === 200) {
                 await fetchUserInfo();
                 showSnackSev('Webhook updated!', 'success');
@@ -116,7 +147,9 @@ export const Webhooks = () => {
         return async (value: string[] | string) => {
             const newWebhooks: Record<string, string[]> = { ...userInfo.webhooks };
             newWebhooks[webhookEvent] = typeof value === 'string' ? value.split(',') : (value as string[]);
-            const res = await axios.put('accounts/webhooks/', { webhooks: newWebhooks }).catch(catchAxiosError('Webhook error', showSnackSev));
+            const res = await axios
+                .put('accounts/webhooks/', { webhooks: newWebhooks })
+                .catch(catchAxiosError('Webhook error', showSnackSev));
             if (res && res.status === 200) {
                 await fetchUserInfo();
                 showSnackSev('Webhook updated!', 'success');
@@ -204,7 +237,9 @@ export const Webhooks = () => {
                                             .filter(
                                                 (event) =>
                                                     isAdmin ||
-                                                    !(webhookEvents[event].admin || event.startsWith('ADMIN')),
+                                                    (webhookEvents[event].permissions &&
+                                                        webhookEvents[event].permissions.includes(userInfo.role)) ||
+                                                    (!webhookEvents[event].permissions && !event.startsWith('ADMIN')),
                                             )
                                             .map((event) => {
                                                 return (
