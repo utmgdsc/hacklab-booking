@@ -17,7 +17,7 @@ import { ConvertDate, formatRangedTime } from '..';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { useContext, useState } from 'react';
-import axios from '../../axios';
+import axios, { catchAxiosError } from '../../axios';
 import { UserContext } from '../../contexts/UserContext';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 
@@ -67,14 +67,11 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         onUpdate();
                     }
                 })
-                .catch((err) => {
-                    console.error(err);
-                    showSnackSev(`Failed to grant TCard access: ${err.message}`, 'error');
-                })
+                .catch(catchAxiosError('Failed to grant TCard access', showSnackSev))
                 .finally(() => {
                     fetchUserInfo();
                 });
-                await fetchUserInfo();
+            await fetchUserInfo();
             return;
         } else {
             await fetchUserInfo();
@@ -98,10 +95,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                     fetchUserInfo();
                 }
             })
-            .catch((err) => {
-                console.error(err);
-                showSnackSev(`Failed to ${status} request: ${err.message}`, 'error');
-            })
+            .catch(catchAxiosError('Failed to change booking status', showSnackSev))
             .finally(() => {
                 fetchUserInfo();
             });

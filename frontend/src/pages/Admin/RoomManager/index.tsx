@@ -15,7 +15,7 @@ import {
     useTheme,
 } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
-import axios from '../../../axios';
+import axios, { catchAxiosError } from '../../../axios';
 import { Link } from '../../../components';
 import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import { UserContext } from '../../../contexts/UserContext';
@@ -37,14 +37,11 @@ export const RoomManager = () => {
                         setRooms(res.data);
                     }
                 })
-                .catch((err) => {
-                    console.error(err);
-                    showSnackSev(`Failed to fetch rooms: ${err.message}`, 'error');
-                });
+                .catch(catchAxiosError(`Failed to get rooms`, showSnackSev));
         };
 
-        getRooms();
-    }, [updateValue, showSnackSev]);
+        void getRooms();
+    }, [updateValue]);
 
     const getRooms = () => {
         setUpdateValue(Math.random);
@@ -156,11 +153,7 @@ const CreateRoomDialog = ({
                         setOpen(false);
                     }
                 })
-                .catch((err) => {
-                    console.error(err);
-                    showSnackSev(`Error creating room: ${err.message}`, 'error');
-                    setOpen(false);
-                });
+                .catch(catchAxiosError('Error creating room', showSnackSev));
         }
         setOpen(false);
         setFriendlyName('');

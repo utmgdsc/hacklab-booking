@@ -20,7 +20,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { TransitionGroup } from 'react-transition-group';
 import { TableVirtuoso } from 'react-virtuoso';
-import axios from '../../../axios';
+import axios, { catchAxiosError } from '../../../axios';
 import { VirtuosoTableComponents } from '../../../components';
 import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import { SubPage } from '../../../layouts/SubPage';
@@ -98,10 +98,7 @@ const RevokeButton = ({ utorid }: { utorid: string }) => {
             .then(() => {
                 showSnackSev(`${utorid} marked as having no access`, 'success');
             })
-            .catch((err) => {
-                showSnackSev(`Unable to revoke access from ${utorid}: ${err.message}`, 'error');
-                console.error(err);
-            })
+            .catch(catchAxiosError(`Unable to revoke access from ${utorid}`, showSnackSev))
             .finally(() => {
                 setLoading(false);
             });
@@ -181,12 +178,9 @@ export const RoomViewer = () => {
                 .then(({ data }) => {
                     setApproversBackend(data);
                 })
-                .catch((err) => {
-                    showSnackSev(`Unable to get approvers: ${err.message}`, 'error');
-                    console.error(err);
-                });
+                .catch(catchAxiosError('Unable to get approvers', showSnackSev));
         })();
-    }, [showSnackSev]);
+    }, []);
 
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
@@ -208,12 +202,9 @@ export const RoomViewer = () => {
                         }
                     }
                 })
-                .catch((err) => {
-                    showSnackSev(`Room not found: ${err.message}`, 'error');
-                    console.error(err);
-                });
+                .catch(catchAxiosError('Unable to get room data', showSnackSev));
         })();
-    }, [roomId, showSnackSev]);
+    }, [roomId]);
 
     return (
         <SubPage name={name} maxWidth="xl">
@@ -311,13 +302,7 @@ export const RoomViewer = () => {
                                                         'success',
                                                     );
                                                 })
-                                                .catch((err) => {
-                                                    showSnackSev(
-                                                        `Unable to ${apiRoute} ${row['utorid']}: ${err.message}`,
-                                                        'error',
-                                                    );
-                                                    console.error(err);
-                                                });
+                                                .catch(catchAxiosError('Unable to update approvers', showSnackSev));
                                         }}
                                     />
                                 );
