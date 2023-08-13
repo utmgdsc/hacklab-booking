@@ -6,7 +6,10 @@ import EventTypes from '../types/EventTypes';
 import { userSelector } from './utils';
 
 const verifyWebhook = (webhook: unknown) => {
-  if (typeof webhook !== 'string' && webhook !== null) {
+  if (webhook === null) {
+    return false;
+  }
+  if (typeof webhook !== 'string') {
     return false;
   }
   try {
