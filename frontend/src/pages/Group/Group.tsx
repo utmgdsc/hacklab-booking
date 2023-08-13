@@ -146,9 +146,9 @@ export const Group = () => {
                 utorid,
             })
             .then((res) => {
-                showSnackSev('Person added', 'success');
+                showSnackSev('Person invited', 'success');
             })
-            .catch(catchAxiosError('Could not add person', showSnackSev))
+            .catch(catchAxiosError('Could not invite person', showSnackSev))
             .finally(async () => {
                 await getGroup();
             });
@@ -262,10 +262,11 @@ export const Group = () => {
                         <InputDialog
                             open={open}
                             setOpen={setOpen}
-                            title="Add a student to your group"
-                            description="To add a student to your group, please enter their UTORid below."
+                            title="Invite a student to your group"
+                            description="To invite a student to your group, please enter their UTORid below."
                             label="UTORid"
                             onSubmit={addPerson}
+                            buttonLabel={'Invite'}
                         />
                     </Box>
                 ) : null}
