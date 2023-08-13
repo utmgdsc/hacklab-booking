@@ -7,7 +7,7 @@ import { userSelector } from './utils';
 
 const verifyWebhook = (webhook: unknown) => {
   if (webhook === null) {
-    return false;
+    return true;
   }
   if (typeof webhook !== 'string') {
     return false;
@@ -29,7 +29,7 @@ export default {
     }
     for (const key in webhooks) {
       if (!Object.keys(EventTypes).includes(key)) {
-        return { status: 400, message: 'Invalid event type.' };
+        return { status: 400, message: `Invalid event type: ${key}` };
       }
       if (!webhooks.hasOwnProperty(key) || !Array.isArray((webhooks as  Record<string, unknown>)[key])) {
         return { status: 400, message: 'Invalid webhook array.' };
