@@ -152,9 +152,9 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        invited: { select: { utorid: true } },
-        managers: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        invited: { select: userSelector() },
+        managers: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -201,8 +201,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        invited: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        invited: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -231,8 +231,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        invited: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        invited: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -254,8 +254,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        managers: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        managers: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -296,8 +296,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        managers: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        managers: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
