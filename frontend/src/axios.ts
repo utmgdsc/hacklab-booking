@@ -10,6 +10,16 @@ export const instance = axios.create({
 
 export const catchAxiosError =
     (message: string | undefined, showSnackSev: (message?: string, sev?: AlertColor) => void) => (err: any) => {
+        if (!err.response) {
+            showSnackSev('Server did not respond, please open an issue on our Github', 'error');
+            console.error(err);
+            return;
+        }
+        if (err.response?.status >= 500) {
+            showSnackSev('Something went wrong, please try again later', 'error');
+            console.error(err);
+            return;
+        }
         if (message) {
             if (err.response?.data?.message) {
                 showSnackSev(`${message}: ${err.response.data.message}`, 'error');
