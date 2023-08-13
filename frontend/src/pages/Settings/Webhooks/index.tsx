@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { FocusEvent, useContext, useEffect, useState } from 'react';
-import axios from '../../../axios';
+import axios, { catchAxiosError } from '../../../axios';
 import { SelectWebhookType } from '../../../components/Webhooks/SelectWebhookType';
 import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import { UserContext } from '../../../contexts/UserContext';
@@ -105,8 +105,8 @@ export const Webhooks = () => {
             if (e.target.value === (type === 'slack' ? userInfo.slackWebhook : userInfo.discordWebhook)) {
                 return;
             }
-            const { status } = await axios.put('accounts/webhooks/' + type, { webhook: e.target.value ?? null });
-            if (status === 200) {
+            const res = await axios.put('accounts/webhooks/' + type, { webhook: e.target.value ?? null }).catch(catchAxiosError('Webhook error', showSnackSev));
+            if (res && res.status === 200) {
                 await fetchUserInfo();
                 showSnackSev('Webhook updated!', 'success');
             }
@@ -116,8 +116,8 @@ export const Webhooks = () => {
         return async (value: string[] | string) => {
             const newWebhooks: Record<string, string[]> = { ...userInfo.webhooks };
             newWebhooks[webhookEvent] = typeof value === 'string' ? value.split(',') : (value as string[]);
-            const { status } = await axios.put('accounts/webhooks/', { webhooks: newWebhooks });
-            if (status === 200) {
+            const res = await axios.put('accounts/webhooks/', { webhooks: newWebhooks }).catch(catchAxiosError('Webhook error', showSnackSev));
+            if (res && res.status === 200) {
                 await fetchUserInfo();
                 showSnackSev('Webhook updated!', 'success');
             }
