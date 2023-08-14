@@ -268,6 +268,12 @@ export default {
         message: 'You are not allowed to modify this group.',
       };
     }
+    if (manager.utorid === utorid && group.managers.length === 1) {
+      return {
+        status: 403,
+        message: 'You cannot remove yourself from the group if you are the only manager, either delete the group or make a new manager.',
+      };
+    }
     if (!group.members.some((x) => x.utorid === utorid)) {
       return {
         status: 400,
