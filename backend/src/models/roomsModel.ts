@@ -186,7 +186,7 @@ export default {
         include: { userAccess: { where: { utorid } } },
       });
       const context : AllContexts = {
-        ...generateUserActionContext(room.userAccess[0]), ...generateApproverContext(user),
+        ...generateUserActionContext(await db.user.findUnique({ where:{ utorid } }) as User), ...generateApproverContext(user),
         room: room.roomName,
         room_friendly: room.friendlyName,
       } satisfies RoomAccessContext;
