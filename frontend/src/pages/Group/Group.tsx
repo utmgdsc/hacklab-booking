@@ -119,23 +119,21 @@ export const Group = () => {
     /**
      * Void function to get the group information
      */
-    useEffect(() => {
-        const getGroup = async () => {
-            await axios
-                .get<FetchedGroup>('/groups/' + groupID)
-                .then((res) => res.data)
-                .then((data) => {
-                    setGroup(data);
-                })
-                .catch(catchAxiosError('Could not get group', showSnackSev));
-        };
-        getGroup();
-    }, [groupID]);
 
-    const getGroup = () => {
-        setUpdateValue(Math.random);
+
+    const getGroup = async () => {
+        await axios
+            .get<FetchedGroup>('/groups/' + groupID)
+            .then((res) => res.data)
+            .then((data) => {
+                setGroup(data);
+            })
+            .catch(catchAxiosError('Could not get group', showSnackSev));
     };
 
+    useEffect(() => {
+        void getGroup();
+    }, [groupID]);
     /**
      * Void function to invite someone to a group
      * @param utorid The utorid of the person to add
@@ -149,9 +147,7 @@ export const Group = () => {
                 showSnackSev('Person invited', 'success');
             })
             .catch(catchAxiosError('Could not invite person', showSnackSev))
-            .finally(async () => {
-                await getGroup();
-            });
+            .finally(getGroup);
     };
 
     /**
