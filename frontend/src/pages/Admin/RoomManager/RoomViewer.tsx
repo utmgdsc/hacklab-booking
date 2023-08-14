@@ -185,10 +185,7 @@ export const RoomViewer = () => {
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
-
-    // get room data
-    useEffect(() => {
-        (async () => {
+    const getRoomData =  async () => {
             await axios
                 .get(`/rooms/${roomId}`)
                 .then((res) => {
@@ -203,7 +200,12 @@ export const RoomViewer = () => {
                     }
                 })
                 .catch(catchAxiosError('Unable to get room data', showSnackSev));
-        })();
+    }
+
+
+    // get room data
+    useEffect(() => {
+      void getRoomData();
     }, [roomId]);
 
     return (
@@ -302,7 +304,7 @@ export const RoomViewer = () => {
                                                         'success',
                                                     );
                                                 })
-                                                .catch(catchAxiosError('Unable to update approvers', showSnackSev));
+                                                .catch(catchAxiosError('Unable to update approvers', showSnackSev)).finally(getRoomData);
                                         }}
                                     />
                                 );
