@@ -289,12 +289,12 @@ templates[EventTypes.USER_GROUP_ROLE_CHANGED] = {
   },
 };
 templates[EventTypes.GROUP_DELETED] = {
-  template: '{{group_name}} has been deleted by {{changer_utorid}}.',
+  template: '{{group_name}} has been deleted by {{utorid}}.',
   email: {
     subject: '{{group_name}} has been deleted',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{group_name}} has been deleted by {{changer_utorid}}.</p>
+            <p>{{group_name}} has been deleted by {{utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -303,12 +303,12 @@ templates[EventTypes.GROUP_DELETED] = {
 };
 
 templates[EventTypes.ADMIN_GROUP_DELETED] = {
-  template: '{{group_name}} has been deleted by {{changer_utorid}}.',
+  template: '{{group_name}} has been deleted by {{utorid}}.',
   email: {
     subject: '{{group_name}} has been deleted',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{group_name}} has been deleted by {{changer_utorid}}.</p>
+            <p>{{group_name}} has been deleted by {{utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
