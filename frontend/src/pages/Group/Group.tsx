@@ -92,7 +92,6 @@ export const Group = () => {
     const [open, setOpen] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
     const [openLeave, setOpenLeave] = React.useState(false);
-    const [updateValue, setUpdateValue] = React.useState<Number>();
     const { id: groupID } = useParams();
     const { userInfo } = useContext(UserContext);
 
