@@ -98,7 +98,7 @@ export const triggerUserNotification = async (notification: EventTypes, user: st
     if (!destination) {
       continue;
     }
-    await triggerNotification(
+    void triggerNotification(
       notification,
       {
         destination: destination,
