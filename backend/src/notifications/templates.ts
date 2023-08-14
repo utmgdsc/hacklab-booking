@@ -182,12 +182,12 @@ templates[EventTypes.ADMIN_ROOM_CREATED] = {
 };
 
 templates[EventTypes.ADMIN_GROUP_CREATED] = {
-  template: '{{utorid}} has created a new group: {{group_name}} ({{group}}).',
+  template: '{{utorid}} has created a new group: {{group_name}}.',
   email: {
     subject: '{{utorid}} has created a new group: {{group_name}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{full_name}} has created a new group: {{group_name}} ({{group}}).</p>
+            <p>{{full_name}} has created a new group: {{group_name}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
