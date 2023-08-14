@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AlertColor } from '@mui/material';
+import React from 'react'
 
 /**
  * Axios instance
@@ -7,7 +8,14 @@ import { AlertColor } from '@mui/material';
 export const instance = axios.create({
     baseURL: process.env.NODE_ENV === 'production' ? '/api' : `${process.env.REACT_APP_API_URL}/`,
 });
-
+instance.interceptors.request.use((config) => {
+    document.getElementById('loading').style.display = 'flex';
+    return config;
+});
+instance.interceptors.response.use((response) => {
+    document.getElementById('loading').style.display = 'none';
+    return response;
+});
 export const catchAxiosError =
     (message: string | undefined, showSnackSev: (message?: string, sev?: AlertColor) => void) => (err: any) => {
         if (!err.response) {
