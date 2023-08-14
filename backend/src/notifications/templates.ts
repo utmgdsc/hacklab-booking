@@ -113,12 +113,12 @@ templates[EventTypes.ROOM_ACCESS_REQUESTED] = {
 };
 
 templates[EventTypes.ROOM_ACCESS_GRANTED] = {
-  template: 'You have been granted access to {{room_friendly}} by {{changer_utorid}}.',
+  template: 'You have been granted access to {{room_friendly}} by {{approver_utorid}}.',
   email: {
     subject: 'You have been granted access to {{room_friendly}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>You have been granted access to {{room_friendly}} by {{changer_utorid}}.</p>
+            <p>You have been granted access to {{room_friendly}} by {{approver_utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -126,12 +126,12 @@ templates[EventTypes.ROOM_ACCESS_GRANTED] = {
   },
 };
 templates[EventTypes.ROOM_ACCESS_REVOKED] = {
-  template: 'Your access to {{room_friendly}} has been revoked by {{changer_utorid}}.',
+  template: 'Your access to {{room_friendly}} has been revoked by {{approver_utorid}}.',
   email: {
     subject: 'Your access to {{room_friendly}} has been revoked',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>Your access to {{room_friendly}} has been revoked by {{changer_utorid}}.</p>
+            <p>Your access to {{room_friendly}} has been revoked by {{approver_utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -140,12 +140,12 @@ templates[EventTypes.ROOM_ACCESS_REVOKED] = {
 };
 
 templates[EventTypes.ADMIN_ROOM_ACCESS_GRANTED] = {
-  template: '{{full_name}} has been granted access to {{room_friendly}} by {{changer_utorid}}.',
+  template: '{{full_name}} has been granted access to {{room_friendly}} by {{approver_utorid}}.',
   email: {
     subject: '{{full_name}} has been granted access to {{room_friendly}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{full_name}} has been granted access to {{room_friendly}} by {{changer_utorid}}.</p>
+            <p>{{full_name}} has been granted access to {{room_friendly}} by {{approver_utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -154,12 +154,12 @@ templates[EventTypes.ADMIN_ROOM_ACCESS_GRANTED] = {
 };
 
 templates[EventTypes.ADMIN_ROOM_ACCESS_REVOKED] = {
-  template: '{{full_name}}\'s access to {{room_friendly}} has been revoked by {{changer_utorid}}.',
+  template: '{{full_name}}\'s access to {{room_friendly}} has been revoked by {{approver_utorid}}.',
   email: {
     subject: '{{full_name}}\'s access to {{room_friendly}} has been revoked',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{full_name}}'s access to {{room_friendly}} has been revoked by {{changer_utorid}}.</p>
+            <p>{{full_name}}'s access to {{room_friendly}} has been revoked by {{approver_utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
