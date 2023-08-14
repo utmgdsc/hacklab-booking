@@ -1,7 +1,7 @@
 import { Close as CloseIcon, Done as DoneIcon, GroupAdd } from '@mui/icons-material';
 import { Box, Button, Card, CardActions, CardContent, Grid, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
-import axios from '../../axios';
+import axios, { catchAxiosError } from '../../axios';
 import { GroupCard, InputDialog } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
@@ -33,10 +33,7 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                             .then(() => {
                                 showSnackSev('You have joined the group', 'success');
                             })
-                            .catch((err) => {
-                                console.error(err);
-                                showSnackSev(`Failed to join group: ${err.message}`, 'error');
-                            })
+                            .catch(catchAxiosError(`Failed to join group`, showSnackSev))
                             .finally(() => {
                                 fetchUserInfo();
                             });
@@ -54,10 +51,7 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                                 showSnackSev('You have declined the invitation', 'success');
                                 fetchUserInfo();
                             })
-                            .catch((err) => {
-                                console.error(err);
-                                showSnackSev(`Failed to decline invitation: ${err.message}`, 'error');
-                            })
+                            .catch(catchAxiosError(`Failed to decline invitation`, showSnackSev))
                             .finally(() => {
                                 fetchUserInfo();
                             });
@@ -93,10 +87,7 @@ export const GroupDirectory = () => {
                     showSnackSev('Failed to create group', 'error');
                 }
             })
-            .catch((err) => {
-                console.error(err);
-                showSnackSev(`Failed to create group: ${err.message}`, 'error');
-            });
+            .catch(catchAxiosError('Failed to create group', showSnackSev));
     };
 
     useEffect(() => {
@@ -106,12 +97,9 @@ export const GroupDirectory = () => {
                 .then((res) => {
                     setMyGroups(res.data as FetchedGroup[]);
                 })
-                .catch((err) => {
-                    console.error(err);
-                    showSnackSev(`Failed to fetch groups: ${err.message}`, 'error');
-                });
+                .catch(catchAxiosError('Failed to fetch groups', showSnackSev));
         })();
-    }, [showSnackSev]);
+    }, []);
 
     return (
         <SubPage name="Your Groups">

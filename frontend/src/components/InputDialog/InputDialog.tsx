@@ -24,6 +24,7 @@ interface InputDialogProps {
     description: string;
     /** the title of the dialog box */
     title: string;
+    buttonLabel?: string;
 }
 
 /**
@@ -34,9 +35,10 @@ interface InputDialogProps {
  * @param {string} label the label of the input
  * @param {Function} onSubmit a function that is called when the user submits the dialog box, passing in the value of the input
  * @param {string} description the description of the dialog box
+ * @param {string} buttonLabel the label of the submit button
  *
  */
-export const InputDialog = ({ open, setOpen, title, label, description, onSubmit }: InputDialogProps) => {
+export const InputDialog = ({ open, setOpen, title, label, description, onSubmit, buttonLabel }: InputDialogProps) => {
     /** value of the input */
     const [value, setValue] = useState('');
     /** mui theme context */
@@ -87,7 +89,7 @@ export const InputDialog = ({ open, setOpen, title, label, description, onSubmit
                     }}
                     variant="contained"
                 >
-                    Add
+                    {buttonLabel ?? 'Add'}
                 </Button>
             </DialogActions>
         </Dialog>

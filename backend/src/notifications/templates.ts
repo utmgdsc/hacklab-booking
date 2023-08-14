@@ -182,12 +182,12 @@ templates[EventTypes.ADMIN_ROOM_CREATED] = {
 };
 
 templates[EventTypes.ADMIN_GROUP_CREATED] = {
-  template: '{{utorid}} has created a new group: {{group_name}} ({{group}}).',
+  template: '{{utorid}} has created a new group: {{group_name}}.',
   email: {
     subject: '{{utorid}} has created a new group: {{group_name}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{full_name}} has created a new group: {{group_name}} ({{group}}).</p>
+            <p>{{full_name}} has created a new group: {{group_name}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -222,9 +222,9 @@ templates[EventTypes.USER_INVITED_TO_GROUP] = {
   },
 };
 templates[EventTypes.GROUP_MEMBER_JOINED] = {
-  template: '{{full_name}} has joined {{group_name}}.',
+  template: '{{utorid}} has joined {{group_name}}.',
   email: {
-    subject: '{{full_name}} has joined {{group_name}}.',
+    subject: '{{utorid}} has joined {{group_name}}.',
     html: `
         <p>Hi {{receiver_full_name}},</p>
         <p>{{full_name}} has joined {{group_name}}.</p>
@@ -235,12 +235,12 @@ templates[EventTypes.GROUP_MEMBER_JOINED] = {
   },
 };
 templates[EventTypes.GROUP_MEMBER_REMOVED] = {
-  template: '{{changer_utorid}} has removed {{full_name}} from {{group_name}}.',
+  template: '{{remover_utorid}} has removed {{utorid}} from {{group_name}}.',
   email: {
     subject: '{{full_name}} has been removed from {{group_name}}.',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{changer_utorid}} has removed {{full_name}} from {{group_name}}.</p>
+            <p>{{remover_utorid}} has removed {{full_name}} from {{group_name}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -249,12 +249,12 @@ templates[EventTypes.GROUP_MEMBER_REMOVED] = {
 };
 
 templates[EventTypes.USER_REMOVED_FROM_GROUP] = {
-  template: 'You have been removed from {{group_name}} by {{changer_utorid}}.',
+  template: 'You have been removed from {{group_name}} by {{remover_utorid}}.',
   email: {
     subject: 'You have been removed from {{group_name}}',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>You have been removed from {{group_name}} by {{changer_utorid}}.</p>
+            <p>You have been removed from {{group_name}} by {{remover_utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -289,12 +289,12 @@ templates[EventTypes.USER_GROUP_ROLE_CHANGED] = {
   },
 };
 templates[EventTypes.GROUP_DELETED] = {
-  template: '{{group_name}} has been deleted by {{changer_utorid}}.',
+  template: '{{group_name}} has been deleted by {{utorid}}.',
   email: {
     subject: '{{group_name}} has been deleted',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{group_name}} has been deleted by {{changer_utorid}}.</p>
+            <p>{{group_name}} has been deleted by {{utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>
@@ -303,12 +303,12 @@ templates[EventTypes.GROUP_DELETED] = {
 };
 
 templates[EventTypes.ADMIN_GROUP_DELETED] = {
-  template: '{{group_name}} has been deleted by {{changer_utorid}}.',
+  template: '{{group_name}} has been deleted by {{utorid}}.',
   email: {
     subject: '{{group_name}} has been deleted',
     html: `
             <p>Hi {{receiver_full_name}},</p>
-            <p>{{group_name}} has been deleted by {{changer_utorid}}.</p>
+            <p>{{group_name}} has been deleted by {{utorid}}.</p>
             <br>
             <p>Thanks,</p>
             <p>Hacklab Booking Team</p>

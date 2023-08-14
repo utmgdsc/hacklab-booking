@@ -5,6 +5,20 @@ import { UserWebhooks, WebhookTypes } from '../types/webhooksTypes';
 import EventTypes from '../types/EventTypes';
 import { userSelector } from './utils';
 
+const verifyWebhook = (webhook: unknown) => {
+  if (webhook === null) {
+    return true;
+  }
+  if (typeof webhook !== 'string') {
+    return false;
+  }
+  try {
+    new URL(webhook as string);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
 export default {
   updateWebhooks: async (user: User, webhooks: unknown) => {
     if (typeof webhooks !== 'object') {
@@ -15,7 +29,7 @@ export default {
     }
     for (const key in webhooks) {
       if (!Object.keys(EventTypes).includes(key)) {
-        return { status: 400, message: 'Invalid event type.' };
+        return { status: 400, message: `Invalid event type: ${key}` };
       }
       if (!webhooks.hasOwnProperty(key) || !Array.isArray((webhooks as  Record<string, unknown>)[key])) {
         return { status: 400, message: 'Invalid webhook array.' };
@@ -33,26 +47,26 @@ export default {
     return { status: 200, data:{} };
   },
   updateDiscordWebhook: async (user: User, webhook: unknown) => {
-    if (typeof webhook !== 'string' && webhook !== null) {
+    if (!verifyWebhook(webhook)) {
       return { status: 400, message: 'Invalid webhook.' };
     }
     await db.user.update({
       where: { utorid: user.utorid },
-      data: { discordWebhook: webhook },
+      data: { discordWebhook: webhook as string },
     });
     return { status: 200, data:{} };
   },
   updateSlackWebhook: async (user: User, webhook: unknown) => {
-    if (typeof webhook !== 'string' && webhook !== null) {
+    if (!verifyWebhook(webhook)) {
       return { status: 400, message: 'Invalid webhook.' };
     }
     await db.user.update({
       where: { utorid: user.utorid },
-      data: { slackWebhook: webhook },
+      data: { slackWebhook: webhook as string },
     });
     return { status: 200, data:{} };
   },
-  upsertUser: async (user: Omit<Omit<User, 'role'>, 'theme'> & { role?: string; theme?: Theme }) => {
+  upsertUser: async (user:  Omit<User, 'theme' | 'role'> & { role?: string; theme?: Theme }) => {
     if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
     }
@@ -68,7 +82,7 @@ export default {
       status: 200,
       data: <User> await db.user.upsert({
         where: { utorid: user.utorid },
-        update: { email: user.email },
+        update: { email: user.email, name: user.name },
         include: {
           groups: {
             include: {

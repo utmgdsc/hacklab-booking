@@ -226,7 +226,7 @@ export const Joan6 = () => {
                 }
             }
         }
-    }, [currentEvents, room.requests, roomId, showSnackSev]);
+    }, [currentEvents, room.requests, roomId]);
 
     useEffect(() => {
         const interval = setInterval(() => {

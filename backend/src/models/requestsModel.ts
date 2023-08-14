@@ -274,7 +274,7 @@ export default {
         author: { select: userSelector() },
       },
     });
-    const context = { ...await generateBaseNotificationContext(requestFetched), approver_utorid: user.utorid, approver_name: user.name, status, reason };
+    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: user.utorid, changer_name: user.name, status, reason };
     await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     return { status: 200, data: {} };
@@ -328,7 +328,7 @@ export default {
         status: RequestStatus.denied,
       },
     });
-    const context = { ...await generateBaseNotificationContext(requestFetched), approver_utorid: requestFetched.author.utorid, approver_name: requestFetched.author.name, status, reason };
+    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: requestFetched.author.utorid, changer_name: requestFetched.author.name, status, reason };
     await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     if (status !== RequestStatus.completed) {
@@ -389,7 +389,12 @@ export default {
       }
       data.approvers = approversObject;
     }
-    await db.request.update({ where: { id: request.id }, data });
+    const updatedRequest = await db.request.update({ where: { id: request.id }, data, include: { room: true, author: true, group:true } });
+    await triggerAdminNotification(EventTypes.ADMIN_BOOKING_UPDATED, {
+      ...await generateBaseNotificationContext(updatedRequest),
+      changer_utorid: user.utorid,
+      changer_full_name: user.name,
+    });
     return { status: 200, data: {} };
   },
 } satisfies Model;

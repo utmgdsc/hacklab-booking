@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from '../../axios';
+import axios, { catchAxiosError } from '../../axios';
 import { ConfirmationDialog, InitialsAvatar, InputDialog } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
@@ -47,7 +47,14 @@ const PersonCard = ({
                 <Box>
                     <Typography variant="h5">
                         {person.name}{' '}
-                        <Typography sx={{ color: 'grey', display: 'inline' }}>({person.utorid})</Typography>
+                        <Typography
+                            sx={{
+                                color: 'grey',
+                                display: 'inline',
+                            }}
+                        >
+                            ({person.utorid})
+                        </Typography>
                     </Typography>
                     {isManager(person) ? <Typography color="success">Group manager</Typography> : null}
                     <Typography variant="body1">{person.email}</Typography>
@@ -85,7 +92,6 @@ export const Group = () => {
     const [open, setOpen] = React.useState(false);
     const [openDelete, setOpenDelete] = React.useState(false);
     const [openLeave, setOpenLeave] = React.useState(false);
-    const [updateValue, setUpdateValue] = React.useState<Number>();
     const { id: groupID } = useParams();
     const { userInfo } = useContext(UserContext);
 
@@ -112,26 +118,21 @@ export const Group = () => {
     /**
      * Void function to get the group information
      */
-    useEffect(() => {
-        const getGroup = async () => {
-            await axios
-                .get<FetchedGroup>('/groups/' + groupID)
-                .then((res) => res.data)
-                .then((data) => {
-                    setGroup(data);
-                })
-                .catch((err) => {
-                    showSnackSev(`Could not fetch group: ${err.message}`, 'error');
-                    console.error(err);
-                });
-        };
-        getGroup();
-    }, [updateValue, groupID, showSnackSev]);
 
-    const getGroup = () => {
-        setUpdateValue(Math.random);
+
+    const getGroup = async () => {
+        await axios
+            .get<FetchedGroup>('/groups/' + groupID)
+            .then((res) => res.data)
+            .then((data) => {
+                setGroup(data);
+            })
+            .catch(catchAxiosError('Could not get group', showSnackSev));
     };
 
+    useEffect(() => {
+        void getGroup();
+    }, [groupID]);
     /**
      * Void function to invite someone to a group
      * @param utorid The utorid of the person to add
@@ -142,19 +143,10 @@ export const Group = () => {
                 utorid,
             })
             .then((res) => {
-                if (res.status === 200) {
-                    showSnackSev('Person added', 'success');
-                } else {
-                    showSnackSev('Could not add person', 'error');
-                }
+                showSnackSev('Person invited', 'success');
             })
-            .catch((err) => {
-                showSnackSev(`Could not add person: ${err.message}`, 'error');
-                console.error(err);
-            })
-            .finally(async () => {
-                await getGroup();
-            });
+            .catch(catchAxiosError('Could not invite person', showSnackSev))
+            .finally(getGroup);
     };
 
     /**
@@ -167,16 +159,9 @@ export const Group = () => {
                 utorid,
             })
             .then((res) => {
-                if (res.status === 200) {
-                    showSnackSev('Person removed', 'success');
-                } else {
-                    showSnackSev('Could not remove person', 'error');
-                }
+                showSnackSev('Person removed', 'success');
             })
-            .catch((err) => {
-                showSnackSev(`Could not remove person: ${err.message}`, 'error');
-                console.error(err);
-            })
+            .catch(catchAxiosError('Could not remove person', showSnackSev))
             .finally(() => {
                 getGroup();
             });
@@ -196,10 +181,7 @@ export const Group = () => {
                     showSnackSev('Could not delete group', 'error');
                 }
             })
-            .catch((err) => {
-                showSnackSev(`Could not delete group: ${err.message}`, 'error');
-                console.error(err);
-            })
+            .catch(catchAxiosError('Could not delete group', showSnackSev))
             .finally(() => {
                 getGroup();
             });
@@ -222,10 +204,7 @@ export const Group = () => {
                     showSnackSev('Could not change role', 'error');
                 }
             })
-            .catch((err) => {
-                showSnackSev(`Could not change role: ${err.message}`, 'error');
-                console.error(err);
-            })
+            .catch(catchAxiosError('Could not change role', showSnackSev))
             .finally(() => {
                 getGroup();
             });
@@ -278,10 +257,11 @@ export const Group = () => {
                         <InputDialog
                             open={open}
                             setOpen={setOpen}
-                            title="Add a student to your group"
-                            description="To add a student to your group, please enter their UTORid below."
+                            title="Invite a student to your group"
+                            description="To invite a student to your group, please enter their UTORid below."
                             label="UTORid"
                             onSubmit={addPerson}
+                            buttonLabel={'Invite'}
                         />
                     </Box>
                 ) : null}

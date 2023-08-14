@@ -152,9 +152,9 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        invited: { select: { utorid: true } },
-        managers: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        invited: { select: userSelector() },
+        managers: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -201,8 +201,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        invited: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        invited: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -231,8 +231,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        invited: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        invited: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -254,8 +254,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        managers: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        managers: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
@@ -266,6 +266,12 @@ export default {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
+      };
+    }
+    if (manager.utorid === utorid && group.managers.length === 1) {
+      return {
+        status: 403,
+        message: 'You cannot remove yourself from the group if you are the only manager, either delete the group or make a new manager.',
       };
     }
     if (!group.members.some((x) => x.utorid === utorid)) {
@@ -296,8 +302,8 @@ export default {
     const group = await db.group.findUnique({
       where: { id },
       include: {
-        managers: { select: { utorid: true } },
-        members: { select: { utorid: true } },
+        managers: { select: userSelector() },
+        members: { select: userSelector() },
       },
     });
     if (!group) {
