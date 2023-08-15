@@ -20,8 +20,8 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=production
-      - EMAIL_USER=/run/secrets/email_user
-      - EMAIL_PASS=password123
+    env_file:
+      - .env
 
   frontend:
     restart: always
@@ -40,11 +40,6 @@ services:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-secrets:
-   email_user:
-     file: ./backend/emailuser.txt
-   email_password:
-     file: ./backend/emailpass.txt;
 
 volumes:
   db_data:
