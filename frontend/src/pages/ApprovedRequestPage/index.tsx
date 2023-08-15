@@ -1,10 +1,11 @@
 import { CheckCircle as CheckCircleIcon, Error } from '@mui/icons-material';
 import { useTheme } from '@mui/material';
 import { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from '../../axios';
+import axios, { catchAxiosError } from '../../axios';
 import { ErrorPage } from '../../layouts/ErrorPage';
+import { SnackbarContext } from '../../contexts/SnackbarContext';
 
 /**
  * Approve or deny a booking request
@@ -15,6 +16,8 @@ export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
     const theme = useTheme();
     const [error, setError] = useState<string | undefined>();
     const [resolved, setResolved] = useState<boolean>();
+    const { showSnackSev } = useContext(SnackbarContext);
+
     if (!id) {
         setError('No booking ID provided!');
     }
@@ -30,6 +33,8 @@ export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
         } catch (e) {
             if ((e as AxiosError).response) {
                 setError(((e as AxiosError).response.data as { message: string }).message);
+            } else {
+                catchAxiosError(undefined, showSnackSev)(e);
             }
         }
     };
@@ -62,7 +67,7 @@ export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
     if (resolved) {
         return (
             <ErrorPage
-                name="Booking request approved!"
+                name={`Booking request ${approved ? 'approved' : 'denied'}!`}
                 graphic={
                     <CheckCircleIcon
                         sx={{
