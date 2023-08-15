@@ -13,6 +13,8 @@ jobs:
         run: |
           echo "${{ secrets.FRONTEND_ENV }}" > ./frontend/.env;
           echo "${{ secrets.BACKEND_ENV }}" > ./backend/.env;
+          echo "${{ secrets.EMAIL_USER }}" > ./backend/emailuser.txt;
+          echo "${{ secrets.EMAIL_PASS }}" > ./backend/emailpass.txt;
 
       - name: compose build
         run: docker compose build
