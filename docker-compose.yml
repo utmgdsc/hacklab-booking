@@ -20,6 +20,8 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=production
+      - EMAIL_USER=${{ secrets.EMAIL_USER }}
+      - EMAIL_PASS=${{ secrets.EMAIL_PASS }}
 
   frontend:
     restart: always
