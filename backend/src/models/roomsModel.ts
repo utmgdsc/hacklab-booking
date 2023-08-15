@@ -21,6 +21,10 @@ const generateApproverContext = (user: User) => ({
   approver_utorid: user.utorid,
   approver_full_name: user.name,
 });
+const generateChangerContext = (user: User) => ({
+  changer_utorid: user.utorid,
+  changer_full_name: user.name,
+});
 
 const updateRequests = async (roomName: string, authorUtorid:string,  approver:User, status: RequestStatus) => {
   if (!(status === RequestStatus.completed || status === RequestStatus.needTCard)) {
@@ -48,7 +52,7 @@ const updateRequests = async (roomName: string, authorUtorid:string,  approver:U
     data: { status: status },
   });
   for (const request of requests) {
-    const context = { ...await generateBaseRequestNotificationContext(request), ...generateApproverContext(approver), status: RequestStatus.completed  } satisfies BookingStatusChangeContext;
+    const context = { ...await generateBaseRequestNotificationContext(request), ...generateChangerContext(approver), status: RequestStatus.completed  } satisfies BookingStatusChangeContext;
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     await triggerUserNotification(EventTypes.BOOKING_STATUS_CHANGED, request.author, context);
   }
@@ -186,7 +190,7 @@ export default {
         include: { userAccess: { where: { utorid } } },
       });
       const context : AllContexts = {
-        ...generateUserActionContext(room.userAccess[0]), ...generateApproverContext(user),
+        ...generateUserActionContext(await db.user.findUnique({ where:{ utorid } }) as User), ...generateApproverContext(user),
         room: room.roomName,
         room_friendly: room.friendlyName,
       } satisfies RoomAccessContext;

@@ -119,7 +119,6 @@ export const Group = () => {
      * Void function to get the group information
      */
 
-
     const getGroup = async () => {
         await axios
             .get<FetchedGroup>('/groups/' + groupID)
@@ -221,15 +220,17 @@ export const Group = () => {
                     marginBottom: '1em',
                 }}
             >
-                <Button
-                    color="error"
-                    startIcon={<ExitToApp />}
-                    onClick={() => {
-                        setOpenLeave(true);
-                    }}
-                >
-                    Leave Group
-                </Button>
+                {group.members.find((person) => person.utorid === userInfo.utorid) ? (
+                    <Button
+                        color="error"
+                        startIcon={<ExitToApp />}
+                        onClick={() => {
+                            setOpenLeave(true);
+                        }}
+                    >
+                        Leave Group
+                    </Button>
+                ) : null}
                 {isManager(userInfo.utorid) ? (
                     <Box
                         sx={{

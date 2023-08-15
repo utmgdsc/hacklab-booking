@@ -84,7 +84,7 @@ const fixedHeaderContent = (columns: TableRowData[]) => {
  * A button that allows a user to revoke access from a user
  * @param utorid the utorid of the user to revoke access from
  */
-const RevokeButton = ({ utorid }: { utorid: string }) => {
+const RevokeButton = ({ utorid, onUpdate }: { utorid: string; onUpdate: () => void }) => {
     const { showSnackSev } = useContext(SnackbarContext);
     const { id: roomId } = useParams();
     const [loading, setLoading] = useState<boolean>(false);
@@ -101,6 +101,7 @@ const RevokeButton = ({ utorid }: { utorid: string }) => {
             .catch(catchAxiosError(`Unable to revoke access from ${utorid}`, showSnackSev))
             .finally(() => {
                 setLoading(false);
+                onUpdate();
             });
     };
 
@@ -185,27 +186,26 @@ export const RoomViewer = () => {
     const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
-    const getRoomData =  async () => {
-            await axios
-                .get(`/rooms/${roomId}`)
-                .then((res) => {
-                    if (res.status === 200) {
-                        setRoomData(res.data);
-                        if (res.data.friendlyName && res.data.roomName) {
-                            setName(`${res.data.friendlyName} (${res.data.roomName})`);
-                        } else {
-                            showSnackSev('Room name not found', 'error');
-                            console.error('Room name not found', res.data);
-                        }
+    const getRoomData = async () => {
+        await axios
+            .get(`/rooms/${roomId}`)
+            .then((res) => {
+                if (res.status === 200) {
+                    setRoomData(res.data);
+                    if (res.data.friendlyName && res.data.roomName) {
+                        setName(`${res.data.friendlyName} (${res.data.roomName})`);
+                    } else {
+                        showSnackSev('Room name not found', 'error');
+                        console.error('Room name not found', res.data);
                     }
-                })
-                .catch(catchAxiosError('Unable to get room data', showSnackSev));
-    }
-
+                }
+            })
+            .catch(catchAxiosError('Unable to get room data', showSnackSev));
+    };
 
     // get room data
     useEffect(() => {
-      void getRoomData();
+        void getRoomData();
     }, [roomId]);
 
     return (
@@ -304,7 +304,8 @@ export const RoomViewer = () => {
                                                         'success',
                                                     );
                                                 })
-                                                .catch(catchAxiosError('Unable to update approvers', showSnackSev)).finally(getRoomData);
+                                                .catch(catchAxiosError('Unable to update approvers', showSnackSev))
+                                                .finally(getRoomData);
                                         }}
                                     />
                                 );
@@ -333,7 +334,7 @@ export const RoomViewer = () => {
                         columns={userColumns}
                         CellContent={({ row, column }: { row: TableRowData; column: any }) => {
                             if (column.dataKey === 'revoke') {
-                                return <RevokeButton utorid={row['utorid']} />;
+                                return <RevokeButton utorid={row['utorid']} onUpdate={getRoomData} />;
                             } else {
                                 return <>{row[column.dataKey]}</>;
                             }

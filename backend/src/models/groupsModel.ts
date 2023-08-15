@@ -5,14 +5,13 @@ import logger from '../common/logger';
 import Model from '../types/Model';
 import { userSelector } from './utils';
 import {
-  triggerAdminNotification, triggerMassNotification, triggerNotification,
+  triggerAdminNotification,
+  triggerMassNotification,
+  triggerNotification,
   triggerUserNotification,
 } from '../notifications';
 import EventTypes from '../types/EventTypes';
-import {
-  generateGroupContext,
-  generateUserActionContext,
-} from '../notifications/generateContext';
+import { generateGroupContext, generateUserActionContext } from '../notifications/generateContext';
 import { AllContexts } from '../types/NotificationContext';
 
 const groupInclude = () => ({
@@ -23,7 +22,10 @@ const groupInclude = () => ({
 });
 const notifyGroupManagers = async (event: EventTypes, group: Group, context: AllContexts) => {
   let managers: User[];
-  if (!('managers' in group) || (group.managers as User[]).some((x) => !('webhooks' in x) || !Array.isArray(x.webhooks))) {
+  if (
+    !('managers' in group) ||
+    (group.managers as User[]).some((x) => !('webhooks' in x) || !Array.isArray(x.webhooks))
+  ) {
     const groupFetched = await db.group.findUnique({
       where: { id: group.id },
       include: {
@@ -68,7 +70,7 @@ export default {
     if (user.role === AccountRole.student && !group.members.some((x) => x.utorid === user.utorid)) {
       return {
         status: 403,
-        message: 'You are not allowed to access this group\'s information.',
+        message: "You are not allowed to access this group's information.",
       };
     }
     return { status: 200, data: group };
@@ -84,7 +86,10 @@ export default {
         },
         include: groupInclude(),
       });
-      await triggerAdminNotification(EventTypes.ADMIN_GROUP_CREATED, { ...generateUserActionContext(user), ...generateGroupContext(group) });
+      await triggerAdminNotification(EventTypes.ADMIN_GROUP_CREATED, {
+        ...generateUserActionContext(user),
+        ...generateGroupContext(group),
+      });
       return { status: 200, data: group };
     } catch (e) {
       logger.debug((e as PrismaClientKnownRequestError).code);
@@ -139,7 +144,8 @@ export default {
       return { status: 400, message: 'Invalid role.' };
     }
     const context = {
-      ...generateUserActionContext(user), ...generateGroupContext(group),
+      ...generateUserActionContext(user),
+      ...generateGroupContext(group),
       role: role as 'manager' | 'member',
       changer_utorid: manager.utorid,
       changer_full_name: manager.name,
@@ -182,13 +188,17 @@ export default {
         },
       });
       const context = {
-        ...generateUserActionContext(groupFetched.invited.find(x => x.utorid === utorid) as User),
+        ...generateUserActionContext(groupFetched.invited.find((x) => x.utorid === utorid) as User),
         ...generateGroupContext(groupFetched),
         inviter_utorid: manager.utorid,
         inviter_full_name: manager.name,
       };
       await notifyGroupManagers(EventTypes.GROUP_MEMBER_INVITED, groupFetched, context);
-      await triggerUserNotification(EventTypes.USER_INVITED_TO_GROUP, groupFetched.invited.find(x => x.utorid === utorid) as User, context);
+      await triggerUserNotification(
+        EventTypes.USER_INVITED_TO_GROUP,
+        groupFetched.invited.find((x) => x.utorid === utorid) as User,
+        context,
+      );
       return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
@@ -262,16 +272,21 @@ export default {
       return { status: 404, message: 'Group not found' };
     }
     // user must be either admin, a group manager. or trying to remove themselves
-    if (manager.role !== AccountRole.admin && !group.managers.some((x) => x.utorid === manager.utorid) && manager.utorid !== utorid) {
+    if (
+      manager.role !== AccountRole.admin &&
+      !group.managers.some((x) => x.utorid === manager.utorid) &&
+      manager.utorid !== utorid
+    ) {
       return {
         status: 403,
         message: 'You are not allowed to modify this group.',
       };
     }
-    if (manager.utorid === utorid && group.managers.length === 1) {
+    if (manager.utorid === utorid && group.managers.some((x) => x.utorid === utorid) && group.managers.length === 1) {
       return {
         status: 403,
-        message: 'You cannot remove yourself from the group if you are the only manager, either delete the group or make a new manager.',
+        message:
+          'You cannot remove yourself from the group if you are the only manager, either delete the group or make a new manager.',
       };
     }
     if (!group.members.some((x) => x.utorid === utorid)) {
@@ -287,7 +302,7 @@ export default {
         managers: { disconnect: { utorid } },
       },
     });
-    const user = group.members.find(x => x.utorid === utorid) as User;
+    const user = group.members.find((x) => x.utorid === utorid) as User;
     const context = {
       ...generateUserActionContext(user),
       ...generateGroupContext(group),

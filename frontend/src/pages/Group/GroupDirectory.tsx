@@ -11,7 +11,7 @@ import { SubPage } from '../../layouts/SubPage';
  * Shows a group card with accept and decline buttons
  * @param group The group to display
  */
-const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
+const InvitedGroupCard = ({ group, fetchGroups }: { group: FetchedGroup; fetchGroups: () => void }) => {
     const { fetchUserInfo } = useContext(UserContext);
     const { showSnackSev } = useContext(SnackbarContext);
 
@@ -35,6 +35,7 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                             })
                             .catch(catchAxiosError(`Failed to join group`, showSnackSev))
                             .finally(() => {
+                                fetchGroups();
                                 fetchUserInfo();
                             });
                     }}
@@ -49,10 +50,10 @@ const InvitedGroupCard = ({ group }: { group: FetchedGroup }) => {
                             .post(`/groups/${group.id}/invite/reject`)
                             .then(() => {
                                 showSnackSev('You have declined the invitation', 'success');
-                                fetchUserInfo();
                             })
                             .catch(catchAxiosError(`Failed to decline invitation`, showSnackSev))
                             .finally(() => {
+                                fetchGroups();
                                 fetchUserInfo();
                             });
                     }}
@@ -89,16 +90,16 @@ export const GroupDirectory = () => {
             })
             .catch(catchAxiosError('Failed to create group', showSnackSev));
     };
-
+    const fetchGroups = async () => {
+        await axios
+            .get('/groups')
+            .then((res) => {
+                setMyGroups(res.data as FetchedGroup[]);
+            })
+            .catch(catchAxiosError('Failed to fetch groups', showSnackSev));
+    };
     useEffect(() => {
-        (async () => {
-            await axios
-                .get('/groups')
-                .then((res) => {
-                    setMyGroups(res.data as FetchedGroup[]);
-                })
-                .catch(catchAxiosError('Failed to fetch groups', showSnackSev));
-        })();
+        fetchGroups();
     }, []);
 
     return (
@@ -176,7 +177,7 @@ export const GroupDirectory = () => {
                         {userInfo.invited.map((group) => {
                             return (
                                 <Grid item xs={12} sm={6} key={group.id}>
-                                    <InvitedGroupCard group={group} />
+                                    <InvitedGroupCard group={group} fetchGroups={fetchGroups} />
                                 </Grid>
                             );
                         })}

@@ -25,8 +25,8 @@ export interface BaseBookingContext extends NotificationPartialContext {
 export type BookingCreatedContext = BaseBookingContext;
 
 export interface BookingStatusChangeContext extends BaseBookingContext {
-  approver_utorid: string;
-  approver_full_name: string;
+  changer_utorid: string;
+  changer_full_name: string;
   status: RequestStatus;
   reason?: string;
 }

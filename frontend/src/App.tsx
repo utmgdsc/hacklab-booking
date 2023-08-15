@@ -29,6 +29,8 @@ import {
     ThemeProvider,
     createTheme,
     useMediaQuery,
+    Backdrop,
+    CircularProgress,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary, RequireRole } from './components';
@@ -121,6 +123,9 @@ function App() {
                     <SnackbarContext.Provider value={{ showSnack, showSnackSev }}>
                         <CssBaseline enableColorScheme />
                         <Router>
+                            <Backdrop id="loading" sx={{ display: "none", color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+                                <CircularProgress color="inherit" />
+                            </Backdrop>
                             <AppRoutes />
                         </Router>
                         {queue.map((item, index) => (
