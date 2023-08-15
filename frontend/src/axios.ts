@@ -1,19 +1,37 @@
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 import { AlertColor } from '@mui/material';
-import React from 'react'
-
+import React from 'react';
+declare module 'axios' {
+    export interface AxiosRequestConfig {
+        skipLoadingWheel?: boolean;
+    }
+}
 /**
  * Axios instance
  */
 export const instance = axios.create({
     baseURL: process.env.NODE_ENV === 'production' ? '/api' : `${process.env.REACT_APP_API_URL}/`,
 });
+
+let loading = false;
 instance.interceptors.request.use((config) => {
+    if ('skipLoadingWheel' in config && config.skipLoadingWheel === true) {
+        return config;
+    }
     document.getElementById('loading').style.display = 'flex';
+    loading = true;
     return config;
 });
 instance.interceptors.response.use((response) => {
-    document.getElementById('loading').style.display = 'none';
+    if ('skipLoadingWheel' in response.config && response.config.skipLoadingWheel === true) {
+        return response;
+    }
+    loading = false;
+    setTimeout(() => {
+        if (!loading) {
+            document.getElementById('loading').style.display = 'none';
+        }
+    }, 500);
     return response;
 });
 export const catchAxiosError =

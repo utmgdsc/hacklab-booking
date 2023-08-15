@@ -169,8 +169,11 @@ export const Joan6 = () => {
     const theme = useTheme();
 
     const update = useCallback(async () => {
+        // make sure loading wheel isn't shown
         await axios
-            .get(`/rooms/${roomId}`)
+            .get(`/rooms/${roomId}`, {
+                skipLoadingWheel: true,
+            })
             .then(({ data }) => {
                 setRoomData(data);
                 setCurrentEvents(
