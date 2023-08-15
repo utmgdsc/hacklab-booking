@@ -21,7 +21,7 @@ services:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=production
       - EMAIL_USER=/run/secrets/email_user
-      - EMAIL_PASS=/run/secrets/email_password
+      - EMAIL_PASS=password123
 
   frontend:
     restart: always
