@@ -21,7 +21,7 @@ services:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=production
     env_file:
-      - ./backend.env
+      - ./backend/.env
 
   frontend:
     restart: always
