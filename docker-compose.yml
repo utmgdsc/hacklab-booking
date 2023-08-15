@@ -30,6 +30,8 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
+    env_file:
+      - .env
 
   db:
     image: postgres
