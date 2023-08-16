@@ -93,7 +93,11 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             })
             .then((res) => {
                 if (res.status === 200) {
-                    let blockedDates: number[] = res.data.map((date: string) => new Date(date).getTime());
+                    let blockedDates: number[] = res.data
+                        .filter((x: { status: BookingStatus; bookedRange: Date[] }) => x.status === 'completed')
+                        .map((x: { status: BookingStatus; bookedRange: Date[] }) => x.bookedRange)
+                        .flat()
+                        .map((date: string) => new Date(date).getTime());
 
                     // remove dates that aren't blocked
                     if (originalBooking) {
