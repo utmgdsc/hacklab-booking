@@ -193,7 +193,7 @@ const CreateRoomDialog = ({
                     fullWidth
                     value={room}
                     // replaces all whitespace with nothing on submission
-                    onChange={(e) => setRoomName(e.target.value.replace(/\s/g, "")) }
+                    onChange={(e) => setRoomName(e.target.value.replace(/\s/g, ''))}
                 />
                 <TextField
                     autoFocus

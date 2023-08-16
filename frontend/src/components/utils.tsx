@@ -102,9 +102,12 @@ export const colorHash = ({
 export const formatRangedTime = (startDate: Date, endDate: Date) => {
     const formatDateOptions: Intl.DateTimeFormatOptions = {
         hour: 'numeric',
-    }
+    };
 
     let startHour = new Date(startDate).toLocaleTimeString(undefined, formatDateOptions);
-    let endHour = new Date(new Date(endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(undefined, formatDateOptions);
+    let endHour = new Date(new Date(endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(
+        undefined,
+        formatDateOptions,
+    );
     return `${startHour} - ${endHour}`;
 };

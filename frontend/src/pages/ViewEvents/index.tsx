@@ -1,10 +1,7 @@
 import { Container } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
-import {
-    ActiveRequestCard,
-    NoRequestsPlaceholder
-} from '../../components';
+import { ActiveRequestCard, NoRequestsPlaceholder } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
 

@@ -133,7 +133,11 @@ export const GroupDirectory = () => {
             </Box>
 
             {/* group cards */}
-            {myGroups.length === 0 && <Typography sx={{my: 5}} variant="h1">You're not in a group yet 😔</Typography>}
+            {myGroups.length === 0 && (
+                <Typography sx={{ my: 5 }} variant="h1">
+                    You're not in a group yet 😔
+                </Typography>
+            )}
 
             {userInfo.role === 'student' &&
                 myGroups.length > 0 &&
