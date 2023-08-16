@@ -1,7 +1,7 @@
 import { Box, Button, Divider, TextField, CircularProgress, Collapse } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import axios, { catchAxiosError } from '../../axios';
-import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
+import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker, addHoursToDate } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { ErrorPage } from '../../layouts/ErrorPage';
@@ -88,7 +88,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             .get(`/rooms/${roomName}/blockeddates`, {
                 params: {
                     start_date: dates[0],
-                    end_date: dates[dates.length - 1],
+                    end_date: addHoursToDate(new Date(dates[dates.length - 1]), 1),
                 },
             })
             .then((res) => {
@@ -99,8 +99,8 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     if (originalBooking) {
                         blockedDates = blockedDates.filter((date: number) => {
                             return (
-                                date < new Date(originalBooking.startDate).getTime() ||
-                                date > new Date(originalBooking.endDate).getTime()
+                                date <= new Date(originalBooking.startDate).getTime() ||
+                                date >= new Date(originalBooking.endDate).getTime()
                             );
                         });
                     }
@@ -205,11 +205,12 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     const handleScheduleDate = (dates: Date[]) => {
         /** used to check if all dates are on the same day */
         let currDate = 0;
-
+        setValidDate(true);
         for (let i = 0; i < dates.length; i++) {
             // if in the past
             if (dates[i] < new Date()) {
                 showSnackSev('Please select a date in the future', 'error');
+                setValidDate(false);
                 setScheduleDates([]);
                 return;
             }
@@ -217,13 +218,12 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             // if not the same day
             if (dates[i].getDate() !== currDate && i > 0) {
                 showSnackSev('Please only select one day', 'error');
+                setValidDate(false);
                 setScheduleDates([]);
                 return;
             }
             currDate = dates[i].getDate();
         }
-
-        setValidDate(true);
 
         if (dates.length > 0) {
             checkDate(dates);
