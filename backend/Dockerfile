@@ -10,4 +10,4 @@ COPY . .
 
 RUN npm run build
 
-CMD ["./prod.sh"]
+CMD ["bash", "prod.sh"]
