@@ -136,7 +136,7 @@ export const Webhooks = () => {
             }
             const res = await axios
                 .put('accounts/webhooks/' + type, {
-                    webhook: e.target.value.trim() == '' ? null : e.target.value.trim(),
+                    webhook: e.target.value.trim() === '' ? null : e.target.value.trim(),
                 })
                 .catch(catchAxiosError('Webhook error', showSnackSev));
             if (res && res.status === 200) {

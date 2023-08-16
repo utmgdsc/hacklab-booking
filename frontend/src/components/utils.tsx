@@ -89,6 +89,17 @@ export const colorHash = ({
 };
 
 /**
+ * adds `number` hours to `date`
+ * @param date number of hours to date to add
+ * @return {Date} the new date with the hours added
+ */
+export const addHoursToDate = (date: Date, hours: number): Date => {
+    let newDate = new Date(date.getTime());
+    newDate.setTime(newDate.getTime() + hours * 60 * 60 * 1000);
+    return newDate;
+};
+
+/**
  * Given a start and end time, return a localized string its the time range.
  *
  * Be aware that there be one hour added to the end time, this is to account
@@ -105,7 +116,7 @@ export const formatRangedTime = (startDate: Date, endDate: Date) => {
     };
 
     let startHour = new Date(startDate).toLocaleTimeString(undefined, formatDateOptions);
-    let endHour = new Date(new Date(endDate).getTime() + 1 * 60 * 60 * 1000).toLocaleTimeString(
+    let endHour = addHoursToDate(new Date(endDate), 1).toLocaleTimeString(
         undefined,
         formatDateOptions,
     );
