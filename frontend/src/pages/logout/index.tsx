@@ -1,4 +1,3 @@
-import { Link } from '../../components';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { useEffect } from 'react';
 
