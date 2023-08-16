@@ -65,7 +65,7 @@ export const Admin = () => {
                                 <TextField
                                     placeholder="Search for a user"
                                     variant="filled"
-                                    label="UtorID"
+                                    label="UTORid"
                                     fullWidth
                                     size="small"
                                     inputProps={{
