@@ -5,20 +5,27 @@ import logger from '../common/logger';
 import { CreateRequest } from '../types/CreateRequest';
 import Model from '../types/Model';
 import { ModelResponseError } from '../types/ModelResponse';
-import {
-  triggerAdminNotification,
-  triggerMassNotification, triggerTCardNotification,
-} from '../notifications';
+import { triggerAdminNotification, triggerMassNotification, triggerTCardNotification } from '../notifications';
 import EventTypes from '../types/EventTypes';
 
-import {
-  BaseBookingContext,
-} from '../types/NotificationContext';
+import { BaseBookingContext } from '../types/NotificationContext';
 import { userSelector } from './utils';
 import {
   generateBaseRequestNotificationContext as generateBaseNotificationContext,
   generateUserActionContext,
 } from '../notifications/generateContext';
+const requestCounter = () => {
+  return {
+    select: {
+      requests: {
+        where: {
+          status: { not: { in: [RequestStatus.denied, RequestStatus.cancelled] } },
+          endDate: { gte: new Date() },
+        },
+      },
+    },
+  };
+};
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
   if (request.title.trim() === '' || request.description.trim() === '') {
     return { status: 400, message: 'Missing required fields.' };
@@ -71,10 +78,12 @@ const validateRequest = async (request: CreateRequest): Promise<ModelResponseErr
 export default {
   getRequests: async (filters: { [key: string]: string }, user: User) => {
     const query: { [key: string]: unknown } = {};
+    logger.debug(filters.start_date);
     filters.start_date = filters.start_date || new Date().toISOString();
     if (filters.start_date) {
-      query.startDate = { gte: filters.start_date };
+      query.startDate = { gte: new Date(filters.start_date) };
     }
+    logger.debug(query.startDate);
     // In a week
     if (filters.end_date) {
       query.endDate = { lte: filters.end_date };
@@ -96,12 +105,12 @@ export default {
       query.groupId = parseInt(filters.group);
       if (
         user.role === AccountRole.student &&
-                !(await db.user.findFirst({
-                  where: {
-                    utorid: user.utorid,
-                    groups: { some: { id: query.groupId as string } },
-                  },
-                }))
+        !(await db.user.findFirst({
+          where: {
+            utorid: user.utorid,
+            groups: { some: { id: query.groupId as string } },
+          },
+        }))
       ) {
         return {
           status: 403,
@@ -134,12 +143,17 @@ export default {
       data: await db.request.findMany({
         where: query,
         include: {
-          group: true,
+          group: {
+            include: {
+              _count: requestCounter(),
+            },
+          },
           room: true,
           author: {
             select: {
               roomAccess: true,
               ...userSelector(),
+              _count: requestCounter(),
             },
           },
           approvers: { select: userSelector() },
@@ -187,7 +201,7 @@ export default {
         include: {
           group: true,
           room: true,
-          author: { select: userSelector() },
+          author: { select: { ...userSelector() } },
           approvers: true,
         },
       });
@@ -215,9 +229,9 @@ export default {
     const request = await db.request.findUnique({
       where: { id },
       include: {
-        group: { include: { members: { select:  userSelector() } } },
+        group: { include: { members: { select: userSelector() }, _count: { select: { requests: true } } } },
         room: true,
-        author: { include: { roomAccess: true } },
+        author: { include: { roomAccess: true, _count: { select: { requests: true } } } },
         approvers: { select: userSelector() },
       },
     });
@@ -248,8 +262,8 @@ export default {
     }
     if (
       status === RequestStatus.cancelled &&
-            (request.author.utorid !== user.utorid ||
-                !request.group.managers.some((manager) => manager.utorid === user.utorid))
+      (request.author.utorid !== user.utorid ||
+        !request.group.managers.some((manager) => manager.utorid === user.utorid))
     ) {
       return {
         status: 403,
@@ -258,7 +272,7 @@ export default {
     }
     if (
       status === RequestStatus.denied &&
-            !(<AccountRole[]>[AccountRole.approver, AccountRole.admin]).includes(user.role)
+      !(<AccountRole[]>[AccountRole.approver, AccountRole.admin]).includes(user.role)
     ) {
       return {
         status: 403,
@@ -274,7 +288,13 @@ export default {
         author: { select: userSelector() },
       },
     });
-    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: user.utorid, changer_full_name: user.name, status, reason };
+    const context = {
+      ...(await generateBaseNotificationContext(requestFetched)),
+      changer_utorid: user.utorid,
+      changer_full_name: user.name,
+      status,
+      reason,
+    };
     await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     return { status: 200, data: {} };
@@ -328,7 +348,13 @@ export default {
         status: RequestStatus.denied,
       },
     });
-    const context = { ...await generateBaseNotificationContext(requestFetched), changer_utorid: requestFetched.author.utorid, changer_full_name: requestFetched.author.name, status, reason };
+    const context = {
+      ...(await generateBaseNotificationContext(requestFetched)),
+      changer_utorid: requestFetched.author.utorid,
+      changer_full_name: requestFetched.author.name,
+      status,
+      reason,
+    };
     await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     if (status !== RequestStatus.completed) {
@@ -340,9 +366,12 @@ export default {
     }
     return { status: 200, data: {} };
   },
-  updateRequest: async (request: CreateRequest & {
-    id: string
-  }, user: User) => {
+  updateRequest: async (
+    request: CreateRequest & {
+      id: string;
+    },
+    user: User,
+  ) => {
     const error = await validateRequest(request);
     if (error) {
       return error;
@@ -360,8 +389,8 @@ export default {
     }
     if (
       user.role !== AccountRole.admin &&
-            oldRequest.author.utorid !== user.utorid &&
-            !oldRequest.group.managers.some((manager) => manager.utorid === user.utorid)
+      oldRequest.author.utorid !== user.utorid &&
+      !oldRequest.group.managers.some((manager) => manager.utorid === user.utorid)
     ) {
       return {
         status: 403,
@@ -389,9 +418,13 @@ export default {
       }
       data.approvers = approversObject;
     }
-    const updatedRequest = await db.request.update({ where: { id: request.id }, data, include: { room: true, author: true, group:true } });
+    const updatedRequest = await db.request.update({
+      where: { id: request.id },
+      data,
+      include: { room: true, author: true, group: true },
+    });
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_UPDATED, {
-      ...await generateBaseNotificationContext(updatedRequest),
+      ...(await generateBaseNotificationContext(updatedRequest)),
       changer_utorid: user.utorid,
       changer_full_name: user.name,
     });

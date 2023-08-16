@@ -9,7 +9,7 @@ import { Admin } from './pages/Admin';
 import { RoomManager } from './pages/Admin/RoomManager';
 import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
 import { UserViewer } from './pages/Admin/UserManager/UserViewer';
-import { Calendar } from './pages/Calendar';
+import { PastRequestsDashboard } from './pages/Calendar';
 import { CreateBooking } from './pages/CreateBooking';
 import { Dashboard } from './pages/Dashboard';
 import { Group } from './pages/Group/Group';
@@ -123,7 +123,11 @@ function App() {
                     <SnackbarContext.Provider value={{ showSnack, showSnackSev }}>
                         <CssBaseline enableColorScheme />
                         <Router>
-                            <Backdrop id="loading" sx={{ display: "none", color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={true}>
+                            <Backdrop
+                                id="loading"
+                                sx={{ display: 'none', color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                                open={true}
+                            >
                                 <CircularProgress color="inherit" />
                             </Backdrop>
                             <AppRoutes />
@@ -182,7 +186,7 @@ const AppRoutes = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/settings/webhooks" element={<Webhooks />} />
-                    <Route path="/calendar/" element={<Calendar />} />
+                    <Route path="/pastevents/" element={<PastRequestsDashboard />} />
                     <Route path="/book/" element={<CreateBooking />} />
                     <Route path="/group/" element={<GroupDirectory />} />
                     <Route path="/group/:id" element={<Group />} />
