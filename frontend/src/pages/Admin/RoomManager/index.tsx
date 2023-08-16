@@ -88,6 +88,9 @@ const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
                 <Link href={`./${roomName}`}>
                     <Button size="small">Control Access</Button>
                 </Link>
+                <Link href={`./${roomName}/joan6`}>
+                    <Button size="small">Joan 6</Button>
+                </Link>
             </CardActions>
         </Card>
     );

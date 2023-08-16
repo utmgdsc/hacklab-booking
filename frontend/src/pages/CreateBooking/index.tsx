@@ -1,7 +1,7 @@
 import { Box, Button, Divider, TextField, CircularProgress, Collapse } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import axios, { catchAxiosError } from '../../axios';
-import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker, addHoursToDate } from '../../components';
+import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
 import { SnackbarContext } from '../../contexts/SnackbarContext';
 import { UserContext } from '../../contexts/UserContext';
 import { ErrorPage } from '../../layouts/ErrorPage';
@@ -88,7 +88,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             .get(`/rooms/${roomName}/blockeddates`, {
                 params: {
                     start_date: dates[0],
-                    end_date: addHoursToDate(new Date(dates[dates.length - 1]), 1),
+                    end_date: new Date(dates[dates.length - 1]),
                 },
             })
             .then((res) => {
