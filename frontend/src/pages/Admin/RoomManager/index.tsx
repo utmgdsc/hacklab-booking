@@ -192,11 +192,15 @@ const CreateRoomDialog = ({
                     type="text"
                     fullWidth
                     value={room}
-                    onChange={(e) => setRoomName(e.target.value)}
+                    // replaces all whitespace with nothing on submission
+                    onChange={(e) => setRoomName(e.target.value.replace(/\s/g, "")) }
                 />
                 <TextField
                     autoFocus
                     margin="dense"
+                    inputProps={{
+                        min: 0,
+                    }}
                     id={'capacity'}
                     label={'Total Room Capacity (e.g., 24)'}
                     type="number"
