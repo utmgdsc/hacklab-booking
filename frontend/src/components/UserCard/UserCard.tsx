@@ -29,6 +29,7 @@ export const UserCard = ({ userInfo }: {
                         alignItems: 'center',
                     }}
                 >
+                    {/* show a skeleton when loading. mikuhatsune is an impossible utorid due to its length */}
                     {userInfo.utorid === "mikuhatsune" && (
                         <>
                             <InitialsAvatar />
