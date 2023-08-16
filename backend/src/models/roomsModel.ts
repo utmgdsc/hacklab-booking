@@ -3,19 +3,14 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import Model from '../types/Model';
 import { userSelector } from './utils';
-import {
-  triggerAdminNotification,
-  triggerUserNotification,
-} from '../notifications';
+import { triggerAdminNotification, triggerUserNotification } from '../notifications';
 import EventTypes from '../types/EventTypes';
 import {
   generateBaseRequestNotificationContext as generateBaseNotificationContext,
-  generateBaseRequestNotificationContext, generateUserActionContext,
+  generateBaseRequestNotificationContext,
+  generateUserActionContext,
 } from '../notifications/generateContext';
-import {
-  AllContexts, BookingStatusChangeContext,
-  RoomAccessContext,
-} from '../types/NotificationContext';
+import { AllContexts, BookingStatusChangeContext, RoomAccessContext } from '../types/NotificationContext';
 
 const generateApproverContext = (user: User) => ({
   approver_utorid: user.utorid,
@@ -26,7 +21,7 @@ const generateChangerContext = (user: User) => ({
   changer_full_name: user.name,
 });
 
-const updateRequests = async (roomName: string, authorUtorid:string,  approver:User, status: RequestStatus) => {
+const updateRequests = async (roomName: string, authorUtorid: string, approver: User, status: RequestStatus) => {
   if (!(status === RequestStatus.completed || status === RequestStatus.needTCard)) {
     throw new Error('Invalid status');
   }
@@ -52,7 +47,11 @@ const updateRequests = async (roomName: string, authorUtorid:string,  approver:U
     data: { status: status },
   });
   for (const request of requests) {
-    const context = { ...await generateBaseRequestNotificationContext(request), ...generateChangerContext(approver), status: RequestStatus.completed  } satisfies BookingStatusChangeContext;
+    const context = {
+      ...(await generateBaseRequestNotificationContext(request)),
+      ...generateChangerContext(approver),
+      status: RequestStatus.completed,
+    } satisfies BookingStatusChangeContext;
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     await triggerUserNotification(EventTypes.BOOKING_STATUS_CHANGED, request.author, context);
   }
@@ -92,19 +91,13 @@ export default {
         include: {
           requests: {
             where: {
-              OR: [
-                { author: { utorid: user.utorid } },
-                { group: { members: { some: { utorid: user.utorid } } } },
-              ],
+              OR: [{ author: { utorid: user.utorid } }, { group: { members: { some: { utorid: user.utorid } } } }],
             },
             include: { group: true },
           },
           userAccess: {
             where: {
-              OR: [
-                { utorid: user.utorid },
-                { groups: { some: { members: { some: { utorid: user.utorid } } } } },
-              ],
+              OR: [{ utorid: user.utorid }, { groups: { some: { members: { some: { utorid: user.utorid } } } } }],
             },
             select: userSelector(),
           },
@@ -119,7 +112,8 @@ export default {
           approvers: { select: userSelector() },
         },
       });
-    } else { // admin
+    } else {
+      // admin
       room = await db.room.findUnique({
         where: { roomName },
         include: {
@@ -140,8 +134,12 @@ export default {
       include: {
         requests: {
           where: {
-            startDate: { gte: startDate },
-            endDate: { lte: endDate },
+            OR: [
+              { startDate: { gte: startDate }, endDate: { lte: endDate } },
+              { startDate: { lte: startDate }, endDate: { gte: endDate } },
+              { startDate: { lte: endDate }, endDate: { gte: startDate } },
+              { startDate: { lte: startDate }, endDate: { gte: endDate } },
+            ],
             status: { notIn: [RequestStatus.denied, RequestStatus.cancelled] },
           },
         },
@@ -165,14 +163,15 @@ export default {
         data: { userAccess: { connect: { utorid } } },
         include: { userAccess: { where: { utorid } } },
       });
-      const context : AllContexts = {
-        ...generateUserActionContext(room.userAccess[0]), ...generateApproverContext(user),
+      const context: AllContexts = {
+        ...generateUserActionContext(room.userAccess[0]),
+        ...generateApproverContext(user),
         room: room.roomName,
         room_friendly: room.friendlyName,
       } satisfies RoomAccessContext;
       await triggerAdminNotification(EventTypes.ADMIN_ROOM_ACCESS_GRANTED, context);
       await triggerUserNotification(EventTypes.ROOM_ACCESS_GRANTED, utorid, context);
-      await updateRequests(roomName, utorid, user,  RequestStatus.completed);
+      await updateRequests(roomName, utorid, user, RequestStatus.completed);
 
       return { status: 200, data: {} };
     } catch (e) {
@@ -182,21 +181,22 @@ export default {
       throw e;
     }
   },
-  revokeAccess: async (user:User, roomName: string, utorid: string) => {
+  revokeAccess: async (user: User, roomName: string, utorid: string) => {
     try {
       const room = await db.room.update({
         where: { roomName },
         data: { userAccess: { disconnect: { utorid } } },
         include: { userAccess: { where: { utorid } } },
       });
-      const context : AllContexts = {
-        ...generateUserActionContext(await db.user.findUnique({ where:{ utorid } }) as User), ...generateApproverContext(user),
+      const context: AllContexts = {
+        ...generateUserActionContext((await db.user.findUnique({ where: { utorid } })) as User),
+        ...generateApproverContext(user),
         room: room.roomName,
         room_friendly: room.friendlyName,
       } satisfies RoomAccessContext;
       await triggerAdminNotification(EventTypes.ADMIN_ROOM_ACCESS_REVOKED, context);
       await triggerUserNotification(EventTypes.ROOM_ACCESS_REVOKED, utorid, context);
-      await updateRequests(roomName, utorid, user,  RequestStatus.needTCard);
+      await updateRequests(roomName, utorid, user, RequestStatus.needTCard);
 
       return { status: 200, data: {} };
     } catch (e) {
@@ -224,7 +224,7 @@ export default {
     try {
       await db.room.update({
         where: { roomName },
-        data:  { approvers: { disconnect: { utorid } } },
+        data: { approvers: { disconnect: { utorid } } },
       });
       return { status: 200, data: {} };
     } catch (e) {
