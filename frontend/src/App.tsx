@@ -30,7 +30,7 @@ import {
     Snackbar,
     ThemeProvider,
     createTheme,
-    useMediaQuery
+    useMediaQuery,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary, RequireRole } from './components';
@@ -129,12 +129,12 @@ function App() {
                                     justifyContent: 'flex-start',
                                     flexDirection: 'column',
                                     backgroundColor: 'transparent',
-                                    zIndex: 2147483647
+                                    zIndex: 2147483647,
                                 }}
                                 style={{ display: 'flex' }}
                                 open
                             >
-                                <LinearProgress sx={{ width: "100%" }} />
+                                <LinearProgress sx={{ width: '100%' }} />
                             </Backdrop>
                             <AppRoutes />
                         </Router>

@@ -51,21 +51,17 @@ export const catchAxiosError =
         if (!err.response) {
             showSnackSev('Server did not respond, please open an issue on our Github', 'error');
             console.error(err);
-        }
-        else if (err.response?.status >= 500) {
+        } else if (err.response?.status >= 500) {
             showSnackSev('Something went wrong, please try again later', 'error');
             console.error(err);
-        }
-       else if (message) {
+        } else if (message) {
             if (err.response?.data?.message) {
                 showSnackSev(`${message}: ${err.response.data.message}`, 'error');
             }
             showSnackSev(message, 'error');
-        }
-        else if (err.response?.data?.message) {
+        } else if (err.response?.data?.message) {
             showSnackSev(`Something went wrong: ${err.response.data.message}`, 'error');
-        }
-        else {
+        } else {
             showSnackSev('Something went wrong', 'error');
         }
     };

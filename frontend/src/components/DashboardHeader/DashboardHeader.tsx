@@ -27,20 +27,17 @@ const LeftHeader = ({
 }) => (
     <Box>
         <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
-            Welcome,{' '}
-            {userInfo.role === 'admin' ? 'Administrator' : userInfo.role === 'approver' ? 'Approver' : null}
+            Welcome, {userInfo.role === 'admin' ? 'Administrator' : userInfo.role === 'approver' ? 'Approver' : null}
         </Typography>
         <Typography variant="h2">
             {/* show a skeleton when loading. mikuhatsune is an impossible utorid due to its length */}
-            {userInfo.utorid === "mikuhatsune" && (
+            {userInfo.utorid === 'mikuhatsune' && (
                 <Typography variant="h2">
                     <Skeleton variant="text" width="5em" />
                 </Typography>
             )}
             {/* show the user's name when loaded */}
-            {userInfo.utorid !== "mikuhatsune" && (
-                <strong>{userInfo.name}</strong>
-            )}
+            {userInfo.utorid !== 'mikuhatsune' && <strong>{userInfo.name}</strong>}
         </Typography>
         {active_requests && userInfo.role === 'student' && active_requests.length > 0 && (
             <Typography component="p" variant="h5">
@@ -83,13 +80,9 @@ const RightHeader = ({ userInfo, theme }: { userInfo: User; theme: Theme }) => {
                 color="inherit"
             >
                 {/* show a skeleton when loading. mikuhatsune is an impossible utorid due to its length */}
-                {userInfo.utorid === "mikuhatsune" && (
-                    <InitialsAvatar />
-                )}
+                {userInfo.utorid === 'mikuhatsune' && <InitialsAvatar />}
                 {/* show the user's name when loaded */}
-                {userInfo.utorid !== "mikuhatsune" && (
-                    <InitialsAvatar name={userInfo.name} />
-                )}
+                {userInfo.utorid !== 'mikuhatsune' && <InitialsAvatar name={userInfo.name} />}
             </Button>
             <Menu
                 sx={{ mt: '45px' }}

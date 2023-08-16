@@ -4,9 +4,11 @@ import { InitialsAvatar } from '../InitialsAvatar/InitialsAvatar';
 /**
  * A card for basic user info
  */
-export const UserCard = ({ userInfo }: {
+export const UserCard = ({
+    userInfo,
+}: {
     /** The user info to display */
-    userInfo: FetchedUser
+    userInfo: FetchedUser;
 }) => {
     return (
         <Card variant="outlined">
@@ -30,18 +32,17 @@ export const UserCard = ({ userInfo }: {
                     }}
                 >
                     {/* show a skeleton when loading. mikuhatsune is an impossible utorid due to its length */}
-                    {userInfo.utorid === "mikuhatsune" && (
+                    {userInfo.utorid === 'mikuhatsune' && (
                         <>
                             <InitialsAvatar />
-                            <Box sx={{ width: "100%" }}>
+                            <Box sx={{ width: '100%' }}>
                                 <Skeleton variant="text"></Skeleton>
                                 <Skeleton variant="text"></Skeleton>
                                 <Skeleton variant="text"></Skeleton>
                             </Box>
                         </>
-                    )
-                    }
-                    {userInfo.utorid !== "mikuhatsune" && (
+                    )}
+                    {userInfo.utorid !== 'mikuhatsune' && (
                         <>
                             <InitialsAvatar name={userInfo.name} />
                             <Box>
@@ -57,8 +58,7 @@ export const UserCard = ({ userInfo }: {
                                 </Typography>
                             </Box>
                         </>
-                    )
-                    }
+                    )}
                 </Grid>
             </CardContent>
         </Card>

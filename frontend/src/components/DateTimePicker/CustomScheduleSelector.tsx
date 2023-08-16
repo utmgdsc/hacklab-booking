@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import ScheduleSelector from 'react-schedule-selector';
 import { GetMonday } from '../../components';
-import styles from "./CustomScheduleSelector.module.css";
+import styles from './CustomScheduleSelector.module.css';
 
 /**
  * A custom schedule selector in the format
@@ -144,46 +144,52 @@ export const CustomScheduleSelector = ({
                 renderTimeLabel={(time) => RenderTimeLabel(time)}
                 renderDateCell={customDateCellRenderer}
             />
-            <Box sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                my: '1em',
-                flexWrap: 'wrap',
-            }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    my: '1em',
+                    flexWrap: 'wrap',
+                }}
+            >
                 <Typography
                     className={styles.legendItem}
                     sx={{
-                        "::before": {
+                        '::before': {
                             backgroundColor: theme.palette.action.hover,
-                        }
-                    }}>
+                        },
+                    }}
+                >
                     In the past
                 </Typography>
                 <Typography
                     className={styles.legendItem}
                     sx={{
-                        "::before": {
+                        '::before': {
                             backgroundColor: theme.palette.action.disabled,
-                        }
-                    }}>
+                        },
+                    }}
+                >
                     Free
                 </Typography>
                 <Typography
                     className={styles.legendItem}
                     sx={{
-                        "::before": {
+                        '::before': {
                             backgroundColor: theme.palette.warning.main,
-                        }
-                    }}>
+                        },
+                    }}
+                >
                     Another request pending
                 </Typography>
                 <Typography
                     className={styles.legendItem}
                     sx={{
-                        "::before": {
+                        '::before': {
                             backgroundColor: theme.palette.error.main,
-                        }
-                    }}>
+                        },
+                    }}
+                >
                     Already booked
                 </Typography>
             </Box>

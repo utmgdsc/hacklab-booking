@@ -30,10 +30,7 @@ export const PrevNextWeek = ({
     handleBlockedDates: (date: Date | Dayjs) => void;
 }) => {
     return (
-        <Grid
-            container
-            sx={{ marginBottom: '1em', }}
-        >
+        <Grid container sx={{ marginBottom: '1em' }}>
             <Grid
                 item
                 xs={12}
@@ -95,15 +92,20 @@ export const PrevNextWeek = ({
                     })}
                 </Typography>
             </Grid>
-            <Grid item xs={12} md={6} sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'end',
-                my: {
-                    xs: '2em',
-                    md: '0',
-                },
-            }}>
+            <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'end',
+                    my: {
+                        xs: '2em',
+                        md: '0',
+                    },
+                }}
+            >
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         label="Select a day"
