@@ -135,7 +135,7 @@ export const Webhooks = () => {
                 return;
             }
             const res = await axios
-                .put('accounts/webhooks/' + type, { webhook: e.target.value == '' ? null : e.target.value })
+                .put('accounts/webhooks/' + type, { webhook: e.target.value === '' ? null : e.target.value })
                 .catch(catchAxiosError('Webhook error', showSnackSev));
             if (res && res.status === 200) {
                 await fetchUserInfo();
@@ -164,7 +164,7 @@ export const Webhooks = () => {
     });
 
     return (
-        <SubPage name="Manage Webhooks" maxWidth="xl">
+        <SubPage name="Manage Notifications" maxWidth="xl">
             <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                     <Card variant="outlined">

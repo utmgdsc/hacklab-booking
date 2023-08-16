@@ -85,9 +85,11 @@ declare module '@mui/material/Typography' {
 /**
  * @returns an object that can be used in MUI's `createTheme` function
  */
-export const GoogleTheme = ({ mode }: {
+export const GoogleTheme = ({
+    mode,
+}: {
     /** Theme mode */
-    mode: PaletteMode
+    mode: PaletteMode;
 }): ThemeOptions => {
     return {
         palette: {

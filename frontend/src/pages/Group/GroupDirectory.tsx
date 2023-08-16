@@ -73,7 +73,7 @@ export const GroupDirectory = () => {
     /** the groups that the user is a member of */
     let [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
     /** user info object */
-    const { userInfo } = useContext(UserContext);
+    const { userInfo, fetchUserInfo } = useContext(UserContext);
 
     const sendAddGroup = async () => {
         await axios
@@ -88,8 +88,12 @@ export const GroupDirectory = () => {
                     showSnackSev('Failed to create group', 'error');
                 }
             })
-            .catch(catchAxiosError('Failed to create group', showSnackSev));
+            .catch(catchAxiosError('Failed to create group', showSnackSev))
+            .finally(() => {
+                fetchUserInfo();
+            });
     };
+
     const fetchGroups = async () => {
         await axios
             .get('/groups')
@@ -133,7 +137,11 @@ export const GroupDirectory = () => {
             </Box>
 
             {/* group cards */}
-            {myGroups.length === 0 && <Typography variant="h1">You're not in a group yet 😔</Typography>}
+            {myGroups.length === 0 && (
+                <Typography sx={{ my: 5 }} variant="h1">
+                    You're not in a group yet 😔
+                </Typography>
+            )}
 
             {userInfo.role === 'student' &&
                 myGroups.length > 0 &&

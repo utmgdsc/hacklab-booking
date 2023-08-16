@@ -1,5 +1,5 @@
 import { ArrowBackIos as ArrowBackIcon, ArrowForwardIos as ArrowForwardIcon } from '@mui/icons-material';
-import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -30,91 +30,95 @@ export const PrevNextWeek = ({
     handleBlockedDates: (date: Date | Dayjs) => void;
 }) => {
     return (
-        <>
-            <Box
+        <Grid container sx={{ marginBottom: '1em' }}>
+            <Grid
+                item
+                xs={12}
+                md={6}
                 sx={{
                     display: 'flex',
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
+                    justifyContent: 'start',
                     alignItems: 'center',
-                    flexWrap: 'nowrap',
-                    marginBottom: '1em',
                     gap: '1em',
-                    width: '100%',
                 }}
             >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'start',
-                        alignItems: 'center',
-                        gap: '1em',
-                    }}
-                >
-                    <Box>
-                        <Button
-                            variant="outlined"
-                            onClick={() => {
-                                setDate(dayjs());
-                                handleBlockedDates(calendarDate);
-                            }}
-                            sx={{
-                                textTransform: 'none',
-                            }}
-                        >
-                            Today
-                        </Button>
-                    </Box>
-                    <Box>
-                        <Tooltip title="Previous week">
-                            <span>
-                                <IconButton
-                                    onClick={() => {
-                                        setDate(calendarDate.subtract(7, 'day'));
-                                        handleBlockedDates(calendarDate);
-                                    }}
-                                    disabled={calendarDate.subtract(7, 'day').isBefore(dayjs(), 'day')}
-                                >
-                                    <ArrowBackIcon />
-                                </IconButton>
-                            </span>
-                        </Tooltip>
-                        <Tooltip title="Next week">
-                            <span>
-                                <IconButton
-                                    onClick={() => {
-                                        setDate(calendarDate.add(7, 'day'));
-                                        handleBlockedDates(calendarDate);
-                                    }}
-                                >
-                                    <ArrowForwardIcon />
-                                </IconButton>
-                            </span>
-                        </Tooltip>
-                    </Box>
-                    <Typography component="p" variant="h5">
-                        {GetMonday(calendarDate).toLocaleDateString('en-US', {
-                            month: 'long',
-                            year: 'numeric',
-                        })}
-                    </Typography>
+                <Box>
+                    <Button
+                        variant="outlined"
+                        onClick={() => {
+                            setDate(dayjs());
+                            handleBlockedDates(calendarDate);
+                        }}
+                        sx={{
+                            textTransform: 'none',
+                        }}
+                    >
+                        Today
+                    </Button>
                 </Box>
                 <Box>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            label="Select a day"
-                            value={calendarDate}
-                            onChange={(newDate) => {
-                                setDate(newDate);
-                                setScheduleDates();
-                                handleBlockedDates(calendarDate);
-                            }}
-                            disablePast
-                        />
-                    </LocalizationProvider>
+                    <Tooltip title="Previous week">
+                        <span>
+                            <IconButton
+                                onClick={() => {
+                                    setDate(calendarDate.subtract(7, 'day'));
+                                    handleBlockedDates(calendarDate);
+                                }}
+                                disabled={calendarDate.subtract(7, 'day').isBefore(dayjs(), 'day')}
+                            >
+                                <ArrowBackIcon />
+                            </IconButton>
+                        </span>
+                    </Tooltip>
+                    <Tooltip title="Next week">
+                        <span>
+                            <IconButton
+                                onClick={() => {
+                                    setDate(calendarDate.add(7, 'day'));
+                                    handleBlockedDates(calendarDate);
+                                }}
+                                disabled={calendarDate.isAfter(dayjs().add(1, 'year'), 'day')}
+                            >
+                                <ArrowForwardIcon />
+                            </IconButton>
+                        </span>
+                    </Tooltip>
                 </Box>
-            </Box>
-        </>
+                <Typography component="p" variant="h5">
+                    {GetMonday(calendarDate).toLocaleDateString('en-US', {
+                        month: 'long',
+                        year: 'numeric',
+                    })}
+                </Typography>
+            </Grid>
+            <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'end',
+                    my: {
+                        xs: '2em',
+                        md: '0',
+                    },
+                }}
+            >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Select a day"
+                        value={calendarDate}
+                        onChange={(newDate) => {
+                            setDate(newDate);
+                            handleBlockedDates(calendarDate);
+                        }}
+                        disablePast
+                        maxDate={dayjs().add(1, 'year')}
+                    />
+                </LocalizationProvider>
+            </Grid>
+        </Grid>
     );
 };

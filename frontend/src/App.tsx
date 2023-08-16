@@ -5,11 +5,12 @@ import '@fontsource/roboto/700.css';
 
 import './App.css';
 
+import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Admin } from './pages/Admin';
 import { RoomManager } from './pages/Admin/RoomManager';
 import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
 import { UserViewer } from './pages/Admin/UserManager/UserViewer';
-import { PastRequestsDashboard } from './pages/ViewEvents';
 import { CreateBooking } from './pages/CreateBooking';
 import { Dashboard } from './pages/Dashboard';
 import { Group } from './pages/Group/Group';
@@ -17,28 +18,27 @@ import { GroupDirectory } from './pages/Group/GroupDirectory';
 import { NotFound } from './pages/NotFound';
 import { Joan6 } from './pages/Room/joan6';
 import { Settings } from './pages/Settings';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import { PastRequestsDashboard } from './pages/ViewEvents';
 
 import {
     Alert,
     AlertColor,
+    Backdrop,
     CssBaseline,
+    LinearProgress,
     PaletteMode,
     Snackbar,
     ThemeProvider,
     createTheme,
     useMediaQuery,
-    Backdrop,
-    CircularProgress,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary, RequireRole } from './components';
 import { SnackbarContext, SnackbarQueueItem } from './contexts/SnackbarContext';
 import { UserContext, defaultUser } from './contexts/UserContext';
-import { GoogleTheme, THEME } from './theme/theme';
 import { ApprovedRequestPage } from './pages/ApprovedRequestPage';
 import { Webhooks } from './pages/Settings/Webhooks';
+import { GoogleTheme, THEME } from './theme/theme';
 
 import axios, { catchAxiosError } from './axios';
 
@@ -124,11 +124,17 @@ function App() {
                         <CssBaseline enableColorScheme />
                         <Router>
                             <Backdrop
-                                id="loading"
-                                sx={{ display: 'none', color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                                open={true}
+                                id="axios-loading-backdrop"
+                                sx={{
+                                    justifyContent: 'flex-start',
+                                    flexDirection: 'column',
+                                    backgroundColor: 'transparent',
+                                    zIndex: 2147483647,
+                                }}
+                                style={{ display: 'flex' }}
+                                open
                             >
-                                <CircularProgress color="inherit" />
+                                <LinearProgress sx={{ width: '100%' }} />
                             </Backdrop>
                             <AppRoutes />
                         </Router>

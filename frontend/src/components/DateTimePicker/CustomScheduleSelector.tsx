@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import ScheduleSelector from 'react-schedule-selector';
 import { GetMonday } from '../../components';
-import { THEME } from '../../theme/theme';
+import styles from './CustomScheduleSelector.module.css';
 
 /**
  * A custom schedule selector in the format
@@ -128,20 +128,71 @@ export const CustomScheduleSelector = ({
     };
 
     return (
-        <ScheduleSelector
-            selection={scheduleDates}
-            numDays={5}
-            minTime={8}
-            maxTime={22}
-            hourlyChunks={1}
-            startDate={GetMonday(calendarDate)}
-            onChange={(scheduleDates) => {
-                handleScheduleDate(scheduleDates);
-            }}
-            selectionScheme="linear"
-            renderDateLabel={(date) => RenderDateLabel(date)}
-            renderTimeLabel={(time) => RenderTimeLabel(time)}
-            renderDateCell={customDateCellRenderer}
-        />
+        <>
+            <ScheduleSelector
+                selection={scheduleDates}
+                numDays={5}
+                minTime={8}
+                maxTime={22}
+                hourlyChunks={1}
+                startDate={GetMonday(calendarDate)}
+                onChange={(scheduleDates) => {
+                    handleScheduleDate(scheduleDates);
+                }}
+                selectionScheme="linear"
+                renderDateLabel={(date) => RenderDateLabel(date)}
+                renderTimeLabel={(time) => RenderTimeLabel(time)}
+                renderDateCell={customDateCellRenderer}
+            />
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    my: '1em',
+                    flexWrap: 'wrap',
+                }}
+            >
+                <Typography
+                    className={styles.legendItem}
+                    sx={{
+                        '::before': {
+                            backgroundColor: theme.palette.action.hover,
+                        },
+                    }}
+                >
+                    In the past
+                </Typography>
+                <Typography
+                    className={styles.legendItem}
+                    sx={{
+                        '::before': {
+                            backgroundColor: theme.palette.action.disabled,
+                        },
+                    }}
+                >
+                    Free
+                </Typography>
+                <Typography
+                    className={styles.legendItem}
+                    sx={{
+                        '::before': {
+                            backgroundColor: theme.palette.warning.main,
+                        },
+                    }}
+                >
+                    Another request pending
+                </Typography>
+                <Typography
+                    className={styles.legendItem}
+                    sx={{
+                        '::before': {
+                            backgroundColor: theme.palette.error.main,
+                        },
+                    }}
+                >
+                    Already booked
+                </Typography>
+            </Box>
+        </>
     );
 };
