@@ -1,6 +1,5 @@
 import { UserWebhooks, WebhookTypes } from '../types/webhooksTypes';
 import EventTypes from '../types/EventTypes';
-import { read } from 'fs';
 import logger from '../common/logger';
 
 const defaultWebhooksSetttings: UserWebhooks = {};

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "prisma generate && tsc",
-    "eslint": "eslint .",
+    "eslint": "eslint --ext .js,.jsx,.ts,.tsx ./src --fix",
     "start": "npm run dev",
     "migrate": "prisma migrate deploy",
     "prisma": "prisma generate",
