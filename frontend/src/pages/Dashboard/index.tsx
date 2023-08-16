@@ -185,7 +185,7 @@ export const Dashboard = () => {
             label: 'Admin',
             color: theme.palette.app_colors.purple,
             hover: theme.palette.app_colors.hover.purple,
-            hidden: userInfo.role !== 'admin' && userInfo.role !== 'tcard',
+            hidden: userInfo.role !== 'admin',
         },
     ];
 
@@ -199,7 +199,7 @@ export const Dashboard = () => {
                 <EditBooking isOpen={openEditRequest} reqID={editRequestID} setOpenEditRequest={setOpenEditRequest} />
             )}
 
-            {(userInfo['role'] === 'admin' || userInfo['role'] === 'approver') && (
+            {(userInfo['role'] === 'admin' || userInfo['role'] === 'approver' || userInfo['role'] === 'tcard') && (
                 <PendingRequestCards onUpdate={update} pending_requests={pending_requests} />
             )}
 
