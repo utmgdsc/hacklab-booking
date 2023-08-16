@@ -31,7 +31,7 @@ export default {
       if (!Object.keys(EventTypes).includes(key)) {
         return { status: 400, message: `Invalid event type: ${key}` };
       }
-      if (!webhooks.hasOwnProperty(key) || !Array.isArray((webhooks as  Record<string, unknown>)[key])) {
+      if (!webhooks.hasOwnProperty(key) || !Array.isArray((webhooks as Record<string, unknown>)[key])) {
         return { status: 400, message: 'Invalid webhook array.' };
       }
       for (const webhook of (webhooks as Record<string, unknown[]>)[key]) {
@@ -44,7 +44,7 @@ export default {
       where: { utorid: user.utorid },
       data: { webhooks: webhooks as UserWebhooks },
     });
-    return { status: 200, data:{} };
+    return { status: 200, data: {} };
   },
   updateDiscordWebhook: async (user: User, webhook: unknown) => {
     if (!verifyWebhook(webhook)) {
@@ -54,7 +54,7 @@ export default {
       where: { utorid: user.utorid },
       data: { discordWebhook: webhook as string },
     });
-    return { status: 200, data:{} };
+    return { status: 200, data: {} };
   },
   updateSlackWebhook: async (user: User, webhook: unknown) => {
     if (!verifyWebhook(webhook)) {
@@ -64,9 +64,9 @@ export default {
       where: { utorid: user.utorid },
       data: { slackWebhook: webhook as string },
     });
-    return { status: 200, data:{} };
+    return { status: 200, data: {} };
   },
-  upsertUser: async (user:  Omit<User, 'theme' | 'role'> & { role?: string; theme?: Theme }) => {
+  upsertUser: async (user: Omit<User, 'theme' | 'role'> & { role?: string; theme?: Theme }) => {
     if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
     }
@@ -78,30 +78,38 @@ export default {
     }
 
     user.role = Object.keys(AccountRole).includes(<string>user.role) ? user.role : AccountRole.student;
-    return {
-      status: 200,
-      data: <User> await db.user.upsert({
-        where: { utorid: user.utorid },
-        update: { email: user.email, name: user.name },
-        include: {
-          groups: {
-            include: {
-              members: true,
-            },
+    const query = {
+      where: { utorid: user.utorid },
+      update: { email: user.email, name: user.name },
+      include: {
+        groups: {
+          include: {
+            members: true,
           },
         },
-        create: <User & { webhooks: object }>user,
-      }),
+      },
+      create: <User & { webhooks: object }>user,
     };
+    try {
+      return {
+        status: 200,
+        data: <User>await db.user.upsert(query),
+      };
+    } catch (e) {
+      return {
+        status: 200,
+        data: <User>await db.user.upsert(query),
+      };
+    }
   },
   getUser: async (utorid: string, user: User) => {
     const moreInfo = user.role === AccountRole.admin || user.utorid === utorid;
     const groupsFetching = moreInfo
       ? {
-        include: {
-          members: true,
-        },
-      }
+          include: {
+            members: true,
+          },
+        }
       : false;
     const userFetched = await db.user.findUnique({
       where: { utorid: utorid },
@@ -173,7 +181,10 @@ export default {
   getApprovers: async () => {
     return {
       status: 200,
-      data: await db.user.findMany({ where: { role: { in: [AccountRole.approver, AccountRole.admin] } }, select: userSelector() }),
+      data: await db.user.findMany({
+        where: { role: { in: [AccountRole.approver, AccountRole.admin] } },
+        select: userSelector(),
+      }),
     };
   },
 } satisfies Model;
