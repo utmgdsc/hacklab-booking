@@ -16,11 +16,6 @@ interface ErrorPageProps {
 
 /**
  * Shown when a user is trying to create a booking but is not in a group.
- * @param {string} name The name of the page.
- * @param {JSX.Element} message The message to display.
- * @param {JSX.Element} graphic The graphic to display.
- *
- * @returns {JSX.Element}
  */
 export const ErrorPage = ({ name, message, graphic }: ErrorPageProps) => {
     const theme = useTheme();

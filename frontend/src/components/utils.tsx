@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 /**
  * Converts ISP 8601 date string to more readable format
- * @param {string} date The date string in DD-MM-YYYY or ISP 8601 format
+ * @param {string | Date} date The date string in DD-MM-YYYY or ISP 8601 format
  * @returns {string} The localized date string
  */
 export const ConvertDate = (date: string | Date): string => {
@@ -34,7 +34,7 @@ export const ConvertDate = (date: string | Date): string => {
  *
  * if it is the weekend, return the next Monday.
  *
- * @param {Date} d the date to get the Monday of
+ * @param {Date | dayjs.Dayjs} d the date to get the Monday of
  */
 export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
     let dayjsObj = dayjs(d);

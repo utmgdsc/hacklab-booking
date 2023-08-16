@@ -32,9 +32,6 @@ interface PendingRequestCardProps {
  * A card that displays a pending request. A pending request is a request
  * that was created by a student and is now being shown to an approver
  * for review.
- *
- * @param {FetchedBookingRequest} booking the request to display as a pending request card
- * @param {Function} onUpdate a function that will be called when a user wants to edit a request
  */
 export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProps) => {
     /** the open/closed state of the dialog box for inputting the reason */

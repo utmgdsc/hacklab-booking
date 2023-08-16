@@ -11,8 +11,6 @@ interface RoomPickerProps {
 
 /**
  * A component that allows the user to pick a room from a list of rooms
- * @param roomName the name of the room
- * @param setRoomName a react useState hook that sets the room name
  */
 export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
     /** list of rooms */

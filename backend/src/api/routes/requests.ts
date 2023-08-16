@@ -12,7 +12,7 @@ import {
 const router = Router();
 
 router.get('/', async (req, res) => {
-  sendResponse(res, await requestsModel.getRequests(req.body, req.user));
+  sendResponse(res, await requestsModel.getRequests(req.query as { [key: string]: string }, req.user));
 });
 router.post(
   '/create',

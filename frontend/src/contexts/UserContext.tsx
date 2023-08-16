@@ -1,5 +1,8 @@
 import { createContext } from 'react';
 
+/**
+ * The user that is shown when the user's information is still loading.
+ */
 export const defaultUser: FetchedUser = {
     email: 'hatsune.miku@utoronto.ca',
     utorid: 'mikuhatsune',

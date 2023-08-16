@@ -115,7 +115,8 @@ export const Dashboard = () => {
                         data.filter(
                             (request) =>
                                 request.authorUtorid === userInfo.utorid &&
-                                userInfo.groups.find((groupRequest) => groupRequest.id === request.groupId),
+                                userInfo.groups.find((groupRequest) => groupRequest.id === request.groupId) &&
+                                request.status !== 'cancelled',
                         ),
                     );
                     setPendingRequests(
@@ -146,8 +147,8 @@ export const Dashboard = () => {
      */
     const homeButtons: AppButton[] = [
         {
-            title: 'View the Hacklab Calendar',
-            href: '/calendar',
+            title: 'View Events',
+            href: '/pastevents',
             icon: <InventoryIcon />,
             label: 'View Events',
             color: theme.palette.app_colors.red,

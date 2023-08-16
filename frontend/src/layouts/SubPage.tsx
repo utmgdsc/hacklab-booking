@@ -6,11 +6,17 @@ import { ErrorBoundary } from '../components';
 import { UserContext } from '../contexts/UserContext';
 
 interface SubPageProps {
+    /** title of the page */
     name: string;
+    /** content of the page */
     children: React.ReactNode;
+    /** the maximum width of the page */
     maxWidth?: Breakpoint;
+    /** the vertical padding of the page */
     py?: number;
+    /** whether to show the header */
     showHead?: boolean;
+    /** other props */
     [key: string]: any;
 }
 

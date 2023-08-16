@@ -6,14 +6,18 @@ export const SelectWebhookType = ({
     webhookTypes,
     values,
 }: {
+    /** a function to call when the select is closed */
     onClose: (value: string[]) => void;
+    /** the webhook types to display */
     webhookTypes: Readonly<string[]>;
+    /** the values to display as selected */
     values: string[];
 }) => {
     const [selected, setSelected] = useState(values);
     useEffect(() => {
         setSelected(values);
     }, [values]);
+
     return (
         <Select
             multiple

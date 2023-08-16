@@ -24,19 +24,12 @@ interface InputDialogProps {
     description: string;
     /** the title of the dialog box */
     title: string;
+    /** text of the submit button */
     buttonLabel?: string;
 }
 
 /**
  * A dialog that asks the user to input some text before proceeding
- * @param {boolean} open a react useState hook that controls if the dialog is open or not
- * @param {Function} setOpen a react useState hook that sets the open state of the dialog
- * @param {string} title the title of the dialog
- * @param {string} label the label of the input
- * @param {Function} onSubmit a function that is called when the user submits the dialog box, passing in the value of the input
- * @param {string} description the description of the dialog box
- * @param {string} buttonLabel the label of the submit button
- *
  */
 export const InputDialog = ({ open, setOpen, title, label, description, onSubmit, buttonLabel }: InputDialogProps) => {
     /** value of the input */

@@ -11,7 +11,6 @@ interface GroupCardProps {
 
 /**
  * A card that displays information about a group
- * @param {FetchedGroup} groupObj - group object
  */
 export const GroupCard = ({ groupObj, ...props }: GroupCardProps) => {
     const { showSnackSev } = useContext(SnackbarContext);

@@ -19,8 +19,11 @@ const DialogTemplate = ({
     setOpenEditRequest,
     children,
 }: {
+    /** if the dialog is open or not */
     isOpen: boolean;
+    /** function to change the state of opening/closing the dialog */
     setOpenEditRequest: (isOpen: boolean) => void;
+    /** the children to render */
     children: React.ReactNode;
 }) => {
     const { fetchUserInfo } = React.useContext(UserContext);

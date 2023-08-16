@@ -3,9 +3,11 @@ import { InitialsAvatar } from '../InitialsAvatar/InitialsAvatar';
 
 /**
  * A card for basic user info
- * @param userInfo The user info to display
  */
-export const UserCard = ({ userInfo }: { userInfo: FetchedUser }) => {
+export const UserCard = ({ userInfo }: {
+    /** The user info to display */
+    userInfo: FetchedUser
+}) => {
     return (
         <Card variant="outlined">
             {/* less spacing when grid items are stacked */}
