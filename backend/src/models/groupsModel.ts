@@ -78,6 +78,9 @@ export default {
 
   createGroup: async (name: string, user: User) => {
     try {
+      if (name.trim() === '') {
+        return { status: 400, message: 'Group name cannot be empty.' };
+      }
       const group = await db.group.create({
         data: {
           name,
@@ -202,7 +205,10 @@ export default {
       return { status: 200, data: {} };
     } catch (e) {
       if ((e as PrismaClientKnownRequestError).code === 'P2025') {
-        return { status: 404, message: 'User not found. Please make sure they have logged in to Hacklab Booking before.' };
+        return {
+          status: 404,
+          message: 'User not found. Please make sure they have logged in to Hacklab Booking before.',
+        };
       }
       throw e;
     }
