@@ -76,7 +76,7 @@ const PersonCard = ({
                         onClick={() => {
                             removePerson(person.utorid);
                             if (userInfo.utorid === person.utorid) {
-                                navigate('/group', { replace: true });
+                                navigate('-1', { replace: true });
                             }
                         }}
                     >
@@ -162,7 +162,9 @@ export const Group = () => {
             })
             .catch(catchAxiosError('Could not remove person', showSnackSev))
             .finally(() => {
-                getGroup();
+                if (userInfo.utorid !== utorid) {
+                    getGroup();
+                }
             });
     };
 
@@ -175,15 +177,12 @@ export const Group = () => {
             .then((res) => {
                 if (res.status === 200) {
                     showSnackSev('Group deleted', 'success');
-                    navigate('/group', { replace: true }); // group doesnt exist, so go back
+                    navigate(-1); // group doesnt exist, so go back
                 } else {
                     showSnackSev('Could not delete group', 'error');
                 }
             })
-            .catch(catchAxiosError('Could not delete group', showSnackSev))
-            .finally(() => {
-                getGroup();
-            });
+            .catch(catchAxiosError('Could not delete group', showSnackSev));
     };
 
     /**
