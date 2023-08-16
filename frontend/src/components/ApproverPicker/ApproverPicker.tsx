@@ -20,6 +20,7 @@ interface ApproverPickerProps {
 export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName }: ApproverPickerProps) => {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(selectedApprovers);
+    /** an array of all the approvers that can be chosen */
     const [approvers, setApproversBackend] = useState([]);
 
     useEffect(() => {
@@ -29,6 +30,10 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
                 .then(({ data }) => {
                     if (data.approvers) {
                         setApproversBackend(data.approvers);
+                        if (data.approvers.length === 1 && selectedApprovers.length === 0) {
+                            setSelected([data.approvers[0].utorid]);
+                            setApprovers([data.approvers[0].utorid]);
+                        }
                     } else {
                         console.error('No approvers found for room ' + roomName + '.', data);
                     }
