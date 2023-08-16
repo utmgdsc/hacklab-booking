@@ -62,6 +62,12 @@ export default {
   },
   createRoom: async (user: User, friendlyName: string, capacity: number | undefined, roomName: string) => {
     try {
+      if (roomName.trim() === '') {
+        return { status: 400, message: 'Room name cannot be empty.' };
+      }
+      if (capacity !== undefined && (isNaN(capacity) || capacity < 1)) {
+        return { status: 400, message: 'Invalid capacity.' };
+      }
       const room = await db.room.create({
         data: {
           friendlyName,

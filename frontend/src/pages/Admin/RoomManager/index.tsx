@@ -59,9 +59,7 @@ export const RoomManager = () => {
             </Button>
             <TransitionGroup>
                 {rooms.map((room, index) => (
-                    <Collapse key={index}>
-                        <RoomCard {...room} />
-                    </Collapse>
+                    <RoomCard key={index} {...room} />
                 ))}
             </TransitionGroup>
             <CreateRoomDialog open={createRoomOpen} setOpen={setCreateRoomOpen} getRooms={getRooms} />
