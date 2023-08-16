@@ -41,6 +41,7 @@ import { Webhooks } from './pages/Settings/Webhooks';
 import { GoogleTheme, THEME } from './theme/theme';
 
 import axios, { catchAxiosError } from './axios';
+import { Logout } from './pages/logout';
 
 function App() {
     /*
@@ -245,6 +246,7 @@ const AppRoutes = () => {
                             </RequireRole>
                         }
                     />
+                    <Route path="Shibboleth.sso/Logout" element={<Logout />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </CSSTransition>
