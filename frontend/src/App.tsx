@@ -9,7 +9,7 @@ import { Admin } from './pages/Admin';
 import { RoomManager } from './pages/Admin/RoomManager';
 import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
 import { UserViewer } from './pages/Admin/UserManager/UserViewer';
-import { PastRequestsDashboard } from './pages/Calendar';
+import { PastRequestsDashboard } from './pages/ViewEvents';
 import { CreateBooking } from './pages/CreateBooking';
 import { Dashboard } from './pages/Dashboard';
 import { Group } from './pages/Group/Group';

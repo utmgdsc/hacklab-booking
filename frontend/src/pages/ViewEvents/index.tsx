@@ -11,6 +11,7 @@ import {
 } from '../../components';
 import { AppButton } from '../../components/AppButtons/AppButtons';
 import { UserContext } from '../../contexts/UserContext';
+import { SubPage } from '../../layouts/SubPage';
 
 /**
  * all active requests cards given a list of active requests
@@ -21,9 +22,6 @@ import { UserContext } from '../../contexts/UserContext';
  */
 const PastRequestCards = ({ active_requests }: { active_requests: FetchedBookingRequest[] }) => (
     <>
-        <Typography variant="h2" gutterBottom>
-            Your Past Requests
-        </Typography>
         {active_requests.length === 0 && <NoRequestsPlaceholder text={'Nothing to see here :)'} />}
         {active_requests.map((request) => {
             return (
@@ -41,8 +39,7 @@ const PastRequestCards = ({ active_requests }: { active_requests: FetchedBooking
 );
 
 export const PastRequestsDashboard = () => {
-    const { userInfo, fetchUserInfo } = useContext(UserContext);
-    const [pending_requests, setPendingRequests] = useState<FetchedBookingRequest[]>([]);
+    const { userInfo } = useContext(UserContext);
     const [my_requests, setMyRequests] = useState<FetchedBookingRequest[]>([]);
     const update = async () => {
         await axios
@@ -70,8 +67,10 @@ export const PastRequestsDashboard = () => {
     }, [userInfo]);
 
     return (
-        <Container sx={{ py: 8 }} maxWidth="md" component="main">
-            <PastRequestCards active_requests={my_requests} />
-        </Container>
+        <SubPage name="Your Past Requests">
+            <Container sx={{ py: 8 }} maxWidth="md" component="main">
+                <PastRequestCards active_requests={my_requests} />
+            </Container>
+        </SubPage>
     );
 };
