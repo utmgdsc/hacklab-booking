@@ -18,16 +18,6 @@ const padding: string = '2em';
 const fullHeight: string = `calc(100vh - ${padding})`;
 
 /**
- * adds `number` hours to `date`
- * @param date number of hours to date to add
- */
-const addHoursToDate = (date: Date, hours: number): Date => {
-    let newDate = new Date(date.getTime());
-    newDate.setTime(newDate.getTime() + hours * 60 * 60 * 1000);
-    return newDate;
-};
-
-/**
  * Displays a row of events for one day.
  * Precondition: events is sorted by start date starting with the earliest event
  * @param {BookingRequest[]} events a list of events to display

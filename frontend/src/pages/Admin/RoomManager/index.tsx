@@ -225,6 +225,7 @@ const CreateRoomDialog = ({
                     onClick={() => {
                         createRoom();
                     }}
+                    disabled={!friendlyName || !room || !capacity}
                     variant="contained"
                 >
                     Add

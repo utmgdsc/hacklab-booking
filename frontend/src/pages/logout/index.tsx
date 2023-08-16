@@ -1,4 +1,3 @@
-import { Link } from '../../components';
 import { ErrorPage } from '../../layouts/ErrorPage';
 import { useEffect } from 'react';
 
@@ -8,5 +7,5 @@ export const Logout = () => {
             window.location.reload();
         }, 500);
     });
-    return <ErrorPage name="Page not found" message={<>Redirecting...</>} />;
+    return <ErrorPage name="Redirecting..." message={<>Logging out...</>} />;
 };

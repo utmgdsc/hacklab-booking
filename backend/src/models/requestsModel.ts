@@ -135,7 +135,7 @@ export default {
     }
 
     if (user.role === AccountRole.approver) {
-      query.approvers = { OR: [{ some: { utorid: user.utorid } }, { isEmpty: true }], select: userSelector() };
+      query.OR = [{ approvers: { some: { utorid: user.utorid } } }, { approvers: { none: {} } }];
     }
     logger.debug(JSON.stringify(query));
     return {
