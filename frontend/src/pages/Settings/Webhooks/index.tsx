@@ -131,11 +131,13 @@ export const Webhooks = () => {
     }, [userInfo]);
     const updateWebhook = (type: 'slack' | 'discord') => {
         return async (e: FocusEvent<HTMLInputElement>) => {
-            if (e.target.value === (type === 'slack' ? userInfo.slackWebhook : userInfo.discordWebhook)) {
+            if (e.target.value.trim() === (type === 'slack' ? userInfo.slackWebhook : userInfo.discordWebhook)) {
                 return;
             }
             const res = await axios
-                .put('accounts/webhooks/' + type, { webhook: e.target.value === '' ? null : e.target.value })
+                .put('accounts/webhooks/' + type, {
+                    webhook: e.target.value.trim() == '' ? null : e.target.value.trim(),
+                })
                 .catch(catchAxiosError('Webhook error', showSnackSev));
             if (res && res.status === 200) {
                 await fetchUserInfo();
@@ -147,6 +149,9 @@ export const Webhooks = () => {
         return async (value: string[] | string) => {
             const newWebhooks: Record<string, string[]> = { ...userInfo.webhooks };
             newWebhooks[webhookEvent] = typeof value === 'string' ? value.split(',') : (value as string[]);
+            if (newWebhooks[webhookEvent].length === userInfo.webhooks[webhookEvent].length) {
+                return;
+            }
             const res = await axios
                 .put('accounts/webhooks/', { webhooks: newWebhooks })
                 .catch(catchAxiosError('Webhook error', showSnackSev));
