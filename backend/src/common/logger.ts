@@ -29,6 +29,13 @@ if (process.env.NODE_ENV !== 'production') {
       level: 'debug',
     }),
   );
+} else {
+  logger.add(
+    new transports.Console({
+      format: format.combine(format.timestamp(), format.splat(), format.simple()),
+      level: 'info',
+    }),
+  );
 }
 process.on('uncaughtException', (err) => {
   logger.error('Uncaught Exception: ', err);
