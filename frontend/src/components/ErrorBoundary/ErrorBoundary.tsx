@@ -4,13 +4,17 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
 interface ErrorBoundaryProps {
-    my?: number; // margin top and bottom
-    children: ReactNode; // children components
+    /** margin top and bottom */
+    my?: number;
+    /** children components */
+    children: ReactNode;
 }
 
 interface ErrorBoundaryState {
-    error: Error | null; // error object
-    errorInfo: ErrorInfo | null; // error info object
+    /** error object */
+    error: Error | null;
+    /** error info object */
+    errorInfo: ErrorInfo | null;
 }
 
 /**

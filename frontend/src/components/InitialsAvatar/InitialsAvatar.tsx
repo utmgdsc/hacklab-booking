@@ -7,7 +7,6 @@ interface InitialsAvatarProps {
 
 /**
  * Given a name get the initials of the name up to 2 characters into an avatar
- * @param {string} name the name to get the initials of
  * @returns {JSX.Element} the avatar with the initials
  */
 export const InitialsAvatar = ({ name = '', ...props }: InitialsAvatarProps): JSX.Element => {

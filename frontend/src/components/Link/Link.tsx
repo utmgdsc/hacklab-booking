@@ -20,7 +20,6 @@ interface NonForwardLinkProps extends MaterialLinkProps {
 
 /**
  * A link
- * @param {Object} props The props
  * @returns {JSX.Element} A link
  */
 const NonForwardLink = ({

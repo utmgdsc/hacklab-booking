@@ -11,8 +11,6 @@ interface GroupPickerProps {
 
 /**
  * A component that allows the user to pick a group from a list of groups
- * @param group a JSON stringify'd group object
- * @param setGroup a react useState hook that sets the group
  */
 export const GroupPicker = ({ group, setGroup }: GroupPickerProps) => {
     /** user info */

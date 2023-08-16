@@ -12,10 +12,6 @@ import { GetMonday } from '../../components';
  *
  * it also handles for the blocked dates
  *
- * @param {Object} scheduleDates a react hook
- * @param {Function} handleScheduleDate a react hook
- * @param {Date} calendarDate the current date of the week to show
- *
  * @returns the previous and next week buttons, and the date picker
  */
 export const PrevNextWeek = ({
@@ -24,9 +20,13 @@ export const PrevNextWeek = ({
     setScheduleDates,
     handleBlockedDates,
 }: {
+    /** the current calendar date to show on the picker */
     calendarDate: Dayjs;
+    /** a function that is called when the date has to be set */
     setDate: (date: Dayjs) => void;
+    /** a function that is called to set the array of time slots that are requested */
     setScheduleDates: (dates?: Date[]) => void;
+    /** a function that is called to set the array of dates that are blocked */
     handleBlockedDates: (date: Date | Dayjs) => void;
 }) => {
     return (
