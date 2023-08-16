@@ -81,6 +81,7 @@ export const InputDialog = ({ open, setOpen, title, label, description, onSubmit
                         setValue('');
                     }}
                     variant="contained"
+                    disabled={value === ''}
                 >
                     {buttonLabel ?? 'Add'}
                 </Button>

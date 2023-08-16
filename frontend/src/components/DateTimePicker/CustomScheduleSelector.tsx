@@ -184,7 +184,7 @@ export const CustomScheduleSelector = ({
                             backgroundColor: theme.palette.error.main,
                         }
                     }}>
-                    Already Booked
+                    Already booked
                 </Typography>
             </Box>
         </>
