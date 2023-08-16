@@ -262,8 +262,8 @@ export default {
     }
     if (
       status === RequestStatus.cancelled &&
-      (request.author.utorid !== user.utorid ||
-        !request.group.managers.some((manager) => manager.utorid === user.utorid))
+      request.author.utorid !== user.utorid &&
+      !request.group.managers.some((manager) => manager.utorid === user.utorid)
     ) {
       return {
         status: 403,
