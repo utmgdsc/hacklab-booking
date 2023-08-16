@@ -1,5 +1,6 @@
 declare module '*.png';
 declare module '*.svg';
+declare module "*.module.css";
 
 /**
  * User model

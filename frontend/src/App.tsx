@@ -5,11 +5,12 @@ import '@fontsource/roboto/700.css';
 
 import './App.css';
 
+import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Admin } from './pages/Admin';
 import { RoomManager } from './pages/Admin/RoomManager';
 import { RoomViewer } from './pages/Admin/RoomManager/RoomViewer';
 import { UserViewer } from './pages/Admin/UserManager/UserViewer';
-import { PastRequestsDashboard } from './pages/ViewEvents';
 import { CreateBooking } from './pages/CreateBooking';
 import { Dashboard } from './pages/Dashboard';
 import { Group } from './pages/Group/Group';
@@ -17,29 +18,27 @@ import { GroupDirectory } from './pages/Group/GroupDirectory';
 import { NotFound } from './pages/NotFound';
 import { Joan6 } from './pages/Room/joan6';
 import { Settings } from './pages/Settings';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
+import { PastRequestsDashboard } from './pages/ViewEvents';
 
 import {
     Alert,
     AlertColor,
+    Backdrop,
     CssBaseline,
+    LinearProgress,
     PaletteMode,
     Snackbar,
     ThemeProvider,
     createTheme,
-    useMediaQuery,
-    Backdrop,
-    CircularProgress,
-    LinearProgress,
+    useMediaQuery
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary, RequireRole } from './components';
 import { SnackbarContext, SnackbarQueueItem } from './contexts/SnackbarContext';
 import { UserContext, defaultUser } from './contexts/UserContext';
-import { GoogleTheme, THEME } from './theme/theme';
 import { ApprovedRequestPage } from './pages/ApprovedRequestPage';
 import { Webhooks } from './pages/Settings/Webhooks';
+import { GoogleTheme, THEME } from './theme/theme';
 
 import axios, { catchAxiosError } from './axios';
 

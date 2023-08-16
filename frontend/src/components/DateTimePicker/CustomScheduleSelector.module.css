@@ -1,0 +1,7 @@
+.legendItem::before {
+    content: "";
+    display: inline-block;
+    width: .8em;
+    height: .8em;
+    margin-right: 0.5em;
+}

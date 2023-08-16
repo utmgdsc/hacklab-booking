@@ -1,15 +1,10 @@
-import { Container, Typography } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react';
+import { Container } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import {
     ActiveRequestCard,
-    AppButtons,
-    DashboardHeader,
-    EditBooking,
-    NoRequestsPlaceholder,
-    PendingRequestCard,
+    NoRequestsPlaceholder
 } from '../../components';
-import { AppButton } from '../../components/AppButtons/AppButtons';
 import { UserContext } from '../../contexts/UserContext';
 import { SubPage } from '../../layouts/SubPage';
 
