@@ -31,6 +31,7 @@ import {
     useMediaQuery,
     Backdrop,
     CircularProgress,
+    LinearProgress,
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { ErrorBoundary, RequireRole } from './components';
@@ -124,11 +125,17 @@ function App() {
                         <CssBaseline enableColorScheme />
                         <Router>
                             <Backdrop
-                                id="loading"
-                                sx={{ display: 'none', color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                                open={true}
+                                id="axios-loading-backdrop"
+                                sx={{
+                                    justifyContent: 'flex-start',
+                                    flexDirection: 'column',
+                                    backgroundColor: 'transparent',
+                                    zIndex: 2147483647
+                                }}
+                                style={{ display: 'flex' }}
+                                open
                             >
-                                <CircularProgress color="inherit" />
+                                <LinearProgress sx={{ width: "100%" }} />
                             </Backdrop>
                             <AppRoutes />
                         </Router>
