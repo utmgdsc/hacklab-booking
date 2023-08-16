@@ -117,7 +117,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         {booking.roomName}
                     </Typography>
 
-                    <Typography>{booking.description}</Typography>
+                    {/*<Typography>{booking.description}</Typography>*/}
                 </CardContent>
                 <CardActions>
                     <Button
