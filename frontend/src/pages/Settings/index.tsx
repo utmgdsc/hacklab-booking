@@ -29,7 +29,7 @@ export const Settings = () => {
                     <Card variant="outlined">
                         <CardContent>
                             <Typography variant="h2" gutterBottom>
-                                Webhooks
+                                Notifications
                             </Typography>
                             <Typography variant="gray">
                                 Manage automated notifications for your requests via webhooks
