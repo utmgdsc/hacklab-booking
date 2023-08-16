@@ -20,6 +20,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=production
+      - FRONTEND_URL=https://hacklabbooking.utm.utoronto.ca
 
   frontend:
     restart: always
