@@ -20,8 +20,6 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
       - NODE_ENV=production
-    env_file:
-      - ./backend/.env
 
   frontend:
     restart: always
@@ -30,8 +28,6 @@ services:
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=production
-    env_file:
-      - ./frontend/.env
 
   db:
     image: postgres
