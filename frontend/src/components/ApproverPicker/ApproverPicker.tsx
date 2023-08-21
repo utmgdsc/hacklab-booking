@@ -15,7 +15,7 @@ interface ApproverPickerProps {
 /**
  * A control that allows the user to select approvers from a list of all approvers.
  *
- * @param setApprovers a function that takes in an array of approvers and sets the approvers for the form
+ * @property setApprovers a function that takes in an array of approvers and sets the approvers for the form
  */
 export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName }: ApproverPickerProps) => {
     const [open, setOpen] = useState(false);

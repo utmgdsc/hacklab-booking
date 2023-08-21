@@ -9,7 +9,7 @@ import { SnackbarContext } from '../../contexts/SnackbarContext';
 
 /**
  * Approve or deny a booking request
- * @param {boolean} approved Whether to approve or deny the request.
+ * @property {boolean} approved Whether to approve or deny the request.
  */
 export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
     const { id } = useParams();

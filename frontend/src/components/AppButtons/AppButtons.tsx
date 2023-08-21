@@ -32,8 +32,8 @@ interface AppButtonsProps {
 /**
  * Renders a list of LabelledIconButtons
  *
- * @param AppButton[] ButtonsToRender - the array of objects to render
- * @returns {JSX.Element} - the rendered list of LabelledIconButtons
+ * @property {AppButton[]} ButtonsToRender the array of objects to render
+ * @returns the rendered list of LabelledIconButtons
  */
 export const AppButtons = ({ ButtonsToRender }: AppButtonsProps): JSX.Element => (
     <Box

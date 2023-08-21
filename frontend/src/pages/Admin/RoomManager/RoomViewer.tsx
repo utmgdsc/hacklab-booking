@@ -82,7 +82,7 @@ const fixedHeaderContent = (columns: TableRowData[]) => {
 
 /**
  * A button that allows a user to revoke access from a user
- * @param utorid the utorid of the user to revoke access from
+ * @property utorid the utorid of the user to revoke access from
  */
 const RevokeButton = ({ utorid, onUpdate }: { utorid: string; onUpdate: () => void }) => {
     const { showSnackSev } = useContext(SnackbarContext);
@@ -118,7 +118,7 @@ const RevokeButton = ({ utorid, onUpdate }: { utorid: string; onUpdate: () => vo
 
 /**
  * A table that shoes a list of users given a list of users
- * @param rows a list of users
+ * @property rows a list of users
  */
 const UserAccessTable = ({
     rows,

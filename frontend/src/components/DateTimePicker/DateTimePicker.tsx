@@ -18,9 +18,9 @@ interface DateTimePickerProps {
 
 /**
  * A Google Calendar and When2meet style date and time picker
- * @param {function} handleScheduleDate a function that takes a list of dates, and will validate them
- * @param {Date[]} scheduleDates a list of dates that are currently selected
- * @param {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
+ * @property {function} handleScheduleDate a function that takes a list of dates, and will validate them
+ * @property {Date[]} scheduleDates a list of dates that are currently selected
+ * @property {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
 export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates, room }: DateTimePickerProps) => {
@@ -33,7 +33,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
      * by blocked, we mean that there is already a request (pending or approved)
      * for that date.
      *
-     * @param {date} startDate the start date of the week to get blocked dates for
+     * @property {date} startDate the start date of the week to get blocked dates for
      */
     const handleBlockedDates = async (startDate: Date) => {
         // the end date is 7 days after the start date

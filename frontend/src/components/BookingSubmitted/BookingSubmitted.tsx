@@ -1,12 +1,11 @@
 import { CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 import { Container, Typography } from '@mui/material';
 import { formatRangedTime } from '../';
-import dayjs from 'dayjs';
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
- * @param {Date | string} scheduleDate the date to format
- * @return {string} the formatted date string
+ * @param scheduleDate the date to format
+ * @return the formatted date string
  */
 const getDateString = (scheduleDate: Date | string): string => {
     var d = new Date(scheduleDate);
@@ -31,10 +30,10 @@ interface BookingSubmittedProps {
 
 /**
  * The page that is displayed after a booking is submitted
- * @param {string} groupName the name of the group
- * @param {string} details the details of the booking
- * @param {Array<Date>} scheduleDates the dates of the booking
- * @param {string} title the title of the page
+ * @property {string} groupName the name of the group
+ * @property {string} details the details of the booking
+ * @property {Array<Date>} scheduleDates the dates of the booking
+ * @property {string} title the title of the page
  * @returns the page that is displayed after a booking is submitted
  */
 export const BookingSubmitted = ({

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 
 /**
  * Converts ISP 8601 date string to more readable format
- * @param date The date string in DD-MM-YYYY or ISP 8601 format
+ * @property date The date string in DD-MM-YYYY or ISP 8601 format
  * @returns The localized date string
  */
 export const ConvertDate = (date: string | Date): string => {
@@ -34,7 +34,7 @@ export const ConvertDate = (date: string | Date): string => {
  *
  * if it is the weekend, return the next Monday.
  *
- * @param d the date to get the Monday of
+ * @property d the date to get the Monday of
  */
 export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
     let dayjsObj = dayjs(d);
@@ -90,8 +90,8 @@ export const colorHash = ({
 
 /**
  * adds `number` hours to `date`
- * @param date date to add hours to
- * @param hours the number of hours to add
+ * @property date date to add hours to
+ * @property hours the number of hours to add
  * @return the new date with the hours added
  */
 export const addHoursToDate = (date: Date, hours: number): Date => {
@@ -107,8 +107,8 @@ export const addHoursToDate = (date: Date, hours: number): Date => {
  * for the fact that HB only allows bookings to be made in hour increments with
  * non-inclusive end times.
  *
- * @param startDate The start date of the booking
- * @param endDate The end date of the booking
+ * @property startDate The start date of the booking
+ * @property endDate The end date of the booking
  * @return A formatted string of the time range of the booking
  */
 export const formatRangedTime = (startDate: Date, endDate: Date): string => {

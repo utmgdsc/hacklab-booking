@@ -51,7 +51,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
 
     /**
      * Handles clicking of the "TCard access was granted" / Approve button
-     * @param {boolean} approval whether or not the "approve" button was clicked. If false, the "deny" button was clicked
+     * @property {boolean} approval whether or not the "approve" button was clicked. If false, the "deny" button was clicked
      */
     const handleClickOpen = async (approval: boolean) => {
         if (booking.status === 'needTCard' && approval) {
@@ -78,8 +78,8 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
 
     /**
      * Handles changing booking status in the backend
-     * @param {string} reason the reason for approving or denying the request
-     * @param {'approve' | 'deny'} status whether the request should be approved or denied
+     * @property {string} reason the reason for approving or denying the request
+     * @property {'approve' | 'deny'} status whether the request should be approved or denied
      */
     const handleChangeStatus = async (reason: string, status: 'approve' | 'deny') => {
         await axios

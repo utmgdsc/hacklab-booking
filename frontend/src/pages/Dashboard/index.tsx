@@ -22,9 +22,9 @@ import { UserContext } from '../../contexts/UserContext';
 
 /**
  * all active requests cards given a list of active requests
- * @param {*} active_requests a list of requests received from the backend
- * @param {*} editThisRequest a function that will be called when a user wants to edit a request
- * @param {*} cancelThisRequest a function that will be called when a user wants to cancel a request
+ * @property {*} active_requests a list of requests received from the backend
+ * @property {*} editThisRequest a function that will be called when a user wants to edit a request
+ * @property {*} cancelThisRequest a function that will be called when a user wants to cancel a request
  * @returns all active requests cards
  */
 const ActiveRequestCards = ({
@@ -60,8 +60,8 @@ const ActiveRequestCards = ({
 
 /**
  * all pending requests cards given a list of pending requests
- * @param {*} pending_requests a list of requests received from the backend
- * @param {*} onUpdate a function that will be called when a user wants to change a request
+ * @property {*} pending_requests a list of requests received from the backend
+ * @property {*} onUpdate a function that will be called when a user wants to change a request
  * @returns all pending requests cards
  */
 const PendingRequestCards = ({

@@ -9,7 +9,7 @@ import { SubPage } from '../../layouts/SubPage';
 
 /**
  * Shows a group card with accept and decline buttons
- * @param group The group to display
+ * @property group The group to display
  */
 const InvitedGroupCard = ({ group, fetchGroups }: { group: FetchedGroup; fetchGroups: () => void }) => {
     const { fetchUserInfo } = useContext(UserContext);

@@ -81,7 +81,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
 
     /**
      * Checks if the date is not blocked
-     * @param dates list of dates
+     * @property dates list of dates
      */
     const checkDate = async (dates: Date[]) => {
         await axios
@@ -200,7 +200,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
 
     /**
      * Validate the date in the DateTimePicker and clears ScheduleDates if invalid
-     * @param dates list of dates
+     * @property dates list of dates
      */
     const handleScheduleDate = (dates: Date[]) => {
         /** used to check if all dates are on the same day */

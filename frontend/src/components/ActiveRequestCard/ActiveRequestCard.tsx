@@ -29,12 +29,12 @@ interface ActiveRequestCardProps {
  * that has been created by a student and is either pending approval, has been
  * approved, or has been denied. The student can edit or cancel the request.
  *
- * @param {string} name the name of the user who sent the request
- * @param {string} utorid the utorid of the user who sent the request
- * @param {string} title the title of the request
- * @param {Date} date the date of the request
- * @param {string} description the description of the request
- * @param {string} location the location of the request
+ * @property {string} name the name of the user who sent the request
+ * @property {string} utorid the utorid of the user who sent the request
+ * @property {string} title the title of the request
+ * @property {Date} date the date of the request
+ * @property {string} description the description of the request
+ * @property {string} location the location of the request
  */
 export const ActiveRequestCard = ({
     booking,

@@ -69,9 +69,9 @@ export const RoomManager = () => {
 
 /**
  * Room Card component. Prop names align with the Room type in the backend
- * @param roomName name of the room
- * @param friendlyName friendly name of the room
- * @param capacity capacity of the room
+ * @property roomName name of the room
+ * @property friendlyName friendly name of the room
+ * @property capacity capacity of the room
  */
 const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
     return (
@@ -98,9 +98,9 @@ const RoomCard = ({ roomName, friendlyName, capacity }: Room) => {
 
 /**
  * Dialog to create a room
- * @param open whether the dialog is open
- * @param setOpen function to set the open state
- * @param getRooms function to get the rooms which will be called after a room is created
+ * @property open whether the dialog is open
+ * @property setOpen function to set the open state
+ * @property getRooms function to get the rooms which will be called after a room is created
  */
 const CreateRoomDialog = ({
     open,

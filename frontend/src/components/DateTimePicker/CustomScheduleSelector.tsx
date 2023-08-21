@@ -8,7 +8,7 @@ import styles from './CustomScheduleSelector.module.css';
  * A custom schedule selector in the format
  *    Mon
  *   1 Jan
- * @param {Date} date the date to render
+ * @property {Date} date the date to render
  * @returns a label for the date on the schedule selector
  */
 const RenderDateLabel = (date: Date) => {
@@ -35,7 +35,7 @@ const RenderDateLabel = (date: Date) => {
 /**
  * A label for the time on the schedule selector in the format:
  *  12am
- * @param {Date} time the time to render
+ * @property {Date} time the time to render
  * @returns a label for the time on the schedule selector
  */
 const RenderTimeLabel = (time: Date) => {
@@ -63,11 +63,11 @@ const RenderTimeLabel = (time: Date) => {
 /**
  * A when2meet-like schedule selector that supports dark mode
  *
- * @param {Date[]} scheduleDates the dates that are selected
- * @param {(dates: Date[]) => void} handleScheduleDate a react usestate function that is called when a date is selected
- * @param {Date} calendarDate the current date of the week to show
- * @param {Date[]} blockedDates the dates that are blocked off as they are already booked
- * @param {Date[]} pendingDates the dates that are pending approval
+ * @property {Date[]} scheduleDates the dates that are selected
+ * @property {(dates: Date[]) => void} handleScheduleDate a react usestate function that is called when a date is selected
+ * @property {Date} calendarDate the current date of the week to show
+ * @property {Date[]} blockedDates the dates that are blocked off as they are already booked
+ * @property {Date[]} pendingDates the dates that are pending approval
  * @returns a when2meet-like schedule selector
  */
 export const CustomScheduleSelector = ({
