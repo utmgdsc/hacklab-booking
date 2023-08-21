@@ -3,8 +3,8 @@ import dayjs from 'dayjs';
 
 /**
  * Converts ISP 8601 date string to more readable format
- * @param {string | Date} date The date string in DD-MM-YYYY or ISP 8601 format
- * @returns {string} The localized date string
+ * @param date The date string in DD-MM-YYYY or ISP 8601 format
+ * @returns The localized date string
  */
 export const ConvertDate = (date: string | Date): string => {
     let dateObj: Date;
@@ -34,7 +34,7 @@ export const ConvertDate = (date: string | Date): string => {
  *
  * if it is the weekend, return the next Monday.
  *
- * @param {Date | dayjs.Dayjs} d the date to get the Monday of
+ * @param d the date to get the Monday of
  */
 export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
     let dayjsObj = dayjs(d);
@@ -63,7 +63,7 @@ export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
 
 /**
  * get a hash of a string that is also a color code
- * @returns {string} the color code in hsl format
+ * @returns the color code in hsl format
  */
 export const colorHash = ({
     name = '',
@@ -90,8 +90,9 @@ export const colorHash = ({
 
 /**
  * adds `number` hours to `date`
- * @param date number of hours to date to add
- * @return {Date} the new date with the hours added
+ * @param date date to add hours to
+ * @param hours the number of hours to add
+ * @return the new date with the hours added
  */
 export const addHoursToDate = (date: Date, hours: number): Date => {
     let newDate = new Date(date.getTime());
@@ -106,11 +107,11 @@ export const addHoursToDate = (date: Date, hours: number): Date => {
  * for the fact that HB only allows bookings to be made in hour increments with
  * non-inclusive end times.
  *
- * @param {Date} startDate The start date of the booking
- * @param {Date} endDate The end date of the booking
- * @return {string} A formatted string of the time range of the booking
+ * @param startDate The start date of the booking
+ * @param endDate The end date of the booking
+ * @return A formatted string of the time range of the booking
  */
-export const formatRangedTime = (startDate: Date, endDate: Date) => {
+export const formatRangedTime = (startDate: Date, endDate: Date): string => {
     const formatDateOptions: Intl.DateTimeFormatOptions = {
         hour: 'numeric',
     };
