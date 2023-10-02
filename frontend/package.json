@@ -17,7 +17,7 @@
         "@emotion/styled": "^11.11.0",
         "@fontsource/roboto": "^5.0.5",
         "@mui/icons-material": "^5.14.0",
-        "@mui/material": "^5.13.7",
+        "@mui/material": "^5.14.11",
         "@mui/x-date-pickers-pro": "^6.9.2",
         "axios": "^1.4.0",
         "dayjs": "^1.11.9",
