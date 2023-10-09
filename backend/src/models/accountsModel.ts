@@ -4,6 +4,8 @@ import Model from '../types/Model';
 import { UserWebhooks, WebhookTypes } from '../types/webhooksTypes';
 import EventTypes from '../types/EventTypes';
 import { userSelector } from './utils';
+import { isUTORid, isUofTStudentNumber, isUofTEmail } from 'is-utorid';
+
 
 const verifyWebhook = (webhook: unknown) => {
   if (webhook === null) {
@@ -70,10 +72,10 @@ export default {
     if (!user.name.trim()) {
       return { status: 400, message: 'Missing required fields.' };
     }
-    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(user.email)) {
+    if (!isUofTEmail(user.email)) {
       return { status: 400, message: 'Invalid email.' };
     }
-    if (!/^[a-z|0-9]{1,8}$/.test(user.utorid)) {
+    if (!isUTORid(user.utorid)) {
       return { status: 400, message: 'Invalid utorid.' };
     }
 
