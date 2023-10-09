@@ -27,9 +27,9 @@ interface RoleChangerProps {
  * a button that opens a menu with the options
  * to change the role of a user to student, approver, tcard, or admin
  *
- * @param {string} utorid - the utorid of the user whose role is being changed
- * @param {string} userRole - the current role of the user
- * @param {function} setUpdate - a react function that will be called updating the role
+ * @property {string} utorid - the utorid of the user whose role is being changed
+ * @property {string} userRole - the current role of the user
+ * @property {function} setUpdate - a react function that will be called updating the role
  *
  * @returns {JSX.Element} - the rendered button
  */

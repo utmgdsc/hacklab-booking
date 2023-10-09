@@ -10,10 +10,10 @@ import { Add, ExitToApp, SupervisorAccount, PersonRemove } from '@mui/icons-mate
 
 /**
  * Card for a person in the group
- * @param person The person to display
- * @param changeRole Function to change the role of the person
- * @param removePerson Function to remove the person from the group
- * @param invited hides the card actions if the person is not invited
+ * @property person The person to display
+ * @property changeRole Function to change the role of the person
+ * @property removePerson Function to remove the person from the group
+ * @property invited hides the card actions if the person is not invited
  */
 const PersonCard = ({
     person,
@@ -107,7 +107,7 @@ export const Group = () => {
 
     /**
      * Boolean function to check if the user is a manager of the group
-     * @param user The user to check
+     * @property user The user to check
      * @returns Whether the user is a manager of the group
      */
     const isManager = (user: User | string): boolean => {
@@ -134,7 +134,7 @@ export const Group = () => {
     }, [groupID]);
     /**
      * Void function to invite someone to a group
-     * @param utorid The utorid of the person to add
+     * @property utorid The utorid of the person to add
      */
     const addPerson = async (utorid: string) => {
         await axios
@@ -150,7 +150,7 @@ export const Group = () => {
 
     /**
      * Void function to remove  someone from a group
-     * @param utorid The utorid of the person to remove
+     * @property utorid The utorid of the person to remove
      */
     const removePerson = async (utorid: string) => {
         await axios
@@ -187,7 +187,7 @@ export const Group = () => {
 
     /**
      * Void function to change the role of a person
-     * @param utorid The utorid of the person to change
+     * @property utorid The utorid of the person to change
      */
     const changeRole = async (utorid: string) => {
         await axios

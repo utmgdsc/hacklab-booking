@@ -20,7 +20,7 @@ const fullHeight: string = `calc(100vh - ${padding})`;
 /**
  * Displays a row of events for one day.
  * Precondition: events is sorted by start date starting with the earliest event
- * @param {BookingRequest[]} events a list of events to display
+ * @property {BookingRequest[]} events a list of events to display
  */
 const EventsRow = ({ events }: { events: BookingRequest[] }) => {
     /** mui theme object */

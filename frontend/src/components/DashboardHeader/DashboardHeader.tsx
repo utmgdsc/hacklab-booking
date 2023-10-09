@@ -1,17 +1,16 @@
-import { Logout, KeyboardArrowDown } from '@mui/icons-material';
+import { KeyboardArrowDown, Logout } from '@mui/icons-material';
 
 import { Box, Button, Menu, MenuItem, Skeleton, Theme, Typography, useTheme } from '@mui/material';
 import React, { SyntheticEvent, useContext } from 'react';
 import { InitialsAvatar, Link } from '../../components';
 import { UserContext } from '../../contexts/UserContext';
-// import {UserInfo} from "os";
 
 /**
  * Left side of the header containing the user's name and role
- * @param {*} active_requests a list of requests received from the backend
- * @param {*} pending_requests a list of requests received from the backend
- * @param {*} userInfo to be passed by the UserContext
- * @param {*} theme to be passed by the useTheme MUI hook
+ * @property {*} active_requests a list of requests received from the backend
+ * @property {*} pending_requests a list of requests received from the backend
+ * @property {*} userInfo to be passed by the UserContext
+ * @property {*} theme to be passed by the useTheme MUI hook
  * @returns the left side of the header
  */
 const LeftHeader = ({
@@ -56,8 +55,8 @@ const LeftHeader = ({
 
 /**
  * Right side of the header containing the user's initials and a menu to logout
- * @param {*} userInfo to be passed by the UserContext
- * @param {*} theme to be passed by the useTheme MUI hook
+ * @property {*} userInfo to be passed by the UserContext
+ * @property {*} theme to be passed by the useTheme MUI hook
  * @returns the right side of the header
  */
 const RightHeader = ({ userInfo, theme }: { userInfo: User; theme: Theme }) => {
@@ -120,8 +119,8 @@ const RightHeader = ({ userInfo, theme }: { userInfo: User; theme: Theme }) => {
 
 /**
  * the header for the dashboard: shows the name, role, and active/pending requests.
- * @param {*} active_requests a list of requests received from the backend
- * @param {*} pending_requests a list of requests received from the backend
+ * @property {BookingRequest[]} active_requests a list of requests received from the backend
+ * @property {BookingRequest[]} pending_requests a list of requests received from the backend
  * @returns the header for the dashboard
  */
 export const DashboardHeader = ({

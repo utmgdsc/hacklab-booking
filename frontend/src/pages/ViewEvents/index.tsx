@@ -7,7 +7,7 @@ import { SubPage } from '../../layouts/SubPage';
 
 /**
  * all active requests cards given a list of active requests
- * @param {*} active_requests a list of requests received from the backend
+ * @property {*} active_requests a list of requests received from the backend
  * @returns past requests cards
  */
 const PastRequestCards = ({ active_requests }: { active_requests: FetchedBookingRequest[] }) => (

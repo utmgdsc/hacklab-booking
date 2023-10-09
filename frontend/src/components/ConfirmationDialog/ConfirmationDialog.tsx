@@ -27,12 +27,12 @@ interface ConfirmationDialogProps {
  * A dialog that asks the user to confirm an action before proceeding
  * Yes/no buttons.
  *
- * @param {boolean} open react useState hook if the dialog is open or not
- * @param {Function} setOpen react useState hook to set the open state
- * @param {string} title the title of the dialog
- * @param {string} description the description of the dialog
- * @param {Function} onConfirm the function to call when the user confirms (clicks yes)
- * @param {string} yesText the text to display on the yes button
+ * @property {boolean} open react useState hook if the dialog is open or not
+ * @property {Function} setOpen react useState hook to set the open state
+ * @property {string} title the title of the dialog
+ * @property {string} description the description of the dialog
+ * @property {Function} onConfirm the function to call when the user confirms (clicks yes)
+ * @property {string} yesText the text to display on the yes button
  */
 export const ConfirmationDialog = ({
     open,
