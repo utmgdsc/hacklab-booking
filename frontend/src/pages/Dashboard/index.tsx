@@ -6,7 +6,7 @@ import {
     Settings as SettingsIcon,
 } from '@mui/icons-material';
 
-import { Container, Typography, useTheme } from '@mui/material';
+import { Alert, Container, Typography, useTheme } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import axios from '../../axios';
 import {
@@ -194,6 +194,10 @@ export const Dashboard = () => {
             <DashboardHeader active_requests={my_requests} pending_requests={pending_requests} />
 
             <AppButtons ButtonsToRender={homeButtons} />
+
+            <Alert severity='error'>
+                Hacklab Booking cannot be used to book the Hacklab :(
+            </Alert>
 
             {openEditRequest && (
                 <EditBooking isOpen={openEditRequest} reqID={editRequestID} setOpenEditRequest={setOpenEditRequest} />
