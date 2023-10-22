@@ -4,8 +4,7 @@ import Model from '../types/Model';
 import { UserWebhooks, WebhookTypes } from '../types/webhooksTypes';
 import EventTypes from '../types/EventTypes';
 import { userSelector } from './utils';
-import { isUTORid, isUofTStudentNumber, isUofTEmail } from 'is-utorid';
-
+import { isUTORid, isUofTEmail } from 'is-utorid';
 
 const verifyWebhook = (webhook: unknown) => {
   if (webhook === null) {

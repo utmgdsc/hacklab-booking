@@ -4,7 +4,7 @@ services:
   nginx:
     restart: always
     depends_on:
-#      - frontend
+      - frontend
       - backend
     build:
       context: ./nginx
@@ -23,12 +23,12 @@ services:
     volumes:
       - ./backend:/app
 
-#  frontend:
-#    image: node
-#    restart: always
-#    command: ["npm","run", "dev", "--prefix", "/app"]
-#    volumes:
-#      - ./frontend:/app
+  frontend:
+   image: node
+   restart: always
+   command: ["npm","run", "dev", "--prefix", "/app"]
+   volumes:
+     - ./frontend:/app
 
   db:
     image: postgres
