@@ -52,7 +52,7 @@
     "eslint": "^8.44.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.1.0",
-    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-import": "^2.29.0",
     "nodemon": "^2.0.22",
     "prisma": "^5.0.0",
     "ts-node": "^10.9.1",
