@@ -299,16 +299,24 @@ export default {
     await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
     return { status: 200, data: {} };
   },
-  approveRequest: async (id: string, reason?: string) => {
+  approveRequest: async (id: string, reason?: string, approver: User) => {
     const request = await db.request.findUnique({
       where: { id },
       include: {
-        room: { include: { userAccess: { select: { utorid: true } } } },
-        author: { select: { utorid: true } },
-      },
+        room: {
+          include: {
+            userAccess: { select: { utorid: true } },
+            approvers: { select: { utorid: true } }
+          }
+        },
+        author: { select: { utorid: true } }
+      }
     });
     if (!request) {
       return { status: 404, message: 'Request ID not found.' };
+    }
+    if(!request.room.approvers.some(user=>user.utorid === approver.utorid)) {
+      return {status: 403, message: "You cannot approve requests for this room."};
     }
     if (request.status !== RequestStatus.pending) {
       return { status: 400, message: 'Request is not pending.' };
