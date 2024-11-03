@@ -255,6 +255,7 @@ export default {
       include: {
         group: { include: { managers: { select: { utorid: true } } } },
         author: { select: { utorid: true } },
+        room: { include: { approvers: { select: { utorid: true } } } },
       },
     });
     if (!request) {
@@ -271,8 +272,9 @@ export default {
       };
     }
     if (
-      status === RequestStatus.denied &&
-      !(<AccountRole[]>[AccountRole.approver, AccountRole.admin]).includes(user.role)
+      (status === RequestStatus.denied &&
+        !(<AccountRole[]>[AccountRole.approver, AccountRole.admin]).includes(user.role)) ||
+      !request.room.approvers.some((x) => x.utorid == user.utorid)
     ) {
       return {
         status: 403,
