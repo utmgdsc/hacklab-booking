@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import { Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import axios from '../../axios';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
+import { UserContext } from '../../contexts/UserContext';
 
 interface ApproverPickerProps {
     /** a function that takes in an array of approvers as utorids and sets the approvers for the form */
@@ -18,10 +19,16 @@ interface ApproverPickerProps {
  * @property setApprovers a function that takes in an array of approvers and sets the approvers for the form
  */
 export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName }: ApproverPickerProps) => {
+    const { userInfo } = useContext(UserContext);
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(selectedApprovers);
     /** an array of all the approvers that can be chosen */
     const [approvers, setApproversBackend] = useState([]);
+
+    const needApprover = useMemo(
+        () => !approvers.some((approver) => approver.utorid === userInfo.utorid),
+        [approvers, userInfo.utorid],
+    );
 
     useEffect(() => {
         (async () => {
@@ -30,7 +37,10 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
                 .then(({ data }) => {
                     if (data.approvers) {
                         setApproversBackend(data.approvers);
-                        if (data.approvers.length === 1 && selectedApprovers.length === 0) {
+                        if (!needApprover) {
+                            setSelected([userInfo.utorid]);
+                            setApprovers([userInfo.utorid]);
+                        } else if (data.approvers.length === 1 && selectedApprovers.length === 0) {
                             setSelected([data.approvers[0].utorid]);
                             setApprovers([data.approvers[0].utorid]);
                         }
@@ -59,6 +69,7 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
 
     return (
         <Select
+            disabled={!needApprover}
             open={open}
             onClose={handleClose}
             onOpen={handleOpen}

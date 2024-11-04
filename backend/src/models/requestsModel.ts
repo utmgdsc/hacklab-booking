@@ -1,4 +1,4 @@
-import { AccountRole, RequestStatus, User, Request } from '@prisma/client';
+import { AccountRole, RequestStatus, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import logger from '../common/logger';
@@ -7,13 +7,12 @@ import Model from '../types/Model';
 import { ModelResponseError } from '../types/ModelResponse';
 import { triggerAdminNotification, triggerMassNotification, triggerTCardNotification } from '../notifications';
 import EventTypes from '../types/EventTypes';
-
-import { BaseBookingContext } from '../types/NotificationContext';
 import { userSelector } from './utils';
 import {
   generateBaseRequestNotificationContext as generateBaseNotificationContext,
   generateUserActionContext,
 } from '../notifications/generateContext';
+
 const requestCounter = () => {
   return {
     select: {
@@ -75,6 +74,83 @@ const validateRequest = async (request: CreateRequest): Promise<ModelResponseErr
     };
   }
 };
+
+const approveRequest = async (id: string, approver: User, reason?: string) => {
+  const request = await db.request.findUnique({
+    where: { id },
+    include: {
+      room: {
+        include: {
+          userAccess: { select: { utorid: true } },
+          approvers: { select: { utorid: true } },
+        },
+      },
+      author: { select: { utorid: true } },
+    },
+  });
+  if (!request) {
+    return { status: 404, message: 'Request ID not found.' };
+  }
+  if (!request.room.approvers.some((user: { utorid: string }) => user.utorid === approver.utorid)) {
+    return { status: 403, message: 'You cannot approve requests for this room.' };
+  }
+  if (request.status !== RequestStatus.pending) {
+    return { status: 400, message: 'Request is not pending.' };
+  }
+  let status: RequestStatus = RequestStatus.needTCard;
+  if (request.room.userAccess.some((user: { utorid: string }) => user.utorid === request.author.utorid)) {
+    status = RequestStatus.completed;
+  }
+  const requestFetched = await db.request.update({
+    where: { id: request.id },
+    data: {
+      reason,
+      status: status,
+    },
+    include: {
+      group: true,
+      room: true,
+      author: true,
+    },
+  });
+  const { startDate, endDate, roomName } = request;
+  await db.request.updateMany({
+    where: {
+      OR: [
+        { startDate: { lte: startDate }, endDate: { gte: endDate } },
+        {
+          startDate: { gte: startDate, lte: endDate },
+        },
+        {
+          endDate: { gte: startDate, lte: endDate },
+        },
+      ],
+      roomName: roomName,
+      status: RequestStatus.pending,
+    },
+    data: {
+      status: RequestStatus.denied,
+    },
+  });
+  const context = {
+    ...(await generateBaseNotificationContext(requestFetched)),
+    changer_utorid: approver.utorid,
+    changer_full_name: approver.name,
+    status,
+    reason,
+  };
+  await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
+  await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
+  if (status !== RequestStatus.completed) {
+    await triggerTCardNotification(EventTypes.ROOM_ACCESS_REQUESTED, {
+      ...generateUserActionContext(requestFetched.author),
+      room: requestFetched.room.roomName,
+      room_friendly: requestFetched.room.friendlyName,
+    });
+  }
+  return { status: 200, data: {} };
+};
+
 export default {
   getRequests: async (filters: { [key: string]: string }, user: User) => {
     const query: { [key: string]: unknown } = {};
@@ -173,7 +249,10 @@ export default {
     newRequest.approvers = newRequest.approvers || [];
     const userFetched = await db.user.findUnique({
       where: { utorid: newRequest.authorUtorid },
-      include: { groups: { select: { id: true } } },
+      include: {
+        groups: { select: { id: true } },
+        roomApprover: { select: { roomName: true } },
+      },
     });
     if (!userFetched) {
       return { status: 404, message: 'User not found.' };
@@ -185,6 +264,7 @@ export default {
       };
     }
     request.approvers = request.approvers ?? [];
+
     try {
       const madeRequest = await db.request.create({
         data: {
@@ -206,7 +286,11 @@ export default {
         },
       });
       const context = await generateBaseNotificationContext(madeRequest);
-      await triggerMassNotification(EventTypes.BOOKING_APPROVAL_REQUESTED, request.approvers, context);
+      if (userFetched.roomApprover.map((x) => x.roomName).includes(request.roomName)) {
+        await approveRequest(madeRequest.id, user, 'Request automatically accepted by approver');
+      } else {
+        await triggerMassNotification(EventTypes.BOOKING_APPROVAL_REQUESTED, request.approvers, context);
+      }
       await triggerAdminNotification(EventTypes.ADMIN_BOOKING_CREATED, context);
       // Delete approver data from response
       const tempRequest: WithOptional<typeof madeRequest, 'approvers'> = madeRequest;
@@ -302,79 +386,7 @@ export default {
     return { status: 200, data: {} };
   },
   approveRequest: async (id: string, approver: User, reason?: string) => {
-    const request = await db.request.findUnique({
-      where: { id },
-      include: {
-        room: {
-          include: {
-            userAccess: { select: { utorid: true } },
-            approvers: { select: { utorid: true } },
-          },
-        },
-        author: { select: { utorid: true } },
-      },
-    });
-    if (!request) {
-      return { status: 404, message: 'Request ID not found.' };
-    }
-    if (!request.room.approvers.some((user) => user.utorid === approver.utorid)) {
-      return { status: 403, message: 'You cannot approve requests for this room.' };
-    }
-    if (request.status !== RequestStatus.pending) {
-      return { status: 400, message: 'Request is not pending.' };
-    }
-    let status: RequestStatus = RequestStatus.needTCard;
-    if (request.room.userAccess.some((user) => user.utorid === request.author.utorid)) {
-      status = RequestStatus.completed;
-    }
-    const requestFetched = await db.request.update({
-      where: { id },
-      data: {
-        reason,
-        status: status,
-      },
-      include: {
-        group: true,
-        room: true,
-        author: true,
-      },
-    });
-    const { startDate, endDate, roomName } = request;
-    await db.request.updateMany({
-      where: {
-        OR: [
-          { startDate: { lte: startDate }, endDate: { gte: endDate } },
-          {
-            startDate: { gte: startDate, lte: endDate },
-          },
-          {
-            endDate: { gte: startDate, lte: endDate },
-          },
-        ],
-        roomName: roomName,
-        status: RequestStatus.pending,
-      },
-      data: {
-        status: RequestStatus.denied,
-      },
-    });
-    const context = {
-      ...(await generateBaseNotificationContext(requestFetched)),
-      changer_utorid: approver.utorid,
-      changer_full_name: approver.name,
-      status,
-      reason,
-    };
-    await triggerMassNotification(EventTypes.BOOKING_STATUS_CHANGED, [requestFetched.author], context);
-    await triggerAdminNotification(EventTypes.ADMIN_BOOKING_STATUS_CHANGED, context);
-    if (status !== RequestStatus.completed) {
-      await triggerTCardNotification(EventTypes.ROOM_ACCESS_REQUESTED, {
-        ...generateUserActionContext(requestFetched.author),
-        room: requestFetched.room.roomName,
-        room_friendly: requestFetched.room.friendlyName,
-      });
-    }
-    return { status: 200, data: {} };
+    return approveRequest(id, approver, reason);
   },
   updateRequest: async (
     request: CreateRequest & {
