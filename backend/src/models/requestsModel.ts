@@ -186,6 +186,7 @@ export default {
     }
     request.approvers = request.approvers ?? [];
 
+    const room = await db.room.findUnique({ where : { roomName : request.roomName } })
     const pendingUser = await db.request.findMany({
       where: {
         authorUtorid: user.utorid,
@@ -193,7 +194,7 @@ export default {
         roomName: request.roomName,
       }
     })
-    if (pendingUser.length > 10) {
+    if (pendingUser.length > (room?.capacity || 10)) {
       return {
         status: 403,
         message: 'User has too many pending requests.',
@@ -207,7 +208,7 @@ export default {
         roomName: request.roomName,
       }
     })
-    if (pendingGroup.length > 10) {
+    if (pendingGroup.length > (room?.capacity || 10)) {
       return {
         status: 403,
         message: 'Group has too many pending requests.',
