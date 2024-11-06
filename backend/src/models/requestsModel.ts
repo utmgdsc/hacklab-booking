@@ -250,7 +250,10 @@ export default {
     const userFetched = await db.user.findUnique({
       where: { utorid: newRequest.authorUtorid },
       include: { 
-        groups: { select: { id: true } },
+        groups: { 
+          where: { id: request.groupId }, 
+          select: { id: true, requests: true },
+        },
         requests: {
           where: { status: RequestStatus.pending }
         } 
@@ -267,15 +270,7 @@ export default {
     }
     request.approvers = request.approvers ?? [];
 
-    const groupFetched = await db.group.findUnique({
-      where: { id: request.groupId },
-      include: { 
-        requests: {
-          where: { status: RequestStatus.pending }
-        }
-      }
-    })
-    if (!groupFetched) {
+    if (userFetched.groups.length == 0) {
       return { status: 404, message: 'Group not found.'};
     }
 
@@ -289,8 +284,7 @@ export default {
         message: 'User has too many pending requests.',
       }
     }
-
-    if (groupFetched.requests.length > room.requestLimit) {
+    if (userFetched.groups[0].requests.length > room.requestLimit) {
       return {
         status: 429,
         message: 'Group has too many pending requests.',
