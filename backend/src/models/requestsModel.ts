@@ -185,6 +185,35 @@ export default {
       };
     }
     request.approvers = request.approvers ?? [];
+
+    const pendingUser = await db.request.findMany({
+      where: {
+        authorUtorid: user.utorid,
+        status: RequestStatus.pending,
+        roomName: request.roomName,
+      }
+    })
+    if (pendingUser.length > 10) {
+      return {
+        status: 403,
+        message: 'User has too many pending requests.',
+      }
+    }
+
+    const pendingGroup = await db.request.findMany({
+      where: {
+        groupId: request.groupId,
+        status: RequestStatus.pending,
+        roomName: request.roomName,
+      }
+    })
+    if (pendingGroup.length > 10) {
+      return {
+        status: 403,
+        message: 'Group has too many pending requests.',
+      }
+    }
+
     try {
       const madeRequest = await db.request.create({
         data: {
