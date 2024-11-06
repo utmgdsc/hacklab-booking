@@ -2,7 +2,7 @@ import { KeyboardArrowDown, Logout } from '@mui/icons-material';
 
 import { Box, Button, Menu, MenuItem, Skeleton, Theme, Typography, useTheme } from '@mui/material';
 import React, { SyntheticEvent, useContext } from 'react';
-import { InitialsAvatar, Link } from '../../components';
+import { InitialsAvatar, Link } from '..';
 import { UserContext } from '../../contexts/UserContext';
 
 /**

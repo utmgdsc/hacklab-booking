@@ -1,6 +1,6 @@
 import { CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 import { Container, Typography } from '@mui/material';
-import { formatRangedTime } from '../';
+import { formatRangedTime } from '..';
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"

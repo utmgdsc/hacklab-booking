@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import ScheduleSelector from 'react-schedule-selector';
-import { GetMonday } from '../../components';
+import { GetMonday } from '..';
 import styles from './CustomScheduleSelector.module.css';
 
 /**

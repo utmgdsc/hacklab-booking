@@ -5,7 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import React from 'react';
-import { GetMonday } from '../../components';
+import { GetMonday } from '..';
 
 /**
  * controls the previous and next week buttons, and the date picker.

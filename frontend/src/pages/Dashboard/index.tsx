@@ -195,9 +195,7 @@ export const Dashboard = () => {
 
             <AppButtons ButtonsToRender={homeButtons} />
 
-            <Alert severity='error'>
-                Hacklab Booking cannot be used to book the Hacklab :(
-            </Alert>
+            <Alert severity="error">Hacklab Booking cannot be used to book the Hacklab :(</Alert>
 
             {openEditRequest && (
                 <EditBooking isOpen={openEditRequest} reqID={editRequestID} setOpenEditRequest={setOpenEditRequest} />

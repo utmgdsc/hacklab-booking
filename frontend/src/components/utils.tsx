@@ -117,9 +117,6 @@ export const formatRangedTime = (startDate: Date, endDate: Date): string => {
     };
 
     let startHour = new Date(startDate).toLocaleTimeString(undefined, formatDateOptions);
-    let endHour = addHoursToDate(new Date(endDate), 1).toLocaleTimeString(
-        undefined,
-        formatDateOptions,
-    );
+    let endHour = addHoursToDate(new Date(endDate), 1).toLocaleTimeString(undefined, formatDateOptions);
     return `${startHour} - ${endHour}`;
 };

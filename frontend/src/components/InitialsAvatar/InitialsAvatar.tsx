@@ -1,5 +1,5 @@
 import { Avatar } from '@mui/material';
-import { colorHash } from '../';
+import { colorHash } from '..';
 interface InitialsAvatarProps {
     /** the name to get the initials of */
     name?: string;

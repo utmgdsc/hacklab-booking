@@ -1,11 +1,14 @@
-FROM node:18-alpine
-RUN npm install -g serve
+FROM node:lts AS builder
 
-WORKDIR /frontend
-COPY package*.json ./
-RUN npm install
+WORKDIR /
 
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
 RUN npm run build
 
-CMD [ "serve", "-s", "build" ]
+FROM httpd:2.4 AS runner
+
+COPY --from=builder /dist/ /usr/local/apache2/htdocs/
+
+EXPOSE 80
