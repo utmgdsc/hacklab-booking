@@ -1,4 +1,4 @@
-FROM node
+FROM node:18-alpine
 
 RUN npm install -g typescript
 
@@ -10,4 +10,4 @@ COPY . .
 
 RUN npm run build
 
-CMD ["bash", "prod.sh"]
+CMD ["sh", "prod.sh"]

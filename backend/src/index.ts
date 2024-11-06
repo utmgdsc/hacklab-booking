@@ -18,3 +18,9 @@ common.db
     logger.error(`${e.name}\n${e.message}\n${e.stack}`);
     process.exit(1);
   });
+
+process.on('exit', () => {
+  common.db.$disconnect().then(() => {
+    process.exit(0);
+  });
+});
