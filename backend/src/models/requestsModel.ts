@@ -285,14 +285,14 @@ export default {
     }
     if (userFetched.requests.length > room.requestLimit) {
       return {
-        status: 403,
+        status: 429,
         message: 'User has too many pending requests.',
       }
     }
 
     if (groupFetched.requests.length > room.requestLimit) {
       return {
-        status: 403,
+        status: 429,
         message: 'Group has too many pending requests.',
       }
     }
