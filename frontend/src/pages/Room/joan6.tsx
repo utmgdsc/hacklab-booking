@@ -160,7 +160,7 @@ export const Joan6 = () => {
     const update = useCallback(async () => {
         // make sure loading wheel isn't shown
         await axios
-            .get(`/rooms/${roomId}`, {
+            .get(`/joan6/${roomId}`, {
                 skipLoadingWheel: true,
             })
             .then(({ data }) => {
