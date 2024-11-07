@@ -8,7 +8,7 @@ import { formatRangedTime } from '..';
  * @return the formatted date string
  */
 const getDateString = (scheduleDate: Date | string): string => {
-    var d = new Date(scheduleDate);
+    const d = new Date(scheduleDate);
     return d.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',

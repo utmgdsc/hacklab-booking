@@ -24,7 +24,7 @@ import { TransitionGroup } from 'react-transition-group';
 export const RoomManager = () => {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [createRoomOpen, setCreateRoomOpen] = useState(false);
-    const [updateValue, setUpdateValue] = useState<Number>();
+    const [updateValue, setUpdateValue] = useState<number>();
     const { showSnackSev } = useContext(SnackbarContext);
 
     useEffect(() => {
@@ -40,6 +40,7 @@ export const RoomManager = () => {
         };
 
         void getRooms();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updateValue]);
 
     const getRooms = () => {

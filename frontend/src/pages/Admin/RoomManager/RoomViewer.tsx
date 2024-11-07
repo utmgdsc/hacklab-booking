@@ -26,6 +26,7 @@ import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import { SubPage } from '../../../layouts/SubPage';
 
 interface TableRowData {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
     label: string;
     dataKey: string;
@@ -128,6 +129,7 @@ const UserAccessTable = ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rows: any[];
     columns: TableRowData[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     CellContent?: ({ row, column }: { row: TableRowData; column: any }) => JSX.Element;
 }) => {
     return (
@@ -183,6 +185,7 @@ export const RoomViewer = () => {
                 })
                 .catch(catchAxiosError('Unable to get approvers', showSnackSev));
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
@@ -208,6 +211,7 @@ export const RoomViewer = () => {
     // get room data
     useEffect(() => {
         void getRoomData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roomId]);
 
     return (
@@ -283,6 +287,7 @@ export const RoomViewer = () => {
                     <UserAccessTable
                         rows={approvers}
                         columns={approverColumns}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         CellContent={({ row, column }: { row: TableRowData; column: any }) => {
                             if (column.dataKey === 'canApprove') {
                                 return (
@@ -334,6 +339,7 @@ export const RoomViewer = () => {
                     <UserAccessTable
                         rows={room.userAccess}
                         columns={userColumns}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         CellContent={({ row, column }: { row: TableRowData; column: any }) => {
                             if (column.dataKey === 'revoke') {
                                 return <RevokeButton utorid={row['utorid']} onUpdate={getRoomData} />;

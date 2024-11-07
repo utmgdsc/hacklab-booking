@@ -14,7 +14,7 @@ import {
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { ConfirmationDialog, ConvertDate, formatRangedTime } from '..';
+import { ConfirmationDialog, convertDate, formatRangedTime } from '..';
 
 interface ActiveRequestCardProps {
     /** The booking to display */
@@ -113,7 +113,7 @@ export const ActiveRequestCard = ({
                                 {booking.title}
                             </Typography>
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                {ConvertDate(booking.startDate)} from{' '}
+                                {convertDate(booking.startDate)} from{' '}
                                 {formatRangedTime(booking.startDate, booking.endDate)} • {booking.room.friendlyName} •{' '}
                                 {booking.group.name} • {booking.author.name}
                             </Typography>

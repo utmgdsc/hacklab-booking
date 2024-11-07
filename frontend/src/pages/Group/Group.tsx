@@ -131,6 +131,7 @@ export const Group = () => {
 
     useEffect(() => {
         void getGroup();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [groupID]);
     /**
      * Void function to invite someone to a group

@@ -154,7 +154,7 @@ export const Joan6 = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const { id: roomId } = useParams();
     const [currentBooking, setCurrentBooking] = useState<BookingRequest | null>(null);
-    const [nextFree, setNextFree] = useState<String | null>(null);
+    const [nextFree, setNextFree] = useState<string | null>(null);
     const theme = useTheme();
 
     const update = useCallback(async () => {

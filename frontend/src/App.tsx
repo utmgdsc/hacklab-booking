@@ -47,7 +47,7 @@ function App() {
     /*
      * user data initialization into context and fetching
      */
-    let [userInfo, setUserInfo] = useState<FetchedUser>(defaultUser);
+    const [userInfo, setUserInfo] = useState<FetchedUser>(defaultUser);
 
     const fetchUserInfo = async () => {
         await axios('/accounts')

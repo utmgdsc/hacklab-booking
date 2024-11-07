@@ -4,7 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import { GetMonday } from '..';
+import { getMonday } from '..';
 
 /**
  * controls the previous and next week buttons, and the date picker.
@@ -82,7 +82,7 @@ export const PrevNextWeek = ({
                     </Tooltip>
                 </Box>
                 <Typography component="p" variant="h5">
-                    {GetMonday(calendarDate).toLocaleDateString('en-US', {
+                    {getMonday(calendarDate).toLocaleDateString('en-US', {
                         month: 'long',
                         year: 'numeric',
                     })}

@@ -24,6 +24,7 @@ export interface AppButton {
 }
 
 interface AppButtonsProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [x: string]: any; // for the map function
     /** the array of objects to render */
     ButtonsToRender: AppButton[];

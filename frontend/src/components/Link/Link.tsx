@@ -61,6 +61,7 @@ const NonForwardLink = ({
     );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Link = React.forwardRef((props: NonForwardLinkProps, ref: Ref<any>) => (
     <NonForwardLink {...props} forwardedRef={ref} />
 ));
