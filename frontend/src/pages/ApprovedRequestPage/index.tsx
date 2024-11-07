@@ -24,7 +24,7 @@ export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
 
     const approve = async () => {
         try {
-            const res = await axios.put<{ message: string }>(`/requests/${id}/${approved ? 'approve' : 'deny'}`);
+            const res = await axios.put(`/requests/${id}/${approved ? 'approve' : 'deny'}`);
             if (res.status !== 200) {
                 setError(res.data.message);
                 return;
@@ -32,9 +32,9 @@ export const ApprovedRequestPage = ({ approved }: { approved: boolean }) => {
             setResolved(true);
         } catch (e) {
             if ((e as AxiosError).response) {
-                setError((e as AxiosError<{ message: string }>).response?.data?.message || 'An error occurred');
+                setError(((e as AxiosError).response.data as { message: string }).message);
             } else {
-                catchAxiosError(undefined, showSnackSev)(e as AxiosError<{ message?: string }>);
+                catchAxiosError(undefined, showSnackSev)(e);
             }
         }
     };

@@ -26,7 +26,6 @@ import { SnackbarContext } from '../../../contexts/SnackbarContext';
 import { SubPage } from '../../../layouts/SubPage';
 
 interface TableRowData {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
     label: string;
     dataKey: string;
@@ -126,17 +125,14 @@ const UserAccessTable = ({
     columns,
     CellContent,
 }: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rows: any[];
     columns: TableRowData[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     CellContent?: ({ row, column }: { row: TableRowData; column: any }) => JSX.Element;
 }) => {
     return (
         <Paper style={{ height: '90vh', width: '100%' }} elevation={0}>
             <TableVirtuoso
                 data={rows}
-                // @ts-expect-error - dataKey is not in the type definition
                 components={VirtuosoTableComponents}
                 fixedHeaderContent={() => {
                     return fixedHeaderContent(columns);
@@ -164,7 +160,7 @@ const UserAccessTable = ({
 export const RoomViewer = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const { id: roomId } = useParams();
-    const [name, setName] = useState<string>(roomId || '');
+    const [name, setName] = useState<string>(roomId);
     const [room, setRoomData] = useState<FetchedRoom>({
         approvers: [],
         capacity: -1,
@@ -185,10 +181,9 @@ export const RoomViewer = () => {
                 })
                 .catch(catchAxiosError('Unable to get approvers', showSnackSev));
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
+    const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
     const getRoomData = async () => {
@@ -211,7 +206,6 @@ export const RoomViewer = () => {
     // get room data
     useEffect(() => {
         void getRoomData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roomId]);
 
     return (
@@ -287,7 +281,6 @@ export const RoomViewer = () => {
                     <UserAccessTable
                         rows={approvers}
                         columns={approverColumns}
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         CellContent={({ row, column }: { row: TableRowData; column: any }) => {
                             if (column.dataKey === 'canApprove') {
                                 return (
@@ -339,7 +332,6 @@ export const RoomViewer = () => {
                     <UserAccessTable
                         rows={room.userAccess}
                         columns={userColumns}
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         CellContent={({ row, column }: { row: TableRowData; column: any }) => {
                             if (column.dataKey === 'revoke') {
                                 return <RevokeButton utorid={row['utorid']} onUpdate={getRoomData} />;

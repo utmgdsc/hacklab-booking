@@ -4,7 +4,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import { getMonday } from '..';
+import React from 'react';
+import { GetMonday } from '../../components';
 
 /**
  * controls the previous and next week buttons, and the date picker.
@@ -16,12 +17,15 @@ import { getMonday } from '..';
 export const PrevNextWeek = ({
     calendarDate = dayjs(),
     setDate,
+    setScheduleDates,
     handleBlockedDates,
 }: {
     /** the current calendar date to show on the picker */
     calendarDate: Dayjs;
     /** a function that is called when the date has to be set */
     setDate: (date: Dayjs) => void;
+    /** a function that is called to set the array of time slots that are requested */
+    setScheduleDates: (dates?: Date[]) => void;
     /** a function that is called to set the array of dates that are blocked */
     handleBlockedDates: (date: Date | Dayjs) => void;
 }) => {
@@ -82,7 +86,7 @@ export const PrevNextWeek = ({
                     </Tooltip>
                 </Box>
                 <Typography component="p" variant="h5">
-                    {getMonday(calendarDate).toLocaleDateString('en-US', {
+                    {GetMonday(calendarDate).toLocaleDateString('en-US', {
                         month: 'long',
                         year: 'numeric',
                     })}
@@ -107,9 +111,7 @@ export const PrevNextWeek = ({
                         label="Select a day"
                         value={calendarDate}
                         onChange={(newDate) => {
-                            if (newDate) {
-                                setDate(newDate);
-                            }
+                            setDate(newDate);
                             handleBlockedDates(calendarDate);
                         }}
                         disablePast

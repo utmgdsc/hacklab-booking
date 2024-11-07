@@ -14,18 +14,13 @@ import {
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { ConfirmationDialog, convertDate, formatRangedTime } from '..';
+import { ConfirmationDialog, ConvertDate, formatRangedTime } from '..';
 
 interface ActiveRequestCardProps {
-    /** The booking to display */
     booking: FetchedBookingRequest;
-    /** Function to call when the user wants to edit the request */
-    edit?: (reqID: string) => void;
-    /** Function to call when the user wants to cancel the request */
-    cancel?: (reqID: string) => void;
-    /** If the card is view only */
+    edit: (reqID: string) => void;
+    cancel: (reqID: string) => void;
     viewOnly?: boolean;
-    /** If the owner of the request has a TCard */
     ownerHasTCard: boolean;
 }
 
@@ -33,6 +28,13 @@ interface ActiveRequestCardProps {
  * A card that displays a active request. An active request is a request
  * that has been created by a student and is either pending approval, has been
  * approved, or has been denied. The student can edit or cancel the request.
+ *
+ * @property {string} name the name of the user who sent the request
+ * @property {string} utorid the utorid of the user who sent the request
+ * @property {string} title the title of the request
+ * @property {Date} date the date of the request
+ * @property {string} description the description of the request
+ * @property {string} location the location of the request
  */
 export const ActiveRequestCard = ({
     booking,
@@ -87,15 +89,11 @@ export const ActiveRequestCard = ({
     }
 
     const handleEdit = () => {
-        if (edit) {
-            edit(booking.id);
-        }
+        edit(booking.id);
     };
 
     const handleCancel = () => {
-        if (cancel) {
-            cancel(booking.id);
-        }
+        cancel(booking.id);
     };
 
     return (
@@ -113,7 +111,7 @@ export const ActiveRequestCard = ({
                                 {booking.title}
                             </Typography>
                             <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                {convertDate(booking.startDate)} from{' '}
+                                {ConvertDate(booking.startDate)} from{' '}
                                 {formatRangedTime(booking.startDate, booking.endDate)} • {booking.room.friendlyName} •{' '}
                                 {booking.group.name} • {booking.author.name}
                             </Typography>

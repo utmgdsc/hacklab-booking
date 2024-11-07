@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
  * @property date The date string in DD-MM-YYYY or ISP 8601 format
  * @returns The localized date string
  */
-export const convertDate = (date: string | Date): string => {
+export const ConvertDate = (date: string | Date): string => {
     let dateObj: Date;
 
     // parse the date string into a date object
@@ -36,7 +36,7 @@ export const convertDate = (date: string | Date): string => {
  *
  * @property d the date to get the Monday of
  */
-export const getMonday = (d: Date | dayjs.Dayjs): Date => {
+export const GetMonday = (d: Date | dayjs.Dayjs): Date => {
     let dayjsObj = dayjs(d);
     const day = dayjsObj.day();
     switch (day) {
@@ -95,7 +95,7 @@ export const colorHash = ({
  * @return the new date with the hours added
  */
 export const addHoursToDate = (date: Date, hours: number): Date => {
-    const newDate = new Date(date.getTime());
+    let newDate = new Date(date.getTime());
     newDate.setTime(newDate.getTime() + hours * 60 * 60 * 1000);
     return newDate;
 };
@@ -116,7 +116,10 @@ export const formatRangedTime = (startDate: Date, endDate: Date): string => {
         hour: 'numeric',
     };
 
-    const startHour = new Date(startDate).toLocaleTimeString(undefined, formatDateOptions);
-    const endHour = addHoursToDate(new Date(endDate), 1).toLocaleTimeString(undefined, formatDateOptions);
+    let startHour = new Date(startDate).toLocaleTimeString(undefined, formatDateOptions);
+    let endHour = addHoursToDate(new Date(endDate), 1).toLocaleTimeString(
+        undefined,
+        formatDateOptions,
+    );
     return `${startHour} - ${endHour}`;
 };

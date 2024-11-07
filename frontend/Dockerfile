@@ -1,12 +1,11 @@
-FROM node:lts AS builder
-
+FROM node:18-alpine
 RUN npm install -g serve
 
-WORKDIR /
+WORKDIR /frontend
+COPY package*.json ./
+RUN npm install
 
-COPY package.json package-lock.json ./
-RUN npm ci
 COPY . .
 RUN npm run build
 
-CMD ["serve", "-s", "dist", "-l", "3000"]
+CMD [ "serve", "-s", "build" ]
