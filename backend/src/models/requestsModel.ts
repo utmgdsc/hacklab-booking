@@ -256,7 +256,8 @@ export default {
         },
         requests: {
           where: { status: RequestStatus.pending }
-        } 
+        },
+        roomApprover: true, 
       },
     });
     if (!userFetched) {
@@ -269,7 +270,7 @@ export default {
       };
     }
     request.approvers = request.approvers ?? [];
-
+    
     if (userFetched.groups.length == 0) {
       return { status: 404, message: 'Group not found.'};
     }
