@@ -44,8 +44,9 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             borderTop: `${theme.palette.text.disabled} 1px solid`,
                             width: '100%',
                             '&:before': {
-                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${i < 12 - startHour ? 'AM' : 'PM'
-                                    }"`,
+                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${
+                                    i < 12 - startHour ? 'AM' : 'PM'
+                                }"`,
                                 display: 'block',
                                 position: 'absolute',
                                 marginLeft: '-3.1415em',
@@ -190,15 +191,14 @@ export const Joan6 = () => {
         if (currentEvents && currentEvents.length > 0) {
             const currentTime = new Date();
             // check if current time is in between any of the events
-            const currentEvent: BookingRequest | undefined =
-                currentEvents.find((event) => {
-                    // 3600000 is 1 hr * 60 min * 60 sec * 1000 ms
-                    // offset added to end date to account for the fact that the end date is not inclusive
-                    return (
-                        new Date(event.startDate) < currentTime &&
-                        currentTime < new Date(new Date(event.endDate).getTime() + 3600000)
-                    );
-                });
+            const currentEvent: BookingRequest | undefined = currentEvents.find((event) => {
+                // 3600000 is 1 hr * 60 min * 60 sec * 1000 ms
+                // offset added to end date to account for the fact that the end date is not inclusive
+                return (
+                    new Date(event.startDate) < currentTime &&
+                    currentTime < new Date(new Date(event.endDate).getTime() + 3600000)
+                );
+            });
 
             if (currentEvent) {
                 setCurrentBooking(currentEvent);
@@ -221,11 +221,11 @@ export const Joan6 = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentEvents, room.requests, roomId]);
 
-    useEffect(() => {
+    const enterFullScreen = useCallback(() => {
         if (document.body.requestFullscreen) {
             document.body.requestFullscreen();
         }
-    }, []);
+    }, [document.fullscreenEnabled]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -250,6 +250,7 @@ export const Joan6 = () => {
             sx={{
                 overflow: 'hidden',
             }}
+            onClick={enterFullScreen}
         >
             <Grid item xs={7}>
                 <Box sx={{ height: '100vh' }}>
