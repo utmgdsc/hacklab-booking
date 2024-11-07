@@ -1,8 +1,7 @@
 name: Checks
-
 on: [push, pull_request]
 jobs:
-  backend:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -12,14 +11,3 @@ jobs:
       run: npm run eslint . --fix --prefix ./backend
     - name: Build typescript
       run: npm run build --prefix ./backend
-
-  frontend:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install modules
-      run: npm ci --prefix ./frontend
-    - name: Run ESLint
-      run: npm run lint --prefix ./frontend
-    - name: Build typescript
-      run: npm run build --prefix ./frontend

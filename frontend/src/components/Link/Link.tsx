@@ -13,7 +13,6 @@ interface NonForwardLinkProps extends MaterialLinkProps {
      */
     openInNewTab?: boolean;
     /** A ref to pass to the link */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     forwardedRef?: Ref<any>;
     /** If false, the link will use the ReactRouter component */
     external?: boolean;
@@ -33,6 +32,7 @@ const NonForwardLink = ({
 }: NonForwardLinkProps) => {
     return (
         <MaterialLink
+            href={href}
             ref={forwardedRef}
             rel={openInNewTab ? 'noopener noreferrer' : ''}
             target={openInNewTab ? '_blank' : ''}
@@ -61,7 +61,6 @@ const NonForwardLink = ({
     );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Link = React.forwardRef((props: NonForwardLinkProps, ref: Ref<any>) => (
     <NonForwardLink {...props} forwardedRef={ref} />
 ));

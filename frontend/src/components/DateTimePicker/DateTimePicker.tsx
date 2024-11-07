@@ -25,8 +25,8 @@ interface DateTimePickerProps {
  */
 export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates, room }: DateTimePickerProps) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
-    const [blockedDates, setBlockedDates] = useState<Date[]>([]);
-    const [pendingDates, setPendingDates] = useState<Date[]>([]);
+    const [blockedDates, setBlockedDates] = useState([]);
+    const [pendingDates, setPendingDates] = useState([]);
 
     /**
      * sets BlockedDates to the dates that are blocked for the week of startDate.
@@ -35,7 +35,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
      *
      * @property {date} startDate the start date of the week to get blocked dates for
      */
-    const handleBlockedDates = async (startDate: Date | dayjs.Dayjs) => {
+    const handleBlockedDates = async (startDate: Date) => {
         // the end date is 7 days after the start date
         const startMonday = dayjs(startDate).startOf('week');
         const endDate = dayjs(startMonday).add(7, 'day').toDate();
@@ -44,13 +44,13 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
         const pending: Date[] = [];
 
         await axios
-            .get(
+            .get<{ bookedRange: string[]; status: BookingStatus }[]>(
                 `/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`,
             )
             .then(({ data }) => {
-                setBlockedDates(data as Date[]);
+                setBlockedDates(data);
 
-                data.forEach((booking: { bookedRange: [string, string]; status: string }) => {
+                data.forEach((booking) => {
                     const { bookedRange: range, status } = booking;
                     let start = dayjs(range[0]).startOf('hour');
                     const end = dayjs(range[1]).endOf('hour');
@@ -76,7 +76,12 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
 
     return (
         <>
-            <PrevNextWeek calendarDate={calendarDate} setDate={setDate} handleBlockedDates={handleBlockedDates} />
+            <PrevNextWeek
+                calendarDate={calendarDate}
+                setDate={setDate}
+                setScheduleDates={setScheduleDates}
+                handleBlockedDates={handleBlockedDates}
+            />
             <Box
                 onMouseDown={() => {
                     setScheduleDates([]);

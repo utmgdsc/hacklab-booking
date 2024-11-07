@@ -1,5 +1,5 @@
 import { Avatar } from '@mui/material';
-import { colorHash } from '..';
+import { colorHash } from '../';
 interface InitialsAvatarProps {
     /** the name to get the initials of */
     name?: string;
@@ -14,11 +14,11 @@ export const InitialsAvatar = ({ name = '', ...props }: InitialsAvatarProps): JS
         <Avatar alt={name} style={{ backgroundColor: colorHash({ name }), color: 'white' }} {...props}>
             {name
                 .match(/(^\S\S?|\s\S)?/g)
-                ?.map((v) => v.trim())
+                .map((v) => v.trim())
                 .join('')
-                ?.match(/(^\S|\S$)?/g)
-                ?.join('')
-                ?.toLocaleUpperCase()}
+                .match(/(^\S|\S$)?/g)
+                .join('')
+                .toLocaleUpperCase()}
         </Avatar>
     );
 };

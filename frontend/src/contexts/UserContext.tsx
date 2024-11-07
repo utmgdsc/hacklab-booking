@@ -32,9 +32,7 @@ export const UserContext = createContext({
      * Sets the user's information to the global state.
      * @property user the user's information to set
      */
-    setUserInfo: (user: FetchedUser) => {
-        console.error('setUserInfo not implemented, user:', user);
-    },
+    setUserInfo: (user: FetchedUser) => {},
     /**
      * Fetches the user's information from the backend and sets it to
      * the global state.

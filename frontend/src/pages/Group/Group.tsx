@@ -131,7 +131,6 @@ export const Group = () => {
 
     useEffect(() => {
         void getGroup();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [groupID]);
     /**
      * Void function to invite someone to a group
@@ -142,7 +141,7 @@ export const Group = () => {
             .post(`/groups/${groupID}/invite/`, {
                 utorid,
             })
-            .then(() => {
+            .then((res) => {
                 showSnackSev('Person invited', 'success');
             })
             .catch(catchAxiosError('Could not invite person', showSnackSev))
@@ -158,7 +157,7 @@ export const Group = () => {
             .post(`/groups/${groupID}/remove/`, {
                 utorid,
             })
-            .then(() => {
+            .then((res) => {
                 showSnackSev('Person removed', 'success');
             })
             .catch(catchAxiosError('Could not remove person', showSnackSev))

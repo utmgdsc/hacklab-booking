@@ -54,7 +54,7 @@ export const RoleChanger = ({ utorid, userRole, setUpdate }: RoleChangerProps): 
     const handleSave = async () => {
         await axios
             .put(`/accounts/${utorid}/changerole`, { role: role })
-            .then(() => {
+            .then((res) => {
                 showSnack(`Changed ${utorid}'s role to ${role}`);
                 setUpdate(Math.random());
             })

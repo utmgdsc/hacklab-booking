@@ -86,7 +86,6 @@ model Room {
   roomName     String    @id // the room number, eg. DH2014
   friendlyName String // friendly name, eg. Hacklab
   capacity     Int? // (optional) occupancy limit
-  requestLimit Int  @default(10) // limit on the number of pending requests per user/group
   requests     Request[] // all requests made for this room
   userAccess   User[]    @relation("RoomAccess") // all users with access to this room
   approvers    User[]    @relation("RoomApprover") // all users with approver access to this room

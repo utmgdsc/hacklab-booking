@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { ReactNode, Component, ErrorInfo } from 'react';
+import React, { ReactNode, Component, ErrorInfo } from 'react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 

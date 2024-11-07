@@ -1,6 +1,6 @@
 import { CheckCircle as CheckCircleIcon } from '@mui/icons-material';
 import { Container, Typography } from '@mui/material';
-import { formatRangedTime } from '..';
+import { formatRangedTime } from '../';
 
 /**
  * return a formatted date string in the format of "Monday, January 1, 2021"
@@ -8,7 +8,7 @@ import { formatRangedTime } from '..';
  * @return the formatted date string
  */
 const getDateString = (scheduleDate: Date | string): string => {
-    const d = new Date(scheduleDate);
+    var d = new Date(scheduleDate);
     return d.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
