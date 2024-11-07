@@ -17,6 +17,7 @@ interface SubPageProps {
     /** whether to show the header */
     showHead?: boolean;
     /** other props */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
 }
 
@@ -32,7 +33,7 @@ export const SubPage: React.FC<SubPageProps> = ({
         document.title = 'Hacklab Booking - ' + name;
     }, [name]);
 
-    let { fetchUserInfo } = React.useContext(UserContext);
+    const { fetchUserInfo } = React.useContext(UserContext);
     const nav = useNavigate();
 
     return (

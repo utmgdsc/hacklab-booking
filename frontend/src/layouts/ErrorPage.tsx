@@ -17,7 +17,7 @@ interface ErrorPageProps {
 /**
  * Shown when a user is trying to create a booking but is not in a group.
  */
-export const ErrorPage = ({ name, message, graphic }: ErrorPageProps) => {
+export const ErrorPage = ({ name = 'Error', message, graphic }: ErrorPageProps) => {
     const theme = useTheme();
 
     return (

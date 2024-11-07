@@ -44,9 +44,8 @@ const EventsRow = ({ events }: { events: BookingRequest[] }) => {
                             borderTop: `${theme.palette.text.disabled} 1px solid`,
                             width: '100%',
                             '&:before': {
-                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${
-                                    i < 12 - startHour ? 'AM' : 'PM'
-                                }"`,
+                                content: `"${(i + startHour) % 12 ? (i + startHour) % 12 : 12} ${i < 12 - startHour ? 'AM' : 'PM'
+                                    }"`,
                                 display: 'block',
                                 position: 'absolute',
                                 marginLeft: '-3.1415em',
@@ -155,7 +154,7 @@ export const Joan6 = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const { id: roomId } = useParams();
     const [currentBooking, setCurrentBooking] = useState<BookingRequest | null>(null);
-    const [nextFree, setNextFree] = useState<String | null>(null);
+    const [nextFree, setNextFree] = useState<string | null>(null);
     const theme = useTheme();
 
     const update = useCallback(async () => {
@@ -188,10 +187,10 @@ export const Joan6 = () => {
             });
 
         // get current events
-        if (currentEvents.length !== 0) {
+        if (currentEvents && currentEvents.length > 0) {
             const currentTime = new Date();
             // check if current time is in between any of the events
-            const currentEvent = (): BookingRequest =>
+            const currentEvent: BookingRequest | undefined =
                 currentEvents.find((event) => {
                     // 3600000 is 1 hr * 60 min * 60 sec * 1000 ms
                     // offset added to end date to account for the fact that the end date is not inclusive
@@ -202,13 +201,13 @@ export const Joan6 = () => {
                 });
 
             if (currentEvent) {
-                setCurrentBooking(currentEvent());
+                setCurrentBooking(currentEvent);
             }
 
             // get next time the room is free by incrementing the current time until it is not in between any of the events
             while (currentTime.getHours() < 23) {
                 currentTime.setHours(currentTime.getHours() + 1);
-                if (!currentEvent()) {
+                if (!currentEvent) {
                     // found a time when the room is free
                     setNextFree(
                         `Will be free at ${currentTime.toLocaleTimeString(undefined, {
@@ -219,6 +218,7 @@ export const Joan6 = () => {
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentEvents, room.requests, roomId]);
 
     useEffect(() => {

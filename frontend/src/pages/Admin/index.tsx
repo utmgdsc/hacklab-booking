@@ -59,7 +59,10 @@ export const Admin = () => {
                                 component="form"
                                 onSubmit={(e) => {
                                     e.preventDefault();
-                                    navigate(`/admin/${e.currentTarget.querySelector('input').value}`);
+                                    const input = e.currentTarget.querySelector('input');
+                                    if (input) {
+                                        navigate(`/admin/${input.value}`);
+                                    }
                                 }}
                             >
                                 <TextField

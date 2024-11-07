@@ -86,9 +86,9 @@ export const Dashboard = () => {
     const { userInfo, fetchUserInfo } = useContext(UserContext);
     const [pending_requests, setPendingRequests] = useState<FetchedBookingRequest[]>([]);
     const [my_requests, setMyRequests] = useState<FetchedBookingRequest[]>([]);
-    const [editRequestID, setEditRequestID] = useState<string | null>(null);
+    const [editRequestID, setEditRequestID] = useState<string>('');
     const [openEditRequest, setOpenEditRequest] = useState(false);
-    const [updateValue, setUpdateValue] = useState<Number>();
+    const [updateValue, setUpdateValue] = useState<number>();
 
     React.useEffect(() => {
         document.title = 'Hacklab Booking System';
@@ -195,9 +195,7 @@ export const Dashboard = () => {
 
             <AppButtons ButtonsToRender={homeButtons} />
 
-            <Alert severity='error'>
-                Hacklab Booking cannot be used to book the Hacklab :(
-            </Alert>
+            <Alert severity="error">Hacklab Booking cannot be used to book the Hacklab :(</Alert>
 
             {openEditRequest && (
                 <EditBooking isOpen={openEditRequest} reqID={editRequestID} setOpenEditRequest={setOpenEditRequest} />

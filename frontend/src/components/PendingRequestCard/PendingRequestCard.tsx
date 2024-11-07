@@ -13,7 +13,7 @@ import {
     useTheme,
     useMediaQuery,
 } from '@mui/material';
-import { ConvertDate, formatRangedTime } from '..';
+import { convertDate, formatRangedTime } from '..';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { useContext, useState } from 'react';
@@ -113,7 +113,7 @@ export const PendingRequestCard = ({ booking, onUpdate }: PendingRequestCardProp
                         {booking.title}
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                        {ConvertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} •{' '}
+                        {convertDate(booking.startDate)} from {formatRangedTime(booking.startDate, booking.endDate)} •{' '}
                         {booking.roomName}
                     </Typography>
 
