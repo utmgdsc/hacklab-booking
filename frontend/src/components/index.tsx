@@ -24,4 +24,5 @@ export { RoomPicker } from './RoomPicker/RoomPicker';
 export { UserCard } from './UserCard/UserCard';
 export { VirtuosoTableComponents } from './Admin/VirtuosoTableComponents';
 
-export { addHoursToDate, ConvertDate, GetMonday, colorHash, formatRangedTime } from './utils';
+// eslint-disable-next-line react-refresh/only-export-components
+export { addHoursToDate, convertDate, getMonday, colorHash, formatRangedTime } from './utils';

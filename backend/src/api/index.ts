@@ -6,8 +6,8 @@ import { sendResponse } from './utils';
 import accountsModel from '../models/accountsModel';
 import cors from 'cors';
 import { User } from '@prisma/client';
-import defaultWebhooksSetttings
-  from '../notifications/defaultWebhooksSetttings';
+import defaultWebhooksSetttings from '../notifications/defaultWebhooksSetttings';
+import roomsModel from '../models/roomsModel';
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -36,6 +36,11 @@ app.use((req, res, next) => {
   }
 });
 app.use(bodyParser.json());
+
+app.get('/joan6/:room', async (req, res) => {
+  sendResponse(res, await roomsModel.getRoom(req.params.room, undefined));
+});
+
 app.use(async (req, res, next) => {
   logger.debug('Shibboleth headers:');
   logger.debug(JSON.stringify(req.headers));

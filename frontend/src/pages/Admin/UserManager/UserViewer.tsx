@@ -3,7 +3,7 @@ import { Card, CardContent, Divider, Grid, Tooltip, Typography } from '@mui/mate
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from '../../../axios';
-import { ConvertDate, RoleChanger, UserCard } from '../../../components';
+import { convertDate, RoleChanger, UserCard } from '../../../components';
 import { ErrorPage } from '../../../layouts/ErrorPage';
 import { SubPage } from '../../../layouts/SubPage';
 
@@ -123,7 +123,7 @@ export const UserViewer = () => {
                                     <br />
                                     <Tooltip title={`Last Updated ${request.updatedAt}`}>
                                         <Typography variant="gray" gutterBottom>
-                                            Updated: {ConvertDate(request.updatedAt)}
+                                            Updated: {convertDate(request.updatedAt)}
                                         </Typography>
                                     </Tooltip>
                                     <Tooltip title="Request Title">
@@ -134,12 +134,12 @@ export const UserViewer = () => {
                                     </Tooltip>
                                     <Tooltip title={`Start Date ${request.startDate}`}>
                                         <Typography variant="gray" gutterBottom>
-                                            {ConvertDate(request.startDate)} -{' '}
+                                            {convertDate(request.startDate)} -{' '}
                                         </Typography>
                                     </Tooltip>
                                     <Tooltip title={`End Date ${request.endDate}`}>
                                         <Typography variant="gray" gutterBottom>
-                                            {ConvertDate(request.endDate)}
+                                            {convertDate(request.endDate)}
                                         </Typography>
                                     </Tooltip>
                                     <Divider sx={{ my: '0.5em' }} />

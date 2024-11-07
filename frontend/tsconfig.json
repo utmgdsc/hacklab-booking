@@ -1,37 +1,4 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "incremental": true,
-        "isolatedModules": true,
-        "jsx": "react-jsx",
-        "module": "es6",
-        "moduleResolution": "node",
-        "noEmit": true,
-        "noImplicitAny": true,
-        "outDir": "./dist/",
-        "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "sourceMap": true,
-        "target": "es5",
-        "plugins": [{ "name": "typescript-plugin-css-modules" }]
-    },
-    "include": [
-        "*.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        "**/**/*.ts",
-        "**/**/*.tsx",
-        "**/**/**/*.tsx",
-        "**/**/**/**/*.tsx",
-        "**/**/**/**/**/*.tsx",
-        "**/**/**/**/**/**/*.tsx",
-        "**/**/**/**/**/**/**/*.tsx",
-        "**/**/**/**/**/**/**/**/*.tsx",
-        "**/**/**/**/**/**/**/**/**/*.tsx",
-        "**/**/**/**/**/**/**/**/**/**/*.tsx",
-        "**/**/**/**/**/**/**/**/**/**/**/*.tsx"
-    ],
-    "exclude": ["node_modules"]
+    "files": [],
+    "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

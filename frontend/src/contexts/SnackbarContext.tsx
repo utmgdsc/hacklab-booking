@@ -14,7 +14,9 @@ export const SnackbarContext = createContext({
      * @property action An optional element to display as an action.
      * @property content An optional element to set the children of the snackbar.
      */
-    showSnack: (message?: string, action?: JSX.Element, content?: JSX.Element) => {},
+    showSnack: (message?: string, action?: JSX.Element, content?: JSX.Element) => {
+        console.error('showSnack not implemented, message:', message, 'action:', action, 'content:', content);
+    },
 
     /**
      * Displays a snackbar with the given message and severity. By default it
@@ -22,7 +24,9 @@ export const SnackbarContext = createContext({
      * @property message The message to display.
      * @property sev The severity of the snackbar.
      */
-    showSnackSev: (message?: string, sev?: AlertColor) => {},
+    showSnackSev: (message?: string, sev?: AlertColor) => {
+        console.error('showSnackSev not implemented, message:', message, 'sev:', sev);
+    },
 });
 
 /**

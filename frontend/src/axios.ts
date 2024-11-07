@@ -1,4 +1,4 @@
-import axios, { InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { AlertColor } from '@mui/material';
 
 declare module 'axios' {
@@ -10,7 +10,7 @@ declare module 'axios' {
  * Axios instance
  */
 export const instance = axios.create({
-    baseURL: process.env.NODE_ENV === 'production' ? '/api' : `${process.env.REACT_APP_API_URL}/`,
+    baseURL: import.meta.env.NODE_ENV === 'production' ? '/api' : `${import.meta.env.REACT_APP_API_URL}/`,
 });
 
 let loading = 0;
@@ -18,10 +18,24 @@ instance.interceptors.request.use((config) => {
     if ('skipLoadingWheel' in config && config.skipLoadingWheel === true) {
         return config;
     }
-    document.getElementById('axios-loading-backdrop').style.display = 'flex';
+    const loadingBackdrop = document.getElementById('axios-loading-backdrop');
+    if (loadingBackdrop) {
+        loadingBackdrop.style.display = 'flex';
+    }
     loading += 1;
     return config;
 });
+
+const loadingAnimation = () => {
+    setTimeout(() => {
+        if (loading === 0) {
+            const loadingBackdrop = document.getElementById('axios-loading-backdrop');
+            if (loadingBackdrop) {
+                loadingBackdrop.style.display = 'none';
+            }
+        }
+    }, 500);
+};
 
 instance.interceptors.response.use(
     (response) => {
@@ -29,25 +43,18 @@ instance.interceptors.response.use(
             return response;
         }
         loading -= 1;
-        setTimeout(() => {
-            if (loading === 0) {
-                document.getElementById('axios-loading-backdrop').style.display = 'none';
-            }
-        }, 500);
+        loadingAnimation();
         return response;
     },
     (error) => {
         loading -= 1;
-        setTimeout(() => {
-            if (loading === 0) {
-                document.getElementById('axios-loading-backdrop').style.display = 'none';
-            }
-        }, 500);
+        loadingAnimation();
         return Promise.reject(error);
     },
 );
 export const catchAxiosError =
-    (message: string | undefined, showSnackSev: (message?: string, sev?: AlertColor) => void) => (err: any) => {
+    (message: string | undefined, showSnackSev: (message: string, severity: AlertColor) => void) =>
+    (err: AxiosError<{ message?: string }>) => {
         if (!err.response) {
             showSnackSev('Server did not respond, please open an issue on our Github', 'error');
             console.error(err);
