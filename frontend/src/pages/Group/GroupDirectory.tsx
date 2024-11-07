@@ -71,7 +71,7 @@ export const GroupDirectory = () => {
     /** create group dialog open state */
     const [open, setOpen] = React.useState(false);
     /** the groups that the user is a member of */
-    let [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
+    const [myGroups, setMyGroups] = useState<FetchedGroup[]>([]);
     /** user info object */
     const { userInfo, fetchUserInfo } = useContext(UserContext);
 
@@ -104,6 +104,7 @@ export const GroupDirectory = () => {
     };
     useEffect(() => {
         fetchGroups();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

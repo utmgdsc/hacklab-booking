@@ -23,7 +23,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** booking details / explanation */
     const [details, setDetails] = useState('');
     /** list of approvers */
-    const [approvers, setApprovers] = useState([]);
+    const [approvers, setApprovers] = useState<string[]>([]);
     /** currently selected list of dates */
     const [scheduleDates, setScheduleDates] = useState<Date[]>([]);
     /** whether the date is valid */
@@ -61,7 +61,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
 
                             // fill scheduled dates
                             if (res.data.startDate && res.data.endDate) {
-                                let acc: Date[] = [];
+                                const acc: Date[] = [];
                                 const startTimeInMs = new Date(res.data.startDate).getTime();
                                 const eventDuration =
                                     new Date(res.data.endDate).getTime() - new Date(res.data.startDate).getTime() + 1;
@@ -77,6 +77,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     .catch(catchAxiosError('Could not fetch booking request', showSnackSev));
             })();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editID]);
 
     /**

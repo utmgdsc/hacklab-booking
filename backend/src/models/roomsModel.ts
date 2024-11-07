@@ -1,15 +1,11 @@
-import { AccountRole, RequestStatus, User } from '@prisma/client';
+import { AccountRole, type Prisma, RequestStatus, Room, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import Model from '../types/Model';
 import { userSelector } from './utils';
 import { triggerAdminNotification, triggerUserNotification } from '../notifications';
 import EventTypes from '../types/EventTypes';
-import {
-  generateBaseRequestNotificationContext as generateBaseNotificationContext,
-  generateBaseRequestNotificationContext,
-  generateUserActionContext,
-} from '../notifications/generateContext';
+import { generateBaseRequestNotificationContext, generateUserActionContext } from '../notifications/generateContext';
 import { AllContexts, BookingStatusChangeContext, RoomAccessContext } from '../types/NotificationContext';
 
 const generateApproverContext = (user: User) => ({
@@ -89,9 +85,34 @@ export default {
       throw e;
     }
   },
-  getRoom: async (roomName: string, user: User) => {
-    let room;
-    if (user.role == AccountRole.student) {
+  getRoom: async (roomName: string, user: User | undefined) => {
+    let room: Prisma.RoomGetPayload<{
+      include: {
+        requests: {
+          include: { group: true };
+        };
+      };
+    }> | null;
+    // public info
+    if (user === undefined) {
+      room = await db.room.findUnique({
+        where: { roomName },
+        include: {
+          requests: {
+            include: { group: true },
+          },
+        },
+      });
+      if (room) {
+        room = {
+          ...room,
+          requests: room.requests.map((x) => ({
+            ...x,
+            authorUtorid: '#######',
+          })),
+        };
+      }
+    } else if (user.role == AccountRole.student) {
       room = await db.room.findUnique({
         where: { roomName },
         include: {
@@ -114,7 +135,11 @@ export default {
       room = await db.room.findUnique({
         where: { roomName },
         include: {
-          requests: true,
+          requests: {
+            include: {
+              group: true,
+            },
+          },
           approvers: { select: userSelector() },
         },
       });
