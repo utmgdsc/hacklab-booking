@@ -26,32 +26,29 @@ instance.interceptors.request.use((config) => {
     return config;
 });
 
+const loadingAnimation = () => {
+    setTimeout(() => {
+        if (loading === 0) {
+            const loadingBackdrop = document.getElementById('axios-loading-backdrop');
+            if (loadingBackdrop) {
+                loadingBackdrop.style.display = 'none';
+            }
+        }
+    }, 500);
+};
+
 instance.interceptors.response.use(
     (response) => {
         if ('skipLoadingWheel' in response.config && response.config.skipLoadingWheel === true) {
             return response;
         }
         loading -= 1;
-        setTimeout(() => {
-            if (loading === 0) {
-                const loadingBackdrop = document.getElementById('axios-loading-backdrop');
-                if (loadingBackdrop) {
-                    loadingBackdrop.style.display = 'none';
-                }
-            }
-        }, 500);
+        loadingAnimation();
         return response;
     },
     (error) => {
         loading -= 1;
-        setTimeout(() => {
-            if (loading === 0) {
-                const loadingBackdrop = document.getElementById('axios-loading-backdrop');
-                if (loadingBackdrop) {
-                    loadingBackdrop.style.display = 'none';
-                }
-            }
-        }, 500);
+        loadingAnimation();
         return Promise.reject(error);
     },
 );
