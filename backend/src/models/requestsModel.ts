@@ -257,23 +257,19 @@ export default {
         requests: {
           where: { status: RequestStatus.pending }
         },
-        roomApprover: true, 
+        roomApprover: { select: { roomName: true } }, 
       },
     });
     if (!userFetched) {
       return { status: 404, message: 'User not found.' };
     }
-    if (!userFetched.groups.some((group) => group.id === request.groupId)) {
+    if (userFetched.groups.length == 0) {
       return {
         status: 403,
         message: 'User does not have access to this group.',
       };
     }
     request.approvers = request.approvers ?? [];
-    
-    if (userFetched.groups.length == 0) {
-      return { status: 404, message: 'Group not found.'};
-    }
 
     const room = await db.room.findUnique({ where : { roomName : request.roomName } })
     if (!room) {
