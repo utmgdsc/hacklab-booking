@@ -222,6 +222,12 @@ export const Joan6 = () => {
     }, [currentEvents, room.requests, roomId]);
 
     useEffect(() => {
+        if (document.body.requestFullscreen) {
+            document.body.requestFullscreen();
+        }
+    }, []);
+
+    useEffect(() => {
         const interval = setInterval(() => {
             setCurrentDateTime(
                 new Date().toLocaleString(undefined, {
