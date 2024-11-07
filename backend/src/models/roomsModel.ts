@@ -1,15 +1,11 @@
-import { AccountRole, RequestStatus, User } from '@prisma/client';
+import { AccountRole, type Prisma, RequestStatus, Room, User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import db from '../common/db';
 import Model from '../types/Model';
 import { userSelector } from './utils';
 import { triggerAdminNotification, triggerUserNotification } from '../notifications';
 import EventTypes from '../types/EventTypes';
-import {
-  generateBaseRequestNotificationContext as generateBaseNotificationContext,
-  generateBaseRequestNotificationContext,
-  generateUserActionContext,
-} from '../notifications/generateContext';
+import { generateBaseRequestNotificationContext, generateUserActionContext } from '../notifications/generateContext';
 import { AllContexts, BookingStatusChangeContext, RoomAccessContext } from '../types/NotificationContext';
 
 const generateApproverContext = (user: User) => ({
