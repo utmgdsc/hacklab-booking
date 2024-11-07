@@ -10,7 +10,7 @@ declare module 'axios' {
  * Axios instance
  */
 export const instance = axios.create({
-    baseURL: import.meta.env.NODE_ENV === 'production' ? '/api' : `${import.meta.env.REACT_APP_API_URL}/`,
+    baseURL: import.meta.env.NODE_ENV === 'production' ? '/api' : `${import.meta.env.REACT_APP_API_URL}/` ?? '/api',
 });
 
 let loading = 0;
