@@ -1,4 +1,4 @@
-import axios, { InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { AlertColor } from '@mui/material';
 
 declare module 'axios' {
@@ -18,7 +18,10 @@ instance.interceptors.request.use((config) => {
     if ('skipLoadingWheel' in config && config.skipLoadingWheel === true) {
         return config;
     }
-    document.getElementById('axios-loading-backdrop').style.display = 'flex';
+    const loadingBackdrop = document.getElementById('axios-loading-backdrop');
+    if (loadingBackdrop) {
+        loadingBackdrop.style.display = 'flex';
+    }
     loading += 1;
     return config;
 });
@@ -31,7 +34,10 @@ instance.interceptors.response.use(
         loading -= 1;
         setTimeout(() => {
             if (loading === 0) {
-                document.getElementById('axios-loading-backdrop').style.display = 'none';
+                const loadingBackdrop = document.getElementById('axios-loading-backdrop');
+                if (loadingBackdrop) {
+                    loadingBackdrop.style.display = 'none';
+                }
             }
         }, 500);
         return response;
@@ -40,14 +46,18 @@ instance.interceptors.response.use(
         loading -= 1;
         setTimeout(() => {
             if (loading === 0) {
-                document.getElementById('axios-loading-backdrop').style.display = 'none';
+                const loadingBackdrop = document.getElementById('axios-loading-backdrop');
+                if (loadingBackdrop) {
+                    loadingBackdrop.style.display = 'none';
+                }
             }
         }, 500);
         return Promise.reject(error);
     },
 );
 export const catchAxiosError =
-    (message: string | undefined, showSnackSev: (message?: string, sev?: AlertColor) => void) => (err: any) => {
+    (message: string | undefined, showSnackSev: (message: string, severity: AlertColor) => void) =>
+    (err: AxiosError<{ message?: string }>) => {
         if (!err.response) {
             showSnackSev('Server did not respond, please open an issue on our Github', 'error');
             console.error(err);

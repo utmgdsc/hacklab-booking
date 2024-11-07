@@ -36,41 +36,41 @@ declare module '@mui/material/styles' {
 
     interface PaletteOptions {
         app_colors?: {
-            red?: string;
-            blue?: string;
-            green?: string;
-            yellow?: string;
-            purple?: string;
-            hover?: {
-                red?: string;
-                blue?: string;
-                green?: string;
-                yellow?: string;
-                purple?: string;
+            red: string;
+            blue: string;
+            green: string;
+            yellow: string;
+            purple: string;
+            hover: {
+                red: string;
+                blue: string;
+                green: string;
+                yellow: string;
+                purple: string;
             };
         };
-        gray?: {
-            main?: string;
+        gray: {
+            main: string;
         };
     }
 
     interface Palette {
-        app_colors?: {
-            red?: string;
-            blue?: string;
-            green?: string;
-            yellow?: string;
-            purple?: string;
-            hover?: {
-                red?: string;
-                blue?: string;
-                green?: string;
-                yellow?: string;
-                purple?: string;
+        app_colors: {
+            red: string;
+            blue: string;
+            green: string;
+            yellow: string;
+            purple: string;
+            hover: {
+                red: string;
+                blue: string;
+                green: string;
+                yellow: string;
+                purple: string;
             };
         };
-        gray?: {
-            main?: string;
+        gray: {
+            main: string;
         };
     }
 }

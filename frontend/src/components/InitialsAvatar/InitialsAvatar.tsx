@@ -14,11 +14,11 @@ export const InitialsAvatar = ({ name = '', ...props }: InitialsAvatarProps): JS
         <Avatar alt={name} style={{ backgroundColor: colorHash({ name }), color: 'white' }} {...props}>
             {name
                 .match(/(^\S\S?|\s\S)?/g)
-                .map((v) => v.trim())
+                ?.map((v) => v.trim())
                 .join('')
-                .match(/(^\S|\S$)?/g)
-                .join('')
-                .toLocaleUpperCase()}
+                ?.match(/(^\S|\S$)?/g)
+                ?.join('')
+                ?.toLocaleUpperCase()}
         </Avatar>
     );
 };

@@ -15,15 +15,13 @@ interface ApproverPickerProps {
 
 /**
  * A control that allows the user to select approvers from a list of all approvers.
- *
- * @property setApprovers a function that takes in an array of approvers and sets the approvers for the form
  */
 export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName }: ApproverPickerProps) => {
     const { userInfo } = useContext(UserContext);
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState(selectedApprovers);
     /** an array of all the approvers that can be chosen */
-    const [approvers, setApproversBackend] = useState([]);
+    const [approvers, setApproversBackend] = useState<User[]>([]);
 
     const needApprover = useMemo(
         () => !approvers.some((approver) => approver.utorid === userInfo.utorid),

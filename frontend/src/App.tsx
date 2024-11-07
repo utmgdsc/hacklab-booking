@@ -86,7 +86,7 @@ function App() {
      */
     const [queue, setQueue] = useState<SnackbarQueueItem[]>([]);
 
-    const showSnack = (message: string, action?: JSX.Element, content?: JSX.Element) => {
+    const showSnack = (message?: string, action?: JSX.Element, content?: JSX.Element) => {
         // if over 3, remove the first one
         if (queue.length > 3) {
             setQueue((array) => array.slice(1));
@@ -104,12 +104,12 @@ function App() {
         ]);
     };
 
-    const showSnackSev = (message: string, severity: AlertColor) => {
+    const showSnackSev = (message?: string, severity?: AlertColor) => {
         showSnack(
-            null,
-            null,
+            undefined,
+            undefined,
             <Alert elevation={6} severity={severity}>
-                {message}
+                {message || 'Something went wrong'}
             </Alert>,
         );
     };
@@ -169,7 +169,7 @@ function App() {
                                     position: 'fixed !important',
                                 }}
                             >
-                                {item.content ? item.content : null}
+                                {item.content ? item.content : undefined}
                             </Snackbar>
                         ))}
                     </SnackbarContext.Provider>

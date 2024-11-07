@@ -141,7 +141,7 @@ export const Group = () => {
             .post(`/groups/${groupID}/invite/`, {
                 utorid,
             })
-            .then((res) => {
+            .then(() => {
                 showSnackSev('Person invited', 'success');
             })
             .catch(catchAxiosError('Could not invite person', showSnackSev))
@@ -157,7 +157,7 @@ export const Group = () => {
             .post(`/groups/${groupID}/remove/`, {
                 utorid,
             })
-            .then((res) => {
+            .then(() => {
                 showSnackSev('Person removed', 'success');
             })
             .catch(catchAxiosError('Could not remove person', showSnackSev))

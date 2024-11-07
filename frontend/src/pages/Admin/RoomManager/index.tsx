@@ -3,7 +3,6 @@ import {
     Card,
     CardActions,
     CardContent,
-    Collapse,
     Dialog,
     DialogActions,
     DialogContent,

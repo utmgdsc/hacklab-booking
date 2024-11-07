@@ -125,6 +125,7 @@ const UserAccessTable = ({
     columns,
     CellContent,
 }: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rows: any[];
     columns: TableRowData[];
     CellContent?: ({ row, column }: { row: TableRowData; column: any }) => JSX.Element;
@@ -133,6 +134,7 @@ const UserAccessTable = ({
         <Paper style={{ height: '90vh', width: '100%' }} elevation={0}>
             <TableVirtuoso
                 data={rows}
+                // @ts-expect-error - dataKey is not in the type definition
                 components={VirtuosoTableComponents}
                 fixedHeaderContent={() => {
                     return fixedHeaderContent(columns);
@@ -160,7 +162,7 @@ const UserAccessTable = ({
 export const RoomViewer = () => {
     const { showSnackSev } = useContext(SnackbarContext);
     const { id: roomId } = useParams();
-    const [name, setName] = useState<string>(roomId);
+    const [name, setName] = useState<string>(roomId || '');
     const [room, setRoomData] = useState<FetchedRoom>({
         approvers: [],
         capacity: -1,
@@ -183,7 +185,7 @@ export const RoomViewer = () => {
         })();
     }, []);
 
-    const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    const handleChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
     const getRoomData = async () => {

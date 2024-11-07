@@ -1,3 +1,4 @@
+
 import { Table, TableBody, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 import React, { Ref } from 'react';
@@ -8,6 +9,7 @@ import { TableComponents } from 'react-virtuoso';
 export const VirtuosoTableComponents: TableComponents = {
     Scroller: React.forwardRef((props, ref) => <TableContainer component={Paper} {...props} ref={ref as Ref<any>} />),
     Table: (props: TableProps) => <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />,
+    // @ts-expect-error - TableHead is not exported from @mui/material
     TableHead,
     TableRow: (props: TableRowProps) => <TableRow {...props} />,
     TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref as Ref<any>} />),
