@@ -60,10 +60,9 @@ const LeftHeader = ({
 const RightHeader = ({ userInfo, theme }: {
     /** to be passed by the UserContext */
     userInfo: User;
-    /** to be passed by the useTheme MUI hook */
-    theme: Theme;
 }) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const theme = useTheme();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleOpenUserMenu = (event: SyntheticEvent<any>) => {
@@ -156,9 +155,8 @@ export const DashboardHeader = ({
                 active_requests={active_requests}
                 pending_requests={pending_requests}
                 userInfo={userInfo}
-                theme={theme}
             />
-            <RightHeader userInfo={userInfo} theme={theme} />
+            <RightHeader userInfo={userInfo} />
         </Box>
     );
 };
