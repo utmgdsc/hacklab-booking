@@ -1,6 +1,6 @@
 import { KeyboardArrowDown, Logout } from '@mui/icons-material';
 
-import { Box, Button, Menu, MenuItem, Skeleton, Theme, Typography, useTheme } from '@mui/material';
+import { Box, Button, Menu, MenuItem, Skeleton, Typography, useTheme } from '@mui/material';
 import React, { SyntheticEvent, useContext } from 'react';
 import { InitialsAvatar, Link } from '..';
 import { UserContext } from '../../contexts/UserContext';
@@ -57,7 +57,7 @@ const LeftHeader = ({
  * Right side of the header containing the user's initials and a menu to logout
  * @returns the right side of the header
  */
-const RightHeader = ({ userInfo, theme }: {
+const RightHeader = ({ userInfo }: {
     /** to be passed by the UserContext */
     userInfo: User;
 }) => {
@@ -134,7 +134,6 @@ export const DashboardHeader = ({
     pending_requests: BookingRequest[];
 }) => {
     const { userInfo } = useContext(UserContext);
-    const theme = useTheme();
 
     return (
         <Box
