@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import ScheduleSelector from 'react-schedule-selector';
-import { GetMonday } from '../../components';
+import { getMonday } from '..';
 import styles from './CustomScheduleSelector.module.css';
 
 /**
@@ -95,7 +95,7 @@ export const CustomScheduleSelector = ({
                 return blockedDate.getTime() === date.getTime();
             }).length > 0;
         const inPast = date.getTime() < new Date().getTime();
-        var backgroundColor;
+        let backgroundColor;
 
         if (blocked) {
             backgroundColor = theme.palette.error.main + '!important';
@@ -135,7 +135,7 @@ export const CustomScheduleSelector = ({
                 minTime={8}
                 maxTime={22}
                 hourlyChunks={1}
-                startDate={GetMonday(calendarDate)}
+                startDate={getMonday(calendarDate)}
                 onChange={(scheduleDates) => {
                     handleScheduleDate(scheduleDates);
                 }}

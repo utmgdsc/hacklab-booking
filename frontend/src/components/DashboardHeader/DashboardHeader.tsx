@@ -1,29 +1,29 @@
 import { KeyboardArrowDown, Logout } from '@mui/icons-material';
 
-import { Box, Button, Menu, MenuItem, Skeleton, Theme, Typography, useTheme } from '@mui/material';
+import { Box, Button, Menu, MenuItem, Skeleton, Typography, useTheme } from '@mui/material';
 import React, { SyntheticEvent, useContext } from 'react';
-import { InitialsAvatar, Link } from '../../components';
+import { InitialsAvatar, Link } from '..';
 import { UserContext } from '../../contexts/UserContext';
 
 /**
  * Left side of the header containing the user's name and role
- * @property {*} active_requests a list of requests received from the backend
- * @property {*} pending_requests a list of requests received from the backend
- * @property {*} userInfo to be passed by the UserContext
- * @property {*} theme to be passed by the useTheme MUI hook
  * @returns the left side of the header
  */
 const LeftHeader = ({
     active_requests,
     pending_requests,
     userInfo,
-    theme,
 }: {
+    /** a list of requests received from the backend */
     active_requests: BookingRequest[];
+    /** a list of requests received from the backend */
     pending_requests: BookingRequest[];
+    /** to be passed by the UserContext */
     userInfo: User;
-    theme: any;
-}) => (
+}) => {
+    const theme = useTheme();
+
+    return (
     <Box>
         <Typography component="p" variant="h5" sx={{ color: theme.palette.text.secondary }}>
             Welcome, {userInfo.role === 'admin' ? 'Administrator' : userInfo.role === 'approver' ? 'Approver' : null}
@@ -51,17 +51,20 @@ const LeftHeader = ({
                 </Typography>
             )}
     </Box>
-);
+)};
 
 /**
  * Right side of the header containing the user's initials and a menu to logout
- * @property {*} userInfo to be passed by the UserContext
- * @property {*} theme to be passed by the useTheme MUI hook
  * @returns the right side of the header
  */
-const RightHeader = ({ userInfo, theme }: { userInfo: User; theme: Theme }) => {
+const RightHeader = ({ userInfo }: {
+    /** to be passed by the UserContext */
+    userInfo: User;
+}) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const theme = useTheme();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleOpenUserMenu = (event: SyntheticEvent<any>) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -131,7 +134,6 @@ export const DashboardHeader = ({
     pending_requests: BookingRequest[];
 }) => {
     const { userInfo } = useContext(UserContext);
-    const theme = useTheme();
 
     return (
         <Box
@@ -152,9 +154,8 @@ export const DashboardHeader = ({
                 active_requests={active_requests}
                 pending_requests={pending_requests}
                 userInfo={userInfo}
-                theme={theme}
             />
-            <RightHeader userInfo={userInfo} theme={theme} />
+            <RightHeader userInfo={userInfo} />
         </Box>
     );
 };
