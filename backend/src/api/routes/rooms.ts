@@ -77,12 +77,12 @@ router.put(
 );
 
 router.put('/:rooms/update', permissionMiddleware(PermissionLevel.admin), async (req, res) => {
-  const { friendlyName, capacity, needAccess, description, roomRules, requestLimit } = req.body;
+  const { friendlyName, capacity, needTCardAccess, description, roomRules, requestLimit } = req.body;
   if (
     (capacity !== undefined && isNaN(parseInt(capacity))) ||
     capacity === null ||
     capacity < 0 ||
-    (needAccess !== undefined && typeof needAccess !== 'boolean') ||
+    (needTCardAccess !== undefined && typeof needTCardAccess !== 'boolean') ||
     (description !== undefined && typeof description !== 'string') ||
     (roomRules !== undefined && typeof roomRules !== 'string') ||
     (requestLimit !== undefined && isNaN(parseInt(requestLimit)))
@@ -98,7 +98,7 @@ router.put('/:rooms/update', permissionMiddleware(PermissionLevel.admin), async 
     await roomsModel.setSettings(req.params.rooms, {
       friendlyName,
       capacity,
-      needAccess,
+      needTCardAccess,
       description,
       roomRules,
       requestLimit,

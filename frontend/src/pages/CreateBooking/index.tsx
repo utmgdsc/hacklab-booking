@@ -9,6 +9,46 @@ import { SubPage } from '../../layouts/SubPage';
 import { TransitionGroup } from 'react-transition-group';
 
 /**
+ * Room rules
+ */
+const RuleModal = ({
+    setRulesOpen,
+    rulesOpen,
+    room,
+}: {
+    setRulesOpen: (open: boolean) => void;
+    rulesOpen: boolean;
+    room: Room;
+}) => {
+    return (
+        <Modal open={rulesOpen} onClose={() => setRulesOpen(false)}>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    border: '2px solid #000',
+                    boxShadow: 24,
+                    p: 4,
+                }}
+            >
+                <Typography variant="h6" component={'h2'}>
+                    Rules for {room.friendlyName} - {room.roomName}
+                </Typography>
+                <Typography variant="body1" component={'p'}>
+                    {room.roomRules}
+                </Typography>
+                <Link onClick={() => setRulesOpen(false)} href={'javascript:void(0);'}>
+                    Close
+                </Link>
+            </Box>
+        </Modal>
+    );
+};
+/**
  * Edit a booking given a UUID or create a new booking if no UUID is given
  */
 export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
@@ -293,32 +333,8 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                                     <Link onClick={() => setRulesOpen(true)} href={'javascript:void(0);'}>
                                         Room Rules
                                     </Link>
+                                    <RuleModal setRulesOpen={setRulesOpen} rulesOpen={rulesOpen} room={room} />
                                 </Typography>
-                                <Modal open={rulesOpen} onClose={() => setRulesOpen(false)}>
-                                    <Box
-                                        sx={{
-                                            position: 'absolute',
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)',
-                                            width: 400,
-                                            bgcolor: 'background.paper',
-                                            border: '2px solid #000',
-                                            boxShadow: 24,
-                                            p: 4,
-                                        }}
-                                    >
-                                        <Typography variant="h6" component={'h2'}>
-                                            Rules for {room.friendlyName} - {room.roomName}
-                                        </Typography>
-                                        <Typography variant="body1" component={'p'}>
-                                            {room.roomRules}
-                                        </Typography>
-                                        <Link onClick={() => setRulesOpen(false)} href={'javascript:void(0);'}>
-                                            Close
-                                        </Link>
-                                    </Box>
-                                </Modal>
                             </>
                         )}
                     </Box>

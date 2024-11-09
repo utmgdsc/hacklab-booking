@@ -91,7 +91,7 @@ interface Room {
     capacity: number | null;
     friendlyName: string;
     roomName: string;
-    needAccess: boolean;
+    needTCardAccess: boolean;
     description?: string;
     roomRules?: string;
     requestLimit?: number;

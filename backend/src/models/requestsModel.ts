@@ -110,7 +110,7 @@ const approveRequest = async (id: string, approver: User, reason?: string) => {
   }
   let status: RequestStatus = RequestStatus.needTCard;
   if (
-    !request.room.needAccess ||
+    !request.room.needTCardAccess ||
     request.room.userAccess.some((user: { utorid: string }) => user.utorid === request.author.utorid)
   ) {
     status = RequestStatus.completed;
