@@ -26,8 +26,19 @@ const requestCounter = () => {
   };
 };
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
-  if (request.title.trim() === '' || request.description.trim() === '') {
+  if (
+    [request.title, request.description, request.roomName].some(
+      (x) => x === undefined || typeof x !== 'string' || x.trim() === '',
+    )
+  ) {
     return { status: 400, message: 'Missing required fields.' };
+  }
+
+  if (
+    request.approvers &&
+    (!Array.isArray(request.approvers) || request.approvers.some((x) => typeof x !== 'string'))
+  ) {
+    return { status: 400, message: 'Approvers must be a string array.' };
   }
 
   const startDate = new Date(request.startDate);
@@ -98,7 +109,10 @@ const approveRequest = async (id: string, approver: User, reason?: string) => {
     return { status: 400, message: 'Request is not pending.' };
   }
   let status: RequestStatus = RequestStatus.needTCard;
-  if (request.room.userAccess.some((user: { utorid: string }) => user.utorid === request.author.utorid)) {
+  if (
+    !request.room.needTCardAccess ||
+    request.room.userAccess.some((user: { utorid: string }) => user.utorid === request.author.utorid)
+  ) {
     status = RequestStatus.completed;
   }
   const requestFetched = await db.request.update({
