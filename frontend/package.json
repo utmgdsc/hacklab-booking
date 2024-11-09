@@ -7,7 +7,7 @@
         "type": "git",
         "url": "git+https://github.com/utmgdsc/hacklab-booking.git"
     },
-    "author": "GDSC",
+    "author": "GDSC UTM",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/utmgdsc/hacklab-booking/issues"

@@ -4,9 +4,9 @@ export default interface NotificationTemplate {
   slack?: string;
   discord?: string;
   email?:
-  | {
-    subject: string;
-    html: string;
-  }
-  | string;
+    | {
+        subject: string;
+        html: string;
+      }
+    | string;
 }

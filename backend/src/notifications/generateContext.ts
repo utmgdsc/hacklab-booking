@@ -3,7 +3,11 @@ import db from '../common/db';
 import { BaseBookingContext } from '../types/NotificationContext';
 
 const fetchRequestData = async (request: Request) => {
-  if (['room', 'author', 'group'].every((key) => request.hasOwnProperty(key) && typeof (<Record<string, any>>request)[key] === 'object')) {
+  if (
+    ['room', 'author', 'group'].every(
+      (key) => request.hasOwnProperty(key) && typeof (<Record<string, any>>request)[key] === 'object',
+    )
+  ) {
     return request as NonNullable<typeof requestFetched>;
   }
   const requestFetched = await db.request.findUnique({
@@ -35,7 +39,7 @@ export const generateBaseRequestNotificationContext = async (request: Request): 
   };
 };
 
-export const generateUserActionContext = (user :User) => {
+export const generateUserActionContext = (user: User) => {
   return {
     full_name: user.name,
     utorid: user.utorid,

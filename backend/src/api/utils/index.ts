@@ -1,13 +1,6 @@
 import { AccountRole } from '@prisma/client';
-import {
-  NextFunction,
-  Request,
-  RequestHandler,
-  Response,
-} from 'express';
-import ModelResponse, {
-  ModelResponseSuccess,
-} from '../../types/ModelResponse';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import ModelResponse, { ModelResponseSuccess } from '../../types/ModelResponse';
 
 export const routeNotImplemented: RequestHandler = (req: Request, res: Response) => {
   res.statusCode = 501;
@@ -45,8 +38,8 @@ export const permissionMiddleware = (level: PermissionLevel) => (req: Request, r
   }
   if (
     level == PermissionLevel.staff ||
-        (req.user.role === AccountRole.approver && level === PermissionLevel.approver) ||
-        (level === PermissionLevel.tcard && req.user.role === AccountRole.tcard)
+    (req.user.role === AccountRole.approver && level === PermissionLevel.approver) ||
+    (level === PermissionLevel.tcard && req.user.role === AccountRole.tcard)
   ) {
     next();
     return;

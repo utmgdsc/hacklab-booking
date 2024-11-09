@@ -1,11 +1,6 @@
 import { Router } from 'express';
 import roomsModel from '../../models/roomsModel';
-import {
-  checkRequiredFields,
-  PermissionLevel,
-  permissionMiddleware,
-  sendResponse,
-} from '../utils';
+import { checkRequiredFields, PermissionLevel, permissionMiddleware, sendResponse } from '../utils';
 
 const router = Router();
 

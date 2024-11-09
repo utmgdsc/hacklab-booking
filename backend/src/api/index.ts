@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import routes from './routes';
 import logger from '../common/logger';
+import ical from 'ical-generator';
 import { sendResponse } from './utils';
 import accountsModel from '../models/accountsModel';
 import cors from 'cors';
@@ -38,7 +39,35 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.get('/joan6/:room', async (req, res) => {
-  sendResponse(res, await roomsModel.getRoom(req.params.room, undefined));
+  const room = await roomsModel.getRoom(req.params.room.replace(/\.ical$/, ''), undefined);
+
+  if (req.params.room.endsWith('.ical')) {
+    const cal = ical({
+      name: 'Events for ' + room.data?.friendlyName,
+    });
+
+    cal.prodId({
+      company: 'Google Developer Student Clubs - University of Toronto Mississauga',
+      product: 'Hacklab Booking System',
+      language: 'en',
+    });
+
+    room.data?.requests.forEach((request) => {
+      cal.createEvent({
+        start: new Date(request.startDate),
+        end: new Date(request.endDate),
+        summary: `[${request.group.name}] ${request.title}`,
+        description: request.description,
+        location: `${room.data?.roomName} (${room.data?.friendlyName})`,
+      });
+    });
+
+    res.setHeader('Content-Type', 'text/calendar');
+    res.send(cal.toString());
+    return;
+  }
+
+  sendResponse(res, room);
 });
 
 app.use(async (req, res, next) => {

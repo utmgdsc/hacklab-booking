@@ -247,26 +247,26 @@ export default {
       authorUtorid: user.utorid,
     };
     newRequest.approvers = newRequest.approvers || [];
-    const pendingQuery = { 
+    const pendingQuery = {
       status: RequestStatus.pending,
       roomName: request.roomName,
-    }
+    };
     const userFetched = await db.user.findUnique({
       where: { utorid: newRequest.authorUtorid },
-      include: { 
-        groups: { 
-          where: { id: request.groupId }, 
-          select: { 
-            id: true, 
+      include: {
+        groups: {
+          where: { id: request.groupId },
+          select: {
+            id: true,
             requests: {
-              where: pendingQuery
-            }
+              where: pendingQuery,
+            },
           },
         },
         requests: {
-          where: pendingQuery
+          where: pendingQuery,
         },
-        roomApprover: { select: { roomName: true } }, 
+        roomApprover: { select: { roomName: true } },
       },
     });
     if (!userFetched) {
@@ -280,21 +280,21 @@ export default {
     }
     request.approvers = request.approvers ?? [];
 
-    const room = await db.room.findUnique({ where : { roomName : request.roomName } })
+    const room = await db.room.findUnique({ where: { roomName: request.roomName } });
     if (!room) {
-      return { status: 404, message: 'Room not found.'};
+      return { status: 404, message: 'Room not found.' };
     }
     if (userFetched.requests.length >= room.requestLimit) {
       return {
         status: 429,
         message: 'User has too many pending requests.',
-      }
+      };
     }
     if (userFetched.groups[0].requests.length >= room.requestLimit) {
       return {
         status: 429,
         message: 'Group has too many pending requests.',
-      }
+      };
     }
 
     try {
