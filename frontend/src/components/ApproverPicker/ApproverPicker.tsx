@@ -25,7 +25,7 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
 
     const needApprover = useMemo(
         () => !approvers.some((approver) => approver.utorid === userInfo.utorid),
-        [approvers, userInfo.utorid],
+        [approvers.length, userInfo.utorid],
     );
 
     useEffect(() => {
