@@ -91,6 +91,10 @@ interface Room {
     capacity: number | null;
     friendlyName: string;
     roomName: string;
+    needAccess: boolean;
+    description?: string;
+    roomRules?: string;
+    requestLimit?: number;
 }
 
 /** Admin only fetched room when ~/api/rooms/:id is called */

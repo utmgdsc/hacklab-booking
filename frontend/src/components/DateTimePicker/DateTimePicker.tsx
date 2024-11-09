@@ -13,7 +13,7 @@ interface DateTimePickerProps {
     /** a react hook that is a function that takes a list of dates, and will set the scheduleDates state */
     setScheduleDates: (dates: Date[]) => void;
     /** the room that the user is booking */
-    room: string;
+    roomName: string;
 }
 
 /**
@@ -23,7 +23,12 @@ interface DateTimePickerProps {
  * @property {function} setScheduleDates a react hook that is a function that takes a list of dates, and will set the scheduleDates state
  * @returns
  */
-export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleDates, room }: DateTimePickerProps) => {
+export const DateTimePicker = ({
+    handleScheduleDate,
+    scheduleDates,
+    setScheduleDates,
+    roomName,
+}: DateTimePickerProps) => {
     const [calendarDate, setDate] = useState(dayjs(new Date()));
     const [blockedDates, setBlockedDates] = useState<Date[]>([]);
     const [pendingDates, setPendingDates] = useState<Date[]>([]);
@@ -45,7 +50,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
 
         await axios
             .get(
-                `/rooms/${room}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`,
+                `/rooms/${roomName}/blockedDates?start_date=${startMonday.toISOString()}&end_date=${endDate.toISOString()}`,
             )
             .then(({ data }) => {
                 setBlockedDates(data as Date[]);
@@ -72,7 +77,7 @@ export const DateTimePicker = ({ handleScheduleDate, scheduleDates, setScheduleD
     useEffect(() => {
         handleBlockedDates(calendarDate.toDate());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [calendarDate, room]);
+    }, [calendarDate, roomName]);
 
     return (
         <>
