@@ -19,7 +19,7 @@ interface ApproverPickerProps {
 export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName }: ApproverPickerProps) => {
     const { userInfo } = useContext(UserContext);
     const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState(selectedApprovers);
+    const [selectedBackend, setSelectedBackend] = useState(selectedApprovers);
     /** an array of all the approvers that can be chosen */
     const [approvers, setApproversBackend] = useState<User[]>([]);
 
@@ -28,6 +28,18 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
         [approvers.length, userInfo.utorid],
     );
 
+    const selected = useMemo(() => {
+        if (!needApprover) {
+            return [userInfo.utorid];
+        } else {
+            return selectedBackend;
+        }
+    }, [needApprover, selectedBackend, userInfo.utorid]);
+
+    useEffect(() => {
+        setApprovers(selected);
+    }, [selected]);
+
     useEffect(() => {
         (async () => {
             await axios
@@ -35,11 +47,8 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
                 .then(({ data }) => {
                     if (data.approvers) {
                         setApproversBackend(data.approvers);
-                        if (!needApprover) {
-                            setSelected([userInfo.utorid]);
-                            setApprovers([userInfo.utorid]);
-                        } else if (data.approvers.length === 1 && selectedApprovers.length === 0) {
-                            setSelected([data.approvers[0].utorid]);
+                        if (data.approvers.length === 1 && selectedApprovers.length === 0) {
+                            setSelectedBackend([data.approvers[0].utorid]);
                             setApprovers([data.approvers[0].utorid]);
                         }
                     } else {
@@ -62,8 +71,7 @@ export const ApproverPicker = ({ setApprovers, selectedApprovers = [], roomName 
     };
 
     const handleSelect = (event: SelectChangeEvent<string[]>) => {
-        setSelected(event.target.value as string[]);
-        setApprovers(event.target.value as string[]);
+        setSelectedBackend(event.target.value as string[]);
     };
 
     return (
