@@ -30,7 +30,7 @@ model User {
   discordWebhook String?
   slackWebhook   String?
   theme          Theme       @default(system)
-  roomApprover   Room[]    @relation(name: "RoomApprover")
+  roomApprover   Room[]      @relation(name: "RoomApprover")
 }
 
 enum Theme {
@@ -90,4 +90,7 @@ model Room {
   requests     Request[] // all requests made for this room
   userAccess   User[]    @relation("RoomAccess") // all users with access to this room
   approvers    User[]    @relation("RoomApprover") // all users with approver access to this room
+  needAccess   Boolean   @default(false) // whether the room requires access to be granted
+  description  String?
+  roomRules    String?
 }
