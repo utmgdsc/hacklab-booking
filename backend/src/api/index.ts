@@ -43,7 +43,7 @@ app.get('/joan6/:room', async (req, res) => {
 
   if (req.params.room.endsWith('.ical')) {
     const cal = ical({
-      name: 'Events for ' + room.data?.friendlyName,
+      name: `Events for ${room.data?.friendlyName}`,
     });
 
     cal.prodId({
@@ -83,7 +83,10 @@ app.use(async (req, res, next) => {
   const data = await accountsModel.upsertUser({
     utorid: req.headers.utorid as string,
     email: req.headers.http_mail as string,
-    name: (req.headers.http_mail as string).split('@')[0],
+    name:
+      req.headers.sn && req.headers.givenname
+        ? `${req.headers.givenname} ${req.headers.sn}`
+        : (req.headers.http_mail as string).split('@')[0],
     webhooks: defaultWebhooksSetttings,
     slackWebhook: null,
     discordWebhook: null,
