@@ -265,4 +265,11 @@ export default {
       throw e;
     }
   },
+  setSettings: async (roomName: string, settings: { [key in keyof Omit<Room, 'roomName'>]: Room[key] }) => {
+    await db.room.update({
+      where: { roomName },
+      data: Object.fromEntries(Object.entries(settings).filter(([, value]) => value !== undefined)) as typeof settings,
+    });
+    return { status: 200, data: {} };
+  },
 } satisfies Model;

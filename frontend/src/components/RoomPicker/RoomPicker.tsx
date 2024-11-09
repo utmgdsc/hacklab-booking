@@ -4,15 +4,15 @@ import { useState, useEffect } from 'react';
 
 interface RoomPickerProps {
     /** the name of the room */
-    roomName: string;
+    room?: Room;
     /** a react useState hook that sets the room name */
-    setRoomName: (roomName: string) => void;
+    setRoom: (room?: Room) => void;
 }
 
 /**
  * A component that allows the user to pick a room from a list of rooms
  */
-export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
+export const RoomPicker = ({ room, setRoom }: RoomPickerProps) => {
     /** list of rooms */
     const [rooms, setRooms] = useState<Room[]>([]);
 
@@ -24,14 +24,14 @@ export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
                 .then((res) => {
                     setRooms(res.data);
                     if (res.data.length === 1) {
-                        setRoomName(res.data[0].roomName);
+                        setRoom(res.data[0]);
                     }
                 })
                 .catch((err) => {
                     console.error(err);
                 });
         })();
-    }, [setRoomName]);
+    }, [setRoom]);
 
     return (
         <FormControl fullWidth sx={{ marginTop: '1em' }}>
@@ -39,11 +39,11 @@ export const RoomPicker = ({ roomName, setRoomName }: RoomPickerProps) => {
             <Select
                 labelId="room-label"
                 id="room-select"
-                value={roomName}
+                value={room?.roomName ?? ''}
                 fullWidth
                 label="Room"
                 onChange={(e) => {
-                    setRoomName(e.target.value);
+                    setRoom(rooms.find((x) => x.roomName == e.target.value));
                 }}
             >
                 {rooms.map((room) => {

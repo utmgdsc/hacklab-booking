@@ -76,4 +76,34 @@ router.put(
   },
 );
 
+router.put('/:rooms/update', permissionMiddleware(PermissionLevel.admin), async (req, res) => {
+  const { friendlyName, capacity, needTCardAccess, description, roomRules, requestLimit } = req.body;
+  if (
+    (capacity !== undefined && isNaN(parseInt(capacity))) ||
+    capacity === null ||
+    capacity < 0 ||
+    (needTCardAccess !== undefined && typeof needTCardAccess !== 'boolean') ||
+    (description !== undefined && typeof description !== 'string') ||
+    (roomRules !== undefined && typeof roomRules !== 'string') ||
+    (requestLimit !== undefined && isNaN(parseInt(requestLimit)))
+  ) {
+    sendResponse(res, {
+      status: 400,
+      message: 'Invalid request.',
+    });
+    return;
+  }
+  sendResponse(
+    res,
+    await roomsModel.setSettings(req.params.rooms, {
+      friendlyName,
+      capacity,
+      needTCardAccess,
+      description,
+      roomRules,
+      requestLimit,
+    }),
+  );
+});
+
 export default router;
