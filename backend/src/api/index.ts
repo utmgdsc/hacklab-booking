@@ -84,9 +84,10 @@ app.use(async (req, res, next) => {
     utorid: req.headers.utorid as string,
     email: req.headers.http_mail as string,
     name:
-      req.headers.sn && req.headers.givenname
+      (req.headers.HTTP_CN as string) ??
+      (req.headers.sn && req.headers.givenname
         ? `${req.headers.givenname} ${req.headers.sn}`
-        : (req.headers.http_mail as string).split('@')[0],
+        : (req.headers.http_mail as string).split('@')[0]),
     webhooks: defaultWebhooksSetttings,
     slackWebhook: null,
     discordWebhook: null,
