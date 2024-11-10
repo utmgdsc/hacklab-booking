@@ -174,13 +174,15 @@ export default {
       query.startDate = { gte: new Date(filters.start_date) };
     }
     logger.debug(query.startDate);
-    // In a week
     if (filters.end_date) {
       query.endDate = { lte: filters.end_date };
-    } else {
-      filters.end_date = filters.end_date || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      query.endDate = { lte: filters.end_date };
     }
+    // else {
+    // // In a week
+    //   filters.end_date = filters.end_date || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    //   query.endDate = { lte: filters.end_date };
+    // }
+
     if (filters.startDate && filters.endDate) {
       const startDate = new Date(filters.startDate);
       const endDate = new Date(filters.endDate);
