@@ -85,7 +85,7 @@ app.use(async (req, res, next) => {
     email: req.headers.http_mail as string,
     name:
       (req.headers.HTTP_CN as string) ??
-      (req.headers.sn && req.headers.givenname
+      (req.headers.sn && req.headers.givenName
         ? `${req.headers.givenname} ${req.headers.sn}`
         : (req.headers.http_mail as string).split('@')[0]),
     webhooks: defaultWebhooksSetttings,
