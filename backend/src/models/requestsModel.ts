@@ -287,13 +287,13 @@ export default {
     if (userFetched.requests.length >= room.requestLimit) {
       return {
         status: 429,
-        message: 'User has too many pending requests.',
+        message: `User has too many pending requests. Maximum pending requests for this room is ${room.requestLimit}.`,
       }
     }
     if (userFetched.groups[0].requests.length >= room.requestLimit) {
       return {
         status: 429,
-        message: 'Group has too many pending requests.',
+        message: `Group has too many pending requests. Maximum pending requests for this room is ${room.requestLimit}.`,
       }
     }
 
