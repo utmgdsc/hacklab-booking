@@ -21,7 +21,7 @@ export const GroupCard = ({ groupObj, ...props }: GroupCardProps) => {
                     {groupObj.name}
                 </Typography>
                 <Typography variant="gray">Members:</Typography>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1} sx={{overflowX: 'auto', flexWrap: 'nowrap', paddingBottom: 2}}>
                     {groupObj.members.map((member) => {
                         return (
                             <Tooltip key={member.utorid} title={member.email}>
