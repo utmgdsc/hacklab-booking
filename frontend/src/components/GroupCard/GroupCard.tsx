@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, Chip, Stack, Tooltip, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Chip, Tooltip, Typography, Box} from '@mui/material';
 
 import { useContext } from 'react';
 import { InitialsAvatar, Link } from '..';
@@ -21,10 +21,11 @@ export const GroupCard = ({ groupObj, ...props }: GroupCardProps) => {
                     {groupObj.name}
                 </Typography>
                 <Typography variant="gray">Members:</Typography>
-                <Stack direction="row" spacing={1} sx={{overflowX: 'auto', flexWrap: 'nowrap', paddingBottom: 2}}>
+                <Box component="ul" sx={{display: 'flex', flexWrap: 'wrap', listStyle:'none', p: 0.5, m:0}}>
                     {groupObj.members.map((member) => {
                         return (
-                            <Tooltip key={member.utorid} title={member.email}>
+                          <Box key={member.utorid} component="li" sx ={{p: 0.5}}>
+                            <Tooltip title={member.email}>
                                 <Chip
                                     avatar={<InitialsAvatar name={member.name} />}
                                     label={member.name}
@@ -36,9 +37,10 @@ export const GroupCard = ({ groupObj, ...props }: GroupCardProps) => {
                                     }}
                                 />
                             </Tooltip>
+                          </Box>
                         );
                     })}
-                </Stack>
+                </Box>
             </CardContent>
             <CardActions>
                 <Link href={'/group/' + groupObj.id}>
