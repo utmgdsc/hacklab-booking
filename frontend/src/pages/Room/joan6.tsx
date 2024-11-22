@@ -187,11 +187,12 @@ export const Joan6 = () => {
                 console.error(err);
             });
 
+        setCurrentBooking(null);
         // get current events
         if (currentEvents && currentEvents.length > 0) {
             const currentTime = new Date();
             // check if current time is in between any of the events
-            const currentEvent: BookingRequest | undefined = currentEvents.find((event) => {
+            const currentEvent: BookingRequest | undefined = currentEvents.findLast((event) => {
                 // 3600000 is 1 hr * 60 min * 60 sec * 1000 ms
                 // offset added to end date to account for the fact that the end date is not inclusive
                 return (
