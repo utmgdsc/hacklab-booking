@@ -27,7 +27,7 @@
         "printWidth": 120
     },
     "dependencies": {
-        "@emotion/react": "^11.11.0",
+        "@emotion/react": "^11.13.5",
         "@emotion/styled": "^11.11.0",
         "@fontsource/roboto": "^5.0.5",
         "@mui/icons-material": "^5.14.0",
