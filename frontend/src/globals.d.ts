@@ -48,7 +48,7 @@ interface BookingRequest {
     authorUtorid: string;
     createdAt: Date;
     description: string;
-    endDate: Date;
+    endDate: string;
     groupId: string;
     group: {
         id: string;
@@ -56,7 +56,7 @@ interface BookingRequest {
     };
     reason: string | null;
     roomName: string;
-    startDate: Date;
+    startDate: string;
     status: BookingStatus;
     title: string;
     updatedAt: Date;
