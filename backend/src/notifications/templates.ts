@@ -73,7 +73,7 @@ templates[EventTypes.ADMIN_BOOKING_UPDATED] = {
 templates[EventTypes.BOOKING_STATUS_CHANGED] = {
   template: 'Your booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.',
   email: {
-    subject: 'Your booking\'s status has been changed to: {{status}}',
+    subject: "Your booking's status has been changed to: {{status}}",
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>Your booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.</p>
@@ -87,7 +87,7 @@ templates[EventTypes.BOOKING_STATUS_CHANGED] = {
 templates[EventTypes.ADMIN_BOOKING_STATUS_CHANGED] = {
   template: 'The booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.',
   email: {
-    subject: 'The booking\'s status has been changed to: {{status}}',
+    subject: "The booking's status has been changed to: {{status}}",
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>The booking {{title}} for {{room_friendly}} has been set to: {{status}} by {{changer_utorid}}.</p>
@@ -154,9 +154,9 @@ templates[EventTypes.ADMIN_ROOM_ACCESS_GRANTED] = {
 };
 
 templates[EventTypes.ADMIN_ROOM_ACCESS_REVOKED] = {
-  template: '{{full_name}}\'s access to {{room_friendly}} has been revoked by {{approver_utorid}}.',
+  template: "{{full_name}}'s access to {{room_friendly}} has been revoked by {{approver_utorid}}.",
   email: {
-    subject: '{{full_name}}\'s access to {{room_friendly}} has been revoked',
+    subject: "{{full_name}}'s access to {{room_friendly}} has been revoked",
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>{{full_name}}'s access to {{room_friendly}} has been revoked by {{approver_utorid}}.</p>
@@ -263,9 +263,9 @@ templates[EventTypes.USER_REMOVED_FROM_GROUP] = {
 };
 
 templates[EventTypes.GROUP_ROLE_CHANGED] = {
-  template: '{{changer_utorid}}. has changed {{full_name}}\'s role in {{group_name}} to {{role}}.',
+  template: "{{changer_utorid}}. has changed {{full_name}}'s role in {{group_name}} to {{role}}.",
   email: {
-    subject: '{{full_name}}\'s role in {{group_name}} has been changed',
+    subject: "{{full_name}}'s role in {{group_name}} has been changed",
     html: `
             <p>Hi {{receiver_full_name}},</p>
             <p>{{changer_utorid}}. has changed {{full_name}}'s role in {{group_name}} to {{role}}.</p>

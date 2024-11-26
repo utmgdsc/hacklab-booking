@@ -26,8 +26,19 @@ const requestCounter = () => {
   };
 };
 const validateRequest = async (request: CreateRequest): Promise<ModelResponseError | undefined> => {
-  if (request.title.trim() === '' || request.description.trim() === '') {
+  if (
+    [request.title, request.description, request.roomName].some(
+      (x) => x === undefined || typeof x !== 'string' || x.trim() === '',
+    )
+  ) {
     return { status: 400, message: 'Missing required fields.' };
+  }
+
+  if (
+    request.approvers &&
+    (!Array.isArray(request.approvers) || request.approvers.some((x) => typeof x !== 'string'))
+  ) {
+    return { status: 400, message: 'Approvers must be a string array.' };
   }
 
   const startDate = new Date(request.startDate);
@@ -98,7 +109,10 @@ const approveRequest = async (id: string, approver: User, reason?: string) => {
     return { status: 400, message: 'Request is not pending.' };
   }
   let status: RequestStatus = RequestStatus.needTCard;
-  if (request.room.userAccess.some((user: { utorid: string }) => user.utorid === request.author.utorid)) {
+  if (
+    !request.room.needTCardAccess ||
+    request.room.userAccess.some((user: { utorid: string }) => user.utorid === request.author.utorid)
+  ) {
     status = RequestStatus.completed;
   }
   const requestFetched = await db.request.update({
@@ -160,13 +174,15 @@ export default {
       query.startDate = { gte: new Date(filters.start_date) };
     }
     logger.debug(query.startDate);
-    // In a week
     if (filters.end_date) {
       query.endDate = { lte: filters.end_date };
-    } else {
-      filters.end_date = filters.end_date || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      query.endDate = { lte: filters.end_date };
     }
+    // else {
+    // // In a week
+    //   filters.end_date = filters.end_date || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    //   query.endDate = { lte: filters.end_date };
+    // }
+
     if (filters.startDate && filters.endDate) {
       const startDate = new Date(filters.startDate);
       const endDate = new Date(filters.endDate);
@@ -247,26 +263,26 @@ export default {
       authorUtorid: user.utorid,
     };
     newRequest.approvers = newRequest.approvers || [];
-    const pendingQuery = { 
+    const pendingQuery = {
       status: RequestStatus.pending,
       roomName: request.roomName,
-    }
+    };
     const userFetched = await db.user.findUnique({
       where: { utorid: newRequest.authorUtorid },
-      include: { 
-        groups: { 
-          where: { id: request.groupId }, 
-          select: { 
-            id: true, 
+      include: {
+        groups: {
+          where: { id: request.groupId },
+          select: {
+            id: true,
             requests: {
-              where: pendingQuery
-            }
+              where: pendingQuery,
+            },
           },
         },
         requests: {
-          where: pendingQuery
+          where: pendingQuery,
         },
-        roomApprover: { select: { roomName: true } }, 
+        roomApprover: { select: { roomName: true } },
       },
     });
     if (!userFetched) {
@@ -280,9 +296,9 @@ export default {
     }
     request.approvers = request.approvers ?? [];
 
-    const room = await db.room.findUnique({ where : { roomName : request.roomName } })
+    const room = await db.room.findUnique({ where: { roomName: request.roomName } });
     if (!room) {
-      return { status: 404, message: 'Room not found.'};
+      return { status: 404, message: 'Room not found.' };
     }
     if (userFetched.requests.length >= room.requestLimit) {
       return {

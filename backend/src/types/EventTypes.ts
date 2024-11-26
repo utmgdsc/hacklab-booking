@@ -38,7 +38,6 @@ enum EventTypes {
   GROUP_DELETED = 'GROUP_DELETED',
   // context: full_name, group_name, group_id, utorid
   ADMIN_GROUP_DELETED = 'ADMIN_GROUP_DELETED',
-
 }
 
 export default EventTypes;

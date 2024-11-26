@@ -12,7 +12,7 @@ services:
 
   backend:
     restart: always
-    image: node
+    image: node:18-alpine
     command: ["npm","run", "dev", "--prefix", "/app"]
     environment:
       - DATABASE_URL=postgres://postgres:example@db:5432/postgres
@@ -22,11 +22,16 @@ services:
       - ./backend:/app
 
   frontend:
-   image: node
+   image: node:18-alpine
    restart: always
-   command: ["npm","run", "dev", "--prefix", "/app"]
+#   command: ["npm","run", "dev", "--prefix", "/app"]
+   build:
+     context: ./frontend
+     dockerfile: dev.dockerfile
+   ports:
+    - "3001:3001"
    volumes:
-     - ./frontend:/app
+     - ./frontend/src:/app/src
 
   db:
     image: postgres

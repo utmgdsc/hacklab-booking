@@ -1,11 +1,6 @@
 import { Router } from 'express';
 import accountsModel from '../../models/accountsModel';
-import {
-  checkRequiredFields,
-  PermissionLevel,
-  permissionMiddleware,
-  sendResponse,
-} from '../utils';
+import { checkRequiredFields, PermissionLevel, permissionMiddleware, sendResponse } from '../utils';
 
 const router = Router();
 

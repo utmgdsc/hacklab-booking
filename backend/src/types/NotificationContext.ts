@@ -78,13 +78,13 @@ export interface GroupRoleChangedContext extends GroupActionContext {
 }
 
 export type AllContexts =
-    BookingCreatedContext
-    | BookingStatusChangeContext
-    | RoomAccessRequestContext
-    | RoomAccessContext
-    | RoomCreatedContext
-    | GroupCreatedContext
-    | GroupMemberInvitedContext
-    | GroupMemberRemovedContext
-    | GroupRoleChangedContext;
+  | BookingCreatedContext
+  | BookingStatusChangeContext
+  | RoomAccessRequestContext
+  | RoomAccessContext
+  | RoomCreatedContext
+  | GroupCreatedContext
+  | GroupMemberInvitedContext
+  | GroupMemberRemovedContext
+  | GroupRoleChangedContext;
 export type NotificationFullContext = FullContext & AllContexts;

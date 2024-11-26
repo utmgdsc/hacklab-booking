@@ -1,4 +1,4 @@
-import { Box, Button, Divider, TextField, CircularProgress, Collapse } from '@mui/material';
+import { Box, Button, Divider, TextField, CircularProgress, Collapse, Modal, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import axios, { catchAxiosError } from '../../axios';
 import { ApproverPicker, BookingSubmitted, DateTimePicker, GroupPicker, Link, RoomPicker } from '../../components';
@@ -8,6 +8,50 @@ import { ErrorPage } from '../../layouts/ErrorPage';
 import { SubPage } from '../../layouts/SubPage';
 import { TransitionGroup } from 'react-transition-group';
 
+/**
+ * Room rules
+ */
+const RuleModal = ({
+    setRulesOpen,
+    rulesOpen,
+    room,
+}: {
+    setRulesOpen: (open: boolean) => void;
+    rulesOpen: boolean;
+    room: Room;
+}) => {
+    return (
+        <Modal open={rulesOpen} onClose={() => setRulesOpen(false)}>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    minWidth: 400,
+                    maxHeight: '70vh',
+                    overflowY: 'auto',
+                    overflowX: 'wrap',
+                    whiteSpace: 'pre-wrap',
+                    bgcolor: 'background.paper',
+                    border: '2px solid #000',
+                    boxShadow: 24,
+                    p: 4,
+                }}
+            >
+                <Typography variant="h6" component={'h2'}>
+                    Rules for {room.friendlyName} - {room.roomName}
+                </Typography>
+                <Typography variant="body1" component={'p'}>
+                    {room.roomRules}
+                </Typography>
+                <Link onClick={() => setRulesOpen(false)} href={'javascript:void(0);'}>
+                    Close
+                </Link>
+            </Box>
+        </Modal>
+    );
+};
 /**
  * Edit a booking given a UUID or create a new booking if no UUID is given
  */
@@ -19,7 +63,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     /** currently selected group name */
     const [group, setGroup] = useState<string>('');
     /** currently selected room name */
-    const [roomName, setRoomName] = useState<string>('');
+    const [room, setRoom] = useState<Room | undefined>();
     /** booking details / explanation */
     const [details, setDetails] = useState('');
     /** list of approvers */
@@ -34,6 +78,8 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
     const [submittedLoading, setSubmittedLoading] = useState(false);
     /** original edit booking object */
     const [originalBooking, setOriginalBooking] = useState<FetchedBookingRequest>();
+    /** rules modal open */
+    const [rulesOpen, setRulesOpen] = useState(false);
 
     /* set fill info if there is already an editID */
     useEffect(() => {
@@ -50,7 +96,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                                 } as Group),
                             );
                             if (res.data.roomName) {
-                                setRoomName(res.data.roomName);
+                                setRoom(res.data.roomName);
                             }
                             if (res.data.description) {
                                 setDetails(res.data.description);
@@ -86,7 +132,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
      */
     const checkDate = async (dates: Date[]) => {
         await axios
-            .get(`/rooms/${roomName}/blockeddates`, {
+            .get(`/rooms/${room!.roomName}/blockeddates`, {
                 params: {
                     start_date: dates[0],
                     end_date: new Date(dates[dates.length - 1]),
@@ -155,7 +201,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
             showSnackSev('Please select a group', 'error');
             setSubmittedLoading(false);
             return;
-        } else if (roomName === '') {
+        } else if (!room) {
             showSnackSev('Please select a room', 'error');
             setSubmittedLoading(false);
             return;
@@ -169,8 +215,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
 
         // compile into json object
         const booking = {
-            roomName,
-            owner: userInfo['utorid'],
+            roomName: room.roomName,
             groupId: (JSON.parse(group) as Group).id,
             description: details,
             title: details,
@@ -284,12 +329,23 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     >
                         <Divider>Select the room to book</Divider>
 
-                        <RoomPicker setRoomName={setRoomName} roomName={roomName} />
+                        <RoomPicker setRoom={setRoom} room={room} />
+                        {room && room.roomRules && (
+                            <>
+                                <Typography>
+                                    By booking this room, you agree to the{' '}
+                                    <Link onClick={() => setRulesOpen(true)} href={'javascript:void(0);'}>
+                                        Room Rules
+                                    </Link>
+                                    <RuleModal setRulesOpen={setRulesOpen} rulesOpen={rulesOpen} room={room} />
+                                </Typography>
+                            </>
+                        )}
                     </Box>
                 </Collapse>
             )}
 
-            {group && roomName && (
+            {group && room && (
                 <Collapse>
                     <Box
                         sx={{
@@ -316,7 +372,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                 </Collapse>
             )}
 
-            {group && roomName && details !== '' && (
+            {group && room && details !== '' && (
                 <Collapse>
                     <Box
                         sx={{
@@ -326,12 +382,16 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                     >
                         <Divider sx={{ marginBottom: '2em' }}>Choose Approvers to review your request</Divider>
 
-                        <ApproverPicker setApprovers={setApprovers} selectedApprovers={approvers} roomName={roomName} />
+                        <ApproverPicker
+                            setApprovers={setApprovers}
+                            selectedApprovers={approvers}
+                            roomName={room.roomName}
+                        />
                     </Box>
                 </Collapse>
             )}
 
-            {group && roomName && details !== '' && approvers.length > 0 && (
+            {group && room && details !== '' && approvers.length > 0 && (
                 <Collapse>
                     <Box
                         sx={{
@@ -345,7 +405,7 @@ export const CreateModifyBooking = ({ editID }: { editID?: string }) => {
                             handleScheduleDate={handleScheduleDate}
                             scheduleDates={scheduleDates}
                             setScheduleDates={setScheduleDates}
-                            room={roomName}
+                            roomName={room.roomName}
                         />
                     </Box>
 

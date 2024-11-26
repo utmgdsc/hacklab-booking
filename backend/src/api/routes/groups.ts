@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import groupsModel from '../../models/groupsModel';import { checkRequiredFields, checkUuidMiddleware,  sendResponse } from '../utils';
+import groupsModel from '../../models/groupsModel';
+import { checkRequiredFields, checkUuidMiddleware, sendResponse } from '../utils';
 
 const router = Router();
 

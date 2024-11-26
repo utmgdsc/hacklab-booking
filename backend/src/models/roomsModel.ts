@@ -25,7 +25,7 @@ const updateRequests = async (roomName: string, authorUtorid: string, approver: 
     where: {
       roomName,
       authorUtorid: authorUtorid,
-      status: RequestStatus.completed ? RequestStatus.needTCard : RequestStatus.completed,
+      status: status == RequestStatus.completed ? RequestStatus.needTCard : RequestStatus.completed,
     },
     include: {
       author: true,
@@ -38,7 +38,7 @@ const updateRequests = async (roomName: string, authorUtorid: string, approver: 
       authorUtorid: authorUtorid,
       roomName,
       endDate: { gte: new Date() },
-      status: RequestStatus.completed ? RequestStatus.needTCard : RequestStatus.completed,
+      status: status == RequestStatus.completed ? RequestStatus.needTCard : RequestStatus.completed,
     },
     data: { status: status },
   });
@@ -118,6 +118,7 @@ export default {
         include: {
           requests: {
             where: {
+              status: { in: [RequestStatus.completed, RequestStatus.needTCard] },
               OR: [{ author: { utorid: user.utorid } }, { group: { members: { some: { utorid: user.utorid } } } }],
             },
             include: { group: true },
@@ -264,5 +265,12 @@ export default {
       }
       throw e;
     }
+  },
+  setSettings: async (roomName: string, settings: { [key in keyof Omit<Room, 'roomName'>]: Room[key] }) => {
+    await db.room.update({
+      where: { roomName },
+      data: Object.fromEntries(Object.entries(settings).filter(([, value]) => value !== undefined)) as typeof settings,
+    });
+    return { status: 200, data: {} };
   },
 } satisfies Model;
