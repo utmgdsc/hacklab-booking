@@ -111,7 +111,7 @@ export const addHoursToDate = (date: Date, hours: number): Date => {
  * @property endDate The end date of the booking
  * @return A formatted string of the time range of the booking
  */
-export const formatRangedTime = (startDate: Date, endDate: Date): string => {
+export const formatRangedTime = (startDate: Date | string, endDate: Date | string): string => {
     const formatDateOptions: Intl.DateTimeFormatOptions = {
         hour: 'numeric',
     };
