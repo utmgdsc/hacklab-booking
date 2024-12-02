@@ -33,7 +33,7 @@
         "@mui/icons-material": "^5.14.0",
         "@mui/material": "^5.13.7",
         "@mui/x-date-pickers-pro": "^6.9.2",
-        "axios": "^1.4.0",
+        "axios": "^1.7.8",
         "core-js": "^3.39.0",
         "dayjs": "^1.11.9",
         "react": "^18.3.1",
