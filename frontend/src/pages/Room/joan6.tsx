@@ -187,11 +187,12 @@ export const Joan6 = () => {
                 console.error(err);
             });
 
+        setCurrentBooking(null);
         // get current events
         if (currentEvents && currentEvents.length > 0) {
             const currentTime = new Date();
             // check if current time is in between any of the events
-            const currentEvent: BookingRequest | undefined = currentEvents.find((event) => {
+            const currentEvent: BookingRequest | undefined = currentEvents.findLast((event) => {
                 // 3600000 is 1 hr * 60 min * 60 sec * 1000 ms
                 // offset added to end date to account for the fact that the end date is not inclusive
                 return (
@@ -204,19 +205,15 @@ export const Joan6 = () => {
                 setCurrentBooking(currentEvent);
             }
 
-            // get next time the room is free by incrementing the current time until it is not in between any of the events
-            while (currentTime.getHours() < 23) {
-                currentTime.setHours(currentTime.getHours() + 1);
-                if (!currentEvent) {
-                    // found a time when the room is free
-                    setNextFree(
-                        `Will be free at ${currentTime.toLocaleTimeString(undefined, {
-                            hour: 'numeric',
-                        })}`,
-                    );
-                    break;
-                }
-            }
+            const lastEvent = currentEvents[currentEvents.length - 1];
+            const nextDate = new Date(lastEvent.endDate);
+            nextDate.setHours(nextDate.getHours() + 1);
+
+            setNextFree(
+                `Will be free at ${nextDate.toLocaleTimeString(undefined, {
+                    hour: 'numeric',
+                })}`,
+            );
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentEvents, room.requests, roomId]);

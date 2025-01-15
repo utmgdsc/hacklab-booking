@@ -174,13 +174,15 @@ export default {
       query.startDate = { gte: new Date(filters.start_date) };
     }
     logger.debug(query.startDate);
-    // In a week
     if (filters.end_date) {
       query.endDate = { lte: filters.end_date };
-    } else {
-      filters.end_date = filters.end_date || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      query.endDate = { lte: filters.end_date };
     }
+    // else {
+    // // In a week
+    //   filters.end_date = filters.end_date || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    //   query.endDate = { lte: filters.end_date };
+    // }
+
     if (filters.startDate && filters.endDate) {
       const startDate = new Date(filters.startDate);
       const endDate = new Date(filters.endDate);
@@ -301,14 +303,14 @@ export default {
     if (userFetched.requests.length >= room.requestLimit) {
       return {
         status: 429,
-        message: 'User has too many pending requests.',
-      };
+        message: `User has too many pending requests. Maximum pending requests for this room is ${room.requestLimit}.`,
+      }
     }
     if (userFetched.groups[0].requests.length >= room.requestLimit) {
       return {
         status: 429,
-        message: 'Group has too many pending requests.',
-      };
+        message: `Group has too many pending requests. Maximum pending requests for this room is ${room.requestLimit}.`,
+      }
     }
 
     try {
