@@ -1,5 +1,7 @@
 FROM node:18-alpine
 
+RUN apk add openssl
+
 RUN npm install -g typescript
 
 COPY package.json ./
