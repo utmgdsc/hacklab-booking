@@ -240,15 +240,6 @@ export const Joan6 = () => {
         }, 1000);
         return () => clearInterval(interval);
     }, [update]);
-    useEffect(() => {
-        const interval = setInterval(
-            () => {
-                window.location.reload();
-            },
-            1000 * 60 * 60 * 24,
-        );
-        return () => clearInterval(interval);
-    });
 
     return (
         <Grid
