@@ -37,7 +37,7 @@
     "ical-generator": "^8.0.1",
     "is-utorid": "^1.2.2",
     "node-fetch": "^2.6.12",
-    "nodemailer": "^6.9.3",
+    "nodemailer": "^7.0.11",
     "prettier": "^3.0.0",
     "winston": "^3.9.0"
   },
